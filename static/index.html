@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jigar Thakkar - Vedic Numerology Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Gujarati:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <!-- Top Global App Bar with Jigar Thakkar's Branding -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="header-brand">
+                <div class="sacred-om">ॐ</div>
+                <div>
+                    <h1 class="brand-title">JIGAR THAKKAR'S VEDIC NUMEROLOGY STUDIO</h1>
+                    <p class="brand-subtitle">Certified Vedic Numerologist & Vastu Consultant • Automated Trilingual Blueprint Engine</p>
+                </div>
+            </div>
+            <div class="header-controls">
+                <div class="consultant-contact-pill">
+                    <span>📞 +91 9377614772</span>
+                    <span>✉ jigar93776@gmail.com</span>
+                </div>
+                <div class="lang-switch-pills">
+                    <button class="lang-pill active" data-lang="en">English</button>
+                    <button class="lang-pill" data-lang="hi">हिन्दी</button>
+                    <button class="lang-pill" data-lang="gu">ગુજરાતી</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace Container -->
+    <main class="app-main">
+        <div class="workspace-grid">
+            <!-- Left Side: Client Consultation Form -->
+            <aside class="sidebar-panel">
+                <div class="card panel-card">
+                    <div class="panel-header">
+                        <span class="icon">📜</span>
+                        <h2>Client Consultation Setup</h2>
+                    </div>
+
+                    <form id="numerology-form" class="consultation-form">
+                        <div class="form-group">
+                            <label for="client-name">Client Full Name</label>
+                            <input type="text" id="client-name" placeholder="e.g. Gopal Pathak" value="Gopal Pathak" required autocomplete="off">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="client-phone">Client WhatsApp / Phone <span class="label-hint">(Optional)</span></label>
+                            <input type="text" id="client-phone" placeholder="e.g. 9876543210" value="">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="client-dob">Date of Birth</label>
+                                <input type="date" id="client-dob" value="1982-11-04" required>
+                                <div id="weekday-indicator" class="weekday-pill">Thursday (गुरुवार)</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="client-gender">Gender</label>
+                                <select id="client-gender">
+                                    <option value="Male" selected>Male (पुरुष)</option>
+                                    <option value="Female">Female (स्त्री)</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="target-date">Forecast Consultation Date</label>
+                            <input type="date" id="target-date" value="2026-11-21">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="consultant-notes">
+                                Personalized Notes & Recommendations
+                                <span class="label-hint">(Printed on Page 4 of PDF)</span>
+                            </label>
+                            <textarea id="consultant-notes" rows="3" placeholder="Add specific guidance or custom remedies for this client...">Regular practice of morning Surya Arghya in a copper vessel and wearing recommended Hessonite is strongly advised for maximum planetary harmony.</textarea>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons-stack">
+                            <button type="submit" id="btn-calculate" class="btn btn-primary">
+                                <span class="btn-icon">🔮</span> Calculate & Analyze Chart
+                            </button>
+
+                            <div class="pdf-actions-header">1-Click PDF Generation</div>
+                            <div class="pdf-btn-grid">
+                                <button type="button" id="btn-pdf-en" class="btn btn-gold" data-pdflang="en">
+                                    <span>📄 English PDF</span>
+                                </button>
+                                <button type="button" id="btn-pdf-hi" class="btn btn-gold" data-pdflang="hi">
+                                    <span>📄 हिन्दी PDF</span>
+                                </button>
+                                <button type="button" id="btn-pdf-gu" class="btn btn-gold" data-pdflang="gu">
+                                    <span>📄 ગુજરાતી PDF</span>
+                                </button>
+                            </div>
+                            <button type="button" id="btn-pdf-all" class="btn btn-accent">
+                                <span class="btn-icon">📦</span> Generate All 3 Languages
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Recent Generated Reports Box -->
+                <div class="card recent-reports-card">
+                    <div class="panel-header-mini">
+                        <span class="icon">📁</span>
+                        <h3>Generated Client Reports</h3>
+                        <button id="btn-refresh-history" class="btn-icon-mini" title="Refresh">↻</button>
+                    </div>
+                    <div id="recent-reports-list" class="reports-list">
+                        <div class="empty-state">No reports generated yet in this session.</div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Right Side: Interactive Analytical Dashboard -->
+            <section class="dashboard-panel">
+                <!-- Status & Notification Banner -->
+                <div id="status-banner" class="status-banner" style="display: none;"></div>
+
+                <!-- Top Quick Stats Overview -->
+                <div class="quick-stats-row">
+                    <!-- Basic Number (Moolank) Card -->
+                    <div class="stat-card">
+                        <div class="stat-icon">👑</div>
+                        <div class="stat-info">
+                            <div class="stat-label" id="lbl-bn">Moolank (Basic No)</div>
+                            <div class="stat-value" id="val-bn">4</div>
+                            <div class="stat-sub" id="sub-bn">Rahu (राहु)</div>
+                        </div>
+                    </div>
+
+                    <!-- Destiny Number (Bhagyank) Card -->
+                    <div class="stat-card">
+                        <div class="stat-icon">🌟</div>
+                        <div class="stat-info">
+                            <div class="stat-label" id="lbl-dn">Bhagyank (Destiny No)</div>
+                            <div class="stat-value" id="val-dn">8</div>
+                            <div class="stat-sub" id="sub-dn">Saturn (शनि)</div>
+                        </div>
+                    </div>
+
+                    <!-- Name Number (Namank) Card -->
+                    <div class="stat-card">
+                        <div class="stat-icon">✍</div>
+                        <div class="stat-info">
+                            <div class="stat-label">Name No (Namank)</div>
+                            <div class="stat-value" id="val-namank">1</div>
+                            <div class="stat-sub" id="sub-namank">Harmonious Alignment</div>
+                        </div>
+                    </div>
+
+                    <!-- Active Dasha Period Card -->
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-info">
+                            <div class="stat-label">Active Dasha Cycle</div>
+                            <div class="stat-value-sm" id="val-dasha">MD: 3 | AD: 1 | PD: 2</div>
+                            <div class="stat-sub" id="sub-dasha">Active through 2027</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Analysis Tabs Container -->
+                <div class="card dashboard-card">
+                    <!-- Tab Navigation -->
+                    <nav class="dashboard-tabs">
+                        <button class="tab-btn active" data-tab="tab-grid">🌟 Natal Grid & Compatibility Compass</button>
+                        <button class="tab-btn" data-tab="tab-dasha">⏳ Dasha Timeline (MD/AD/PD)</button>
+                        <button class="tab-btn" data-tab="tab-yogas">⚖️ Active Yogas & Raj Yog</button>
+                        <button class="tab-btn" data-tab="tab-predictions">🔮 Life Predictions</button>
+                        <button class="tab-btn" data-tab="tab-remedies">🕉️ Vedic Remedies</button>
+                    </nav>
+
+                    <!-- Tab 1: Natal Grid & Compatibility Compass -->
+                    <div id="tab-grid" class="tab-content active">
+                        <!-- Compass & Friendship Banner -->
+                        <div class="compass-dashboard-banner">
+                            <div class="compass-dash-header">🧭 Planetary Friendship Matrix & Life Compass</div>
+                            <div class="compass-dash-grid">
+                                <div class="c-dash-item">
+                                    <span class="c-dash-label">Friendly Numbers (Allies)</span>
+                                    <span class="c-dash-val text-green" id="dash-friendly">4, 5, 6, 8</span>
+                                </div>
+                                <div class="c-dash-item">
+                                    <span class="c-dash-label">Neutral Numbers</span>
+                                    <span class="c-dash-val text-orange" id="dash-neutral">7, 3</span>
+                                </div>
+                                <div class="c-dash-item">
+                                    <span class="c-dash-label">Unfriendly / Avoid Numbers</span>
+                                    <span class="c-dash-val text-red" id="dash-enemy">1, 2, 9</span>
+                                </div>
+                                <div class="c-dash-item">
+                                    <span class="c-dash-label">Auspicious Vastu Direction</span>
+                                    <span class="c-dash-val" id="dash-direction">South-West (नैऋत्य)</span>
+                                </div>
+                                <div class="c-dash-item">
+                                    <span class="c-dash-label">Auspicious Metal</span>
+                                    <span class="c-dash-val" id="dash-metal">Silver & Panchdhatu</span>
+                                </div>
+                                <div class="c-dash-item">
+                                    <span class="c-dash-label">Gemstone</span>
+                                    <span class="c-dash-val" id="dash-gem">Hessonite (Gomed)</span>
+                                </div>
+                            </div>
+                            <div id="dash-name-harmony" class="name-harmony-banner">
+                                <strong>Name Vibration Audit:</strong> Name Number 1 is highly harmonious with Root Number 4 and Destiny Number 8.
+                            </div>
+                        </div>
+
+                        <div class="grid-section-layout">
+                            <div class="grid-visual-col">
+                                <div class="vedic-grid-card">
+                                    <div class="grid-card-title">3x3 Vedic Birth Grid (Natal Kundali)</div>
+                                    <div class="vedic-3x3-container">
+                                        <div class="v-cell" id="gc-3"><span class="c-num">3</span><span class="c-val">-</span></div>
+                                        <div class="v-cell" id="gc-1"><span class="c-num">1</span><span class="c-val">11</span></div>
+                                        <div class="v-cell" id="gc-9"><span class="c-num">9</span><span class="c-val">-</span></div>
+                                        <div class="v-cell" id="gc-6"><span class="c-num">6</span><span class="c-val">-</span></div>
+                                        <div class="v-cell" id="gc-7"><span class="c-num">7</span><span class="c-val">-</span></div>
+                                        <div class="v-cell" id="gc-5"><span class="c-num">5</span><span class="c-val">-</span></div>
+                                        <div class="v-cell" id="gc-2"><span class="c-num">2</span><span class="c-val">2</span></div>
+                                        <div class="v-cell" id="gc-8"><span class="c-num">8</span><span class="c-val">88</span></div>
+                                        <div class="v-cell" id="gc-4"><span class="c-num">4</span><span class="c-val">4</span></div>
+                                    </div>
+                                    <div class="grid-legend">
+                                        <span class="legend-item"><span class="legend-dot active"></span> Active in Chart</span>
+                                        <span class="legend-item"><span class="legend-dot empty"></span> Dormant / Absent</span>
+                                    </div>
+                                </div>
+
+                                <div class="charms-badge-group">
+                                    <div class="charm-badge"><strong>Lucky Days:</strong> <span id="charm-days">Saturday, Sunday</span></div>
+                                    <div class="charm-badge"><strong>Lucky Numbers:</strong> <span id="charm-nums">4, 5, 6, 8</span></div>
+                                    <div class="charm-badge"><strong>Auspicious Colors:</strong> <span id="charm-colors">Electric Blue, Grey</span></div>
+                                </div>
+                            </div>
+
+                            <div class="grid-details-col">
+                                <h3 class="section-heading">Planetary Vibrations Breakdown (+ / -)</h3>
+                                <div id="vibrations-list" class="vibrations-container">
+                                    <!-- Dynamic Vibrations will be injected here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Core Personality Traits & Precautions -->
+                        <div class="traits-dual-grid">
+                            <div class="traits-box">
+                                <h4 class="traits-header" id="header-moolank-traits">👑 Moolank Core Traits</h4>
+                                <ul id="list-moolank-traits" class="bullet-list"></ul>
+                            </div>
+                            <div class="precautions-box">
+                                <h4 class="precautions-header" id="header-moolank-precautions">⚠ Moolank Precautions</h4>
+                                <ul id="list-moolank-precautions" class="bullet-list warn"></ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Dasha Timeline -->
+                    <div id="tab-dasha" class="tab-content">
+                        <h3 class="section-heading">Active Planetary Periods (MD • AD • PD)</h3>
+                        <div class="dasha-active-cards">
+                            <div class="dasha-card highlight">
+                                <div class="d-tag">CURRENT MAHADASHA (MD)</div>
+                                <div class="d-num" id="dasha-md-num">Mahadasha 3</div>
+                                <div class="d-planet" id="dasha-md-planet">Jupiter (गुरु)</div>
+                                <div class="d-dates" id="dasha-md-dates">04/11/2024 to 04/11/2027</div>
+                            </div>
+                            <div class="dasha-card highlight">
+                                <div class="d-tag">CURRENT ANTARDASHA (AD)</div>
+                                <div class="d-num" id="dasha-ad-num">Antardasha 1</div>
+                                <div class="d-planet" id="dasha-ad-planet">Sun (सूर्य)</div>
+                                <div class="d-dates" id="dasha-ad-dates">04/11/2026 to 04/11/2027</div>
+                            </div>
+                            <div class="dasha-card highlight">
+                                <div class="d-tag">CURRENT PRATYANTAR DASHA (PD)</div>
+                                <div class="d-num" id="dasha-pd-num">Pratyantar Dasha 2</div>
+                                <div class="d-planet" id="dasha-pd-planet">Moon (चंद्र)</div>
+                                <div class="d-dates" id="dasha-pd-dates">Active Current Phase</div>
+                            </div>
+                        </div>
+
+                        <h3 class="section-heading mt-4">Lifetime Mahadasha Sequence (45-Year Cyclic Table)</h3>
+                        <div class="table-responsive">
+                            <table class="dasha-table">
+                                <thead>
+                                    <tr>
+                                        <th>Mahadasha</th>
+                                        <th>Duration</th>
+                                        <th>Commencement Date</th>
+                                        <th>Completion Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dasha-timeline-body">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Active Yogas & Raj Yog -->
+                    <div id="tab-yogas" class="tab-content">
+                        <h3 class="section-heading">Planetary Alignments & Yogas in Chart</h3>
+                        <div id="yogas-container" class="yogas-display-grid">
+                            <!-- Dynamic Yoga Cards -->
+                        </div>
+                    </div>
+
+                    <!-- Tab 4: Life Predictions -->
+                    <div id="tab-predictions" class="tab-content">
+                        <h3 class="section-heading">Comprehensive Domain-Specific Predictions</h3>
+                        <div id="predictions-container" class="predictions-display-grid">
+                            <!-- Dynamic Prediction Cards -->
+                        </div>
+                    </div>
+
+                    <!-- Tab 5: Prescribed Remedies -->
+                    <div id="tab-remedies" class="tab-content">
+                        <h3 class="section-heading">Authentic Vedic Remedial Measures</h3>
+                        <div id="remedies-container" class="remedies-display-list">
+                            <!-- Dynamic Remedy Cards -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer with Jigar Thakkar's Copyright -->
+    <footer class="app-footer">
+        <p>© 2026 Jigar Thakkar • Certified Vedic Numerologist & Vastu Consultant • Phone: +91 9377614772 • Email: jigar93776@gmail.com</p>
+    </footer>
+
+    <script src="/app.js"></script>
+</body>
+</html>
