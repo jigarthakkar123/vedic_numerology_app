@@ -6,10 +6,12 @@ __pycache__/
 .pytest_cache/
 .env
 
-# Generated client reports (keep folder, ignore files)
+# Generated client reports (keep folder, ignore customer reports, track sample reports)
 reports/*.pdf
 reports/*.html
 !reports/.gitkeep
+!reports/Sample_*.pdf
+!reports/Sample_*.html
 
 # OS & Editor
 .DS_Store

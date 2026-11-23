@@ -242,17 +242,44 @@ async def get_private_consultant_studio():
 @app.get("/sample-report")
 @app.get("/sample-report/{lang}")
 async def get_sample_report(lang: str = "en"):
-    """Serves sample 4-page Vedic Numerology reports for preview."""
-    lang_map = {
-        "en": "Sample_Vedic_Report_English.pdf",
-        "hi": "Sample_Vedic_Report_Hindi.pdf",
-        "gu": "Sample_Vedic_Report_Gujarati.pdf"
+    """Serves sample 4-page Vedic Numerology reports for preview (with auto-generation fallback)."""
+    lang_clean = (lang or "en").lower().strip()
+    sample_configs = {
+        "en": ("Sample_Vedic_Report_English.pdf", "Rohit Sharma", "1987-04-30"),
+        "hi": ("Sample_Vedic_Report_Hindi.pdf", "रोहित शर्मा (नमूना रिपोर्ट)", "1987-04-30"),
+        "gu": ("Sample_Vedic_Report_Gujarati.pdf", "રોહિત શર્મા (સેમ્પલ રિપોર્ટ)", "1987-04-30")
     }
-    fname = lang_map.get(lang, "Sample_Vedic_Report_English.pdf")
+    fname, sample_name, sample_dob = sample_configs.get(lang_clean, sample_configs["en"])
     fpath = os.path.join(REPORTS_DIR, fname)
+    
+    # Auto-generate on-the-fly if not on disk
     if not os.path.exists(fpath):
-        fpath = os.path.join(REPORTS_DIR, "Sample_Vedic_Report_English.pdf")
-    return FileResponse(fpath, media_type="application/pdf", filename=fname)
+        try:
+            os.makedirs(REPORTS_DIR, exist_ok=True)
+            profile = compile_full_numerology_profile(
+                name=sample_name,
+                dob_str=sample_dob,
+                lang=lang_clean if lang_clean in sample_configs else "en"
+            )
+            html_content = build_report_html(profile)
+            render_pdf_from_html(html_content, fpath)
+        except Exception as e:
+            print(f"[Sample Report Gen Error]: {e}", flush=True)
+            
+    if not os.path.exists(fpath):
+        fallback_path = os.path.join(REPORTS_DIR, "Sample_Vedic_Report_English.pdf")
+        if os.path.exists(fallback_path):
+            fpath = fallback_path
+            fname = "Sample_Vedic_Report_English.pdf"
+        else:
+            raise HTTPException(status_code=404, detail="Sample preview report is currently being generated. Please refresh in a moment.")
+            
+    return FileResponse(
+        fpath, 
+        media_type="application/pdf", 
+        filename=fname,
+        headers={"Content-Disposition": f"inline; filename={fname}"}
+    )
 
 @app.post("/api/verify-pin")
 async def verify_studio_pin(body: dict = Body(...)):

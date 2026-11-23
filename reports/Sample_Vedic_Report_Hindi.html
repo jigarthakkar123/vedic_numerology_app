@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<title>व्यक्तिगत वैदिक अंकशास्त्र परामर्श रिपोर्ट - रोहित शर्मा (नमूना रिपोर्ट)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+@page {
+    size: A4;
+    margin: 0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', 'Mangal', -apple-system, sans-serif;
+    color: #1e293b;
+    background-color: #ffffff;
+    font-size: 10.3px;
+    line-height: 1.44;
+}
+
+.page {
+    width: 210mm;
+    height: 297mm;
+    max-height: 297mm;
+    padding: 12mm 15mm 11mm 15mm;
+    background: #ffffff;
+    position: relative;
+    page-break-after: always;
+    break-after: page;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Ornamental Borders */
+.page-border {
+    position: absolute;
+    top: 5mm;
+    left: 5mm;
+    right: 5mm;
+    bottom: 5mm;
+    border: 1.5px solid #d4af37;
+    pointer-events: none;
+    z-index: 1;
+}
+.page-border-inner {
+    position: absolute;
+    top: 6.5mm;
+    left: 6.5mm;
+    right: 6.5mm;
+    bottom: 6.5mm;
+    border: 0.5px solid #e2c275;
+    pointer-events: none;
+    z-index: 1;
+}
+.corner-ornament {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-color: #b38728;
+    z-index: 2;
+}
+.corner-tl { top: 4.5mm; left: 4.5mm; border-top: 3px solid #b38728; border-left: 3px solid #b38728; }
+.corner-tr { top: 4.5mm; right: 4.5mm; border-top: 3px solid #b38728; border-right: 3px solid #b38728; }
+.corner-bl { bottom: 4.5mm; left: 4.5mm; border-bottom: 3px solid #b38728; border-left: 3px solid #b38728; }
+.corner-br { bottom: 4.5mm; right: 4.5mm; border-bottom: 3px solid #b38728; border-right: 3px solid #b38728; }
+
+.page-content {
+    position: relative;
+    z-index: 5;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Main Header */
+.report-main-header {
+    text-align: center;
+    padding-bottom: 6px;
+    border-bottom: 1.5px solid #e8dec9;
+    margin-bottom: 8px;
+}
+.om-symbol {
+    font-size: 15px;
+    color: #b38728;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+.main-title {
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin: 1px 0;
+}
+.sub-title {
+    font-size: 9.5px;
+    color: #854d0e;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+.sub-title strong {
+    color: #0f172a;
+    font-weight: 700;
+}
+
+/* Mini Header for subsequent pages */
+.page-header-mini {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #e2c275;
+    margin-bottom: 8px;
+}
+.page-header-mini .mini-title {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: 0.8px;
+}
+.page-header-mini .consultant-tag {
+    font-size: 9px;
+    color: #854d0e;
+    background: #fef9c3;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    border: 1px solid #fde047;
+}
+
+/* Section Titles */
+.section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #0f172a;
+    border-left: 3.5px solid #b38728;
+    padding-left: 7px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.4px;
+}
+
+/* Profile Card */
+.profile-card {
+    background: linear-gradient(135deg, #fdfbf7 0%, #f7f3e8 100%);
+    border: 1.5px solid #d4af37;
+    border-radius: 7px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+}
+.profile-grid-container {
+    display: grid;
+    grid-template-columns: 1fr 165px;
+    gap: 12px;
+    align-items: center;
+}
+.client-data-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 8px;
+}
+.data-pill {
+    background: #ffffff;
+    border: 1px solid #e2d7ba;
+    border-radius: 4px;
+    padding: 3px 6px;
+}
+.data-pill .label {
+    font-size: 7.5px;
+    color: #64748b;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+.data-pill .value {
+    font-size: 11px;
+    font-weight: 700;
+    color: #0f172a;
+}
+.data-pill.highlight {
+    background: #fffbeb;
+    border-color: #f59e0b;
+}
+.data-pill.highlight .value {
+    color: #b45309;
+}
+
+/* Dual Vedic Grids Layout */
+.dual-grids-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+.grid-box-card {
+    background: #fdfbf7;
+    border: 1.2px solid #d4af37;
+    border-radius: 5px;
+    padding: 5px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.grid-box-card.dasha {
+    border-color: #38bdf8;
+    background: #f0f9ff;
+}
+.grid-caption {
+    font-size: 8px;
+    font-weight: 800;
+    color: #854d0e;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 2px;
+    text-align: center;
+}
+.grid-caption.dasha {
+    color: #0369a1;
+}
+.grid-subtext {
+    font-size: 6.8px;
+    color: #64748b;
+    margin-bottom: 3px;
+    text-align: center;
+}
+.vedic-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 40px);
+    grid-template-rows: repeat(3, 26px);
+    gap: 2px;
+    background: #b38728;
+    padding: 2px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.vedic-grid.dasha {
+    background: #0284c7;
+}
+.vedic-cell {
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #0f172a;
+    overflow: hidden;
+}
+.vedic-cell.natal-cell.active {
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 11.5px;
+    font-weight: 800;
+}
+.vedic-cell.dasha-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    flex-wrap: wrap;
+    padding: 1px;
+}
+.vedic-cell.empty {
+    color: #cbd5e1;
+    font-size: 8.5px;
+}
+.chip {
+    font-size: 8.5px;
+    font-weight: 800;
+    padding: 1px 3px;
+    border-radius: 3px;
+    line-height: 1;
+    border: 1px solid transparent;
+}
+.chip-natal { background: #fef3c7; color: #854d0e; border-color: #fde047; }
+.chip-md { background: #e0f2fe; color: #0284c7; border-color: #38bdf8; }
+.chip-ad { background: #dcfce7; color: #15803d; border-color: #22c55e; }
+.chip-pd { background: #f3e8ff; color: #6d28d9; border-color: #7c3aed; }
+
+.grid-legend-bar {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 2.5px 8px;
+    margin-bottom: 6px;
+    font-size: 7.2px;
+    font-weight: 700;
+}
+.legend-pill { display: inline-flex; align-items: center; gap: 3px; }
+.legend-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+.dot-natal { background: #d4af37; }
+.dot-md { background: #38bdf8; }
+.dot-ad { background: #22c55e; }
+.dot-pd { background: #7c3aed; }
+
+/* Planetary Friendship Compass Box */
+.compass-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left: 3.5px solid #3b82f6;
+    border-radius: 6px;
+    padding: 6px 10px;
+    margin-bottom: 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+}
+.compass-item {
+    display: flex;
+    flex-direction: column;
+}
+.compass-label {
+    font-size: 7.5px;
+    text-transform: uppercase;
+    color: #64748b;
+    font-weight: 700;
+}
+.compass-val {
+    font-size: 10px;
+    font-weight: 700;
+    color: #0f172a;
+}
+.compass-val.green { color: #166534; }
+.compass-val.orange { color: #b45309; }
+.compass-val.red { color: #991b1b; }
+
+.name-harmony-bar {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: 5px;
+    padding: 4px 8px;
+    font-size: 8.8px;
+    color: #166534;
+    margin-bottom: 8px;
+    line-height: 1.35;
+}
+
+/* Badges Bar */
+.meta-badge-bar {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 7px;
+}
+.meta-badge {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 3px 6px;
+    font-size: 9px;
+    font-weight: 600;
+    color: #334155;
+    flex: 1;
+    text-align: center;
+}
+.meta-badge span {
+    color: #b45309;
+    font-weight: 700;
+}
+
+/* Quality List */
+.quality-list-single {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4.5px;
+    margin-bottom: 8px;
+}
+.quality-item-single {
+    position: relative;
+    padding-left: 13px;
+    font-size: 9.6px;
+    color: #334155;
+    line-height: 1.38;
+}
+.quality-item-single::before {
+    content: "◆";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #d4af37;
+    font-size: 7px;
+}
+
+/* Precautions Box */
+.root-precautions-box {
+    background: #fffaf0;
+    border: 1.5px solid #fed7aa;
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-top: 3px;
+}
+.root-precautions-header {
+    font-family: 'Cinzel', serif;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #b45309;
+    margin-bottom: 4px;
+    padding-bottom: 2px;
+    border-bottom: 1px solid #fed7aa;
+}
+.root-precautions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3.5px 12px;
+    list-style: none;
+}
+.root-precautions-grid li {
+    position: relative;
+    padding-left: 11px;
+    font-size: 9.1px;
+    color: #334155;
+    line-height: 1.32;
+}
+.root-precautions-grid li::before {
+    content: "•";
+    position: absolute;
+    left: 1px;
+    top: -2px;
+    font-size: 12px;
+    color: #ea580c;
+}
+
+/* Dasha Banner */
+.dasha-summary-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 7px;
+    background: #f8fafc;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 6px 9px;
+    margin-bottom: 8px;
+}
+.dasha-box {
+    text-align: center;
+}
+.dasha-box .d-label {
+    font-size: 7.5px;
+    text-transform: uppercase;
+    color: #64748b;
+    font-weight: 700;
+}
+.dasha-box .d-val {
+    font-size: 12px;
+    font-weight: 800;
+    color: #1e3a8a;
+    margin: 1px 0;
+}
+.dasha-box .d-span {
+    font-size: 7.5px;
+    color: #475569;
+}
+
+/* 3-Tier Period Forecast Cards */
+.tier-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    padding: 6px 9px;
+    margin-bottom: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+.tier-card.tier-md { border-left: 3.5px solid #0284c7; }
+.tier-card.tier-ad { border-left: 3.5px solid #16a34a; }
+.tier-card.tier-pd { border-left: 3.5px solid #7c3aed; background: #faf5ff; }
+
+.tier-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3px;
+    border-bottom: 1px dashed #e2e8f0;
+    padding-bottom: 2.5px;
+}
+.tier-badge {
+    font-size: 7.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 1.5px 5px;
+    border-radius: 3px;
+    letter-spacing: 0.3px;
+}
+.badge-md { background: #e0f2fe; color: #0284c7; border: 1px solid #7dd3fc; }
+.badge-ad { background: #dcfce7; color: #16a34a; border: 1px solid #86efac; }
+.badge-pd { background: #ffedd5; color: #ea580c; border: 1px solid #fdba74; }
+
+.tier-title-main { font-size: 9.5px; font-weight: 800; color: #0f172a; }
+.tier-date-span { font-size: 7.5px; font-weight: 700; color: #475569; }
+
+.tier-text-content { font-size: 8.5px; color: #1e293b; line-height: 1.35; margin-bottom: 2.5px; }
+.tier-note-bar { font-size: 7.8px; color: #0369a1; background: #f0f9ff; padding: 2px 5px; border-radius: 3px; margin-top: 2px; }
+.tier-subgrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    margin-top: 3px;
+    font-size: 8px;
+    color: #334155;
+}
+.tier-dos-donts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: 3px;
+}
+.do-box {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 4px;
+    padding: 3.5px 6px;
+    font-size: 7.8px;
+}
+.dont-box {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 4px;
+    padding: 3.5px 6px;
+    font-size: 7.8px;
+}
+.do-title { font-weight: 800; color: #166534; font-size: 8px; margin-bottom: 2px; }
+.dont-title { font-weight: 800; color: #991b1b; font-size: 8px; margin-bottom: 2px; }
+.do-box ul, .dont-box ul { list-style: none; padding-left: 0; }
+.do-box li { padding-left: 8px; position: relative; margin-bottom: 1.5px; line-height: 1.25; }
+.do-box li::before { content: "✔"; position: absolute; left: 0; font-size: 7px; color: #16a34a; }
+.dont-box li { padding-left: 8px; position: relative; margin-bottom: 1.5px; line-height: 1.25; }
+.dont-box li::before { content: "✖"; position: absolute; left: 0; font-size: 7px; color: #dc2626; }
+
+/* Roadmap Calendar Table */
+.roadmap-table-wrap {
+    margin-top: 5px;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    overflow: hidden;
+}
+.roadmap-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 7.5px;
+}
+.roadmap-table th {
+    background: #f8fafc;
+    color: #475569;
+    font-weight: 800;
+    padding: 3px 5px;
+    border-bottom: 1px solid #e2e8f0;
+    text-transform: uppercase;
+}
+.roadmap-table td {
+    padding: 2.5px 5px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #1e293b;
+}
+.roadmap-table tr.active-phase {
+    background: #fffbeb;
+    font-weight: 700;
+}
+.roadmap-table tr.active-phase td {
+    color: #854d0e;
+    border-bottom: 1px solid #fef08a;
+}
+.status-chip {
+    font-size: 6.8px;
+    font-weight: 800;
+    padding: 1px 4px;
+    border-radius: 2px;
+    display: inline-block;
+    background: #f1f5f9;
+    color: #475569;
+}
+.status-chip.active { background: #fef08a; color: #854d0e; border: 1px solid #facc15; }
+
+/* Yogas Quad Grid */
+.yogas-quad-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 7px;
+}
+.yoga-card-quad {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    padding: 4px 6px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+.yoga-card-quad.auspicious {
+    border-left: 3px solid #16a34a;
+    background: #f0fdf4;
+}
+.yoga-card-quad.inauspicious {
+    border-left: 3px solid #e11d48;
+    background: #fff1f2;
+}
+.yoga-tag-mini.gold {
+    background: #fef3c7;
+    color: #92400e;
+    border-color: #fde047;
+}
+.yoga-tag-mini.ruby {
+    background: #fee2e2;
+    color: #991b1b;
+    border-color: #fca5a5;
+}
+.yoga-remedy-note {
+    font-size: 7.2px;
+    color: #991b1b;
+    margin-top: 2px;
+    padding-top: 2px;
+    border-top: 1px dashed #fecdd3;
+    line-height: 1.25;
+}
+.yoga-card-quad-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3px;
+    padding-bottom: 2px;
+    border-bottom: 1px dashed #e2e8f0;
+}
+.yoga-card-quad-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #0f172a;
+}
+.yoga-tag-mini {
+    font-size: 7.5px;
+    font-weight: 700;
+    padding: 1.5px 4px;
+    border-radius: 3px;
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+}
+.yoga-tag-mini.gold {
+    background: #fef3c7;
+    color: #92400e;
+    border-color: #fde047;
+}
+.yoga-card-quad-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.yoga-line-mini {
+    font-size: 9px;
+    color: #334155;
+    line-height: 1.32;
+}
+
+/* Vibrations Grid */
+.vibrations-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+    margin-bottom: 7px;
+}
+.vibe-item {
+    border-radius: 4px;
+    padding: 4px 7px;
+    font-size: 8.8px;
+}
+.vibe-item.badge-pos {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+}
+.vibe-item.badge-neg {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+}
+.vibe-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    margin-bottom: 1px;
+}
+.badge-pos .vibe-num { color: #166534; }
+.badge-neg .vibe-num { color: #991b1b; }
+.vibe-text {
+    font-size: 8.5px;
+    color: #334155;
+    line-height: 1.28;
+}
+
+/* Predictions 2x4 Grid */
+.preds-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4.5px 6px;
+    margin-bottom: 6px;
+}
+.pred-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 4px 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5px;
+}
+.pred-header {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 1.5px;
+}
+.pred-icon {
+    color: #d4af37;
+    font-size: 8px;
+}
+.pred-title {
+    font-size: 9px;
+    font-weight: 700;
+    color: #0f172a;
+}
+.pred-body {
+    font-size: 8.2px;
+    color: #334155;
+    line-height: 1.28;
+}
+
+/* Remedies 2-Column Grid */
+.remedies-sequence {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 6px;
+    margin-bottom: 5px;
+}
+.remedy-card-seq {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 3.5px 6px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+.remedy-num-seq {
+    width: 17px;
+    height: 17px;
+    min-width: 17px;
+    border-radius: 50%;
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #d4af37;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8.5px;
+    font-weight: 800;
+}
+.remedy-content-seq {
+    flex: 1;
+}
+.remedy-label-seq {
+    font-size: 7.8px;
+    font-weight: 700;
+    color: #854d0e;
+    text-transform: uppercase;
+    margin-bottom: 1px;
+}
+.remedy-text-seq {
+    font-size: 8.2px;
+    color: #334155;
+    line-height: 1.25;
+}
+    color: #334155;
+    line-height: 1.33;
+}
+
+/* Consultant Notes Box */
+.consultant-notes-box {
+    background: #fdfbf7;
+    border: 1.5px dashed #d4af37;
+    border-radius: 6px;
+    padding: 6px 10px;
+    margin-bottom: 7px;
+}
+.consultant-notes-header {
+    font-family: 'Cinzel', serif;
+    font-size: 9.5px;
+    font-weight: 700;
+    color: #92400e;
+    margin-bottom: 2px;
+}
+.consultant-notes-body {
+    font-size: 9px;
+    color: #334155;
+    line-height: 1.33;
+}
+
+/* Master Deluxe Certification & Copyright Card */
+.cert-stamp-card-deluxe {
+    background: linear-gradient(135deg, #091124 0%, #1e293b 100%);
+    border: 1.5px solid #d4af37;
+    border-radius: 7px;
+    padding: 9px 13px;
+    color: #f8fafc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    margin-bottom: 2px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.cert-title {
+    font-family: 'Cinzel', serif;
+    font-size: 10.5px;
+    color: #fbbf24;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    margin-bottom: 2px;
+}
+.cert-desc {
+    font-size: 8.5px;
+    color: #cbd5e1;
+    line-height: 1.32;
+    max-width: 470px;
+}
+.cert-contact-bar {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+    font-size: 8.5px;
+    color: #fde047;
+    font-weight: 600;
+}
+.cert-seal-deluxe {
+    border: 1.5px dashed #d4af37;
+    border-radius: 50%;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 7px;
+    font-weight: 700;
+    color: #fbbf24;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    line-height: 1.1;
+    background: rgba(212, 175, 55, 0.05);
+}
+
+/* Footer */
+.page-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 4px;
+    border-top: 1px solid #e2c275;
+    font-size: 8px;
+    color: #64748b;
+    margin-top: auto;
+}
+.footer-stamp {
+    font-weight: 600;
+    color: #b38728;
+    letter-spacing: 0.3px;
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== PAGE 1: CLIENT DETAILS & DUAL VEDIC GRIDS ==================== -->
+<div class="page">
+    <div class="page-border"></div>
+    <div class="page-border-inner"></div>
+    <div class="corner-ornament corner-tl"></div>
+    <div class="corner-ornament corner-tr"></div>
+    <div class="corner-ornament corner-bl"></div>
+    <div class="corner-ornament corner-br"></div>
+
+    <div class="page-content">
+        <div>
+            <!-- Header -->
+            <div class="report-main-header">
+                <div class="om-symbol">॥ श्री गणेशाय नमः ॥</div>
+                <h1 class="main-title">व्यक्तिगत वैदिक अंकशास्त्र परामर्श रिपोर्ट</h1>
+                <div class="sub-title">Prepared by: <strong>Jigar Thakkar</strong> (प्रमाणित वैदिक अंकशास्त्री एवं वास्तु परामर्शदाता) • 📞 +91 9377614772 • ✉ jigar93776@gmail.com</div>
+            </div>
+
+            <!-- Profile Card with Dual Grids -->
+            <div class="profile-card">
+                <div class="client-data-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 5px;">
+                    <div class="data-pill">
+                        <div class="label">जातक का नाम</div>
+                        <div class="value">रोहित शर्मा (नमूना रिपोर्ट)</div>
+                    </div>
+                    <div class="data-pill">
+                        <div class="label">जन्म तिथि</div>
+                        <div class="value">30/04/1987 (गुरुवार)</div>
+                    </div>
+                    <div class="data-pill">
+                        <div class="label">नामांक (नाम संख्या) (Namank)</div>
+                        <div class="value">0 • बृहस्पति</div>
+                    </div>
+                    <div class="data-pill highlight">
+                        <div class="label">मूलांक (मूल संख्या)</div>
+                        <div class="value">3 • बृहस्पति (Guru)</div>
+                    </div>
+                    <div class="data-pill highlight">
+                        <div class="label">भाग्यांक (भाग्य संख्या)</div>
+                        <div class="value">5 • बुध (Budh)</div>
+                    </div>
+                    <div class="data-pill">
+                        <div class="label">ग्रहीय दशा चक्र (समय रेखा)</div>
+                        <div class="value">MD: 9 | AD: 9 | PD: 6</div>
+                    </div>
+                </div>
+
+                <!-- Dual Grids Side-by-Side (Natal vs Dasha Activation) -->
+                <div class="dual-grids-row">
+                    <div class="grid-box-card">
+                        <div class="grid-caption">👑 मूल जन्म चक्र (जीवनकालीन जन्म ग्रिड)</div>
+                        <div class="grid-subtext">स्थायी जन्मकालीन ग्रहीय ऊर्जा एवं जीवन की मूल आधारशिला</div>
+                        <div class="vedic-grid">
+                            <div class="vedic-cell natal-cell active">3</div>
+<div class="vedic-cell natal-cell empty">-</div>
+<div class="vedic-cell natal-cell empty">-</div>
+<div class="vedic-cell natal-cell empty">-</div>
+<div class="vedic-cell natal-cell active">7</div>
+<div class="vedic-cell natal-cell active">5</div>
+<div class="vedic-cell natal-cell empty">-</div>
+<div class="vedic-cell natal-cell active">8</div>
+<div class="vedic-cell natal-cell active">4</div>
+
+                        </div>
+                    </div>
+                    <div class="grid-box-card dasha">
+                        <div class="grid-caption dasha">🌌 दशा एवं गोचर सक्रिय चक्र (वर्तमान ग्रहीय स्पंदन)</div>
+                        <div class="grid-subtext">गतिक सक्रियता: मूल जन्म (स्वर्ण) + महादशा (आसमानी) + अंतर्दशा (हरा) + प्रत्यंतर दशा (नारंगी)</div>
+                        <div class="vedic-grid dasha">
+                            <div class="vedic-cell dasha-cell active"><span class="chip chip-natal">3</span></div>
+<div class="vedic-cell dasha-cell empty">-</div>
+<div class="vedic-cell dasha-cell active"><span class="chip chip-md">9</span><span class="chip chip-ad">9</span></div>
+<div class="vedic-cell dasha-cell active"><span class="chip chip-pd">6</span></div>
+<div class="vedic-cell dasha-cell active"><span class="chip chip-natal">7</span></div>
+<div class="vedic-cell dasha-cell active"><span class="chip chip-natal">5</span></div>
+<div class="vedic-cell dasha-cell empty">-</div>
+<div class="vedic-cell dasha-cell active"><span class="chip chip-natal">8</span></div>
+<div class="vedic-cell dasha-cell active"><span class="chip chip-natal">4</span></div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Color Legend Bar -->
+                <div class="grid-legend-bar">
+                    <span class="legend-pill"><span class="legend-dot dot-natal"></span> जन्मकालीन मूल (स्वर्ण)</span>
+                    <span class="legend-pill"><span class="legend-dot dot-md"></span> महादशा • दीर्घकालीन (आसमानी)</span>
+                    <span class="legend-pill"><span class="legend-dot dot-ad"></span> अंतर्दशा • वार्षिक (पन्ना हरा)</span>
+                    <span class="legend-pill"><span class="legend-dot dot-pd"></span> प्रत्यंतर दशा • मासिक उप-चक्र (शाही बैंगनी / Royal Purple)</span>
+                </div>
+            </div>
+
+            <!-- Planetary Friendship Compass Box -->
+            <div class="compass-box">
+                <div class="compass-item">
+                    <span class="compass-label">मित्र अंक (सहयोगी)</span>
+                    <span class="compass-val green">1, 2, 3, 9</span>
+                </div>
+                <div class="compass-item">
+                    <span class="compass-label">सम अंक (तटस्थ)</span>
+                    <span class="compass-val orange">5, 7</span>
+                </div>
+                <div class="compass-item">
+                    <span class="compass-label">शत्रु / वर्जित अंक</span>
+                    <span class="compass-val red">6</span>
+                </div>
+                <div class="compass-item">
+                    <span class="compass-label">शुभ वास्तु दिशा</span>
+                    <span class="compass-val">ईशान कोण (North-East)</span>
+                </div>
+                <div class="compass-item">
+                    <span class="compass-label">शुभ धातु</span>
+                    <span class="compass-val">सोना एवं पीतल</span>
+                </div>
+                <div class="compass-item">
+                    <span class="compass-label">अनुशंसित रत्न</span>
+                    <span class="compass-val">पुखराज (Yellow Sapphire)</span>
+                </div>
+            </div>
+
+            <div class="name-harmony-bar"><strong>नाम स्पंदन संतुलन:</strong> नामांक 0 आपके ग्रहीय चक्र के साथ स्थिर व तटस्थ स्पंदन बनाए रखता है। यह संतुलित प्रगति प्रदान करता है।</div>
+
+            <!-- Moolank Qualities -->
+            <div class="section-title">मूलांक के मूल स्वभाव एवं गुण (No. 3)</div>
+            <ul class="quality-list-single">
+                <li class="quality-item-single">ज्ञानवान, प्रखर बुद्धिजीवी, आशावादी और स्वभाव से श्रेष्ठ मार्गदर्शक व शिक्षक।</li>
+<li class="quality-item-single">दार्शनिक गहराई, धर्मनिष्ठ आचरण और समाज में सम्मानजनक सलाह देने वाले मार्गदर्शक।</li>
+<li class="quality-item-single">प्रेरणादायक वाक्पटुता; प्रभावशाली वक्ता, उच्च कोटि के शिक्षक और परामर्शदाता।</li>
+<li class="quality-item-single">उदार हृदय, सत्य, न्याय और आध्यात्मिक ज्ञान की निरंतर खोज करने वाले पुण्यात्मा।</li>
+
+            </ul>
+
+            <!-- Moolank Precautions -->
+            <div class="root-precautions-box">
+                <div class="root-precautions-header">⚠ मूलांक हेतु अनिवार्य सावधानियाँ (No. 3)</div>
+                <ul class="root-precautions-grid">
+                    <li>बिना मांगे दूसरों को उपदेश देने या अपने ज्ञान का अहंकार प्रदर्शित करने से बचें।</li>
+<li>एक साथ बहुत सारे कार्यों में हाथ डालकर अपनी बौद्धिक ऊर्जा को बिखरने न दें।</li>
+<li>अधिक मीठे और तैलीय भोजन से बचें ताकि लिवर और पाचन तंत्र पर अनुचित भार न पड़े।</li>
+<li>दूसरों के विचारों का भी सम्मान करें; चर्चाओं में अत्यधिक हठधर्मी बनने से बचें।</li>
+
+                </ul>
+            </div>
+        </div>
+
+        <div class="page-footer">
+            <span class="footer-stamp">CONSULTATION BY JIGAR THAKKAR (📞 +91 9377614772) • रोहित शर्मा (नमूना रिपोर्ट)</span>
+            <span>पृष्ठ 1 का 4</span>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== PAGE 2: 3-TIER VEDIC PERIOD FORECAST & CALENDAR ROADMAP ==================== -->
+<div class="page">
+    <div class="page-border"></div>
+    <div class="page-border-inner"></div>
+    <div class="corner-ornament corner-tl"></div>
+    <div class="corner-ornament corner-tr"></div>
+    <div class="corner-ornament corner-bl"></div>
+    <div class="corner-ornament corner-br"></div>
+
+    <div class="page-content">
+        <div>
+            <div class="page-header-mini">
+                <div class="mini-title">महादशा: दीर्घकालीन मुख्य जीवन चक्र फलादेश • अंतर्दशा: वार्षिक १-वर्षीय विस्तृत फलादेश</div>
+                <div class="consultant-tag">Consultant: Jigar Thakkar | 📞 +91 9377614772</div>
+            </div>
+
+            <!-- Tier 1: Mahadasha (Macro Multi-Year Cycle) -->
+            <div class="section-title">🌌 महादशा: दीर्घकालीन मुख्य जीवन चक्र फलादेश</div>
+            <div class="tier-card tier-md">
+                <div class="tier-header-bar">
+                    <span class="tier-badge badge-md">Mahadasha 9</span>
+                    <span class="tier-title-main">मंगल (Mangal) • 9 Years</span>
+                    <span class="tier-date-span">Active: 30/04/2020 — 30/04/2029</span>
+                </div>
+                <div class="tier-text-content">आप मंगल (मंगल (Mangal)) की 9-वर्षीय महादशा में हैं। यह असीम ऊर्जा, साहस, प्रतिस्पर्धी विजय, भूमि क्रय और प्रशासनिक नेतृत्व का काल है। साहसिक निर्णयों में विजय मिलेगी। उग्रता व जल्दबाजी पर नियंत्रण रखें।</div>
+                <div class="tier-note-bar"><strong>💰 वित्त एवं धन संपदा भविष्यवाणी:</strong> Rule: If Mahadasha activates numbers +3, +5, +6, or +8, finance and status expand exponentially; while challenging numbers advise protective asset hedging.</div>
+            </div>
+
+            <!-- Tier 2: Antardasha (Annual 1-Year Forecast) -->
+            <div class="section-title">📅 अंतर्दशा: वार्षिक १-वर्षीय विस्तृत फलादेश</div>
+            <div class="tier-card tier-ad">
+                <div class="tier-header-bar">
+                    <span class="tier-badge badge-ad">Antardasha 9</span>
+                    <span class="tier-title-main">मंगल (Mangal) • Annual Cycle</span>
+                    <span class="tier-date-span">Active: 30/04/2026 — 30/04/2027</span>
+                </div>
+                <div class="tier-text-content">ऊर्जा, साहस एवं लक्ष्य सिद्धि का वर्ष: साहसिक कदम, पुरानी बाधाओं की समाप्ति, प्रशासनिक धाक; विवादों से बचें।</div>
+                <div class="tier-subgrid">
+                    <div><strong>✈ यात्रा एवं विदेश गमन योग:</strong> Standard local travel</div>
+                    <div><strong>🏢 भूमि, भवन एवं अचल संपत्ति भविष्यवाणी:</strong> Maintain existing assets</div>
+                </div>
+            </div>
+
+            <!-- Tier 3: Pratyantar Dasha (Active Monthly Sub-Phase) -->
+            <div class="section-title">🌙 प्रत्यंतर दशा: सक्रिय मासिक सूक्ष्म फलादेश</div>
+            <div class="tier-card tier-pd">
+                <div class="tier-header-bar">
+                    <span class="tier-badge badge-pd">Pratyantar 6</span>
+                    <span class="tier-title-main">शुक्र (Shukra) • Active 48 Days</span>
+                    <span class="tier-date-span">Active Window: 08/11/2026 — 26/12/2026</span>
+                </div>
+                <div class="tier-dos-donts-grid">
+                    <div class="do-box">
+                        <div class="do-title">✔ इस सक्रिय माह में करने योग्य कार्य:</div>
+                        <ul><li>सौंदर्य सामग्री, वस्त्र व उपहार क्रय करें</li><li>पारिवारिक व सामाजिक उत्सव आयोजित करें</li><li>स्त्री वर्ग का सम्मान करें</li></ul>
+                    </div>
+                    <div class="dont-box">
+                        <div class="dont-title">⚠ इस सक्रिय माह में विशेष सावधानियां:</div>
+                        <ul><li>दिखावे और फिजूलखर्ची से बचें</li><li>अनावश्यक वासनात्मक आकर्षणों से दूर रहें</li></ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Annual 9-Phase Roadmap Table -->
+            <div class="section-title">📅 वार्षिक ९-चरणीय प्रत्यंतर दशा समयरेखा व कैलेंडर</div>
+            <div class="roadmap-table-wrap">
+                <table class="roadmap-table">
+                    <thead>
+                        <tr>
+                            <th>Phase / Planet</th>
+                            <th style="text-align:center;">No.</th>
+                            <th style="text-align:center;">Days</th>
+                            <th style="text-align:center;">Start Date</th>
+                            <th style="text-align:center;">End Date</th>
+                            <th style="text-align:center;">Tone / Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+        <tr class="">
+            <td style="font-weight:700;">Phase 1 (मंगल (Mangal))</td>
+            <td style="text-align:center;"><strong>No. 9</strong></td>
+            <td style="text-align:center;">72 Days</td>
+            <td style="text-align:center;">30/04/2026</td>
+            <td style="text-align:center;">11/07/2026</td>
+            <td style="text-align:center;"><span class="status-chip ">सावधानी / ऊर्जा</span></td>
+        </tr>
+        
+        <tr class="">
+            <td style="font-weight:700;">Phase 2 (सूर्य (Surya))</td>
+            <td style="text-align:center;"><strong>No. 1</strong></td>
+            <td style="text-align:center;">8 Days</td>
+            <td style="text-align:center;">11/07/2026</td>
+            <td style="text-align:center;">19/07/2026</td>
+            <td style="text-align:center;"><span class="status-chip ">अत्यंत शुभ (+)</span></td>
+        </tr>
+        
+        <tr class="">
+            <td style="font-weight:700;">Phase 3 (चंद्र (Chandra))</td>
+            <td style="text-align:center;"><strong>No. 2</strong></td>
+            <td style="text-align:center;">16 Days</td>
+            <td style="text-align:center;">19/07/2026</td>
+            <td style="text-align:center;">04/08/2026</td>
+            <td style="text-align:center;"><span class="status-chip ">सावधानी / ऊर्जा</span></td>
+        </tr>
+        
+        <tr class="">
+            <td style="font-weight:700;">Phase 4 (बृहस्पति (Guru))</td>
+            <td style="text-align:center;"><strong>No. 3</strong></td>
+            <td style="text-align:center;">24 Days</td>
+            <td style="text-align:center;">04/08/2026</td>
+            <td style="text-align:center;">28/08/2026</td>
+            <td style="text-align:center;"><span class="status-chip ">अत्यंत शुभ (+)</span></td>
+        </tr>
+        
+        <tr class="">
+            <td style="font-weight:700;">Phase 5 (राहु (Rahu))</td>
+            <td style="text-align:center;"><strong>No. 4</strong></td>
+            <td style="text-align:center;">32 Days</td>
+            <td style="text-align:center;">28/08/2026</td>
+            <td style="text-align:center;">29/09/2026</td>
+            <td style="text-align:center;"><span class="status-chip ">सावधानी / ऊर्जा</span></td>
+        </tr>
+        
+        <tr class="">
+            <td style="font-weight:700;">Phase 6 (बुध (Budh))</td>
+            <td style="text-align:center;"><strong>No. 5</strong></td>
+            <td style="text-align:center;">40 Days</td>
+            <td style="text-align:center;">29/09/2026</td>
+            <td style="text-align:center;">08/11/2026</td>
+            <td style="text-align:center;"><span class="status-chip ">अत्यंत शुभ (+)</span></td>
+        </tr>
+        
+        <tr class="active-phase">
+            <td style="font-weight:700;">Phase 7 (शुक्र (Shukra))</td>
+            <td style="text-align:center;"><strong>No. 6</strong></td>
+            <td style="text-align:center;">48 Days</td>
+            <td style="text-align:center;">08/11/2026</td>
+            <td style="text-align:center;">26/12/2026</td>
+            <td style="text-align:center;"><span class="status-chip active">★ ACTIVE</span></td>
+        </tr>
+        
+        <tr class="">
+            <td style="font-weight:700;">Phase 8 (केतु (Ketu))</td>
+            <td style="text-align:center;"><strong>No. 7</strong></td>
+            <td style="text-align:center;">56 Days</td>
+            <td style="text-align:center;">26/12/2026</td>
+            <td style="text-align:center;">20/02/2027</td>
+            <td style="text-align:center;"><span class="status-chip ">अनुकूल</span></td>
+        </tr>
+        
+        <tr class="">
+            <td style="font-weight:700;">Phase 9 (शनि (Shani))</td>
+            <td style="text-align:center;"><strong>No. 8</strong></td>
+            <td style="text-align:center;">64 Days</td>
+            <td style="text-align:center;">20/02/2027</td>
+            <td style="text-align:center;">25/04/2027</td>
+            <td style="text-align:center;"><span class="status-chip ">अनुकूल</span></td>
+        </tr>
+        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="page-footer">
+            <span class="footer-stamp">CONSULTATION BY JIGAR THAKKAR (📞 +91 9377614772) • रोहित शर्मा (नमूना रिपोर्ट)</span>
+            <span>पृष्ठ 2 का 4</span>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== PAGE 3: BHAGYANK, YOGAS & PLANETARY VIBRATIONS ==================== -->
+<div class="page">
+    <div class="page-border"></div>
+    <div class="page-border-inner"></div>
+    <div class="corner-ornament corner-tl"></div>
+    <div class="corner-ornament corner-tr"></div>
+    <div class="corner-ornament corner-bl"></div>
+    <div class="corner-ornament corner-br"></div>
+
+    <div class="page-content">
+        <div>
+            <div class="page-header-mini">
+                <div class="mini-title">भाग्यांक के जीवन पथ एवं भाग्य प्रभाव • जन्म चक्र में उपस्थित सक्रिय योग</div>
+                <div class="consultant-tag">Consultant: Jigar Thakkar | 📞 +91 9377614772</div>
+            </div>
+
+            <!-- Bhagyank Qualities -->
+            <div class="section-title">भाग्यांक के जीवन पथ एवं भाग्य प्रभाव (No. 5 - बुध (Budh))</div>
+            <ul class="quality-list-single">
+                <li class="quality-item-single">हाजिरजवाब, बहुमुखी प्रतिभा संपन्न, परिस्थितियों के अनुकूल ढलने वाले और व्यापार के कुशल ज्ञाता।</li>
+<li class="quality-item-single">ऊर्जावान, त्वरित निर्णय लेने वाले, चुंबकीय व्यक्तित्व और असाधारण व्यावसायिक समझ वाले।</li>
+<li class="quality-item-single">नेटवर्किंग, यात्रा, वाणिज्य और जनसंचार माध्यमों में सहज निपुणता रखने वाले।</li>
+<li class="quality-item-single">जीवन में संतुलन बनाए रखने और विभिन्न विचारों व व्यक्तियों को आपस में जोड़ने में पारंगत।</li>
+
+            </ul>
+
+            <!-- Bhagyank Precautions -->
+            <div class="root-precautions-box" style="margin-bottom: 7px;">
+                <div class="root-precautions-header">⚠ भाग्यांक हेतु अनिवार्य सावधानियाँ (No. 5)</div>
+                <ul class="root-precautions-grid">
+                    <li>चंचलता, एकाग्रता की कमी और घबराहट पर नियंत्रण रखने हेतु नियमित ध्यान व प्राणायाम करें।</li>
+<li>बिना किसी योजना को परिपक्व किए बार-बार व्यापार या नौकरी बदलने की जल्दबाजी न करें।</li>
+<li>वाणी में मधुरता रखें; व्यंग्यात्मक बोलने या बिना सोचे-समझे बोलने से बचें।</li>
+<li>अनिद्रा और मानसिक तनाव से बचने के लिए नियमित दिनचर्या का पालन करें।</li>
+
+                </ul>
+            </div>
+
+            <!-- Auspicious Yogas Quad -->
+            <div class="section-title">âœ§ शुभ ग्रहीय योग (दैवीय ऊर्जा चक्र)</div>
+            <div class="yogas-quad-grid" style="margin-bottom: 4px;">
+                
+            </div>
+
+            <!-- Inauspicious Yogas & Doshas Quad -->
+            <div class="section-title">⚠ अशुभ योग एवं दोष (कर्म बाधाएं एवं निवारण उपाय)</div>
+            <div class="yogas-quad-grid" style="margin-bottom: 4px;">
+                
+            <div class="yoga-card-quad inauspicious">
+                <div class="yoga-card-quad-header">
+                    <div class="yoga-card-quad-title" style="color: #991b1b;">बुध-राहु बंधन दोष (दस्तावेजी विवाद, धोखाधड़ी एवं स्वास्थ्य बाधा)</div>
+                    <span class="yoga-tag-mini ruby">युगल 5-4 (अनुपस्थित 9) • बंधन दोष</span>
+                </div>
+                <div class="yoga-card-quad-body">
+                    <div class="yoga-line-mini">जब 5 और 4 एक साथ आएं और 9 न हो। यह अस्पष्ट अनुबंधों में फंसने, कानूनी ऑडिट नोटिसों, वित्तीय विवादों या लंबी बीमारी के कारण बेड-रेस्ट का योग बनाता है। 44 की उपस्थिति होने पर कानूनी राहत शीघ्र मिलती है।</div>
+                    <div class="yoga-remedy-note"><strong>दोष निवारण एवं शांति उपाय:</strong> प्रत्येक बुधवार गाय को हरा चारा या पालक खिलाएं; 'ॐ बुधाय नमः' और 'ॐ गं गणपतये नमः' का 108 बार जप करें; किसी भी व्यावसायिक अनुबंध पर हस्ताक्षर करने से पहले कानूनी परामर्श अवश्य लें।</div>
+                </div>
+            </div>
+            
+            <div class="yoga-card-quad inauspicious">
+                <div class="yoga-card-quad-header">
+                    <div class="yoga-card-quad-title" style="color: #991b1b;">शनि-राहु हवा महल एवं कष्ट दोष (काल्पनिक योजनाएं, सट्टे में हानि व दुर्घटना)</div>
+                    <span class="yoga-tag-mini ruby">युगल 8-4 (अनुपस्थित 2) • हवा महल दोष</span>
+                </div>
+                <div class="yoga-card-quad-body">
+                    <div class="yoga-line-mini">जब 8 और 4 उपस्थित हों और 2 न हो। जातक हवाई योजनाएं बनाता है ('हवा महल'), बिना आधार के सट्टेबाजी या जोखिम भरे निवेश में धन गंवाता है। यह योग दुर्घटना प्रवणता और दांपत्य जीवन में कलह उत्पन्न करता है।</div>
+                    <div class="yoga-remedy-note"><strong>दोष निवारण एवं शांति उपाय:</strong> सट्टेबाजी, शेयर बाजार के इंट्राडे ट्रेडिंग व लॉटरी से पूर्ण दूरी बनाएं; श्री भैरव या हनुमान जी की आराधना करें; घर में चांदी की ठोस ईंट या गोली रखें; शनिवार शाम काले श्वान (कुत्ते) को सरसों के तेल से चुपड़ी रोटी खिलाएं।</div>
+                </div>
+            </div>
+            
+            </div>
+
+            <!-- Planetary Vibrations -->
+            <div class="section-title">ग्रहीय स्पंदन विश्लेषण (+ / -)</div>
+            <div class="vibrations-grid">
+                
+        <div class="vibe-item badge-pos">
+            <div class="vibe-header">
+                <span class="vibe-num">No. 3 (1x)</span>
+                <span class="vibe-type">सकारात्मक (+)</span>
+            </div>
+            
+            <div class="vibe-text">सकारात्मक (+3 देवगुरु बृहस्पति प्रज्ञा): देवगुरु बृहस्पति की दिव्य प्रज्ञा, अक्षुण्ण नैतिक मूल्य, प्रभावशाली परामर्श वाणी और उत्कृष्ट दूरदर्शिता। स्वाभाविक गुरु, परामर्शदाता एवं नीतिवान मार्गदर्शक, जो परिवार के प्रति समर्पित, रिश्वत व प्रलोभनों से परे और समाज में पूज्यनीय प्रतिष्ठा प्राप्त करते हैं।</div>
+        </div>
+        
+        <div class="vibe-item badge-neg">
+            <div class="vibe-header">
+                <span class="vibe-num">No. 4 (1x)</span>
+                <span class="vibe-type">कठिन / नकारात्मक (-)</span>
+            </div>
+            
+            <div class="vibe-text">कठिन (-4 राहु बंधन एवं व्यय): अप्रत्याशित मानसिक उथल-पुथल, अचानक वित्तीय नुकसान, कानूनी विवाद या बंधन/अस्पताल के योग। बिना योजना के कार्य, व्यर्थ की भागदौड़, अत्यधिक फिजूलखर्ची और मानसिक अस्थिरता का खतरा।</div>
+        </div>
+        
+        <div class="vibe-item badge-pos">
+            <div class="vibe-header">
+                <span class="vibe-num">No. 5 (1x)</span>
+                <span class="vibe-type">सकारात्मक (+)</span>
+            </div>
+            
+            <div class="vibe-text">सकारात्मक (+5 बुध की व्यापारिक प्रखरता): तीव्रतम व्यापारिक बुद्धि, वाकपटुता, कुशल सौदेबाजी और द्रुत गति से धन उपार्जन की महारत। व्यावहारिक नेटवर्किंग, बहुआयामी प्रतिभा और कठिन परिस्थितियों में तुरंत लाभ का मार्ग प्रशस्त करने की अद्भुत क्षमता।</div>
+        </div>
+        
+        <div class="vibe-item badge-pos">
+            <div class="vibe-header">
+                <span class="vibe-num">No. 6 (1x)</span>
+                <span class="vibe-type">सकारात्मक (+)</span>
+            </div>
+            
+            <div class="vibe-text">सकारात्मक (+6 शुक्र का राजसी ऐश्वर्य): शुक्र का ऐश्वर्य, सम्मोहक सौंदर्य, विलासिता, उत्तम वाहन-भवन सुख और कलात्मक प्रतिभा। पाक कला, संगीत, फैशन एवं सिनेमा में अपार सफलता, उदार आतिथ्य सत्कार और जीवन में सहजता से सुख-सुविधाएं आकर्षित करने का वरदान।</div>
+        </div>
+        
+        <div class="vibe-item badge-pos">
+            <div class="vibe-header">
+                <span class="vibe-num">No. 7 (1x)</span>
+                <span class="vibe-type">सकारात्मक (+)</span>
+            </div>
+            
+            <div class="vibe-text">सकारात्मक (+7 केतु की आध्यात्मिक कृपा): आध्यात्मिक मुक्ति, गहरी सूक्ष्म अंतर्दृष्टि, पराविद्याओं व हीलिंग में महारत और संकटों में ईश्वरीय दैवीय रक्षा। विदेश गमन एवं बसने के प्रबल योग, आकस्मिक भाग्योदय और विपरीत परिस्थितियों से सहजता से उबरने का सौभाग्य।</div>
+        </div>
+        
+        <div class="vibe-item badge-neg">
+            <div class="vibe-header">
+                <span class="vibe-num">No. 8 (1x)</span>
+                <span class="vibe-type">कठिन / नकारात्मक (-)</span>
+            </div>
+            
+            <div class="vibe-text">कठिन (-8 शनि संघर्ष एवं विष दोष): अत्यधिक संघर्ष, कार्यों में भारी विलंब, मानसिक अवसाद (विष दोष), हठधर्मिता और अकेलापन। पुरानी बातों को लेकर मन में कड़वाहट रखना, हड्डियों/जोड़ों के रोग, और सट्टेबाजी में हवा हवाई महल बनाकर धन गंवाना।</div>
+        </div>
+        
+        <div class="vibe-item badge-neg">
+            <div class="vibe-header">
+                <span class="vibe-num">No. 9 (2x)</span>
+                <span class="vibe-type">कठिन / नकारात्मक (-)</span>
+            </div>
+            
+            <div class="vibe-text">कठिन (-9 मंगल उग्रता एवं बंधन जोखिम): ज्वालामुखी जैसा उग्र क्रोध, अत्यधिक आक्रामकता, व्यर्थ के विवाद और दुर्घटना या कानूनी विवाद (बंधन दोष) में फंसने की आशंका। जल्दबाजी में गलत निर्णय, कटु भाषा से आत्मीय संबंध बिगाड़ना और अशांत रक्तचाप।</div>
+        </div>
+        
+            </div>
+            <div style="font-size: 7.2px; color: #475569; font-style: italic; margin-top: 3px; border-top: 0.5px solid #e2e8f0; padding-top: 2px;">
+                वैदिक ज्योतिष सिद्धांत: स्थायी जन्मजात प्रवृत्तियों के विपरीत, महादशा, अंतर्दशा एवं प्रत्यंतर दशा के प्रभाव से ग्रहीय स्पंदन समय-समय पर परिवर्तित होते हैं। जन्म चक्र में कठिन (-) फल देने वाला अंक दशा में सम संख्या बनकर अत्यंत शुभ (+) हो सकता है (जैसे अंक 8 का 88 बनना), और शुभ अंक दोहरी ऊर्जा से कठिन (-) हो सकता है (जैसे अंक 9 का 99 बनना)।
+            </div>
+        </div>
+
+        <div class="page-footer">
+            <span class="footer-stamp">CONSULTATION BY JIGAR THAKKAR (📞 +91 9377614772) • रोहित शर्मा (नमूना रिपोर्ट)</span>
+            <span>पृष्ठ 3 का 4</span>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== PAGE 4: PREDICTIONS, REMEDIES & CERTIFICATION ==================== -->
+<div class="page">
+    <div class="page-border"></div>
+    <div class="page-border-inner"></div>
+    <div class="corner-ornament corner-tl"></div>
+    <div class="corner-ornament corner-tr"></div>
+    <div class="corner-ornament corner-bl"></div>
+    <div class="corner-ornament corner-br"></div>
+
+    <div class="page-content">
+        <div>
+            <div class="page-header-mini">
+                <div class="mini-title">विस्तृत जीवन भविष्यवाणियाँ • वैदिक उपचारात्मक उपाय एवं मार्गदर्शन</div>
+                <div class="consultant-tag">Consultant: Jigar Thakkar | 📞 +91 9377614772</div>
+            </div>
+
+            <div class="section-title">विस्तृत जीवन भविष्यवाणियाँ</div>
+            <div class="preds-grid">
+                
+            <div class="pred-card">
+                <div class="pred-header">
+                    <span class="pred-icon">✦</span>
+                    <span class="pred-title">वित्त एवं धन संपदा भविष्यवाणी</span>
+                </div>
+                <div class="pred-body">आपके वैदिक चक्र में मानक जीवन स्तर का स्तर मध्यम एवं प्रगतिशील है। वर्तमान समय में वित्तीय निवेशों में सतर्कता बरतें; अचानक किए गए सट्टेबाजी या जोखिम भरे निवेश से बचें। </div>
+            </div>
+            
+            <div class="pred-card">
+                <div class="pred-header">
+                    <span class="pred-icon">✦</span>
+                    <span class="pred-title">भूमि, भवन एवं अचल संपत्ति भविष्यवाणी</span>
+                </div>
+                <div class="pred-body">संपत्ति अर्जन का योग: परिश्रम उपरांत मध्यम योग। </div>
+            </div>
+            
+            <div class="pred-card">
+                <div class="pred-header">
+                    <span class="pred-icon">✦</span>
+                    <span class="pred-title">वाहन क्रय एवं सुख भविष्यवाणी</span>
+                </div>
+                <div class="pred-body">शुक्र (6) और राहु (4) वाहन सुख के प्रमुख कारक हैं। वाहन क्रय करते समय अपनी शुभ संख्या (5, 6 या 1) के कुल योग वाली वाहन नंबर प्लेट का चयन करें। वाहन चलाते समय गति नियंत्रण रखें और गति में अचानक ब्रेक या उतावलेपन से बचें।</div>
+            </div>
+            
+            <div class="pred-card">
+                <div class="pred-header">
+                    <span class="pred-icon">✦</span>
+                    <span class="pred-title">शिक्षा एवं बौद्धिक क्षमता</span>
+                </div>
+                <div class="pred-body">आपकी बौद्धिक संरचना में मूलांक 3 का गहरा प्रभाव है। आप गहन चिंतन, तकनीकी विश्लेषण और रणनीतिक कार्यों में असाधारण दक्षता रखते हैं। आपके लिए सर्वाधिक अनुकूल शैक्षणिक एवं व्यावसायिक क्षेत्र हैं: अध्यापन, शिक्षा संस्थान, वकालत/न्यायालय, वैदिक ज्योतिष व दर्शन, बैंकिंग व वित्त, पुस्तक प्रकाशन, आध्यात्मिक मार्गदर्शन, उच्च सलाहकार।</div>
+            </div>
+            
+            <div class="pred-card">
+                <div class="pred-header">
+                    <span class="pred-icon">✦</span>
+                    <span class="pred-title">यात्रा एवं विदेश गमन योग</span>
+                </div>
+                <div class="pred-body">अंक 7 की उपस्थिति विकसित देशों की आरामदायक व आध्यात्मिक विदेश यात्राओं का सशक्त योग बनाती है।</div>
+            </div>
+            
+            <div class="pred-card">
+                <div class="pred-header">
+                    <span class="pred-icon">✦</span>
+                    <span class="pred-title">मुकदमेबाजी, विवाद एवं न्यायालय भविष्यवाणी</span>
+                </div>
+                <div class="pred-body">चार्ट में 9 और 4 अथवा 5 और 4 की उपस्थिति विवादों व कानूनी कागजी कार्यवाहियों में विशेष सावधानी का संकेत देती है। वैदिक नियम के अनुसार, जब यह संयोजन लगातार 2 वर्ष या अधिक समय तक दशा में सक्रिय रहता है, तभी न्यायालयीन विवाद उत्पन्न होता है। सौभाग्य से, आपके चक्र में स्थिरक ग्रह प्रभाव (7/8) उपस्थित हैं जो अंततः कूटनीतिक समझौतों या निष्पक्ष न्याय के माध्यम से विजय दिलाते हैं।</div>
+            </div>
+            
+            <div class="pred-card">
+                <div class="pred-header">
+                    <span class="pred-icon">✦</span>
+                    <span class="pred-title">विवाह, संबंध एवं दांपत्य जीवन</span>
+                </div>
+                <div class="pred-body">दांपत्य जीवन में सुख और सामंजस्य बनाए रखने हेतु खुले व पारदर्शी संवाद की आवश्यकता है। अहंकार (-1) या अत्यधिक कार्यव्यस्तता (-8) को वैवाहिक जीवन के आड़े न आने दें। जीवनसाथी की भावनाओं का सम्मान करने और शुक्रवार को उपहार देने से दांपत्य में मधुरता बनी रहेगी।</div>
+            </div>
+            
+            <div class="pred-card">
+                <div class="pred-header">
+                    <span class="pred-icon">✦</span>
+                    <span class="pred-title">स्वास्थ्य, रोग एवं सुरक्षा भविष्यवाणी</span>
+                </div>
+                <div class="pred-body">मूलांक 3 के अनुसार शरीर के संवेदनशील अंग हैं: यकृत (लिवर), पित्ताशय, धमनियों का रक्त प्रवाह, मधुमेह एवं कोलेस्ट्रॉल। प्रातःकाल तांबे के बर्तन में रखा जल पिएं और गरिष्ठ तैलीय भोजन से बचें।</div>
+            </div>
+            
+            </div>
+
+            <div class="section-title">वैदिक उपचारात्मक उपाय एवं मार्गदर्शन</div>
+            <div class="remedies-sequence">
+                
+        <div class="remedy-card-seq">
+            <div class="remedy-num-seq">1</div>
+            <div class="remedy-content-seq">
+                <div class="remedy-label-seq">रत्न एवं क्रिस्टल परामर्श</div>
+                <div class="remedy-text-seq">गुरुवार प्रातः सोने या अष्टधातु में 3.25 से 5.25 रत्ती का प्राकृतिक पीला पुखराज तर्जनी (इंडेक्स फिंगर) में धारण करें। (Crystal: सिट्रीन या पीला पुखराज विकल्प)</div>
+            </div>
+        </div>
+        
+        <div class="remedy-card-seq">
+            <div class="remedy-num-seq">2</div>
+            <div class="remedy-content-seq">
+                <div class="remedy-label-seq">पवित्र वैदिक मंत्र साधना</div>
+                <div class="remedy-text-seq">ॐ ग्रां ग्रीं ग्रौं सः गुरवे नमः (गुरुवार प्रातः 108 बार जप)।</div>
+            </div>
+        </div>
+        
+        <div class="remedy-card-seq">
+            <div class="remedy-num-seq">3</div>
+            <div class="remedy-content-seq">
+                <div class="remedy-label-seq">व्रत एवं उपवास नियम</div>
+                <div class="remedy-text-seq">गुरुवार का व्रत। पीले वस्त्र धारण करें; इस दिन बाल धोना व नाखून काटना वर्जित रखें।</div>
+            </div>
+        </div>
+        
+        <div class="remedy-card-seq">
+            <div class="remedy-num-seq">4</div>
+            <div class="remedy-content-seq">
+                <div class="remedy-label-seq">दान एवं पुण्य कर्म</div>
+                <div class="remedy-text-seq">गुरुवार को चना दाल, हल्दी की गांठें, बेसन के लड्डू, केले अथवा धार्मिक पुस्तकें मंदिर या गुरु को दान करें।</div>
+            </div>
+        </div>
+        
+        <div class="remedy-card-seq">
+            <div class="remedy-num-seq">5</div>
+            <div class="remedy-content-seq">
+                <div class="remedy-label-seq">सेवा एवं कर्म सुधार</div>
+                <div class="remedy-text-seq">गुरुजनों व शिक्षकों का सम्मान करें। गुरुवार को केले या पीपल के वृक्ष को जल अर्पित कर दीपक प्रज्वलित करें।</div>
+            </div>
+        </div>
+        
+        <div class="remedy-card-seq">
+            <div class="remedy-num-seq">6</div>
+            <div class="remedy-content-seq">
+                <div class="remedy-label-seq">सामान्य वैदिक उपाय (धन, स्वास्थ्य एवं शांति)</div>
+                <div class="remedy-text-seq"><strong>Health:</strong> रात्रि में तांबे के लोटे या जग में शुद्ध जल भरकर रखें और प्रातःकाल सूर्योदय के समय खाली पेट उसका सेवन करें। प्रातःकाल 15 मिनट कोमल धूप में बैठकर प्राण ऊर्जा को सक्रिय करें। <br><strong>Wealth:</strong> अपनी तिजोरी या कैश बॉक्स में उत्तर दिशा की ओर मुख करके लाल या हरे रेशमी वस्त्र में श्री कुबेर यंत्र अथवा श्री यंत्र स्थापित करें। संध्या समय शुद्ध भीमसेनी कपूर और दो लौंग जलाकर घर में घुमाएं। <br><strong>Harmony:</strong> घर के नैऋत्य कोण (South-West) में बेडरूम में प्राकृतिक रोज क्वार्ट्ज क्रिस्टल रखें। सप्ताह में एक बार (विशेषकर मंगलवार) पानी में सेंधा नमक मिलाकर पोछा लगाएं ताकि नकारात्मक ऊर्जा समाप्त हो सके।</div>
+            </div>
+        </div>
+        
+            </div>
+
+            
+
+            <!-- Master Deluxe Certification & Copyright Card -->
+            <div class="cert-stamp-card-deluxe">
+                <div>
+                    <div class="cert-title">प्रमाणित वैदिक अंकशास्त्र सत्यापन एवं आशीर्वाद</div>
+                    <div class="cert-desc">यह रिपोर्ट प्रमाणित अंकशास्त्री जिगर ठक्कर द्वारा प्रामाणिक वैदिक अंकशास्त्र गणनाओं और ग्रहीय नियमों के आधार पर तैयार की गई है। नवग्रह आपके जीवन में सुख, समृद्धि, स्वास्थ्य और शांति का संचार करें।</div>
+                    <div class="cert-contact-bar">
+                        <span>📞 फोन / व्हाट्सएप: +91 9377614772</span>
+                        <span>✉ ईमेल: jigar93776@gmail.com</span>
+                    </div>
+                    <div style="font-size:7.5px;color:#94a3b8;margin-top:3px;">© 2026 जिगर ठक्कर। सर्वाधिकार सुरक्षित। यह रिपोर्ट प्रामाणिक वैदिक अंकशास्त्र द्वारा केवल संबंधित जातक हेतु तैयार की गई है। अनुमति के बिना प्रतिलिपि बनाना वर्जित है।</div>
+                </div>
+                <div class="cert-seal-deluxe">
+                    <span>VEDIC</span>
+                    <span>CERTIFIED</span>
+                    <span>JIGAR T.</span>
+                    <span>✦ 2026 ✦</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-footer">
+            <span class="footer-stamp">© 2026 जिगर ठक्कर। सर्वाधिकार सुरक्षित। यह रिपोर्ट प्रामाणिक वैदिक अंकशास्त्र द्वारा केवल संबंधित जातक हेतु तैयार की गई है। अनुमति के बिना प्रतिलिपि बनाना वर्जित है।</span>
+            <span>पृष्ठ 4 का 4</span>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
