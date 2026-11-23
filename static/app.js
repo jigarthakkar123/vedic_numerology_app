@@ -5,6 +5,8 @@
 
 let currentLang = 'en';
 let currentProfile = null;
+let currentVibrationMode = 'period'; // 'period' (active dasha) or 'natal' (baseline)
+let latestAnalysisData = null;
 
 // Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
@@ -164,6 +166,7 @@ async function fetchAnalysis(autoSwitch = false) {
 
 // Render Complete UI Dashboard from Profile
 function renderDashboard(data) {
+    latestAnalysisData = data;
     const core = data.core_numbers;
     const grid = data.grid;
     const dasha = data.dasha;
@@ -248,21 +251,8 @@ function renderDashboard(data) {
         if (document.getElementById('web-dasha-grid-sub')) document.getElementById('web-dasha-grid-sub').textContent = data.ui.dasha_grid_sub;
     }
 
-    // Vibrations List
-    const vibContainer = document.getElementById('vibrations-list');
-    vibContainer.innerHTML = '';
-    for (let v of data.vibrations) {
-        const box = document.createElement('div');
-        box.className = `vibe-box ${v.type === '+' ? 'badge-pos' : 'badge-neg'}`;
-        box.innerHTML = `
-            <div class="vibe-box-header">
-                <span>Number ${v.number} (${v.count}x)</span>
-                <span class="vibe-tag">${v.type_label}</span>
-            </div>
-            <div class="vibe-desc">${v.text}</div>
-        `;
-        vibContainer.appendChild(box);
-    }
+    // Vibrations Breakdown (Active Dasha vs Lifetime Natal Baseline)
+    renderVibrations(data, currentVibrationMode);
 
     // Moolank Traits & Precautions
     const mTraitsList = document.getElementById('list-moolank-traits');
@@ -581,5 +571,80 @@ async function refreshHistory() {
         `).join('');
     } catch (err) {
         console.error('Failed to load history:', err);
+    }
+}
+
+// Switch between Active Dasha Period Vibrations and Lifetime Natal Baseline
+function switchVibrationView(mode) {
+    currentVibrationMode = mode;
+    const btnPeriod = document.getElementById('btn-vibe-period');
+    const btnNatal = document.getElementById('btn-vibe-natal');
+    if (btnPeriod && btnNatal) {
+        if (mode === 'period') {
+            btnPeriod.classList.add('active');
+            btnNatal.classList.remove('active');
+        } else {
+            btnPeriod.classList.remove('active');
+            btnNatal.classList.add('active');
+        }
+    }
+    if (latestAnalysisData) {
+        renderVibrations(latestAnalysisData, mode);
+    }
+}
+
+// Render Vibrations Breakdown List with Dynamic Dasha Shift Indicators
+function renderVibrations(data, mode = 'period') {
+    const vibContainer = document.getElementById('vibrations-list');
+    const disclaimerBanner = document.getElementById('vibrations-disclaimer-banner');
+    if (!vibContainer) return;
+
+    const list = (mode === 'period')
+        ? (data.period_vibrations || data.vibrations || [])
+        : (data.natal_vibrations || []);
+
+    if (disclaimerBanner) {
+        if (mode === 'period') {
+            const shiftInfo = data.vibration_shifts || {};
+            const discText = shiftInfo.disclaimer || (data.ui && data.ui.vibrations_disclaimer) ||
+                'Vedic vibrations dynamically fluctuate across Dasha cycles. During this queried active period, numbers shift counts and signs (+/-). These are cyclical planetary activations, not permanent lifetime curses.';
+            disclaimerBanner.innerHTML = `<strong>★ Active Dasha Dynamic Vibrations:</strong> ${discText}`;
+            disclaimerBanner.style.display = 'block';
+        } else {
+            disclaimerBanner.innerHTML = `<strong>👑 Lifetime Inborn Matrix (Baseline):</strong> Permanent karmic baseline frequencies inherited from the exact date of birth prior to cyclical Dasha period activations.`;
+            disclaimerBanner.style.display = 'block';
+        }
+    }
+
+    vibContainer.innerHTML = '';
+    for (let v of list) {
+        const box = document.createElement('div');
+        box.className = `vibe-box ${v.type === '+' ? 'badge-pos' : 'badge-neg'}`;
+
+        let shiftBadgeHtml = '';
+        if (mode === 'period' && v.shifted) {
+            let pillCls = 'pill-dasha-active';
+            let pillIcon = '⚡';
+            if (v.shift_type === 'neg_to_pos') {
+                pillCls = 'pill-transformed-pos';
+                pillIcon = '★';
+            } else if (v.shift_type === 'pos_to_neg') {
+                pillCls = 'pill-shifted-neg';
+                pillIcon = '⚠';
+            }
+            shiftBadgeHtml = `<div class="vibe-shift-pill ${pillCls}">${pillIcon} ${v.shift_label || 'Active Dasha Shift'}</div>`;
+        }
+
+        box.innerHTML = `
+            <div class="vibe-box-header">
+                <div class="vibe-box-title">
+                    <span>Number ${v.number} (${v.count}x)</span>
+                </div>
+                <span class="vibe-tag">${v.type_label}</span>
+            </div>
+            ${shiftBadgeHtml}
+            <div class="vibe-desc">${v.text}</div>
+        `;
+        vibContainer.appendChild(box);
     }
 }

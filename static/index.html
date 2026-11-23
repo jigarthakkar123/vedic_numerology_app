@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <meta name="theme-color" content="#060913">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕉️</text></svg>">
+    <link rel="shortcut icon" href="/favicon.ico">
     <title>Jigar Thakkar - Vedic Numerology Studio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -301,9 +300,18 @@
                                 <div class="charm-badge"><strong>Auspicious Colors:</strong> <span id="charm-colors">Electric Blue, Grey</span></div>
                             </div>
 
-                            <!-- Vibrations Breakdown Section -->
+                            <!-- Vibrations Breakdown Section with Active Dasha vs Natal Baseline Toggle -->
                             <div class="grid-details-col mt-4">
-                                <h3 class="section-heading">Planetary Vibrations Breakdown (+ / -)</h3>
+                                <div class="vibrations-header-row">
+                                    <h3 class="section-heading" id="hdr-vibrations-title" style="margin-bottom: 0;">Planetary Vibrations Breakdown (+ / -)</h3>
+                                    <div class="vibrations-toggle-wrap">
+                                        <button type="button" class="vibe-mode-pill active" id="btn-vibe-period" onclick="switchVibrationView('period')">★ Active Dasha Period (Current Year)</button>
+                                        <button type="button" class="vibe-mode-pill" id="btn-vibe-natal" onclick="switchVibrationView('natal')">👑 Lifetime Natal Baseline</button>
+                                    </div>
+                                </div>
+                                <div id="vibrations-disclaimer-banner" class="vibe-disclaimer-banner">
+                                    <!-- Dynamic Vedic Dasha Transformation explanation injected here -->
+                                </div>
                                 <div id="vibrations-list" class="vibrations-container">
                                     <!-- Dynamic Vibrations injected here -->
                                 </div>

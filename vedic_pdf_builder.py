@@ -175,18 +175,24 @@ def build_report_html(data: Dict[str, Any]) -> str:
             "hi": "जन्म चक्र में कोई प्रतिकूल ग्रहीय दोष सक्रिय नहीं है • ग्रह ऊर्जा पूर्णतः शांत एवं अनुकूल बनी हुई है।",
             "gu": "જન્મ કુંડળીમાં કોઈ પ્રતિકૂળ ગ્રહીય દોષ સક્રિય નથી • ગ્રહ ઉર્જા પૂર્ણપણે શાંત અને અનુકૂળ રહે છે."
         }.get(data.get("client", {}).get("lang", "en"), "No Adverse Karmic Doshas Active in Chart")
-        inauspicious_doshas_html = f'<div style="font-size: 7.8px; color: #15803d; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 4px; padding: 3px 6px; font-weight: 600;">âœ” {no_dosha_text}</div>'
+        inauspicious_doshas_html = f'<div style="font-size: 7.8px; color: #15803d; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 4px; padding: 3px 6px; font-weight: 600;">✔ {no_dosha_text}</div>'
 
-    # Vibration badges on Page 3
+    # Vibration badges on Page 3 (Active Dasha Period Vibrations)
     vibe_badges_html = ""
     for v in vibrations:
         badge_cls = "badge-pos" if v["type"] == "+" else "badge-neg"
+        shift_tag = ""
+        if v.get("shifted") and v.get("shift_label"):
+            shift_color = "#15803d" if v["type"] == "+" else "#b45309"
+            shift_tag = f'<div style="font-size: 7.2px; font-weight: 700; color: {shift_color}; margin-bottom: 1.5px;">★ {v["shift_label"]}</div>'
+        count_str = f" ({v.get('count', 1)}x)" if v.get("count") else ""
         vibe_badges_html += f"""
         <div class="vibe-item {badge_cls}">
             <div class="vibe-header">
-                <span class="vibe-num">{v['type']}{v['number']}</span>
+                <span class="vibe-num">No. {v['number']}{count_str}</span>
                 <span class="vibe-type">{v['type_label']}</span>
             </div>
+            {shift_tag}
             <div class="vibe-text">{v['text']}</div>
         </div>
         """
@@ -1386,7 +1392,7 @@ body {{
             </div>
 
             <!-- Inauspicious Yogas & Doshas Quad -->
-            <div class="section-title">âš  {ui.get('inauspicious_yogas_title', 'Challenging Planetary Yogas & Doshas')}</div>
+            <div class="section-title">⚠ {ui.get('inauspicious_yogas_title', 'Challenging Planetary Yogas & Doshas')}</div>
             <div class="yogas-quad-grid" style="margin-bottom: 4px;">
                 {inauspicious_doshas_html}
             </div>
@@ -1395,6 +1401,9 @@ body {{
             <div class="section-title">{ui['active_vibrations']}</div>
             <div class="vibrations-grid">
                 {vibe_badges_html}
+            </div>
+            <div style="font-size: 7.2px; color: #475569; font-style: italic; margin-top: 3px; border-top: 0.5px solid #e2e8f0; padding-top: 2px;">
+                {ui.get('vibrations_disclaimer', 'Note: Planetary vibrations dynamically transform under active Dasha cycles (e.g., Even 88 becomes positive, Multiple 99 becomes challenging) and represent cyclic activations rather than permanent stagnation.')}
             </div>
         </div>
 

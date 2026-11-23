@@ -244,6 +244,130 @@ def evaluate_vibrations(counts: Dict[int, int], dn: int) -> Dict[int, str]:
                 
     return vibrations
 
+def build_vibrations_analysis(
+    natal_counts: Dict[int, int],
+    dasha_counts: Dict[int, int],
+    dn: int,
+    lang: str = "en"
+) -> Dict[str, Any]:
+    """
+    Computes both Active Dasha Period Vibrations and Lifetime Natal Baseline Vibrations,
+    detecting any dynamic karmic shifts (e.g. 8 turning from - to + via 88, 9 turning from + to - via 99,
+    or 7 newly activated via Dasha).
+    """
+    natal_vib = evaluate_vibrations(natal_counts, dn)
+    period_vib = evaluate_vibrations(dasha_counts, dn)
+    
+    active_period_list = []
+    has_shifts = False
+    shifts_count = 0
+    
+    # 1. Build Active Dasha Period List
+    for num in range(1, 10):
+        dc = dasha_counts.get(num, 0)
+        if dc == 0:
+            continue
+            
+        nc = natal_counts.get(num, 0)
+        pt = period_vib.get(num, "+")
+        nt = natal_vib.get(num, "absent")
+        
+        # Determine shift status
+        if nt == "absent":
+            shift_status = "newly_activated"
+            shift_badge = UI_TEXT[lang]["shift_newly_activated"]
+            has_shifts = True
+            shifts_count += 1
+        elif nt == "-" and pt == "+":
+            shift_status = "neg_to_pos"
+            shift_badge = UI_TEXT[lang]["shift_neg_to_pos"]
+            has_shifts = True
+            shifts_count += 1
+        elif nt == "+" and pt == "-":
+            shift_status = "pos_to_neg"
+            shift_badge = UI_TEXT[lang]["shift_pos_to_neg"]
+            has_shifts = True
+            shifts_count += 1
+        else:
+            shift_status = "stable"
+            shift_badge = UI_TEXT[lang]["shift_stable"]
+            
+        # Specific explanatory reasons for common shifts
+        shift_reason = ""
+        if num == 8 and shift_status == "neg_to_pos":
+            shift_reason = {
+                "en": "Inborn single 8 is challenging (-8), causing struggles and delays. However, the active Dasha introduces an additional 8, forming an Even 8 (88). Classical Vedic texts confirm that double 8 diminishes negativity, eliminates depression, and strongly triggers massive financial breakthroughs and sharp intuition for this active period.",
+                "hi": "जन्म चक्र में एकल 8 कठिन (-8) फलदायी होता है, किंतु वर्तमान दशा प्रभाव से यह सम संख्या (88) बन गया है। वैदिक अंकशास्त्र के अनुसार 88 बनने से शनि का अवसाद व विष समाप्त होता है; यह अवधि विपुल धन लाभ, अचल संपत्ति और अटूट कर्मठता प्रदान करने वाली शुभ (+) बन गई है।",
+                "gu": "જન્મ કુંડળીમાં એકલ 8 પડકારરૂપ (-8) હોય છે, પરંતુ વર્તમાન દશાના પ્રભાવથી બેવડો 8 (88) બન્યો છે. વૈદિક નિયમ મુજબ 88 બનવાથી શનિનો વિષાદ શાંત થાય છે; આ સમયગાળો અઢળક આર્થિક પ્રગતિ અને સ્થાવર મિલકત અપાવનારો શુભ (+) બન્યો છે."
+            }.get(lang, "")
+        elif num == 9 and shift_status == "pos_to_neg":
+            shift_reason = {
+                "en": "Inborn single 9 is positive (+9). In this active Dasha period, the infusion of another 9 creates Multiple 9s (99). The excessive Martian heat overpowers patience, turning this frequency challenging (-9); native must avoid volcanic temper outbursts, drive cautiously, and maintain disciplined communication during this period.",
+                "hi": "जन्म चक्र में एकल 9 सकारात्मक (+9) होता है। वर्तमान दशा प्रभाव से दोहरे 9 (99) की सक्रियता से मंगल की उग्र अग्नि अत्यधिक तीव्र हो गई है, जिससे यह अवधि कठिन (-) हो गई है। जातक को इस वर्ष क्रोध पर नियंत्रण, शांत वाणी और रक्तचाप की सतर्कता रखनी चाहिए।",
+                "gu": "જન્મ કુંડળીમાં એકલ 9 સકારાત્મક (+9) હોય છે. વર્તમાન દશાના પ્રભાવથી બેવડો 9 (99) બનવાથી મંગળની અગ્નિ અતિશય વધી ગઈ છે, જેથી આ સમયગાળો પડકારરૂપ (-) બન્યો છે. ક્રોધ પર સંયમ રાખવો અને શાંત વાણી રાખવી હિતાવહ છે."
+            }.get(lang, "")
+        elif num == 4 and shift_status == "neg_to_pos":
+            shift_reason = {
+                "en": "Natal odd 4 is volatile (-4). Under this active Dasha, an even number of 4s (44) is established. Classical texts state that double 4 diminishes Bandhan and legal hurdles, enables swift health recovery, and unlocks breakthrough technical innovations.",
+                "hi": "जन्म चक्र में एकल 4 अशांत (-4) होता है। वर्तमान दशा में सम संख्या 4 (44) बनने से बंधन, मुकदमेबाजी व कानूनी बाधाएं शिथिल होती हैं तथा स्वास्थ्य लाभ व क्रांतिकारी बौद्धिक नवाचार का मार्ग खुलता है।",
+                "gu": "જન્મ કુંડળીમાં એકલ 4 અશાંત (-4) હોય છે. દશાથી બેવડો 4 (44) બનવાથી બંધન કે કાનૂની અડચણો હળવી બને છે અને ઝડપી મુક્તિ તથા ટેકનિકલ સફળતાનો માર્ગ ખુલે છે."
+            }.get(lang, "")
+        elif num == 5 and shift_status == "pos_to_neg":
+            shift_reason = {
+                "en": "Inborn single 5 is a balanced merchant (+5). Under active Dasha, multiple 5s (55) hyper-accelerate nervous calculation, causing insomnia and temptation to cut ethical corners (-5); native must practice mindful grounding and honest bookkeeping.",
+                "hi": "जन्म चक्र में एकल 5 श्रेष्ठ व्यापारिक बुद्धि देता है। वर्तमान दशा में दोहरे 5 (55) से अत्यधिक मानसिक उद्वेग, अनिद्रा और अति-चतुराई से नुकसान का जोखिम (-5) रहता है; अतः सट्टेबाजी से बचें।",
+                "gu": "જન્મ કુંડળીમાં એકલ 5 સારો વેપારી છે. દશામાં 55 બનવાથી માનસિક અતિશય અશાંતિ, અનિદ્રા અને વધુ પડતી ચાલાકીથી નુકસાન થવાની સંભાવના (-5) રહે છે."
+            }.get(lang, "")
+        elif shift_status == "newly_activated":
+            shift_reason = {
+                "en": f"Number {num} is absent in the permanent inborn matrix. Under this active Dasha cycle, this planetary frequency is temporarily infused ({dc}x), awakening its distinct qualities for this phase.",
+                "hi": f"अंक {num} जन्म चक्र में अनुपस्थित है। वर्तमान दशा चक्र के माध्यम से यह ग्रहीय ऊर्जा तात्कालिक रूप से ({dc} बार) जाग्रत हुई है, जो इस अवधि में अपना विशेष प्रभाव प्रदान करेगी।",
+                "gu": f"અંક {num} જન્મ કુંડળીમાં ગેરહાજર છે. વર્તમાન દશા ચક્ર દ્વારા આ ગ્રહીય ઉર્જા તાત્કાલિક રીતે ({dc} વાર) સક્રિય થઈ છે, જે આ સમયગાળા દરમિયાન વિશેષ પ્રભાવ આપશે."
+            }.get(lang, "")
+
+        desc_key = "pos" if pt == "+" else "neg"
+        desc_text = VIBRATION_DETAILS[num][desc_key][lang]
+        
+        active_period_list.append({
+            "number": num,
+            "count": dc,
+            "natal_count": nc,
+            "type": pt,
+            "type_label": UI_TEXT[lang]["positive"] if pt == "+" else UI_TEXT[lang]["negative"],
+            "natal_type": nt,
+            "natal_type_label": (UI_TEXT[lang]["positive"] if nt == "+" else UI_TEXT[lang]["negative"]) if nt != "absent" else "Absent in Natal",
+            "is_transformed": shift_status in ["neg_to_pos", "pos_to_neg", "newly_activated"],
+            "shift_status": shift_status,
+            "shift_badge": shift_badge,
+            "shift_reason": shift_reason,
+            "text": desc_text
+        })
+        
+    # 2. Build Inborn Natal Baseline List
+    natal_baseline_list = []
+    for num in range(1, 10):
+        nc = natal_counts.get(num, 0)
+        if nc == 0:
+            continue
+        nt = natal_vib.get(num, "+")
+        desc_key = "pos" if nt == "+" else "neg"
+        desc_text = VIBRATION_DETAILS[num][desc_key][lang]
+        natal_baseline_list.append({
+            "number": num,
+            "count": nc,
+            "type": nt,
+            "type_label": UI_TEXT[lang]["positive"] if nt == "+" else UI_TEXT[lang]["negative"],
+            "text": desc_text
+        })
+        
+    return {
+        "active_period": active_period_list,
+        "natal_baseline": natal_baseline_list,
+        "has_shifts": has_shifts,
+        "shifts_count": shifts_count,
+        "disclaimer": UI_TEXT[lang]["vibrations_disclaimer"]
+    }
+
 def calculate_mahadasha_timeline(bn: int, dob: date, target_date: date) -> Dict[str, Any]:
     """
     Calculates the Mahadasha timeline starting from DOB with BN.
@@ -1385,21 +1509,11 @@ def compile_full_numerology_profile(
     }
     weekday_name = weekdays_map[birth_date.weekday()][lang]
     
-    # Build Vibration Descriptions
-    vibration_list = []
-    for num in range(1, 10):
-        c = grid_info["counts"].get(num, 0)
-        if c > 0:
-            vibe_type = vibrations.get(num, "+")
-            desc_key = "pos" if vibe_type == "+" else "neg"
-            desc_text = VIBRATION_DETAILS[num][desc_key][lang]
-            vibration_list.append({
-                "number": num,
-                "count": c,
-                "type": vibe_type,
-                "type_label": UI_TEXT[lang]["positive"] if vibe_type == "+" else UI_TEXT[lang]["negative"],
-                "text": desc_text
-            })
+    # Build Dynamic Vibrations Analysis (Period vs Natal Shifts)
+    vibrations_data = build_vibrations_analysis(
+        grid_info["counts"], dasha_grid_info["total_counts"], dn, lang
+    )
+    vibration_list = vibrations_data["active_period"]
 
     # Name Numerology (Namank)
     namank = calculate_name_number(name)
@@ -1460,6 +1574,9 @@ def compile_full_numerology_profile(
             "pd": {"name": UI_TEXT[lang]["legend_pd"], "code": "PD", "color": "#7c3aed"}
         },
         "vibrations": vibration_list,
+        "period_vibrations": vibrations_data["active_period"],
+        "natal_vibrations": vibrations_data["natal_baseline"],
+        "vibration_shifts": vibrations_data,
         "moolank_qualities": NUMBER_QUALITIES[bn][lang],
         "moolank_precautions": NUMBER_PRECAUTIONS[bn][lang],
         "bhagyank_qualities": NUMBER_QUALITIES[dn][lang],

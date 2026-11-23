@@ -48,6 +48,9 @@ def clean_filename(name: str) -> str:
 
 @app.get("/favicon.ico")
 async def get_favicon():
+    fav_path = os.path.join(STATIC_DIR, "favicon.ico")
+    if os.path.exists(fav_path):
+        return FileResponse(fav_path, media_type="image/x-icon")
     svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🕉️</text></svg>'
     return Response(content=svg, media_type="image/svg+xml")
 
