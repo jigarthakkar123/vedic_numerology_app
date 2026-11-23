@@ -244,7 +244,7 @@ async def get_private_consultant_studio():
 @app.get("/sample-report/{lang}")
 @app.head("/sample-report/{lang}")
 async def get_sample_report(lang: str = "en"):
-    """Serves sample 4-page Vedic Numerology reports for preview (with auto-generation fallback)."""
+    """Serves sample 10-page Vedic Numerology reports for preview (with auto-generation fallback)."""
     lang_clean = (lang or "en").lower().strip()
     sample_configs = {
         "en": ("Sample_Vedic_Report_English.pdf", "Rohit Sharma", "1987-04-30"),
@@ -391,7 +391,7 @@ async def create_funnel_order(req: FunnelOrderRequest):
 @app.post("/api/funnel/verify-payment")
 async def verify_funnel_payment(req: FunnelVerifyRequest, background_tasks: BackgroundTasks):
     """
-    Verifies payment signature, generates the 4-page Vedic Numerology PDF report,
+    Verifies payment signature, generates the 10-page Vedic Numerology PDF report,
     and delivers it via email and on-screen download.
     """
     if RAZORPAY_KEY_SECRET and not req.order_id.startswith("order_demo_"):

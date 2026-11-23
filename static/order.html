@@ -35,60 +35,68 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        body {
+        html, body {
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
             background-color: var(--bg-main);
             color: var(--text-primary);
             font-family: var(--font-body);
             font-size: 14px;
             line-height: 1.5;
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
         /* Top Urgency Ticker */
         .urgency-bar {
             background: linear-gradient(90deg, #b45309 0%, #d97706 50%, #b45309 100%);
             color: #ffffff;
-            font-size: 11.5px;
+            font-size: clamp(10.5px, 2.8vw, 12px);
             font-weight: 700;
             text-align: center;
-            padding: 7px 12px;
-            letter-spacing: 0.3px;
+            padding: 8px 10px;
+            letter-spacing: 0.2px;
+            word-break: break-word;
         }
 
         /* Funnel Header */
         .funnel-header {
             background: linear-gradient(180deg, #0b1329 0%, #080d1a 100%);
             border-bottom: 1.5px solid var(--border-gold);
-            padding: 12px 16px;
+            padding: 14px 12px;
             text-align: center;
+            width: 100%;
         }
         .sacred-om {
-            font-size: 32px;
+            font-size: clamp(24px, 6vw, 32px);
             color: var(--text-gold);
             line-height: 1;
             margin-bottom: 2px;
         }
         .brand-title {
             font-family: var(--font-heading);
-            font-size: clamp(14px, 4vw, 19px);
+            font-size: clamp(13px, 3.8vw, 19px);
             font-weight: 800;
             background: var(--gold-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: 0.8px;
+            letter-spacing: 0.5px;
+            word-break: break-word;
+            line-height: 1.3;
         }
         .brand-sub {
-            font-size: 11px;
+            font-size: clamp(10px, 2.5vw, 11.5px);
             color: var(--text-secondary);
-            margin-top: 2px;
+            margin-top: 3px;
+            word-break: break-word;
         }
 
         /* Main Container */
         .funnel-container {
+            width: 100%;
             max-width: 680px;
             margin: 0 auto;
-            padding: 16px 14px 40px;
+            padding: 16px 12px 40px;
         }
 
         /* Hero Card */
@@ -96,33 +104,37 @@
             background: var(--bg-card);
             border: 1px solid var(--border-gold);
             border-radius: 14px;
-            padding: 20px 16px;
+            padding: 20px 14px;
             text-align: center;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5), 0 0 1px 1px rgba(212, 175, 55, 0.2);
             margin-bottom: 18px;
+            width: 100%;
         }
         .hero-badge {
             display: inline-block;
             background: rgba(212, 175, 55, 0.15);
             border: 1px solid var(--border-gold-subtle);
             color: var(--text-gold);
-            font-size: 11px;
+            font-size: 10.5px;
             font-weight: 700;
-            padding: 4px 12px;
+            padding: 4px 10px;
             border-radius: 20px;
-            margin-bottom: 12px;
-            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            letter-spacing: 0.4px;
             text-transform: uppercase;
+            max-width: 100%;
+            word-break: break-word;
         }
         .hero-title {
             font-family: var(--font-heading);
-            font-size: clamp(19px, 5vw, 26px);
+            font-size: clamp(17px, 4.6vw, 25px);
             color: #ffffff;
-            line-height: 1.25;
+            line-height: 1.3;
             margin-bottom: 10px;
+            word-break: break-word;
         }
         .hero-desc {
-            font-size: 13px;
+            font-size: clamp(12px, 3.2vw, 13px);
             color: var(--text-secondary);
             line-height: 1.5;
             margin-bottom: 16px;
@@ -133,21 +145,21 @@
             background: rgba(15, 23, 42, 0.85);
             border: 1px solid rgba(212, 175, 55, 0.4);
             border-radius: 10px;
-            padding: 14px;
+            padding: 12px 10px;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             flex-wrap: wrap;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
         .price-old {
-            font-size: 16px;
+            font-size: 15px;
             color: #94a3b8;
             text-decoration: line-through;
         }
         .price-new {
-            font-size: clamp(28px, 7vw, 36px);
+            font-size: clamp(26px, 6.5vw, 36px);
             font-weight: 800;
             color: #4ade80;
             line-height: 1;
@@ -155,28 +167,28 @@
         .price-tag {
             background: #e11d48;
             color: #ffffff;
-            font-size: 11px;
+            font-size: 10.5px;
             font-weight: 800;
-            padding: 4px 8px;
-            border-radius: 6px;
-            letter-spacing: 0.5px;
+            padding: 3px 7px;
+            border-radius: 5px;
+            letter-spacing: 0.4px;
         }
 
         /* Countdown Timer */
         .timer-strip {
-            font-size: 11.5px;
+            font-size: 11px;
             color: #fbbf24;
             font-weight: 600;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 5px;
         }
 
         /* Features Section */
         .section-hdr {
             font-family: var(--font-heading);
-            font-size: 16px;
+            font-size: clamp(14px, 4vw, 17px);
             color: var(--text-gold);
             text-align: center;
             margin: 22px 0 12px 0;
@@ -185,32 +197,38 @@
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 10px;
+            grid-template-columns: 1fr;
+            gap: 8px;
             margin-bottom: 18px;
+            width: 100%;
+        }
+        @media (min-width: 540px) {
+            .features-grid {
+                grid-template-columns: 1fr 1fr;
+            }
         }
         .feature-card {
             background: var(--bg-card);
             border: 1px solid var(--border-dark);
             border-radius: 10px;
-            padding: 12px 14px;
+            padding: 11px 12px;
             display: flex;
-            gap: 12px;
+            gap: 10px;
             align-items: flex-start;
         }
         .f-icon {
-            font-size: 22px;
+            font-size: 20px;
             line-height: 1;
             flex-shrink: 0;
         }
         .f-title {
             font-weight: 700;
             color: var(--text-primary);
-            font-size: 13px;
-            margin-bottom: 3px;
+            font-size: 12.5px;
+            margin-bottom: 2px;
         }
         .f-desc {
-            font-size: 11.5px;
+            font-size: 11px;
             color: var(--text-secondary);
             line-height: 1.4;
         }
@@ -220,14 +238,78 @@
             background: rgba(30, 41, 59, 0.6);
             border: 1px solid var(--border-dark);
             border-radius: 10px;
-            padding: 12px;
+            padding: 12px 10px;
             text-align: center;
-            margin-bottom: 20px;
-            font-size: 12px;
+            margin-bottom: 18px;
+            font-size: 11.5px;
             color: #cbd5e1;
+            line-height: 1.5;
         }
         .trust-banner strong {
             color: var(--text-gold);
+        }
+
+        /* Sample Preview Box */
+        .preview-box {
+            background: rgba(212, 175, 55, 0.08);
+            border: 1.5px solid var(--border-gold);
+            border-radius: 12px;
+            padding: 14px 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            width: 100%;
+        }
+        .preview-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #fbbf24;
+            margin-bottom: 4px;
+        }
+        .preview-sub {
+            font-size: 11.5px;
+            color: #cbd5e1;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .preview-btn-wrap {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        .preview-btn {
+            font-size: 11px;
+            padding: 8px 12px;
+            border-radius: 20px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-weight: 700;
+            transition: transform 0.15s;
+        }
+        .preview-btn-en {
+            background: var(--gold-gradient);
+            color: #000;
+            font-weight: 800;
+            box-shadow: 0 2px 10px rgba(212,175,55,0.35);
+        }
+        .preview-btn-alt {
+            background: rgba(30, 41, 59, 0.95);
+            border: 1px solid var(--border-gold-subtle);
+            color: #fbbf24;
+        }
+        @media (max-width: 480px) {
+            .preview-btn-wrap {
+                flex-direction: column;
+            }
+            .preview-btn {
+                width: 100%;
+                padding: 9px 10px;
+            }
         }
 
         /* Intake Form Card */
@@ -235,40 +317,41 @@
             background: var(--bg-card);
             border: 1.5px solid var(--border-gold);
             border-radius: 14px;
-            padding: 20px 16px;
+            padding: 18px 12px;
             box-shadow: 0 10px 35px rgba(0, 0, 0, 0.6);
             margin-bottom: 24px;
+            width: 100%;
         }
         .form-title {
             font-family: var(--font-heading);
-            font-size: 18px;
+            font-size: clamp(16px, 4.2vw, 19px);
             color: var(--text-gold);
             text-align: center;
             margin-bottom: 4px;
         }
         .form-sub {
-            font-size: 12px;
+            font-size: 11.5px;
             color: var(--text-secondary);
             text-align: center;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
 
         .form-group {
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
         .form-label {
             display: block;
-            font-size: 12px;
+            font-size: 11.5px;
             font-weight: 700;
             color: #e2e8f0;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
         }
         .form-input, .form-select {
             width: 100%;
             background: var(--bg-card-subtle);
             border: 1px solid var(--border-dark);
             border-radius: 8px;
-            padding: 10px 12px;
+            padding: 9px 11px;
             color: #ffffff;
             font-size: 13px;
             font-family: inherit;
@@ -284,19 +367,21 @@
         .lang-options {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            gap: 6px;
+            width: 100%;
         }
         .lang-opt {
             background: var(--bg-card-subtle);
             border: 1px solid var(--border-dark);
             border-radius: 8px;
-            padding: 10px 6px;
+            padding: 8px 4px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             color: var(--text-secondary);
+            word-break: break-word;
         }
         .lang-opt.active {
             background: var(--gold-gradient);
@@ -312,18 +397,18 @@
             color: #000000;
             border: none;
             border-radius: 10px;
-            padding: 15px 20px;
-            font-size: 15px;
+            padding: 14px 16px;
+            font-size: clamp(13.5px, 3.8vw, 15px);
             font-weight: 800;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.4px;
             cursor: pointer;
             box-shadow: 0 4px 20px rgba(212, 175, 55, 0.45);
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            margin-top: 18px;
+            gap: 6px;
+            margin-top: 16px;
         }
         .btn-order-cta:hover {
             transform: translateY(-2px);
@@ -339,11 +424,12 @@
         .trust-grid {
             display: flex;
             justify-content: center;
-            gap: 14px;
+            gap: 10px;
             flex-wrap: wrap;
-            margin-top: 14px;
-            font-size: 11px;
+            margin-top: 12px;
+            font-size: 10.5px;
             color: var(--text-secondary);
+            text-align: center;
         }
 
         /* Loading / Processing Overlay */
@@ -351,7 +437,7 @@
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(6, 9, 19, 0.92);
+            background: rgba(6, 9, 19, 0.94);
             z-index: 999;
             flex-direction: column;
             align-items: center;
@@ -360,26 +446,28 @@
             padding: 20px;
         }
         .spinner {
-            width: 48px;
-            height: 48px;
-            border: 4px solid rgba(212, 175, 55, 0.2);
+            width: 44px;
+            height: 44px;
+            border: 3.5px solid rgba(212, 175, 55, 0.2);
             border-top-color: var(--border-gold);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
         .proc-text {
             color: var(--text-gold);
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
         }
         .proc-sub {
             color: #94a3b8;
-            font-size: 12.5px;
+            font-size: 11.5px;
+            max-width: 320px;
+            line-height: 1.4;
         }
 
         /* Footer */
@@ -388,20 +476,36 @@
             font-size: 11px;
             color: #64748b;
             border-top: 1px solid var(--border-dark);
-            padding-top: 20px;
-            line-height: 1.6;
+            padding-top: 16px;
+            line-height: 1.5;
+            width: 100%;
+        }
+        .policy-links-wrap {
+            margin-bottom: 8px;
+            font-size: 11px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .policy-link {
+            color: #fbbf24;
+            text-decoration: none;
+        }
+        .policy-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <!-- Top Urgency Ticker -->
     <div class="urgency-bar">
-        🔥 Special Instagram Offer: 4-Page Personalized Vedic Numerology Report • Flat 75% OFF (Only ₹499 Today)
+        ⚡ Special Instagram Offer: 10-Page Comprehensive Vedic Life Blueprint • Flat 75% OFF (Only ₹499 Today) ⚡
     </div>
 
     <!-- Header -->
     <header class="funnel-header">
-        <div class="sacred-om">ॐ</div>
+        <div class="sacred-om">🕉️</div>
         <h1 class="brand-title">JIGAR THAKKAR'S VEDIC NUMEROLOGY STUDIO</h1>
         <p class="brand-sub">Certified Vedic Numerologist & Vastu Consultant • 📞 +91 9377614772</p>
     </header>
@@ -410,11 +514,11 @@
     <main class="funnel-container">
         <!-- Hero Card -->
         <div class="hero-card">
-            <span class="hero-badge">⭐ Rated 4.9/5 by 1,200+ Paid Clients</span>
-            <h2 class="hero-title">Unlock Your Sacred Vedic Destiny & Complete 2026-2027 Mahadasha Roadmap</h2>
+            <span class="hero-badge">★ Rated 4.9/5 by 1,200+ Paid Clients</span>
+            <h2 class="hero-title">Unlock Your Sacred Vedic Destiny & Complete 10-Page Mahadasha Life Blueprint</h2>
             <p class="hero-desc">
-                Discover what the planets have in store for your finance, career, property, marriage, and health.
-                Get an authentic, mathematically calculated 4-page Vedic Numerology Consultation Blueprint delivered instantly in your preferred language.
+                Discover what the planets have in store for your wealth, career, property, relationships, and health.
+                Get an authentic, mathematically calculated <strong>10-Page Vedic Numerology Life Manual</strong> delivered instantly to your device & email in your preferred language.
             </p>
 
             <div class="price-box">
@@ -429,35 +533,77 @@
             </div>
         </div>
 
-        <!-- What You Will Receive -->
-        <h3 class="section-hdr">📜 What Is Inside Your 4-Page Blueprint</h3>
+        <!-- What You Will Receive (10 Chapters) -->
+        <h3 class="section-hdr">📜 What Is Inside Your 10-Page Blueprint</h3>
         <div class="features-grid">
+            <div class="feature-card">
+                <div class="f-icon">👑</div>
+                <div>
+                    <div class="f-title">Page 1: Royal Soul Certificate</div>
+                    <div class="f-desc">Personalized cosmic cover, certified seal, Moolank & Bhagyank summary, and 10-chapter journey index.</div>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="f-icon">🪐</div>
+                <div>
+                    <div class="f-title">Page 2: Dual Vedic Sacred Grids</div>
+                    <div class="f-desc">Inborn 3x3 Natal Kundali alongside active dynamic Dasha activation grid with multi-color energy chips.</div>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="f-icon">🧭</div>
+                <div>
+                    <div class="f-title">Page 3: Harmony Compass & Vastu</div>
+                    <div class="f-desc">Allies & friendly numbers, neutral & avoid numbers, auspicious Vastu directions, sacred metals, and Name Numerology.</div>
+                </div>
+            </div>
             <div class="feature-card">
                 <div class="f-icon">🌟</div>
                 <div>
-                    <div class="f-title">Page 1: Natal Matrix & Life Compass</div>
-                    <div class="f-desc">Inborn 3x3 Vedic birth grid, Moolank & Bhagyank planetary vibrations, lifetime life compass, and auspicious gemstones/metals.</div>
+                    <div class="f-title">Page 4: Inborn Soul Powers (Moolank)</div>
+                    <div class="f-desc">Deep-dive psychological traits, natural superpowers, career genius, and crucial mindful guardrails.</div>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="f-icon">🎯</div>
+                <div>
+                    <div class="f-title">Page 5: Destiny Path (Bhagyank)</div>
+                    <div class="f-desc">Karmic calling, higher life purpose, evolutionary destiny lessons, and avoidable behavioral traps.</div>
                 </div>
             </div>
             <div class="feature-card">
                 <div class="f-icon">⏳</div>
                 <div>
-                    <div class="f-title">Page 2: 3-Tier Horizon Predictions</div>
-                    <div class="f-desc">Active Mahadasha (MD), Antardasha (AD), and an annual 9-phase Pratyantar Dasha (PD) calendar for day-to-day timing.</div>
+                    <div class="f-title">Page 6: 9-Year Mahadasha Macro Era</div>
+                    <div class="f-desc">Long-term macro planetary lifecycle, dates, financial directives, and macro wealth expansion rules.</div>
                 </div>
             </div>
             <div class="feature-card">
-                <div class="f-icon">⚖️</div>
+                <div class="f-icon">📅</div>
                 <div>
-                    <div class="f-title">Page 3: Raj Yogs, Doshas & Vibration Shifts</div>
-                    <div class="f-desc">Identifies authentic Raj Yogs and inauspicious doshas (Vish Yog, 8-4 Hava Mahal) with dynamic Dasha polarity transformations (+/-).</div>
+                    <div class="f-title">Page 7: Annual & Monthly Focus</div>
+                    <div class="f-desc">Antardasha 1-year forecast (travel & property outlook) plus active 30-day Pratyantar window with Do's & Don'ts.</div>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="f-icon">🗓️</div>
+                <div>
+                    <div class="f-title">Page 8: 12-Month Calendar Roadmap</div>
+                    <div class="f-desc">Annual 9-phase timing calendar with your current active month highlighted in gold for strategic timing.</div>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="f-icon">⚡</div>
+                <div>
+                    <div class="f-title">Page 9: Rare Yogas, Doshas & Shifts</div>
+                    <div class="f-desc">Divine Raj Yogs (Kuber, Lakshmi) and inauspicious doshas (Bandhan, 8-4 Hava Mahal) with remedial shields.</div>
                 </div>
             </div>
             <div class="feature-card">
                 <div class="f-icon">🔮</div>
                 <div>
-                    <div class="f-title">Page 4: 8 Core Predictions & Vedic Remedies</div>
-                    <div class="f-desc">Actionable forecasts for Finance, Property, Vehicle, Marriage/Divorce, Travel, Litigation, and Health, plus practical remedies.</div>
+                    <div class="f-title">Page 10: 8 Predictions & Remedies</div>
+                    <div class="f-desc">Wealth, Career, Property, Vehicles, Education, Travel, Legal & Health forecasts + 6-Pillar Vedic Remedies + Official Seal.</div>
                 </div>
             </div>
         </div>
@@ -468,21 +614,21 @@
         </div>
 
         <!-- Sample Report Preview Banner -->
-        <div style="background: rgba(212, 175, 55, 0.08); border: 1.5px solid var(--border-gold); border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 22px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
-            <div style="font-size: 14px; font-weight: 700; color: #fbbf24; margin-bottom: 6px;">
-                👁️ Want to inspect the report quality before ordering?
+        <div class="preview-box">
+            <div class="preview-title">
+                👀 Want to inspect the report quality before ordering?
             </div>
-            <p style="font-size: 12px; color: #cbd5e1; margin-bottom: 12px; line-height: 1.45;">
-                Preview an authentic, mathematically calculated 4-page sample Vedic Numerology Blueprint & Dasha Roadmap in your language:
+            <p class="preview-sub">
+                Preview an authentic, mathematically calculated 10-page sample Vedic Numerology Blueprint & Dasha Roadmap in your language:
             </p>
-            <div style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
-                <a href="/sample-report/en" target="_blank" style="background: var(--gold-gradient); color: #000; font-weight: 800; font-size: 11.5px; padding: 8px 14px; border-radius: 20px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 10px rgba(212,175,55,0.4);">
-                    <span>🇬🇧 Preview English PDF (4 Pages)</span>
+            <div class="preview-btn-wrap">
+                <a href="/sample-report/en" target="_blank" class="preview-btn preview-btn-en">
+                    <span>🇬🇧 Preview English PDF (10 Pages)</span>
                 </a>
-                <a href="/sample-report/hi" target="_blank" style="background: rgba(30, 41, 59, 0.95); border: 1px solid var(--border-gold-subtle); color: #fbbf24; font-weight: 700; font-size: 11.5px; padding: 8px 14px; border-radius: 20px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                <a href="/sample-report/hi" target="_blank" class="preview-btn preview-btn-alt">
                     <span>🇮🇳 नमूना हिन्दी PDF देखें</span>
                 </a>
-                <a href="/sample-report/gu" target="_blank" style="background: rgba(30, 41, 59, 0.95); border: 1px solid var(--border-gold-subtle); color: #fbbf24; font-weight: 700; font-size: 11.5px; padding: 8px 14px; border-radius: 20px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                <a href="/sample-report/gu" target="_blank" class="preview-btn preview-btn-alt">
                     <span>🚩 સેમ્પલ ગુજરાતી PDF જુઓ</span>
                 </a>
             </div>
@@ -491,7 +637,7 @@
         <!-- Intake & Order Form -->
         <div class="order-form-card" id="checkout-form-section">
             <h3 class="form-title">Enter Your Birth Details</h3>
-            <p class="form-sub">Your report will be calculated precisely based on your birth date</p>
+            <p class="form-sub">Your 10-page report will be calculated precisely based on your birth date</p>
 
             <form id="funnel-form">
                 <div class="form-group">
@@ -525,7 +671,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="client-email">Email Address (To Receive PDF Report) *</label>
+                    <label class="form-label" for="client-email">Email Address (To Receive 10-Page PDF Report) *</label>
                     <input type="email" id="client-email" class="form-input" placeholder="e.g. yourname@gmail.com" required>
                 </div>
 
@@ -535,14 +681,14 @@
                 </div>
 
                 <!-- Live Price Breakdown -->
-                <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-dark); border-radius: 8px; padding: 10px 14px; margin: 16px 0; font-size: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-dark); border-radius: 8px; padding: 10px 12px; margin: 14px 0; font-size: 11.5px; display: flex; justify-content: space-between; align-items: center;">
                     <span style="color: #cbd5e1;">Total Consultation Package:</span>
-                    <strong style="color: #4ade80; font-size: 16px;">₹499 INR</strong>
+                    <strong style="color: #4ade80; font-size: 15px;">₹499 INR</strong>
                 </div>
 
                 <!-- Submit Button -->
                 <button type="submit" class="btn-order-cta" id="btn-submit-order">
-                    <span>⚡ Pay ₹499 & Get My Report</span>
+                    <span>⚡ Pay ₹499 & Get My 10-Page Report</span>
                 </button>
 
                 <!-- Trust Badges -->
@@ -556,12 +702,12 @@
 
         <!-- Footer with Mandatory Razorpay Compliance Policy Links -->
         <footer class="funnel-footer">
-            <div style="margin-bottom: 10px; font-size: 11.5px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-                <a href="/privacy" target="_blank" style="color: #fbbf24; text-decoration: none;">Privacy Policy</a> •
-                <a href="/terms" target="_blank" style="color: #fbbf24; text-decoration: none;">Terms & Conditions</a> •
-                <a href="/refund-policy" target="_blank" style="color: #fbbf24; text-decoration: none;">Refund Policy</a> •
-                <a href="/shipping-policy" target="_blank" style="color: #fbbf24; text-decoration: none;">Delivery Policy</a> •
-                <a href="/contact" target="_blank" style="color: #fbbf24; text-decoration: none;">Contact Us</a>
+            <div class="policy-links-wrap">
+                <a href="/privacy" target="_blank" class="policy-link">Privacy Policy</a> •
+                <a href="/terms" target="_blank" class="policy-link">Terms & Conditions</a> •
+                <a href="/refund-policy" target="_blank" class="policy-link">Refund Policy</a> •
+                <a href="/shipping-policy" target="_blank" class="policy-link">Delivery Policy</a> •
+                <a href="/contact" target="_blank" class="policy-link">Contact Us</a>
             </div>
             <p>© 2026 Jigar Thakkar • Certified Vedic Numerologist & Vastu Consultant</p>
             <p>Phone: +91 9377614772 • Email: jigar93776@gmail.com • Ahmedabad, Gujarat</p>
@@ -571,8 +717,8 @@
     <!-- Processing Overlay -->
     <div id="processing-overlay" class="processing-overlay">
         <div class="spinner"></div>
-        <div class="proc-text" id="proc-text">Processing Your Vedic Report...</div>
-        <div class="proc-sub" id="proc-sub">Calculating planetary dasha grids and assembling your 4-page PDF blueprint.</div>
+        <div class="proc-text" id="proc-text">Processing Your 10-Page Vedic Report...</div>
+        <div class="proc-sub" id="proc-sub">Calculating planetary dasha grids and assembling your comprehensive 10-page life manual.</div>
     </div>
 
     <script>
@@ -620,114 +766,104 @@
                 return;
             }
 
-            // Show processing overlay
-            overlay.style.display = 'flex';
-            procText.textContent = 'Initializing Secure Checkout...';
-            procSub.textContent = 'Setting up your order for ₹499 INR...';
+            const submitBtn = document.getElementById('btn-submit-order');
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Creating Secure Payment Order...';
 
             try {
-                // 1. Create order on backend
+                // Step 1: Create Razorpay Order from Backend
                 const createRes = await fetch('/api/funnel/create-order', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        name, dob, gender, lang, email, phone, amount: 499
+                        name: name,
+                        dob: dob,
+                        gender: gender,
+                        lang: lang,
+                        email: email,
+                        phone: phone
                     })
                 });
+
+                if (!createRes.ok) {
+                    const err = await createRes.json();
+                    throw new Error(err.detail || 'Failed to initialize payment gateway.');
+                }
+
                 const orderData = await createRes.json();
 
-                if (!orderData.success) {
-                    throw new Error(orderData.detail || 'Failed to initialize order.');
-                }
-
-                if (orderData.is_live && typeof Razorpay !== 'undefined') {
-                    // LIVE RAZORPAY CHECKOUT
-                    overlay.style.display = 'none';
-
-                    const options = {
-                        key: orderData.key_id,
-                        amount: orderData.amount,
-                        currency: 'INR',
-                        name: "Jigar Thakkar's Vedic Studio",
-                        description: 'Personalized 4-Page Vedic Numerology Report',
-                        image: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🕉️</text></svg>',
-                        order_id: orderData.order_id,
-                        handler: async function (response) {
-                            // On payment success, verify and generate PDF
-                            overlay.style.display = 'flex';
-                            procText.textContent = 'Payment Confirmed! Generating Your Report...';
-                            procSub.textContent = 'Calculating planetary dasha grids and emailing your 4-page PDF...';
-
-                            await completeVerification({
-                                order_id: response.razorpay_order_id,
-                                payment_id: response.razorpay_payment_id,
-                                signature: response.razorpay_signature,
-                                name, dob, gender, lang, email, phone
-                            });
-                        },
-                        prefill: {
-                            name: name,
-                            email: email,
-                            contact: phone
-                        },
-                        theme: {
-                            color: '#d4af37'
+                // Step 2: Open Razorpay Checkout Modal
+                const options = {
+                    key: orderData.key_id,
+                    amount: orderData.amount,
+                    currency: orderData.currency,
+                    name: "Jigar Thakkar's Vedic Studio",
+                    description: "10-Page Vedic Numerology Life Blueprint",
+                    order_id: orderData.order_id,
+                    prefill: {
+                        name: name,
+                        email: email,
+                        contact: phone
+                    },
+                    theme: {
+                        color: "#d4af37"
+                    },
+                    modal: {
+                        ondismiss: function () {
+                            submitBtn.disabled = false;
+                            submitBtn.innerText = '⚡ Pay ₹499 & Get My 10-Page Report';
                         }
-                    };
+                    },
+                    handler: async function (response) {
+                        // Show processing overlay
+                        overlay.style.display = 'flex';
+                        procText.innerText = 'Verifying Payment & Assembling Blueprint...';
+                        procSub.innerText = 'Generating your certified 10-page PDF report and sending email...';
 
-                    const rzp = new Razorpay(options);
-                    rzp.on('payment.failed', function (response) {
-                        alert(`Payment Failed: ${response.error.description}`);
-                        overlay.style.display = 'none';
-                    });
-                    rzp.open();
+                        try {
+                            const verifyRes = await fetch('/api/funnel/verify-payment', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_signature: response.razorpay_signature,
+                                    name: name,
+                                    dob: dob,
+                                    gender: gender,
+                                    lang: lang,
+                                    email: email,
+                                    phone: phone
+                                })
+                            });
 
-                } else {
-                    // DEMO / SIMULATOR MODE (Keys pending in environment)
-                    procText.textContent = 'Simulating ₹499 Payment (Test Mode)...';
-                    procSub.textContent = 'Payment simulated successfully. Generating report and sending email...';
+                            if (!verifyRes.ok) {
+                                const vErr = await verifyRes.json();
+                                throw new Error(vErr.detail || 'Payment verification failed.');
+                            }
 
-                    setTimeout(async () => {
-                        await completeVerification({
-                            order_id: orderData.order_id,
-                            payment_id: `pay_sim_${Date.now()}`,
-                            signature: 'simulated_signature',
-                            name, dob, gender, lang, email, phone
-                        });
-                    }, 1200);
-                }
+                            const result = await verifyRes.json();
+                            // Redirect to instant success download page
+                            window.location.href = `/order/success?pdf=${encodeURIComponent(result.pdf_filename)}&name=${encodeURIComponent(result.client_name)}&email=${encodeURIComponent(result.email)}&lang=${encodeURIComponent(lang)}`;
+
+                        } catch (verErr) {
+                            overlay.style.display = 'none';
+                            alert('Payment was recorded but report generation encountered a delay: ' + verErr.message + '\nPlease contact Jigar Thakkar at +91 9377614772.');
+                            submitBtn.disabled = false;
+                            submitBtn.innerText = '⚡ Pay ₹499 & Get My 10-Page Report';
+                        }
+                    }
+                };
+
+                const rzp = new Razorpay(options);
+                rzp.open();
 
             } catch (err) {
-                overlay.style.display = 'none';
-                alert(`Error: ${err.message}`);
+                alert('Checkout Error: ' + err.message);
+                submitBtn.disabled = false;
+                submitBtn.innerText = '⚡ Pay ₹499 & Get My 10-Page Report';
             }
         });
-
-        // Verification & Redirect to Success Page
-        async function completeVerification(payload) {
-            try {
-                const verifyRes = await fetch('/api/funnel/verify-payment', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const result = await verifyRes.json();
-
-                if (!result.success) {
-                    throw new Error(result.detail || 'Verification failed.');
-                }
-
-                // Store in sessionStorage for success page
-                sessionStorage.setItem('last_order', JSON.stringify(result));
-
-                // Redirect to success download page
-                window.location.href = `/order/success?file=${encodeURIComponent(result.filename)}&name=${encodeURIComponent(result.client_name)}&email=${encodeURIComponent(result.email)}&lang=${encodeURIComponent(result.lang)}`;
-
-            } catch (err) {
-                overlay.style.display = 'none';
-                alert(`Fulfillment Error: ${err.message}`);
-            }
-        }
     </script>
 </body>
 </html>

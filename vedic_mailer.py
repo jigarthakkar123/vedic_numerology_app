@@ -23,8 +23,8 @@ EMAIL_TEMPLATES = {
     "en": {
         "subject": "🕉️ Your Personalized Vedic Numerology Report & Dasha Roadmap - Jigar Thakkar",
         "greeting": "Namaste",
-        "body_intro": "Thank you for ordering your sacred <strong>Vedic Numerology Blueprint & Dasha Roadmap</strong>. Your personalized 4-page consultation report has been mathematically calculated according to authentic Vedic principles and is attached to this email as a PDF document.",
-        "whats_inside_title": "What Is Included in Your 4-Page Blueprint:",
+        "body_intro": "Thank you for ordering your sacred <strong>Vedic Numerology Blueprint & Dasha Roadmap</strong>. Your personalized 10-page consultation report has been mathematically calculated according to authentic Vedic principles and is attached to this email as a PDF document.",
+        "whats_inside_title": "What Is Included in Your 10-Page Blueprint:",
         "items": [
             "<strong>Page 1:</strong> Lifetime Inborn Natal Matrix, Basic & Destiny Planetary Vibrations, Life Compass & Auspicious Gemstones/Metals.",
             "<strong>Page 2:</strong> 3-Tier Horizon Predictions (Active Mahadasha, Antardasha & Annual 9-Phase Pratyantar Dasha Roadmap).",
@@ -115,7 +115,7 @@ def build_email_html(recipient_name: str, lang: str = "en") -> str:
                 <div style="background: #1e293b; border: 1px dashed rgba(212, 175, 55, 0.4); border-radius: 8px; padding: 12px 16px; margin-bottom: 24px; text-align: center;">
                     <span style="font-size: 18px; vertical-align: middle;">📎</span>
                     <strong style="color: #4ade80; font-size: 13px; vertical-align: middle; margin-left: 6px;">
-                        Your personalized 4-page PDF report is attached to this email.
+                        Your personalized 10-page PDF report is attached to this email.
                     </strong>
                 </div>
 
@@ -149,7 +149,7 @@ def send_report_email(
     pdf_path: str
 ) -> Dict[str, Any]:
     """
-    Sends the 4-page Vedic Numerology report via SMTP.
+    Sends the 10-page Vedic Numerology report via SMTP.
     Returns status dictionary with success flag and details.
     """
     if not recipient_email or "@" not in recipient_email:

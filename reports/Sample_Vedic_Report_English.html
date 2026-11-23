@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Personal Vedic Numerology Blueprint - Rohit Sharma (Sample)</title>
+<title>Personal Vedic Numerology Blueprint - Aarav Sharma</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Gujarati:wght@400;600;700&display=swap');
 
 @page {
     size: A4 portrait;
@@ -24,14 +24,14 @@ body {
     color: #1e293b;
     background-color: #ffffff;
     font-size: 9.6px;
-    line-height: 1.42;
+    line-height: 1.45;
 }
 
 .page {
     width: 210mm;
     height: 297mm;
     max-height: 297mm;
-    padding: 10mm 13mm 9mm 13mm;
+    padding: 8mm 12mm 7mm 12mm;
     background: #ffffff;
     position: relative;
     page-break-after: always;
@@ -40,40 +40,41 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    box-sizing: border-box;
 }
 
 /* Ornamental Borders */
 .page-border {
     position: absolute;
-    top: 4.5mm;
-    left: 4.5mm;
-    right: 4.5mm;
-    bottom: 4.5mm;
+    top: 3.8mm;
+    left: 3.8mm;
+    right: 3.8mm;
+    bottom: 3.8mm;
     border: 1.2px solid #d4af37;
     pointer-events: none;
     z-index: 1;
 }
 .page-border-inner {
     position: absolute;
-    top: 6mm;
-    left: 6mm;
-    right: 6mm;
-    bottom: 6mm;
+    top: 5.2mm;
+    left: 5.2mm;
+    right: 5.2mm;
+    bottom: 5.2mm;
     border: 0.5px solid #e2c275;
     pointer-events: none;
     z-index: 1;
 }
 .corner-ornament {
     position: absolute;
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     border-color: #b38728;
     z-index: 2;
 }
-.corner-tl { top: 4.2mm; left: 4.2mm; border-top: 2.5px solid #b38728; border-left: 2.5px solid #b38728; }
-.corner-tr { top: 4.2mm; right: 4.2mm; border-top: 2.5px solid #b38728; border-right: 2.5px solid #b38728; }
-.corner-bl { bottom: 4.2mm; left: 4.2mm; border-bottom: 2.5px solid #b38728; border-left: 2.5px solid #b38728; }
-.corner-br { bottom: 4.2mm; right: 4.2mm; border-bottom: 2.5px solid #b38728; border-right: 2.5px solid #b38728; }
+.corner-tl { top: 3.5mm; left: 3.5mm; border-top: 2.5px solid #b38728; border-left: 2.5px solid #b38728; }
+.corner-tr { top: 3.5mm; right: 3.5mm; border-top: 2.5px solid #b38728; border-right: 2.5px solid #b38728; }
+.corner-bl { bottom: 3.5mm; left: 3.5mm; border-bottom: 2.5px solid #b38728; border-left: 2.5px solid #b38728; }
+.corner-br { bottom: 3.5mm; right: 3.5mm; border-bottom: 2.5px solid #b38728; border-right: 2.5px solid #b38728; }
 
 .page-content {
     position: relative;
@@ -84,72 +85,78 @@ body {
     justify-content: space-between;
 }
 
-/* Step Navigation Bar */
-.step-banner {
+/* Chapter Navigation Banner */
+.chap-banner {
     background: linear-gradient(135deg, #091124 0%, #172554 100%);
     border: 1px solid #d4af37;
     border-radius: 6px;
-    padding: 5px 9px;
+    padding: 5px 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 7px;
+    margin-bottom: 8px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
-.step-banner-left {
+.chap-banner-left {
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 8px;
+    overflow: hidden;
 }
-.step-badge-pill {
+.chap-badge-pill {
     background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
     color: #0f172a;
     font-size: 8px;
     font-weight: 800;
     text-transform: uppercase;
-    padding: 2px 7px;
+    padding: 2.5px 8px;
     border-radius: 12px;
     letter-spacing: 0.5px;
-    box-shadow: 0 1px 3px rgba(245,158,11,0.3);
+    white-space: nowrap;
 }
-.step-banner-sub {
+.chap-banner-sub {
     font-size: 8.8px;
     font-weight: 600;
     color: #fef08a;
     letter-spacing: 0.3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-.step-banner-consultant {
+.chap-banner-consultant {
     font-size: 7.8px;
     color: #93c5fd;
     font-weight: 500;
+    white-space: nowrap;
 }
 
-/* Main Header on Page 1 */
+/* Main Header on Cover Page */
 .report-main-header {
     text-align: center;
-    padding-bottom: 5px;
-    border-bottom: 1px solid #e8dec9;
-    margin-bottom: 7px;
+    padding-bottom: 6px;
+    border-bottom: 1.5px solid #d4af37;
+    margin-bottom: 8px;
 }
 .om-symbol {
-    font-size: 13px;
+    font-size: 15px;
     color: #b38728;
     font-weight: 700;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
+    margin-bottom: 2px;
 }
 .main-title {
     font-family: 'Cinzel', serif;
-    font-size: 17px;
-    font-weight: 800;
+    font-size: 18px;
+    font-weight: 900;
     color: #0f172a;
-    letter-spacing: 1.2px;
+    letter-spacing: 1.4px;
     text-transform: uppercase;
-    margin: 1px 0;
+    margin: 2px 0;
 }
 .sub-title {
-    font-size: 8.8px;
+    font-size: 9.2px;
     color: #854d0e;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.5px;
     font-weight: 600;
 }
 
@@ -159,10 +166,9 @@ body {
     font-size: 11px;
     font-weight: 700;
     color: #0f172a;
-    border-left: 3px solid #b38728;
-    padding-left: 6px;
-    margin-bottom: 5px;
-    margin-top: 4px;
+    border-left: 3.5px solid #b38728;
+    padding-left: 7px;
+    margin-bottom: 6px;
     display: flex;
     align-items: center;
     letter-spacing: 0.4px;
@@ -172,612 +178,866 @@ body {
 .profile-card {
     background: linear-gradient(135deg, #fdfbf7 0%, #f7f3e8 100%);
     border: 1.2px solid #d4af37;
-    border-radius: 6px;
-    padding: 7px 10px;
-    margin-bottom: 6px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    border-radius: 8px;
+    padding: 9px 12px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
 }
 .client-data-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 4px 6px;
-    margin-bottom: 6px;
+    gap: 5px 8px;
+    margin-bottom: 8px;
 }
 .data-pill {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 4px;
-    padding: 3px 6px;
+    border-radius: 5px;
+    padding: 4px 7px;
 }
 .data-pill.highlight {
     background: #fffbeb;
-    border-color: #f59e0b;
+    border-color: #fcd34d;
 }
 .data-pill .label {
     font-size: 7.2px;
-    text-transform: uppercase;
     color: #64748b;
+    text-transform: uppercase;
     font-weight: 700;
+    letter-spacing: 0.3px;
 }
 .data-pill .value {
-    font-size: 9.4px;
-    font-weight: 700;
+    font-size: 10px;
     color: #0f172a;
+    font-weight: 700;
 }
 .data-pill.highlight .value {
     color: #b45309;
+    font-size: 11px;
 }
 
-/* Dual Vedic Grids Layout */
+/* Table of Contents Index (Page 1) */
+.toc-container {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+.toc-title {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    font-weight: 800;
+    color: #0f172a;
+    border-bottom: 1px solid #d4af37;
+    padding-bottom: 4px;
+    margin-bottom: 6px;
+    text-align: center;
+    letter-spacing: 0.8px;
+}
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 12px;
+}
+.toc-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 6px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+}
+.toc-page-badge {
+    background: #172554;
+    color: #fbbf24;
+    font-size: 8px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+.toc-text {
+    flex: 1;
+    overflow: hidden;
+}
+.toc-ch-badge {
+    font-size: 7px;
+    font-weight: 700;
+    color: #854d0e;
+    text-transform: uppercase;
+}
+.toc-ch-title {
+    font-size: 8.5px;
+    font-weight: 600;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.toc-check {
+    color: #16a34a;
+    font-weight: 800;
+    font-size: 9px;
+}
+
+/* Dual Grids Row (Page 2) */
 .dual-grids-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 5px;
+    gap: 14px;
+    margin-bottom: 10px;
 }
 .grid-box-card {
     background: #ffffff;
-    border: 1.2px solid #d4af37;
-    border-radius: 5px;
-    padding: 4px 6px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    border: 1.5px solid #d4af37;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
 }
 .grid-box-card.dasha {
-    border-color: #38bdf8;
-    background: #f0f9ff;
+    border-color: #f59e0b;
+    background: #fffdfa;
 }
 .grid-caption {
-    font-size: 8px;
+    font-family: 'Cinzel', serif;
+    font-size: 10.5px;
     font-weight: 800;
-    color: #854d0e;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    margin-bottom: 1px;
-    text-align: center;
+    color: #0f172a;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
 }
-.grid-caption.dasha {
-    color: #0369a1;
-}
-.grid-subtext {
-    font-size: 6.8px;
-    color: #64748b;
-    margin-bottom: 3px;
-    text-align: center;
-}
-.vedic-grid {
+.vedic-grid-table {
     display: grid;
-    grid-template-columns: repeat(3, 40px);
-    grid-template-rows: repeat(3, 26px);
-    gap: 2px;
-    background: #b38728;
-    padding: 2px;
-    border-radius: 3px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-}
-.vedic-grid.dasha {
-    background: #0284c7;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 5px;
+    max-width: 175px;
+    margin: 0 auto;
 }
 .vedic-cell {
-    background: #ffffff;
+    aspect-ratio: 1;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 2px;
-    font-size: 11px;
-    font-weight: 700;
-    color: #0f172a;
-}
-.vedic-cell.natal-cell.active {
-    background: #fef3c7;
-    color: #92400e;
-    font-weight: 800;
-}
-.vedic-cell.dasha-cell {
-    display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     gap: 2px;
-    flex-wrap: wrap;
-    padding: 1px;
+    border-radius: 5px;
+    font-weight: 800;
+    padding: 2px;
+    font-size: 12px;
 }
-.vedic-cell.empty {
+.vedic-cell.natal-cell.active {
+    background: #172554;
+    color: #ffffff;
+    box-shadow: 0 1px 3px rgba(23,37,84,0.3);
+}
+.vedic-cell.natal-cell.empty {
+    background: #f8fafc;
     color: #cbd5e1;
-    font-size: 8px;
+    border: 1px dashed #cbd5e1;
+}
+.vedic-cell.dasha-cell.active {
+    background: #faf5ff;
+    border: 1px solid #d8b4fe;
+}
+.vedic-cell.dasha-cell.empty {
+    background: #f8fafc;
+    color: #cbd5e1;
+    border: 1px dashed #cbd5e1;
 }
 .chip {
-    font-size: 8px;
+    font-size: 9px;
     font-weight: 800;
     padding: 1px 3px;
-    border-radius: 2px;
-    line-height: 1;
+    border-radius: 3px;
+    display: inline-block;
+    line-height: 1.1;
 }
-.chip-natal { background: #fef3c7; color: #854d0e; border: 1px solid #fde047; }
-.chip-md { background: #e0f2fe; color: #0284c7; border: 1px solid #38bdf8; }
-.chip-ad { background: #dcfce7; color: #15803d; border: 1px solid #22c55e; }
-.chip-pd { background: #f3e8ff; color: #6d28d9; border: 1px solid #7c3aed; }
+.chip-natal {
+    background: #172554;
+    color: #ffffff;
+}
+.chip-mahadasha {
+    background: #d97706;
+    color: #ffffff;
+}
+.chip-antardasha {
+    background: #7e22ce;
+    color: #ffffff;
+}
 
-.grid-legend-bar {
+/* Color Legend Bar */
+.color-legend-bar {
     display: flex;
-    justify-content: center;
-    gap: 8px;
+    justify-content: space-around;
     background: #f8fafc;
     border: 1px solid #e2e8f0;
-    border-radius: 4px;
-    padding: 2px 7px;
-    margin-bottom: 5px;
-    font-size: 7px;
-    font-weight: 700;
-}
-.legend-pill { display: inline-flex; align-items: center; gap: 3px; }
-.legend-dot { width: 5.5px; height: 5.5px; border-radius: 50%; display: inline-block; }
-.dot-natal { background: #d4af37; }
-.dot-md { background: #38bdf8; }
-.dot-ad { background: #22c55e; }
-.dot-pd { background: #7c3aed; }
-
-/* Planetary Friendship & Allies Strip */
-.allies-box {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-left: 3px solid #3b82f6;
-    border-radius: 5px;
+    border-radius: 6px;
     padding: 5px 8px;
-    margin-bottom: 6px;
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 4px;
+    margin-bottom: 10px;
 }
-.allies-item {
+.legend-chip {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    font-size: 8px;
+    font-weight: 600;
+    color: #334155;
 }
-.allies-label {
-    font-size: 6.8px;
-    text-transform: uppercase;
-    color: #64748b;
-    font-weight: 700;
+.legend-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
 }
-.allies-val {
-    font-size: 9px;
-    font-weight: 700;
-    color: #0f172a;
-}
-.allies-val.green { color: #166534; }
-.allies-val.orange { color: #b45309; }
-.allies-val.red { color: #991b1b; }
 
-.name-harmony-bar {
-    background: #f0fdf4;
-    border: 1px solid #86efac;
-    border-radius: 4px;
-    padding: 3.5px 7px;
-    font-size: 8.4px;
-    color: #166534;
-    margin-bottom: 6px;
+/* Plane Cards */
+.planes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 8px;
+}
+.plane-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 7px 9px;
+}
+.plane-header {
+    font-family: 'Cinzel', serif;
+    font-size: 9.5px;
+    font-weight: 800;
+    color: #0f172a;
+    border-bottom: 1px solid #cbd5e1;
+    padding-bottom: 3px;
+    margin-bottom: 4px;
+}
+.plane-desc {
+    font-size: 8.5px;
+    color: #475569;
     line-height: 1.35;
 }
 
-/* 2-Column Traits & Precautions */
-.traits-duo-grid {
+/* Harmony Compass (Page 3) */
+.compass-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+}
+.compass-box {
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid;
+    text-align: center;
+}
+.compass-box.friendly {
+    background: #f0fdf4;
+    border-color: #86efac;
+}
+.compass-box.neutral {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+.compass-box.enemy {
+    background: #fef2f2;
+    border-color: #fca5a5;
+}
+.compass-label {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    font-weight: 800;
+    margin-bottom: 5px;
+}
+.compass-box.friendly .compass-label { color: #15803d; }
+.compass-box.neutral .compass-label { color: #475569; }
+.compass-box.enemy .compass-label { color: #b91c1c; }
+.compass-nums {
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+.compass-box.friendly .compass-nums { color: #166534; }
+.compass-box.neutral .compass-nums { color: #1e293b; }
+.compass-box.enemy .compass-nums { color: #991b1b; }
+.compass-sub {
+    font-size: 8px;
+    color: #64748b;
+    margin-top: 4px;
+}
+
+/* Alignments 4-Grid */
+.align-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 6px;
-    margin-bottom: 5px;
+    gap: 8px;
+    margin-bottom: 10px;
 }
-.traits-card {
+.align-card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 5px;
-    padding: 5px 7px;
+    border-radius: 6px;
+    padding: 7px 10px;
 }
-.traits-card.strengths {
-    border-left: 3px solid #16a34a;
-    background: #fcfdfc;
+.align-header {
+    font-size: 8.2px;
+    font-weight: 700;
+    color: #854d0e;
+    text-transform: uppercase;
+    margin-bottom: 2px;
 }
-.traits-card.precautions {
-    border-left: 3px solid #f59e0b;
-    background: #fefdfa;
-}
-.traits-card-header {
-    font-size: 8.4px;
+.align-val {
+    font-size: 10.5px;
     font-weight: 800;
-    margin-bottom: 3px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
+    color: #0f172a;
 }
-.traits-card.strengths .traits-card-header { color: #166534; }
-.traits-card.precautions .traits-card-header { color: #b45309; }
 
-.quality-list-clean, .precaution-list-clean {
-    list-style: none;
-    padding-left: 0;
+/* Name Harmony Card */
+.name-card {
+    background: linear-gradient(135deg, #fdfbf7 0%, #fef3c7 100%);
+    border: 1.2px solid #d4af37;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
 }
-.quality-item-clean, .precaution-item-clean {
-    font-size: 8.3px;
-    color: #334155;
-    line-height: 1.32;
-    margin-bottom: 2.5px;
-    display: flex;
-    align-items: flex-start;
-    gap: 4px;
-}
-.bullet-icon { color: #16a34a; font-size: 8px; font-weight: bold; flex-shrink: 0; }
-.precaution-icon { color: #ea580c; font-size: 8px; font-weight: bold; flex-shrink: 0; }
-
-/* Curiosity Teaser Hook Box */
-.curiosity-hook-card {
-    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-    border: 1.2px solid #f59e0b;
-    border-radius: 5px;
-    padding: 4px 8px;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    margin-top: auto;
+.name-header {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    font-weight: 800;
+    color: #0f172a;
     margin-bottom: 4px;
-    box-shadow: 0 1px 3px rgba(245,158,11,0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
-.curiosity-icon {
-    font-size: 15px;
-    flex-shrink: 0;
+.name-score-pill {
+    background: #15803d;
+    color: #ffffff;
+    font-size: 8px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 10px;
 }
-.curiosity-content {
+.name-body {
+    font-size: 9px;
+    color: #334155;
+    line-height: 1.45;
+}
+
+/* Qualities & Precautions (Pages 4 & 5) */
+.hero-box {
+    background: linear-gradient(135deg, #091124 0%, #1e293b 100%);
+    border: 1.5px solid #d4af37;
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #ffffff;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.hero-left {
     flex: 1;
 }
-.curiosity-text {
-    font-size: 7.8px;
-    font-weight: 600;
-    color: #78350f;
-    line-height: 1.32;
+.hero-num-badge {
+    font-size: 10px;
+    font-weight: 800;
+    color: #fbbf24;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
-.curiosity-hook-card.action-card {
-    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-    border-color: #22c55e;
+.hero-title {
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 2px 0;
 }
-.curiosity-hook-card.action-card .curiosity-text {
-    color: #14532d;
+.hero-sub {
+    font-size: 9px;
+    color: #94a3b8;
+    line-height: 1.35;
+}
+.hero-right-circle {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 900;
+    color: #0f172a;
+    box-shadow: 0 2px 8px rgba(245,158,11,0.4);
 }
 
-/* Page 2: 3-Tier Time Horizons */
-.intro-lead-pill {
+.two-col-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+.col-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+.col-card.precautions {
+    border-color: #fed7aa;
+    background: #fffbf5;
+}
+.col-title {
+    font-family: 'Cinzel', serif;
+    font-size: 10.5px;
+    font-weight: 800;
+    color: #0f172a;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.quality-item-clean, .precaution-item-clean {
+    list-style: none;
+    font-size: 9px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    line-height: 1.4;
+}
+.bullet-icon {
+    color: #b45309;
+    font-weight: 800;
+    font-size: 10px;
+    flex-shrink: 0;
+}
+.precaution-icon {
+    color: #ea580c;
+    font-weight: 800;
+    font-size: 10px;
+    flex-shrink: 0;
+}
+
+.career-box {
     background: #f8fafc;
-    border: 1px solid #cbd5e1;
-    border-radius: 4px;
-    padding: 3px 7px;
-    font-size: 8px;
-    color: #475569;
-    font-weight: 600;
-    margin-bottom: 5px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+}
+.career-title {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 4px;
+}
+.career-text {
+    font-size: 9px;
+    color: #334155;
+    line-height: 1.45;
+}
+
+/* Mahadasha / Forecast (Pages 6 & 7) */
+.tier-dash-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 12px;
 }
 .tier-card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 5px;
-    padding: 5px 8px;
-    margin-bottom: 5px;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
 }
-.tier-card.tier-md { border-left: 3.5px solid #0284c7; background: #fbfdff; }
-.tier-card.tier-ad { border-left: 3.5px solid #16a34a; background: #fbfdfc; }
-.tier-card.tier-pd { border-left: 3.5px solid #7c3aed; background: #fbfaff; }
-
-.tier-header-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2.5px;
-    border-bottom: 1px dashed #e2e8f0;
-    padding-bottom: 2px;
+.tier-card.active-card {
+    border: 1.5px solid #d4af37;
+    background: #fffdf8;
+    box-shadow: 0 2px 6px rgba(212,175,55,0.15);
 }
 .tier-badge {
-    font-size: 7.2px;
+    font-size: 7.5px;
     font-weight: 800;
     text-transform: uppercase;
-    padding: 1.5px 5px;
-    border-radius: 3px;
+    padding: 2px 6px;
+    border-radius: 8px;
+    display: inline-block;
+    margin-bottom: 6px;
 }
-.badge-md { background: #e0f2fe; color: #0284c7; border: 1px solid #7dd3fc; }
-.badge-ad { background: #dcfce7; color: #16a34a; border: 1px solid #86efac; }
-.badge-pd { background: #ffedd5; color: #ea580c; border: 1px solid #fdba74; }
-
-.tier-title-main { font-size: 9.2px; font-weight: 800; color: #0f172a; }
-.tier-date-span { font-size: 7.5px; font-weight: 700; color: #475569; }
-.tier-text-content { font-size: 8.3px; color: #1e293b; line-height: 1.34; margin-bottom: 2px; }
-.tier-note-bar { font-size: 7.6px; color: #0369a1; background: #f0f9ff; padding: 2px 5px; border-radius: 3px; margin-top: 2px; }
-.tier-subgrid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4px;
-    margin-top: 2.5px;
-    font-size: 7.8px;
+.tier-badge.gold { background: #fef3c7; color: #92400e; }
+.tier-badge.blue { background: #dbeafe; color: #1e40af; }
+.tier-badge.purple { background: #f3e8ff; color: #6b21a8; }
+.tier-lord {
+    font-size: 12px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 2px;
+}
+.tier-dates {
+    font-size: 8.5px;
+    color: #64748b;
+    margin-bottom: 6px;
+}
+.tier-desc {
+    font-size: 8.5px;
     color: #334155;
+    line-height: 1.35;
+    text-align: left;
 }
-.tier-dos-donts-grid {
+
+.tactical-box {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 5px;
-    margin-top: 2px;
+    gap: 12px;
+    margin-bottom: 10px;
 }
-.do-box, .dont-box {
-    border-radius: 4px;
-    padding: 3px 5px;
-    font-size: 7.6px;
+.tactical-card {
+    border-radius: 8px;
+    padding: 10px 12px;
+    border: 1px solid;
 }
-.do-box { background: #f0fdf4; border: 1px solid #bbf7d0; }
-.dont-box { background: #fef2f2; border: 1px solid #fecaca; }
-.do-title { font-weight: 800; color: #166534; margin-bottom: 1.5px; }
-.dont-title { font-weight: 800; color: #991b1b; margin-bottom: 1.5px; }
-.do-box ul, .dont-box ul { list-style: none; padding-left: 0; }
-.do-box li, .dont-box li { padding-left: 7px; position: relative; margin-bottom: 1.5px; line-height: 1.25; }
-.do-box li::before { content: "✔"; position: absolute; left: 0; font-size: 6.5px; color: #16a34a; }
-.dont-box li::before { content: "✖"; position: absolute; left: 0; font-size: 6.5px; color: #dc2626; }
+.tactical-card.dos {
+    background: #f0fdf4;
+    border-color: #86efac;
+}
+.tactical-card.donts {
+    background: #fef2f2;
+    border-color: #fca5a5;
+}
+.tactical-title {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    font-weight: 800;
+    margin-bottom: 6px;
+}
+.tactical-card.dos .tactical-title { color: #15803d; }
+.tactical-card.donts .tactical-title { color: #b91c1c; }
+.tactical-list {
+    list-style: none;
+    font-size: 8.8px;
+    line-height: 1.45;
+}
+.tactical-card.dos .tactical-list { color: #166534; }
+.tactical-card.donts .tactical-list { color: #991b1b; }
+.tactical-list li { margin-bottom: 4px; }
 
-/* Roadmap Calendar Table */
-.roadmap-table-wrap {
-    margin-top: 4px;
+/* Roadmap Table (Page 8) */
+.roadmap-container {
+    background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 5px;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
 }
 .roadmap-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 7.3px;
+    font-size: 8.8px;
 }
 .roadmap-table th {
-    background: #f8fafc;
-    color: #475569;
-    font-weight: 800;
-    padding: 2.5px 5px;
-    border-bottom: 1px solid #e2e8f0;
+    background: #0f172a;
+    color: #f8fafc;
+    font-weight: 700;
+    padding: 6px 8px;
     text-transform: uppercase;
+    font-size: 7.8px;
+    letter-spacing: 0.5px;
 }
 .roadmap-table td {
-    padding: 2px 5px;
-    border-bottom: 1px solid #f1f5f9;
-    color: #1e293b;
+    padding: 5px 8px;
+    border-bottom: 1px solid #e2e8f0;
 }
 .roadmap-table tr.active-phase {
-    background: #fffbeb;
+    background: #fffbeb !important;
     font-weight: 700;
 }
 .roadmap-table tr.active-phase td {
-    color: #854d0e;
-    border-bottom: 1px solid #fef08a;
+    border-top: 1.5px solid #f59e0b;
+    border-bottom: 1.5px solid #f59e0b;
 }
 .status-chip {
-    font-size: 6.6px;
+    font-size: 7.5px;
     font-weight: 800;
-    padding: 1px 3.5px;
-    border-radius: 2px;
+    padding: 2px 6px;
+    border-radius: 10px;
     display: inline-block;
     background: #f1f5f9;
     color: #475569;
 }
-.status-chip.active { background: #fef08a; color: #854d0e; border: 1px solid #facc15; }
-
-/* Page 3: Yogas & Vibrations */
-.yogas-grid-clean {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 5px;
-    margin-bottom: 5px;
+.status-chip.active {
+    background: #f59e0b;
+    color: #ffffff;
+    box-shadow: 0 1px 3px rgba(245,158,11,0.4);
 }
+
+/* Yogas & Vibrations (Page 9) */
 .yoga-card-clean {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 5px;
-    padding: 4px 6px;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 7px;
 }
 .yoga-card-clean.auspicious {
-    border-left: 3px solid #16a34a;
-    background: #fbfdfc;
+    border-left: 3.5px solid #16a34a;
+    background: #f0fdf4;
 }
 .yoga-card-clean.inauspicious {
-    border-left: 3px solid #e11d48;
-    background: #fffafa;
+    border-left: 3.5px solid #dc2626;
+    background: #fef2f2;
 }
 .yoga-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2px;
-    padding-bottom: 1.5px;
-    border-bottom: 1px dashed #e2e8f0;
+    margin-bottom: 3px;
 }
 .yoga-title {
-    font-size: 9.2px;
-    font-weight: 700;
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    font-weight: 800;
     color: #0f172a;
 }
 .yoga-pill {
-    font-size: 7.2px;
-    font-weight: 700;
-    padding: 1px 4px;
-    border-radius: 3px;
+    font-size: 7.5px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 8px;
+    text-transform: uppercase;
 }
-.yoga-pill.gold { background: #fef3c7; color: #92400e; border: 1px solid #fde047; }
-.yoga-pill.ruby { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+.yoga-pill.gold { background: #fef3c7; color: #92400e; }
+.yoga-pill.ruby { background: #fee2e2; color: #991b1b; }
 .yoga-desc {
-    font-size: 8px;
-    color: #334155;
-    line-height: 1.3;
+    font-size: 8.5px;
+    color: #475569;
+    line-height: 1.35;
 }
 .yoga-remedy-strip {
-    font-size: 7.2px;
+    margin-top: 4px;
+    padding: 4px 7px;
+    background: #ffffff;
+    border-radius: 4px;
+    font-size: 8px;
     color: #991b1b;
-    margin-top: 2px;
-    padding-top: 2px;
-    border-top: 1px dashed #fecdd3;
-    line-height: 1.25;
+    border: 1px dashed #fca5a5;
 }
 
-/* Vibrations Grid */
-.vibrations-grid {
+.vibes-dashboard-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4.5px;
-    margin-bottom: 4px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
 }
 .vibe-card {
-    border-radius: 4px;
-    padding: 3.5px 6px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 6px 8px;
 }
-.vibe-card.badge-pos { background: #f0fdf4; border: 1px solid #86efac; }
-.vibe-card.badge-neg { background: #fef2f2; border: 1px solid #fecaca; }
+.vibe-card.badge-pos { border-left: 3px solid #16a34a; }
+.vibe-card.badge-neg { border-left: 3px solid #f59e0b; }
 .vibe-header {
     display: flex;
     justify-content: space-between;
-    font-weight: 700;
-    margin-bottom: 1px;
+    align-items: center;
+    margin-bottom: 2px;
 }
-.badge-pos .vibe-num { color: #166534; font-size: 8.5px; }
-.badge-neg .vibe-num { color: #991b1b; font-size: 8.5px; }
-.vibe-type-badge { font-size: 7.2px; font-weight: 700; }
-.badge-pos .vibe-type-badge { color: #166534; }
-.badge-neg .vibe-type-badge { color: #991b1b; }
-.vibe-shift-tag { font-size: 7px; font-weight: 700; margin-bottom: 1px; }
-.vibe-body { font-size: 7.8px; color: #334155; line-height: 1.26; }
+.vibe-num {
+    font-size: 9px;
+    font-weight: 800;
+    color: #0f172a;
+}
+.vibe-type-badge {
+    font-size: 7px;
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 4px;
+}
+.vibe-card.badge-pos .vibe-type-badge { background: #dcfce7; color: #15803d; }
+.vibe-card.badge-neg .vibe-type-badge { background: #fef3c7; color: #b45309; }
+.vibe-body {
+    font-size: 7.8px;
+    color: #475569;
+    line-height: 1.3;
+}
 
-/* Page 4: Predictions 2x4 Grid */
+/* Predictions & Remedies (Page 10) */
 .preds-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4px 6px;
-    margin-bottom: 5px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
 }
 .pred-card {
-    background: #ffffff;
+    background: #f8fafc;
     border: 1px solid #e2e8f0;
-    border-radius: 4px;
-    padding: 4px 6px;
+    border-radius: 6px;
+    padding: 6px 8px;
 }
 .pred-header {
     display: flex;
     align-items: center;
     gap: 4px;
-    border-bottom: 1px solid #f1f5f9;
-    padding-bottom: 1.5px;
-    margin-bottom: 2px;
+    margin-bottom: 3px;
 }
-.pred-icon { font-size: 9px; }
-.pred-title { font-size: 8.8px; font-weight: 700; color: #0f172a; }
-.pred-body { font-size: 8px; color: #334155; line-height: 1.28; }
+.pred-icon {
+    font-size: 11px;
+}
+.pred-title {
+    font-family: 'Cinzel', serif;
+    font-size: 8.5px;
+    font-weight: 800;
+    color: #0f172a;
+}
+.pred-body {
+    font-size: 7.8px;
+    color: #334155;
+    line-height: 1.35;
+}
 
-/* Remedies 2x3 Grid */
 .remedies-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4px 6px;
-    margin-bottom: 5px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
 }
 .remedy-card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 4px;
-    padding: 3.5px 6px;
+    border-radius: 6px;
+    padding: 6px 8px;
     display: flex;
-    gap: 5px;
-    align-items: center;
+    gap: 6px;
 }
 .remedy-num {
-    width: 16px;
-    height: 16px;
-    min-width: 16px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
-    background: #fef3c7;
-    color: #92400e;
-    border: 1px solid #d4af37;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 8px;
+    background: #172554;
+    color: #fbbf24;
+    font-size: 8.5px;
     font-weight: 800;
-}
-.remedy-content { flex: 1; }
-.remedy-label { font-size: 7.6px; font-weight: 700; color: #854d0e; text-transform: uppercase; }
-.remedy-text { font-size: 8px; color: #334155; line-height: 1.24; }
-
-/* Deluxe Master Certification Seal */
-.cert-stamp-card-deluxe {
-    background: linear-gradient(135deg, #091124 0%, #1e293b 100%);
-    border: 1.2px solid #d4af37;
-    border-radius: 6px;
-    padding: 7px 11px;
-    color: #f8fafc;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: auto;
-    margin-bottom: 3px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-}
-.cert-title {
-    font-family: 'Cinzel', serif;
-    font-size: 10px;
-    color: #fbbf24;
-    font-weight: 700;
-    letter-spacing: 0.6px;
-    margin-bottom: 1.5px;
-}
-.cert-desc {
-    font-size: 7.8px;
-    color: #cbd5e1;
-    line-height: 1.3;
-    max-width: 460px;
-}
-.cert-contact-bar {
-    display: flex;
-    gap: 10px;
-    margin-top: 3px;
-    font-size: 8px;
-    color: #fde047;
-    font-weight: 600;
-}
-.cert-seal-deluxe {
-    border: 1.5px dashed #d4af37;
-    border-radius: 50%;
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    font-size: 6.5px;
-    font-weight: 700;
+    flex-shrink: 0;
+}
+.remedy-content {
+    flex: 1;
+}
+.remedy-label {
+    font-family: 'Cinzel', serif;
+    font-size: 8.2px;
+    font-weight: 800;
+    color: #854d0e;
+    margin-bottom: 1px;
+}
+.remedy-text {
+    font-size: 7.8px;
+    color: #334155;
+    line-height: 1.3;
+}
+
+/* Astrological Seal Card */
+.seal-card {
+    background: linear-gradient(135deg, #091124 0%, #172554 100%);
+    border: 1.5px solid #d4af37;
+    border-radius: 8px;
+    padding: 8px 14px;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 4px;
+}
+.seal-symbol {
+    font-size: 28px;
     color: #fbbf24;
+    line-height: 1;
+}
+.seal-content {
+    flex: 1;
+}
+.seal-title {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    font-weight: 800;
+    color: #fbbf24;
+    letter-spacing: 0.8px;
+    margin-bottom: 2px;
+}
+.seal-text {
+    font-size: 8px;
+    color: #cbd5e1;
+    line-height: 1.35;
+}
+.seal-blessing {
+    font-size: 8px;
+    color: #fef08a;
+    font-weight: 600;
+    margin-top: 3px;
+}
+
+/* Curiosity Preview Hook */
+.curiosity-box {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    border: 1px dashed #d97706;
+    border-radius: 6px;
+    padding: 4px 8px;
+    margin-top: 4px;
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.curiosity-pill {
+    background: #d97706;
+    color: #ffffff;
+    font-size: 7.2px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 10px;
+    white-space: nowrap;
     text-transform: uppercase;
-    letter-spacing: 0.4px;
-    line-height: 1.1;
-    background: rgba(212, 175, 55, 0.05);
+}
+.curiosity-text {
+    font-size: 8.2px;
+    color: #78350f;
+    font-weight: 600;
+    line-height: 1.35;
 }
 
 /* Footer */
-.page-footer {
+.footer {
+    border-top: 1px solid #e2e8f0;
+    padding-top: 4px;
+    font-size: 7.5px;
+    color: #64748b;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 3px;
-    border-top: 1px solid #e2c275;
-    font-size: 7.8px;
-    color: #64748b;
-    margin-top: auto;
-}
-.footer-stamp {
-    font-weight: 600;
-    color: #b38728;
-    letter-spacing: 0.3px;
+    margin-top: 2px;
 }
 </style>
 </head>
 <body>
 
-<!-- ==================== PAGE 1: CLIENT DETAILS & DUAL VEDIC GRIDS ==================== -->
+<!-- ==================== PAGE 1: ROYAL COVER & SOUL CERTIFICATE ==================== -->
 <div class="page">
     <div class="page-border"></div>
     <div class="page-border-inner"></div>
@@ -788,167 +1048,151 @@ body {
 
     <div class="page-content">
         <div>
-            <!-- Step Navigation Banner -->
-            <div class="step-banner">
-                <div class="step-banner-left">
-                    <span class="step-badge-pill">STEP 1 OF 4: YOUR COSMIC IDENTITY & SOUL MATRIX</span>
-                    <span class="step-banner-sub">Core Inborn Personality, Dual Vedic Grids & Planetary Allies</span>
-                </div>
-                <div class="step-banner-consultant">Consultant: Jigar Thakkar | 📞 +91 9377614772</div>
-            </div>
-
             <!-- Header -->
             <div class="report-main-header">
-                <div class="om-symbol">॥ श्री गणेशाय नमः ॥</div>
+                <div class="om-symbol">ॐ • श्री गणेशाय नमः • ॐ</div>
                 <h1 class="main-title">Personal Vedic Numerology Blueprint</h1>
-                <div class="sub-title">Prepared by: <strong>Jigar Thakkar</strong> (Certified Vedic Numerologist & Vastu Consultant) • 📞 +91 9377614772 • ✉ jigar93776@gmail.com</div>
+                <p class="sub-title">Authentic Sankhya Shastra Analysis & 10-Year Dasha Roadmap</p>
             </div>
 
-            <!-- Profile Hero Card -->
+            <!-- Profile Hero Certificate Card -->
             <div class="profile-card">
                 <div class="client-data-grid">
                     <div class="data-pill">
                         <div class="label">Client Name</div>
-                        <div class="value">Rohit Sharma (Sample)</div>
+                        <div class="value">Aarav Sharma</div>
                     </div>
                     <div class="data-pill">
                         <div class="label">Date of Birth</div>
-                        <div class="value">30/04/1987 (Thursday)</div>
+                        <div class="value">15/07/1992 (Wednesday)</div>
                     </div>
                     <div class="data-pill">
-                        <div class="label">Name Number (Namank) (Namank)</div>
-                        <div class="value">5 • Jupiter</div>
+                        <div class="label">Gender</div>
+                        <div class="value">Male</div>
                     </div>
                     <div class="data-pill highlight">
                         <div class="label">Basic Number (Moolank)</div>
-                        <div class="value">3 • Jupiter (Guru)</div>
+                        <div class="value">6 — Venus (Shukra)</div>
                     </div>
                     <div class="data-pill highlight">
                         <div class="label">Destiny Number (Bhagyank)</div>
-                        <div class="value">5 • Mercury (Budh)</div>
+                        <div class="value">7 — Ketu (Dragon's Tail)</div>
                     </div>
-                    <div class="data-pill">
-                        <div class="label">Planetary Dasha Cycles (Timeline)</div>
-                        <div class="value">MD: 9 | AD: 9 | PD: 6</div>
+                    <div class="data-pill highlight">
+                        <div class="label">Name Number (Namank)</div>
+                        <div class="value">9 (Neutral)</div>
                     </div>
-                </div>
-
-                <!-- Dual Grids Side-by-Side (Natal vs Dasha Activation) -->
-                <div class="dual-grids-row">
-                    <div class="grid-box-card">
-                        <div class="grid-caption">👑 Natal Birth Grid (Lifetime Inborn Matrix)</div>
-                        <div class="grid-subtext">Permanent inborn planetary frequencies & lifetime karmic foundation</div>
-                        <div class="vedic-grid">
-                            <div class="vedic-cell natal-cell active">3</div>
-<div class="vedic-cell natal-cell empty">-</div>
-<div class="vedic-cell natal-cell empty">-</div>
-<div class="vedic-cell natal-cell empty">-</div>
-<div class="vedic-cell natal-cell active">7</div>
-<div class="vedic-cell natal-cell active">5</div>
-<div class="vedic-cell natal-cell empty">-</div>
-<div class="vedic-cell natal-cell active">8</div>
-<div class="vedic-cell natal-cell active">4</div>
-
-                        </div>
-                    </div>
-                    <div class="grid-box-card dasha">
-                        <div class="grid-caption dasha">🪐 Dasha & Transit Activation Grid (Active Period)</div>
-                        <div class="grid-subtext">Dynamic activation: Natal (Gold) + Mahadasha (Sky Blue) + Antardasha (Green) + Pratyantar (Orange)</div>
-                        <div class="vedic-grid dasha">
-                            <div class="vedic-cell dasha-cell active"><span class="chip chip-natal">3</span></div>
-<div class="vedic-cell dasha-cell empty">-</div>
-<div class="vedic-cell dasha-cell active"><span class="chip chip-md">9</span><span class="chip chip-ad">9</span></div>
-<div class="vedic-cell dasha-cell active"><span class="chip chip-pd">6</span></div>
-<div class="vedic-cell dasha-cell active"><span class="chip chip-natal">7</span></div>
-<div class="vedic-cell dasha-cell active"><span class="chip chip-natal">5</span></div>
-<div class="vedic-cell dasha-cell empty">-</div>
-<div class="vedic-cell dasha-cell active"><span class="chip chip-natal">8</span></div>
-<div class="vedic-cell dasha-cell active"><span class="chip chip-natal">4</span></div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Color Legend Bar -->
-                <div class="grid-legend-bar">
-                    <span class="legend-pill"><span class="legend-dot dot-natal"></span> Natal Inborn (Gold)</span>
-                    <span class="legend-pill"><span class="legend-dot dot-md"></span> Mahadasha • Multi-Year (Sky Blue)</span>
-                    <span class="legend-pill"><span class="legend-dot dot-ad"></span> Antardasha • Yearly (Emerald Green)</span>
-                    <span class="legend-pill"><span class="legend-dot dot-pd"></span> Pratyantar Dasha • Monthly Sub-Phase (Royal Purple)</span>
                 </div>
             </div>
 
-            <!-- Planetary Allies & Harmony Strip -->
-            <div class="allies-box">
-                <div class="allies-item">
-                    <span class="allies-label">Friendly Numbers (Allies)</span>
-                    <span class="allies-val green">1, 2, 3, 9</span>
-                </div>
-                <div class="allies-item">
-                    <span class="allies-label">Neutral Numbers</span>
-                    <span class="allies-val orange">5, 7</span>
-                </div>
-                <div class="allies-item">
-                    <span class="allies-label">Unfriendly / Avoid Numbers</span>
-                    <span class="allies-val red">6</span>
-                </div>
-                <div class="allies-item">
-                    <span class="allies-label">Auspicious Vastu Direction</span>
-                    <span class="allies-val">North-East (Ishanya)</span>
-                </div>
-                <div class="allies-item">
-                    <span class="allies-label">Auspicious Metal</span>
-                    <span class="allies-val">Gold & Brass</span>
-                </div>
-                <div class="allies-item">
-                    <span class="allies-label">Recommended Gemstone</span>
-                    <span class="allies-val">Yellow Sapphire (Pukhraj)</span>
-                </div>
+            <!-- Master Table of Contents Index -->
+            <div class="toc-container">
+                <div class="toc-title">📜 10-Chapter Master Life Index</div>
+                <div class="toc-grid">
+                    
+        <div class="toc-item">
+            <div class="toc-page-badge">Pg 2</div>
+            <div class="toc-text">
+                <div class="toc-ch-badge">CHAPTER 1 OF 9 • SACRED GRID MATRIX</div>
+                <div class="toc-ch-title">Dual Vedic Grids: Lifetime Natal Blueprint & Active Dasha Activation</div>
             </div>
-
-            <div class="name-harmony-bar"><strong>Name Vibration Alignment:</strong> Name Number 5 is highly harmonious with Root Number 3 and Destiny Number 5. Attracts luck and natural goodwill.</div>
-
-            <!-- Inborn Traits & Precautions 2-Column Split -->
-            <div class="traits-duo-grid">
-                <div class="traits-card strengths">
-                    <div class="traits-card-header">✦ Core Personality Traits (Moolank / Root Number) (No. 3)</div>
-                    <ul class="quality-list-clean">
-                        <li class="quality-item-clean"><span class="bullet-icon">✦</span><span>Wise, intellectual, optimistic, and natural teachers endowed with profound knowledge.</span></li>
-<li class="quality-item-clean"><span class="bullet-icon">✦</span><span>Philosophical depth, righteous moral compass, and respected advice across society.</span></li>
-<li class="quality-item-clean"><span class="bullet-icon">✦</span><span>Inspiring verbal communication; excellent public speakers, mentors, and educators.</span></li>
-<li class="quality-item-clean"><span class="bullet-icon">✦</span><span>Magnanimous, generous heart with an innate quest for truth, law, and spiritual wisdom.</span></li>
-
-                    </ul>
-                </div>
-                <div class="traits-card precautions">
-                    <div class="traits-card-header">⚠ Key Precautions for Moolank (No. 3)</div>
-                    <ul class="precaution-list-clean">
-                        <li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>Avoid preaching unsolicited advice or carrying an intellectual superiority complex.</span></li>
-<li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>Do not scatter energies across too many philosophical or business pursuits simultaneously.</span></li>
-<li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>Beware of digestive, liver, or metabolic strain by regulating dietary sweets and fats.</span></li>
-<li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>Respect differing viewpoints; avoid becoming overly dogmatic or rigid in discussions.</span></li>
-
-                    </ul>
+            <div class="toc-check">✔</div>
+        </div>
+        
+        <div class="toc-item">
+            <div class="toc-page-badge">Pg 3</div>
+            <div class="toc-text">
+                <div class="toc-ch-badge">CHAPTER 2 OF 9 • HARMONY COMPASS</div>
+                <div class="toc-ch-title">Cosmic Allies, Auspicious Vastu Orientations & Name Frequency Alignment</div>
+            </div>
+            <div class="toc-check">✔</div>
+        </div>
+        
+        <div class="toc-item">
+            <div class="toc-page-badge">Pg 4</div>
+            <div class="toc-text">
+                <div class="toc-ch-badge">CHAPTER 3 OF 9 • SOUL IDENTITY</div>
+                <div class="toc-ch-title">Core Personality, Inborn Superpowers & Mindful Guardrails (Moolank)</div>
+            </div>
+            <div class="toc-check">✔</div>
+        </div>
+        
+        <div class="toc-item">
+            <div class="toc-page-badge">Pg 5</div>
+            <div class="toc-text">
+                <div class="toc-ch-badge">CHAPTER 4 OF 9 • DESTINY BLUEPRINT</div>
+                <div class="toc-ch-title">Karmic Calling, Higher Life Mission & Soul Purpose (Bhagyank)</div>
+            </div>
+            <div class="toc-check">✔</div>
+        </div>
+        
+        <div class="toc-item">
+            <div class="toc-page-badge">Pg 6</div>
+            <div class="toc-text">
+                <div class="toc-ch-badge">CHAPTER 5 OF 9 • MACRO TIME WHEEL</div>
+                <div class="toc-ch-title">Mahadasha: 9-Year Macro Planetary Life Cycle & Wealth Directives</div>
+            </div>
+            <div class="toc-check">✔</div>
+        </div>
+        
+        <div class="toc-item">
+            <div class="toc-page-badge">Pg 7</div>
+            <div class="toc-text">
+                <div class="toc-ch-badge">CHAPTER 6 OF 9 • ANNUAL & MONTHLY TIMING</div>
+                <div class="toc-ch-title">Antardasha (Annual 1-Year Forecast) & Active Pratyantar Action Window</div>
+            </div>
+            <div class="toc-check">✔</div>
+        </div>
+        
+        <div class="toc-item">
+            <div class="toc-page-badge">Pg 8</div>
+            <div class="toc-text">
+                <div class="toc-ch-badge">CHAPTER 7 OF 9 • TIMING ROADMAP</div>
+                <div class="toc-ch-title">Annual 9-Phase Pratyantar Dasha Timeline & Golden Timing Windows</div>
+            </div>
+            <div class="toc-check">✔</div>
+        </div>
+        
+        <div class="toc-item">
+            <div class="toc-page-badge">Pg 9</div>
+            <div class="toc-text">
+                <div class="toc-ch-badge">CHAPTER 8 OF 9 • YOGAS & DOSHAS</div>
+                <div class="toc-ch-title">Rare Planetary Yogas, Karmic Afflictions & Dynamic Vibrational Polarities</div>
+            </div>
+            <div class="toc-check">✔</div>
+        </div>
+        
+        <div class="toc-item">
+            <div class="toc-page-badge">Pg 10</div>
+            <div class="toc-text">
+                <div class="toc-ch-badge">CHAPTER 9 OF 9 • FUTURE PREDICTIONS & REMEDIES</div>
+                <div class="toc-ch-title">8-Pillar Life Predictions, Sacred Vedic Remedies & Official Certification</div>
+            </div>
+            <div class="toc-check">✔</div>
+        </div>
+        
                 </div>
             </div>
         </div>
 
-        <!-- Curiosity Preview Hook Box for Step 2 -->
-        <div class="curiosity-hook-card">
-            <div class="curiosity-icon">🔮</div>
-            <div class="curiosity-content">
-                <div class="curiosity-text">🔍 NEXT STEP PREVIEW: The Secrets of Your Cosmic Timeline — Why do certain years bring effortless growth while others test your endurance? Turn to Page 2 to discover your active 9-Year Mahadasha, your current Annual Focus, and your exact Month-by-Month Timing Matrix...</div>
-            </div>
+        <div>
+            
+        <div class="curiosity-box">
+            <div class="curiosity-pill">NEXT CHAPTER</div>
+            <div class="curiosity-text">🔮 CHAPTER 1 PREVIEW: Turn to Page 2 to examine your authentic 3x3 Natal Birth Grid and witness how active planetary Dashas awaken your dormant frequencies...</div>
         </div>
-
-        <div class="page-footer">
-            <span class="footer-stamp">CONSULTATION BY JIGAR THAKKAR (📞 +91 9377614772) • ROHIT SHARMA (SAMPLE)</span>
-            <span>Page 1 of 4</span>
+        
+            
+        <div class="footer">
+            <div><strong>Jigar Thakkar</strong> • Certified Vedic Numerologist & Vastu Consultant • Phone: +91 9377614772</div>
+            <div>Page 1 of 10</div>
+        </div>
+        
         </div>
     </div>
 </div>
 
-<!-- ==================== PAGE 2: 3-TIER VEDIC PERIOD FORECAST & CALENDAR ROADMAP ==================== -->
+<!-- ==================== PAGE 2: CHAPTER 1 - DUAL VEDIC SACRED GRIDS ==================== -->
 <div class="page">
     <div class="page-border"></div>
     <div class="page-border-inner"></div>
@@ -959,184 +1203,706 @@ body {
 
     <div class="page-content">
         <div>
-            <!-- Step Navigation Banner -->
-            <div class="step-banner">
-                <div class="step-banner-left">
-                    <span class="step-badge-pill">STEP 2 OF 4: YOUR COSMIC TIMELINE & DASHA ROADMAP</span>
-                    <span class="step-banner-sub">3-Tier Macro Cycles & 12-Month Action Timing Matrix</span>
-                </div>
-                <div class="step-banner-consultant">Consultant: Jigar Thakkar | 📞 +91 9377614772</div>
+            
+        <div class="chap-banner">
+            <div class="chap-banner-left">
+                <span class="chap-badge-pill">CHAPTER 1 OF 9 • SACRED GRID MATRIX</span>
+                <span class="chap-banner-sub">Dual Vedic Grids: Lifetime Natal Blueprint & Active Dasha Activation</span>
             </div>
+            <div class="chap-banner-consultant">Jigar Thakkar • Vedic Astrologer</div>
+        </div>
+        
+            <div class="section-title">🕉️ Dual Vedic Grids: Lifetime Natal Blueprint & Active Dasha Activation</div>
 
-            <div class="intro-lead-pill">
-                ✦ <strong>Vedic Timing Principles:</strong> Your destiny unfolds in 3 synchronized concentric cycles: <strong>Mahadasha</strong> (Macro Era), <strong>Antardasha</strong> (Annual 1-Year Focus), and <strong>Pratyantar Dasha</strong> (Monthly Sub-Phase).
-            </div>
-
-            <!-- Tier 1: Mahadasha (Macro Multi-Year Cycle) -->
-            <div class="section-title">🪐 Mahadasha: Long-Term Macro Life Cycle</div>
-            <div class="tier-card tier-md">
-                <div class="tier-header-bar">
-                    <span class="tier-badge badge-md">Mahadasha 9</span>
-                    <span class="tier-title-main">Mars (Mangal) • 9 Years</span>
-                    <span class="tier-date-span">Active: 30/04/2020 — 30/04/2029</span>
-                </div>
-                <div class="tier-text-content">You are traversing the 9-Year Mahadasha of Mars (Mars (Mangal)). A dynamic period of valor, physical drive, competitive dominance, real estate deals, and executive command. Bold moves bring decisive victories. Keep impulsive anger and blood pressure strictly managed.</div>
-                <div class="tier-note-bar"><strong>💰 Finance & Wealth Predictions:</strong> Rule: If Mahadasha activates numbers +3, +5, +6, or +8, finance and status expand exponentially; while challenging numbers advise protective asset hedging.</div>
-            </div>
-
-            <!-- Tier 2: Antardasha (Annual 1-Year Forecast) -->
-            <div class="section-title">📅 Antardasha: Annual 1-Year Forecast</div>
-            <div class="tier-card tier-ad">
-                <div class="tier-header-bar">
-                    <span class="tier-badge badge-ad">Antardasha 9</span>
-                    <span class="tier-title-main">Mars (Mangal) • Annual Cycle</span>
-                    <span class="tier-date-span">Active: 30/04/2026 — 30/04/2027</span>
-                </div>
-                <div class="tier-text-content">Year of Dynamic Energy, Courage & Bold Conquest: Decisive initiatives, clearing old hurdles, administrative command; avoid heated disputes.</div>
-                <div class="tier-subgrid">
-                    <div><strong>✈ Travel & Foreign Settlement:</strong> Standard local travel</div>
-                    <div><strong>🏢 Property & Real Estate Predictions:</strong> Maintain existing assets</div>
-                </div>
-            </div>
-
-            <!-- Tier 3: Pratyantar Dasha (Active Monthly Sub-Phase) -->
-            <div class="section-title">🌙 Pratyantar Dasha: Active Monthly Sub-Phase</div>
-            <div class="tier-card tier-pd">
-                <div class="tier-header-bar">
-                    <span class="tier-badge badge-pd">Pratyantar 6</span>
-                    <span class="tier-title-main">Venus (Shukra) • Active 48 Days</span>
-                    <span class="tier-date-span">Active Window: 08/11/2026 — 26/12/2026</span>
-                </div>
-                <div class="tier-dos-donts-grid">
-                    <div class="do-box">
-                        <div class="do-title">✔ Favorable Focus for Active Month:</div>
-                        <ul><li>Purchase lifestyle assets, gifts, and fine clothing</li><li>Host celebratory social gatherings</li><li>Respect and support female associates</li></ul>
+            <!-- Dual Grids Side-by-Side -->
+            <div class="dual-grids-row">
+                <div class="grid-box-card">
+                    <div class="grid-caption">
+                        <span>🌟</span>
+                        <span>Natal Birth Grid (Lifetime Inborn Matrix)</span>
                     </div>
-                    <div class="dont-box">
-                        <div class="dont-title">⚠ Precautions for Active Month:</div>
-                        <ul><li>Do not indulge in wasteful luxury expenditures</li><li>Avoid frivolous romantic entanglements</li></ul>
+                    <div class="vedic-grid-table">
+                        <div class="vedic-cell natal-cell empty">-</div>
+<div class="vedic-cell natal-cell active">1</div>
+<div class="vedic-cell natal-cell active">9</div>
+<div class="vedic-cell natal-cell active">6</div>
+<div class="vedic-cell natal-cell active">77</div>
+<div class="vedic-cell natal-cell active">5</div>
+<div class="vedic-cell natal-cell active">2</div>
+<div class="vedic-cell natal-cell empty">-</div>
+<div class="vedic-cell natal-cell empty">-</div>
+
+                    </div>
+                    <div style="font-size: 8px; color: #64748b; margin-top: 6px;">
+                        Fixed cosmic imprint cast at moment of birth.
+                    </div>
+                </div>
+
+                <div class="grid-box-card dasha">
+                    <div class="grid-caption" style="color: #b45309;">
+                        <span>🪐</span>
+                        <span>Dasha & Transit Activation Grid (Active Period)</span>
+                    </div>
+                    <div class="vedic-grid-table">
+                        <div class="vedic-cell dasha-cell active"><span class="chip chip-md">3</span></div>
+<div class="vedic-cell dasha-cell active"><span class="chip chip-natal">1</span></div>
+<div class="vedic-cell dasha-cell active"><span class="chip chip-natal">9</span><span class="chip chip-pd">9</span></div>
+<div class="vedic-cell dasha-cell active"><span class="chip chip-natal">6</span></div>
+<div class="vedic-cell dasha-cell active"><span class="chip chip-natal">7</span><span class="chip chip-natal">7</span></div>
+<div class="vedic-cell dasha-cell active"><span class="chip chip-natal">5</span></div>
+<div class="vedic-cell dasha-cell active"><span class="chip chip-natal">2</span></div>
+<div class="vedic-cell dasha-cell active"><span class="chip chip-ad">8</span></div>
+<div class="vedic-cell dasha-cell empty">-</div>
+
+                    </div>
+                    <div style="font-size: 8px; color: #b45309; margin-top: 6px; font-weight: 600;">
+                        Active energies activated by Jupiter (Guru).
                     </div>
                 </div>
             </div>
 
-            <!-- Annual 9-Phase Roadmap Table -->
-            <div class="section-title">📅 Annual 9-Phase Pratyantar Dasha Roadmap</div>
-            <div class="roadmap-table-wrap">
+            <!-- Color Legend Bar -->
+            <div class="color-legend-bar">
+                <div class="legend-chip"><span class="legend-dot" style="background: #172554;"></span><span>Natal Inborn (Gold)</span></div>
+                <div class="legend-chip"><span class="legend-dot" style="background: #d97706;"></span><span>Mahadasha • Multi-Year (Sky Blue)</span></div>
+                <div class="legend-chip"><span class="legend-dot" style="background: #7e22ce;"></span><span>Antardasha • Yearly (Emerald Green)</span></div>
+                <div class="legend-chip"><span class="legend-dot" style="background: #ffffff; border: 1px dashed #cbd5e1;"></span><span>Missing Void</span></div>
+            </div>
+
+            <!-- Grid Planes Analysis Cards -->
+            <div class="planes-grid">
+                <div class="plane-card">
+                    <div class="plane-header">Mental Plane (4-9-2)</div>
+                    <div class="plane-desc">Governs intellectual capacity, analytical strategy, memory, and visionary execution. Shows mental focus and long-term foresight.</div>
+                </div>
+                <div class="plane-card">
+                    <div class="plane-header">Emotional Plane (3-5-7)</div>
+                    <div class="plane-desc">Governs spiritual intuition, empathy, heart connection, and determination. Reflects willpower and emotional stability.</div>
+                </div>
+                <div class="plane-card">
+                    <div class="plane-header">Practical Plane (8-1-6)</div>
+                    <div class="plane-desc">Governs material manifestation, business acumen, hard work, and wealth accumulation. Directs physical action.</div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            
+        <div class="curiosity-box">
+            <div class="curiosity-pill">NEXT CHAPTER</div>
+            <div class="curiosity-text">🧭 CHAPTER 2 PREVIEW: Turn to Page 3 to discover your Cosmic Allies, Auspicious Vastu Direction, lucky gemstone, and Name Numerology harmony...</div>
+        </div>
+        
+            
+        <div class="footer">
+            <div><strong>Jigar Thakkar</strong> • Certified Vedic Numerologist & Vastu Consultant • Phone: +91 9377614772</div>
+            <div>Page 2 of 10</div>
+        </div>
+        
+        </div>
+    </div>
+</div>
+
+<!-- ==================== PAGE 3: CHAPTER 2 - COSMIC ALLIES & HARMONY COMPASS ==================== -->
+<div class="page">
+    <div class="page-border"></div>
+    <div class="page-border-inner"></div>
+    <div class="corner-ornament corner-tl"></div>
+    <div class="corner-ornament corner-tr"></div>
+    <div class="corner-ornament corner-bl"></div>
+    <div class="corner-ornament corner-br"></div>
+
+    <div class="page-content">
+        <div>
+            
+        <div class="chap-banner">
+            <div class="chap-banner-left">
+                <span class="chap-badge-pill">CHAPTER 2 OF 9 • HARMONY COMPASS</span>
+                <span class="chap-banner-sub">Cosmic Allies, Auspicious Vastu Orientations & Name Frequency Alignment</span>
+            </div>
+            <div class="chap-banner-consultant">Jigar Thakkar • Vedic Astrologer</div>
+        </div>
+        
+            <div class="section-title">🧭 Cosmic Allies, Auspicious Vastu Orientations & Name Frequency Alignment</div>
+
+            <!-- Harmony Compass 3 Cards -->
+            <div class="compass-grid">
+                <div class="compass-box friendly">
+                    <div class="compass-label">✦ Friendly Numbers (Allies)</div>
+                    <div class="compass-nums">5, 6, 8</div>
+                    <div class="compass-sub">Best for partnerships, bank accounts, vehicle plates, contracts</div>
+                </div>
+                <div class="compass-box neutral">
+                    <div class="compass-label">☯ Neutral Numbers</div>
+                    <div class="compass-nums">1, 4, 7, 9</div>
+                    <div class="compass-sub">Harmonious and peaceful interactions without friction</div>
+                </div>
+                <div class="compass-box enemy">
+                    <div class="compass-label">⚠ Unfriendly / Avoid Numbers</div>
+                    <div class="compass-nums">3</div>
+                    <div class="compass-sub">Avoid for critical life signatures, agreements, and major deals</div>
+                </div>
+            </div>
+
+            <!-- Auspicious Alignments 4-Grid -->
+            <div class="align-grid">
+                <div class="align-card">
+                    <div class="align-header">📅 Favourable Days</div>
+                    <div class="align-val">Friday</div>
+                </div>
+                <div class="align-card">
+                    <div class="align-header">🎨 Favourable Colors</div>
+                    <div class="align-val">White, Pink, Silver, Pastel Shades</div>
+                </div>
+                <div class="align-card">
+                    <div class="align-header">🧭 Auspicious Vastu Direction</div>
+                    <div class="align-val">South-East (Agneya)</div>
+                </div>
+                <div class="align-card">
+                    <div class="align-header">💎 Gemstone & Crystal Recommendation & Metal</div>
+                    <div class="align-val">Diamond / White Zircon / Opal • Silver & White Gold</div>
+                </div>
+            </div>
+
+            <!-- Chaldean Name Frequency Alignment -->
+            <div class="name-card">
+                <div class="name-header">
+                    <span>🔤 Chaldean Name Numerology: Aarav Sharma</span>
+                    <span class="name-score-pill">Namank 9 • Neutral</span>
+                </div>
+                <div class="name-body">
+                    Name Number 9 maintains a steady, neutral vibration with your planetary chart. Stable and supportive.
+                    <div style="margin-top: 6px; font-size: 8.5px; color: #854d0e; font-weight: 600;">
+                        💡 <strong>Vedic Advice:</strong> Align your professional signature and email handle with your favorable compound numbers to attract effortless abundance.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            
+        <div class="curiosity-box">
+            <div class="curiosity-pill">NEXT CHAPTER</div>
+            <div class="curiosity-text">🌟 CHAPTER 3 PREVIEW: Turn to Page 4 to deep dive into your Inborn Soul Powers, core psychological strengths, and what pitfalls you must avoid...</div>
+        </div>
+        
+            
+        <div class="footer">
+            <div><strong>Jigar Thakkar</strong> • Certified Vedic Numerologist & Vastu Consultant • Phone: +91 9377614772</div>
+            <div>Page 3 of 10</div>
+        </div>
+        
+        </div>
+    </div>
+</div>
+
+<!-- ==================== PAGE 4: CHAPTER 3 - INBORN SOUL MATRIX (MOOLANK) ==================== -->
+<div class="page">
+    <div class="page-border"></div>
+    <div class="page-border-inner"></div>
+    <div class="corner-ornament corner-tl"></div>
+    <div class="corner-ornament corner-tr"></div>
+    <div class="corner-ornament corner-bl"></div>
+    <div class="corner-ornament corner-br"></div>
+
+    <div class="page-content">
+        <div>
+            
+        <div class="chap-banner">
+            <div class="chap-banner-left">
+                <span class="chap-badge-pill">CHAPTER 3 OF 9 • SOUL IDENTITY</span>
+                <span class="chap-banner-sub">Core Personality, Inborn Superpowers & Mindful Guardrails (Moolank)</span>
+            </div>
+            <div class="chap-banner-consultant">Jigar Thakkar • Vedic Astrologer</div>
+        </div>
+        
+            <div class="section-title">🌟 Core Personality, Inborn Superpowers & Mindful Guardrails (Moolank)</div>
+
+            <!-- Moolank Hero Box -->
+            <div class="hero-box">
+                <div class="hero-left">
+                    <div class="hero-num-badge">Root Archetype • Soul Vibration</div>
+                    <div class="hero-title">Venus (Shukra) (Moolank 6)</div>
+                    <div class="hero-sub">The radical energy frequency determined by your birth date, shaping your intrinsic psychology, instincts, and raw natural gifts.</div>
+                </div>
+                <div class="hero-right-circle">6</div>
+            </div>
+
+            <!-- 2-Column Split: Superpowers vs Mindful Guardrails -->
+            <div class="two-col-grid">
+                <div class="col-card">
+                    <div class="col-title" style="color: #15803d;">
+                        <span>✦</span>
+                        <span>Core Personality Traits (Moolank / Root Number)</span>
+                    </div>
+                    <ul style="padding-left: 0;">
+                        <li class="quality-item-clean"><span class="bullet-icon">✦</span><span>Charming, magnetic, refined, loving luxury, beauty, artistic pursuits, and domestic harmony.</span></li>
+<li class="quality-item-clean"><span class="bullet-icon">✦</span><span>Natural caregiver with deep affection for family, community, aesthetics, and fine living.</span></li>
+<li class="quality-item-clean"><span class="bullet-icon">✦</span><span>Excellent taste in fashion, interior decor, gastronomy, cinema, and hospitality.</span></li>
+<li class="quality-item-clean"><span class="bullet-icon">✦</span><span>Attracts abundance, goodwill, and comfort through gracious manners and warmth.</span></li>
+
+                    </ul>
+                </div>
+
+                <div class="col-card precautions">
+                    <div class="col-title" style="color: #c2410c;">
+                        <span>⚠</span>
+                        <span>Key Precautions for Moolank</span>
+                    </div>
+                    <ul style="padding-left: 0;">
+                        <li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>Control extravagance, impulsive spending on luxury, and living beyond financial means.</span></li>
+<li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>Avoid entering into extramarital distractions or secret affairs that ruin reputation.</span></li>
+<li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>Do not indulge in addictions, rich heavy food, alcohol, or unchecked sensual pleasures.</span></li>
+<li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>Ensure financial savings are strictly automated to protect future liquidity.</span></li>
+
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Career Inclinations Box -->
+            <div class="career-box">
+                <div class="career-title">💼 Career & Wealth Pathways for Moolank 6</div>
+                <div class="career-text">
+                    Naturally thrives in leadership, visionary advisory, independent enterprise, and fields demanding intellectual discernment. Creates maximum wealth when maintaining emotional detachment and upholding ethical integrity.
+                </div>
+            </div>
+        </div>
+
+        <div>
+            
+        <div class="curiosity-box">
+            <div class="curiosity-pill">NEXT CHAPTER</div>
+            <div class="curiosity-text">🎯 CHAPTER 4 PREVIEW: Turn to Page 5 to unveil your Destiny Number (Bhagyank), your soul's higher karmic calling, and life purpose...</div>
+        </div>
+        
+            
+        <div class="footer">
+            <div><strong>Jigar Thakkar</strong> • Certified Vedic Numerologist & Vastu Consultant • Phone: +91 9377614772</div>
+            <div>Page 4 of 10</div>
+        </div>
+        
+        </div>
+    </div>
+</div>
+
+<!-- ==================== PAGE 5: CHAPTER 4 - DESTINY BLUEPRINT (BHAGYANK) ==================== -->
+<div class="page">
+    <div class="page-border"></div>
+    <div class="page-border-inner"></div>
+    <div class="corner-ornament corner-tl"></div>
+    <div class="corner-ornament corner-tr"></div>
+    <div class="corner-ornament corner-bl"></div>
+    <div class="corner-ornament corner-br"></div>
+
+    <div class="page-content">
+        <div>
+            
+        <div class="chap-banner">
+            <div class="chap-banner-left">
+                <span class="chap-badge-pill">CHAPTER 4 OF 9 • DESTINY BLUEPRINT</span>
+                <span class="chap-banner-sub">Karmic Calling, Higher Life Mission & Soul Purpose (Bhagyank)</span>
+            </div>
+            <div class="chap-banner-consultant">Jigar Thakkar • Vedic Astrologer</div>
+        </div>
+        
+            <div class="section-title">🎯 Karmic Calling, Higher Life Mission & Soul Purpose (Bhagyank)</div>
+
+            <!-- Bhagyank Hero Box -->
+            <div class="hero-box" style="background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);">
+                <div class="hero-left">
+                    <div class="hero-num-badge" style="color: #a78bfa;">Life Path • Karmic Mission</div>
+                    <div class="hero-title">Ketu (Dragon's Tail) (Bhagyank 7)</div>
+                    <div class="hero-sub">The aggregate cosmic frequency calculated from your full birth date, representing what the universe demands you master and achieve.</div>
+                </div>
+                <div class="hero-right-circle" style="background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%); color: #ffffff;">7</div>
+            </div>
+
+            <!-- 2-Column Split: Destiny Calling vs Karmic Lessons -->
+            <div class="two-col-grid">
+                <div class="col-card">
+                    <div class="col-title" style="color: #6d28d9;">
+                        <span>✦</span>
+                        <span>Life Path & Destiny Traits (Bhagyank / Destiny Number)</span>
+                    </div>
+                    <ul style="padding-left: 0;">
+                        <li class="quality-item-clean"><span class="bullet-icon">✦</span><span>Deeply spiritual, intuitive, introspective, philosophical, and endowed with occult insight.</span></li>
+<li class="quality-item-clean"><span class="bullet-icon">✦</span><span>Natural researcher and mystic who delves beneath surfaces to uncover hidden truths.</span></li>
+<li class="quality-item-clean"><span class="bullet-icon">✦</span><span>Independent thinker; values solitude, scholarly study, meditation, and quiet reflection.</span></li>
+<li class="quality-item-clean"><span class="bullet-icon">✦</span><span>Connected to foreign cultures, ancient wisdom, technical analysis, and metaphysical sciences.</span></li>
+
+                    </ul>
+                </div>
+
+                <div class="col-card precautions">
+                    <div class="col-title" style="color: #b91c1c;">
+                        <span>⚠</span>
+                        <span>Key Precautions for Bhagyank</span>
+                    </div>
+                    <ul style="padding-left: 0;">
+                        <li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>Do not withdraw into extreme social isolation, cynicism, or emotional detachment.</span></li>
+<li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>Verify all business proposals thoroughly; do not trust blindly without due diligence.</span></li>
+<li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>Avoid harboring secret grudges or skepticism toward well-wishers and life partners.</span></li>
+<li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>Channel your analytical thoughts into constructive research rather than anxious self-pity.</span></li>
+
+                    </ul>
+                </div>
+            </div>
+
+            <!-- The Sacred Bridge Box -->
+            <div class="career-box" style="border-left: 3.5px solid #d4af37; background: #fffdf8;">
+                <div class="career-title" style="color: #854d0e;">🌉 The Sacred Bridge: Harmonizing Moolank 6 with Bhagyank 7</div>
+                <div class="career-text">
+                    Your Moolank dictates your internal desires and comfort zone, while your Bhagyank represents the external arena of your life's greatest victories. When you align your daily actions with your Bhagyank frequency, worldly obstacles dissolve into stepping stones.
+                </div>
+            </div>
+        </div>
+
+        <div>
+            
+        <div class="curiosity-box">
+            <div class="curiosity-pill">NEXT CHAPTER</div>
+            <div class="curiosity-text">⏳ CHAPTER 5 PREVIEW: Turn to Page 6 to enter the Time Wheel: Discover your active 9-Year Mahadasha macro life cycle and wealth directive...</div>
+        </div>
+        
+            
+        <div class="footer">
+            <div><strong>Jigar Thakkar</strong> • Certified Vedic Numerologist & Vastu Consultant • Phone: +91 9377614772</div>
+            <div>Page 5 of 10</div>
+        </div>
+        
+        </div>
+    </div>
+</div>
+
+<!-- ==================== PAGE 6: CHAPTER 5 - MACRO TIME WHEEL (MAHADASHA) ==================== -->
+<div class="page">
+    <div class="page-border"></div>
+    <div class="page-border-inner"></div>
+    <div class="corner-ornament corner-tl"></div>
+    <div class="corner-ornament corner-tr"></div>
+    <div class="corner-ornament corner-bl"></div>
+    <div class="corner-ornament corner-br"></div>
+
+    <div class="page-content">
+        <div>
+            
+        <div class="chap-banner">
+            <div class="chap-banner-left">
+                <span class="chap-badge-pill">CHAPTER 5 OF 9 • MACRO TIME WHEEL</span>
+                <span class="chap-banner-sub">Mahadasha: 9-Year Macro Planetary Life Cycle & Wealth Directives</span>
+            </div>
+            <div class="chap-banner-consultant">Jigar Thakkar • Vedic Astrologer</div>
+        </div>
+        
+            <div class="section-title">🪐 Mahadasha: 9-Year Macro Planetary Life Cycle & Wealth Directives</div>
+
+            <!-- Mahadasha Hero Dashboard -->
+            <div class="hero-box" style="background: linear-gradient(135deg, #451a03 0%, #1c1917 100%); border-color: #f59e0b;">
+                <div class="hero-left">
+                    <div class="hero-num-badge" style="color: #fde047;">Macro Time Phase • 9-Year Reign</div>
+                    <div class="hero-title">Jupiter (Guru) (No. 3)</div>
+                    <div class="hero-sub">Duration: 9 Years • Operating Window:  — </div>
+                </div>
+                <div class="hero-right-circle" style="background: linear-gradient(135deg, #fbbf24 0%, #b45309 100%);">3</div>
+            </div>
+
+            <!-- Macro Opportunities 4-Pillar Grid -->
+            <div class="align-grid" style="margin-bottom: 12px;">
+                <div class="align-card">
+                    <div class="align-header">💰 Wealth & Capital Expansion</div>
+                    <div class="career-text">High-leverage investment cycles peak under this macro ruler. Prioritize tangible asset creation over speculative risks.</div>
+                </div>
+                <div class="align-card">
+                    <div class="align-header">🏢 Professional Elevation</div>
+                    <div class="career-text">Expansion of authority and reputation. Strategic networking opens access to influential decision makers.</div>
+                </div>
+                <div class="align-card">
+                    <div class="align-header">🏠 Real Estate & Property</div>
+                    <div class="career-text">Favorable periods for property deeds, home revitalization, and establishing stable familial roots.</div>
+                </div>
+                <div class="align-card">
+                    <div class="align-header">🧘 Spiritual Consciousness</div>
+                    <div class="career-text">Intensified intuitive depth and karmic clearing. Alignment with higher purpose yields peace and fulfillment.</div>
+                </div>
+            </div>
+
+            <!-- In-Depth Macro Interpretation -->
+            <div class="career-box" style="border-left: 3.5px solid #d97706;">
+                <div class="career-title" style="color: #9a3412;">📜 Macro Directive for Active Mahadasha</div>
+                <div class="career-text">
+                    This active Mahadasha cycle marks a transformative epoch where foundational life decisions bear exponential fruit. Maintain consistent discipline and align your goals with the planetary frequency of Jupiter (Guru).
+                </div>
+            </div>
+        </div>
+
+        <div>
+            
+        <div class="curiosity-box">
+            <div class="curiosity-pill">NEXT CHAPTER</div>
+            <div class="curiosity-text">📅 CHAPTER 6 PREVIEW: Turn to Page 7 to zoom into your Annual 1-Year Forecast (Antardasha) and your active 30-day action window...</div>
+        </div>
+        
+            
+        <div class="footer">
+            <div><strong>Jigar Thakkar</strong> • Certified Vedic Numerologist & Vastu Consultant • Phone: +91 9377614772</div>
+            <div>Page 6 of 10</div>
+        </div>
+        
+        </div>
+    </div>
+</div>
+
+<!-- ==================== PAGE 7: CHAPTER 6 - ANNUAL & MONTHLY TIMING ==================== -->
+<div class="page">
+    <div class="page-border"></div>
+    <div class="page-border-inner"></div>
+    <div class="corner-ornament corner-tl"></div>
+    <div class="corner-ornament corner-tr"></div>
+    <div class="corner-ornament corner-bl"></div>
+    <div class="corner-ornament corner-br"></div>
+
+    <div class="page-content">
+        <div>
+            
+        <div class="chap-banner">
+            <div class="chap-banner-left">
+                <span class="chap-badge-pill">CHAPTER 6 OF 9 • ANNUAL & MONTHLY TIMING</span>
+                <span class="chap-banner-sub">Antardasha (Annual 1-Year Forecast) & Active Pratyantar Action Window</span>
+            </div>
+            <div class="chap-banner-consultant">Jigar Thakkar • Vedic Astrologer</div>
+        </div>
+        
+            <div class="section-title">📅 Antardasha (Annual 1-Year Forecast) & Active Pratyantar Action Window</div>
+
+            <!-- Tier 2 & Tier 3 Split Cards -->
+            <div class="two-col-grid" style="margin-bottom: 12px;">
+                <div class="col-card" style="border-top: 3.5px solid #2563eb;">
+                    <div class="col-title" style="color: #1e40af;">
+                        <span>📅</span>
+                        <span>Antardasha: Annual 1-Year Forecast</span>
+                    </div>
+                    <div style="font-size: 11px; font-weight: 800; color: #0f172a; margin-bottom: 3px;">
+                        Saturn (Shani) (No. 8)
+                    </div>
+                    <div style="font-size: 8.2px; color: #64748b; margin-bottom: 6px;">
+                        Timeline: 15/07/2026 to 15/07/2027
+                    </div>
+                    <div class="career-text">
+                        Year of targeted consolidation and strategic action.
+                    </div>
+                </div>
+
+                <div class="col-card" style="border-top: 3.5px solid #7c3aed;">
+                    <div class="col-title" style="color: #6d28d9;">
+                        <span>🌙</span>
+                        <span>Pratyantar Dasha: Active Monthly Sub-Phase</span>
+                    </div>
+                    <div style="font-size: 11px; font-weight: 800; color: #0f172a; margin-bottom: 3px;">
+                        Mars (Mangal) (No. 9)
+                    </div>
+                    <div style="font-size: 8.2px; color: #64748b; margin-bottom: 6px;">
+                        Active Window: 17/09/2026 to 28/11/2026 (72 Days)
+                    </div>
+                    <div class="career-text">
+                        Current monthly sub-period operating with heightened sensitivity.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tactical Guide: Do's and Don'ts -->
+            <div class="tactical-box">
+                <div class="tactical-card dos">
+                    <div class="tactical-title">✔ Favorable Focus for Active Month</div>
+                    <ul class="tactical-list">
+                        <li>✔ Take decisive executive decisions</li><li>✔ Engage in energetic fitness, sports, or property deals</li><li>✔ Recite Hanuman Chalisa daily</li>
+                    </ul>
+                </div>
+
+                <div class="tactical-card donts">
+                    <div class="tactical-title">⚠ Precautions for Active Month</div>
+                    <ul class="tactical-list">
+                        <li>⚠ Avoid hot-headed arguments and rash driving</li><li>⚠ Control blood pressure and avoid excess salt on Tuesday</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            
+        <div class="curiosity-box">
+            <div class="curiosity-pill">NEXT CHAPTER</div>
+            <div class="curiosity-text">🗓️ CHAPTER 7 PREVIEW: Turn to Page 8 for your complete 12-Month Calendar Roadmap, highlighting your Golden Timing Phases...</div>
+        </div>
+        
+            
+        <div class="footer">
+            <div><strong>Jigar Thakkar</strong> • Certified Vedic Numerologist & Vastu Consultant • Phone: +91 9377614772</div>
+            <div>Page 7 of 10</div>
+        </div>
+        
+        </div>
+    </div>
+</div>
+
+<!-- ==================== PAGE 8: CHAPTER 7 - 12-MONTH CALENDAR ROADMAP ==================== -->
+<div class="page">
+    <div class="page-border"></div>
+    <div class="page-border-inner"></div>
+    <div class="corner-ornament corner-tl"></div>
+    <div class="corner-ornament corner-tr"></div>
+    <div class="corner-ornament corner-bl"></div>
+    <div class="corner-ornament corner-br"></div>
+
+    <div class="page-content">
+        <div>
+            
+        <div class="chap-banner">
+            <div class="chap-banner-left">
+                <span class="chap-badge-pill">CHAPTER 7 OF 9 • TIMING ROADMAP</span>
+                <span class="chap-banner-sub">Annual 9-Phase Pratyantar Dasha Timeline & Golden Timing Windows</span>
+            </div>
+            <div class="chap-banner-consultant">Jigar Thakkar • Vedic Astrologer</div>
+        </div>
+        
+            <div class="section-title">🗓️ Annual 9-Phase Pratyantar Dasha Timeline & Golden Timing Windows</div>
+
+            <!-- 9-Phase Comprehensive Table -->
+            <div class="roadmap-container">
                 <table class="roadmap-table">
                     <thead>
                         <tr>
-                            <th>Phase / Planet</th>
-                            <th style="text-align:center;">No.</th>
-                            <th style="text-align:center;">Days</th>
+                            <th>Phase</th>
+                            <th>Sub-Lord</th>
+                            <th style="text-align:center;">Vibration</th>
+                            <th style="text-align:center;">Duration</th>
                             <th style="text-align:center;">Start Date</th>
                             <th style="text-align:center;">End Date</th>
-                            <th style="text-align:center;">Tone / Status</th>
+                            <th style="text-align:center;">Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         
         <tr class="">
-            <td style="font-weight:700;">Phase 1 (Mars (Mangal))</td>
-            <td style="text-align:center;"><strong>No. 9</strong></td>
-            <td style="text-align:center;">72 Days</td>
-            <td style="text-align:center;">30/04/2026</td>
-            <td style="text-align:center;">11/07/2026</td>
-            <td style="text-align:center;"><span class="status-chip ">Dynamic / Caution</span></td>
-        </tr>
-        
-        <tr class="">
-            <td style="font-weight:700;">Phase 2 (Sun (Surya))</td>
-            <td style="text-align:center;"><strong>No. 1</strong></td>
-            <td style="text-align:center;">8 Days</td>
-            <td style="text-align:center;">11/07/2026</td>
-            <td style="text-align:center;">19/07/2026</td>
-            <td style="text-align:center;"><span class="status-chip ">Auspicious (+)</span></td>
-        </tr>
-        
-        <tr class="">
-            <td style="font-weight:700;">Phase 3 (Moon (Chandra))</td>
-            <td style="text-align:center;"><strong>No. 2</strong></td>
-            <td style="text-align:center;">16 Days</td>
-            <td style="text-align:center;">19/07/2026</td>
-            <td style="text-align:center;">04/08/2026</td>
-            <td style="text-align:center;"><span class="status-chip ">Dynamic / Caution</span></td>
-        </tr>
-        
-        <tr class="">
-            <td style="font-weight:700;">Phase 4 (Jupiter (Guru))</td>
-            <td style="text-align:center;"><strong>No. 3</strong></td>
-            <td style="text-align:center;">24 Days</td>
-            <td style="text-align:center;">04/08/2026</td>
-            <td style="text-align:center;">28/08/2026</td>
-            <td style="text-align:center;"><span class="status-chip ">Auspicious (+)</span></td>
-        </tr>
-        
-        <tr class="">
-            <td style="font-weight:700;">Phase 5 (Rahu (Dragon's Head))</td>
-            <td style="text-align:center;"><strong>No. 4</strong></td>
-            <td style="text-align:center;">32 Days</td>
-            <td style="text-align:center;">28/08/2026</td>
-            <td style="text-align:center;">29/09/2026</td>
-            <td style="text-align:center;"><span class="status-chip ">Dynamic / Caution</span></td>
-        </tr>
-        
-        <tr class="">
-            <td style="font-weight:700;">Phase 6 (Mercury (Budh))</td>
-            <td style="text-align:center;"><strong>No. 5</strong></td>
-            <td style="text-align:center;">40 Days</td>
-            <td style="text-align:center;">29/09/2026</td>
-            <td style="text-align:center;">08/11/2026</td>
-            <td style="text-align:center;"><span class="status-chip ">Auspicious (+)</span></td>
+            <td style="font-weight:700; text-align:center;">Phase 1</td>
+            <td><strong>Saturn (Shani)</strong></td>
+            <td style="text-align:center;"><strong>No. 8</strong></td>
+            <td style="text-align:center;">64 Days</td>
+            <td style="text-align:center;">15/07/2026</td>
+            <td style="text-align:center;">17/09/2026</td>
+            <td style="text-align:center;"><span class="status-chip ">Favorable</span></td>
         </tr>
         
         <tr class="active-phase">
-            <td style="font-weight:700;">Phase 7 (Venus (Shukra))</td>
-            <td style="text-align:center;"><strong>No. 6</strong></td>
-            <td style="text-align:center;">48 Days</td>
-            <td style="text-align:center;">08/11/2026</td>
-            <td style="text-align:center;">26/12/2026</td>
+            <td style="font-weight:700; text-align:center;">Phase 2</td>
+            <td><strong>Mars (Mangal)</strong></td>
+            <td style="text-align:center;"><strong>No. 9</strong></td>
+            <td style="text-align:center;">72 Days</td>
+            <td style="text-align:center;">17/09/2026</td>
+            <td style="text-align:center;">28/11/2026</td>
             <td style="text-align:center;"><span class="status-chip active">★ ACTIVE</span></td>
         </tr>
         
         <tr class="">
-            <td style="font-weight:700;">Phase 8 (Ketu (Dragon's Tail))</td>
-            <td style="text-align:center;"><strong>No. 7</strong></td>
-            <td style="text-align:center;">56 Days</td>
-            <td style="text-align:center;">26/12/2026</td>
-            <td style="text-align:center;">20/02/2027</td>
-            <td style="text-align:center;"><span class="status-chip ">Favorable</span></td>
+            <td style="font-weight:700; text-align:center;">Phase 3</td>
+            <td><strong>Sun (Surya)</strong></td>
+            <td style="text-align:center;"><strong>No. 1</strong></td>
+            <td style="text-align:center;">8 Days</td>
+            <td style="text-align:center;">28/11/2026</td>
+            <td style="text-align:center;">06/12/2026</td>
+            <td style="text-align:center;"><span class="status-chip ">Auspicious (+)</span></td>
         </tr>
         
         <tr class="">
-            <td style="font-weight:700;">Phase 9 (Saturn (Shani))</td>
-            <td style="text-align:center;"><strong>No. 8</strong></td>
-            <td style="text-align:center;">64 Days</td>
-            <td style="text-align:center;">20/02/2027</td>
-            <td style="text-align:center;">25/04/2027</td>
+            <td style="font-weight:700; text-align:center;">Phase 4</td>
+            <td><strong>Moon (Chandra)</strong></td>
+            <td style="text-align:center;"><strong>No. 2</strong></td>
+            <td style="text-align:center;">16 Days</td>
+            <td style="text-align:center;">06/12/2026</td>
+            <td style="text-align:center;">22/12/2026</td>
+            <td style="text-align:center;"><span class="status-chip ">Dynamic / Caution</span></td>
+        </tr>
+        
+        <tr class="">
+            <td style="font-weight:700; text-align:center;">Phase 5</td>
+            <td><strong>Jupiter (Guru)</strong></td>
+            <td style="text-align:center;"><strong>No. 3</strong></td>
+            <td style="text-align:center;">24 Days</td>
+            <td style="text-align:center;">22/12/2026</td>
+            <td style="text-align:center;">15/01/2027</td>
+            <td style="text-align:center;"><span class="status-chip ">Auspicious (+)</span></td>
+        </tr>
+        
+        <tr class="">
+            <td style="font-weight:700; text-align:center;">Phase 6</td>
+            <td><strong>Rahu (Dragon's Head)</strong></td>
+            <td style="text-align:center;"><strong>No. 4</strong></td>
+            <td style="text-align:center;">32 Days</td>
+            <td style="text-align:center;">15/01/2027</td>
+            <td style="text-align:center;">16/02/2027</td>
+            <td style="text-align:center;"><span class="status-chip ">Dynamic / Caution</span></td>
+        </tr>
+        
+        <tr class="">
+            <td style="font-weight:700; text-align:center;">Phase 7</td>
+            <td><strong>Mercury (Budh)</strong></td>
+            <td style="text-align:center;"><strong>No. 5</strong></td>
+            <td style="text-align:center;">40 Days</td>
+            <td style="text-align:center;">16/02/2027</td>
+            <td style="text-align:center;">28/03/2027</td>
+            <td style="text-align:center;"><span class="status-chip ">Auspicious (+)</span></td>
+        </tr>
+        
+        <tr class="">
+            <td style="font-weight:700; text-align:center;">Phase 8</td>
+            <td><strong>Venus (Shukra)</strong></td>
+            <td style="text-align:center;"><strong>No. 6</strong></td>
+            <td style="text-align:center;">48 Days</td>
+            <td style="text-align:center;">28/03/2027</td>
+            <td style="text-align:center;">15/05/2027</td>
+            <td style="text-align:center;"><span class="status-chip ">Auspicious (+)</span></td>
+        </tr>
+        
+        <tr class="">
+            <td style="font-weight:700; text-align:center;">Phase 9</td>
+            <td><strong>Ketu (Dragon's Tail)</strong></td>
+            <td style="text-align:center;"><strong>No. 7</strong></td>
+            <td style="text-align:center;">56 Days</td>
+            <td style="text-align:center;">15/05/2027</td>
+            <td style="text-align:center;">10/07/2027</td>
             <td style="text-align:center;"><span class="status-chip ">Favorable</span></td>
         </tr>
         
                     </tbody>
                 </table>
             </div>
-        </div>
 
-        <!-- Curiosity Preview Hook Box for Step 3 -->
-        <div class="curiosity-hook-card">
-            <div class="curiosity-icon">⚡</div>
-            <div class="curiosity-content">
-                <div class="curiosity-text">⚡ NEXT STEP PREVIEW: Unlocking Your Rare Yogas & Hidden Powers — Are there rare planetary combinations granting you sudden windfalls or karmic hurdles? Turn to Page 3 to explore your Destiny Path and active Divine Yogas...</div>
+            <!-- Golden Timing Directives -->
+            <div class="career-box" style="border-left: 3.5px solid #16a34a; background: #f0fdf4;">
+                <div class="career-title" style="color: #15803d;">💡 How to Navigate Your 12-Month Calendar Roadmap</div>
+                <div class="career-text">
+                    The highlighted <strong>★ ACTIVE</strong> row represents your immediate universal atmospheric energy. When transitioning into phases governed by your friendly numbers (5, 6, 8), execute major contracts, property deals, and launches. During neutral or enemy phases, protect capital and focus on planning.
+                </div>
             </div>
         </div>
 
-        <div class="page-footer">
-            <span class="footer-stamp">CONSULTATION BY JIGAR THAKKAR (📞 +91 9377614772) • ROHIT SHARMA (SAMPLE)</span>
-            <span>Page 2 of 4</span>
+        <div>
+            
+        <div class="curiosity-box">
+            <div class="curiosity-pill">NEXT CHAPTER</div>
+            <div class="curiosity-text">⚡ CHAPTER 8 PREVIEW: Turn to Page 9 to reveal the rare Divine Yogas and Karmic Doshas active in your birth chart, plus your vibrational polarities...</div>
+        </div>
+        
+            
+        <div class="footer">
+            <div><strong>Jigar Thakkar</strong> • Certified Vedic Numerologist & Vastu Consultant • Phone: +91 9377614772</div>
+            <div>Page 8 of 10</div>
+        </div>
+        
         </div>
     </div>
 </div>
 
-<!-- ==================== PAGE 3: BHAGYANK, YOGAS & PLANETARY VIBRATIONS ==================== -->
+<!-- ==================== PAGE 9: CHAPTER 8 - PLANETARY YOGAS & VIBRATIONS ==================== -->
 <div class="page">
     <div class="page-border"></div>
     <div class="page-border-inner"></div>
@@ -1147,74 +1913,99 @@ body {
 
     <div class="page-content">
         <div>
-            <!-- Step Navigation Banner -->
-            <div class="step-banner">
-                <div class="step-banner-left">
-                    <span class="step-badge-pill">STEP 3 OF 4: DESTINY PATH, RARE YOGAS & PLANETARY VIBRATIONS</span>
-                    <span class="step-banner-sub">Life Purpose, Special Planetary Combinations & Energetic Shifts</span>
-                </div>
-                <div class="step-banner-consultant">Consultant: Jigar Thakkar | 📞 +91 9377614772</div>
+            
+        <div class="chap-banner">
+            <div class="chap-banner-left">
+                <span class="chap-badge-pill">CHAPTER 8 OF 9 • YOGAS & DOSHAS</span>
+                <span class="chap-banner-sub">Rare Planetary Yogas, Karmic Afflictions & Dynamic Vibrational Polarities</span>
             </div>
-
-            <!-- Destiny Path 2-Column Split -->
-            <div class="section-title">🌟 Life Path & Destiny Traits (Bhagyank / Destiny Number) (No. 5 - Mercury (Budh))</div>
-            <div class="traits-duo-grid">
-                <div class="traits-card strengths">
-                    <div class="traits-card-header">✦ Soul Calling & Destiny Gifts</div>
-                    <ul class="quality-list-clean">
-                        <li class="quality-item-clean"><span class="bullet-icon">✦</span><span>Quick-witted, versatile, adaptable, and master of communication and commercial enterprise.</span></li>
-<li class="quality-item-clean"><span class="bullet-icon">✦</span><span>Dynamic, enthusiastic risk-taker with a magnetic charisma and sharp business sense.</span></li>
-<li class="quality-item-clean"><span class="bullet-icon">✦</span><span>Lifelong learner who thrives on networking, travel, commerce, and media communication.</span></li>
-<li class="quality-item-clean"><span class="bullet-icon">✦</span><span>Maintains equilibrium and bridges connections between diverse groups and ideas.</span></li>
-
-                    </ul>
-                </div>
-                <div class="traits-card precautions">
-                    <div class="traits-card-header">⚠ Essential Growth Guidelines</div>
-                    <ul class="precaution-list-clean">
-                        <li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>Combat restlessness, lack of concentration, and nervous exhaustion through grounding practices.</span></li>
-<li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>Avoid changing business plans, jobs, or ventures impulsively without seeing them through.</span></li>
-<li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>Keep speech polite and thoughtful; avoid sarcasm or speaking before thinking.</span></li>
-<li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>Guard against stress-induced nervous debility and irregular sleeping patterns.</span></li>
-
-                    </ul>
-                </div>
-            </div>
+            <div class="chap-banner-consultant">Jigar Thakkar • Vedic Astrologer</div>
+        </div>
+        
+            <div class="section-title">✨ Rare Planetary Yogas, Karmic Afflictions & Dynamic Vibrational Polarities</div>
 
             <!-- Auspicious Yogas -->
-            <div class="section-title">✨ Auspicious Planetary Yogas (Divine Alignments)</div>
-            <div class="yogas-grid-clean">
+            <div style="margin-bottom: 8px;">
+                <div style="font-size: 9px; font-weight: 800; color: #166534; text-transform: uppercase; margin-bottom: 4px;">
+                    👑 Auspicious Planetary Yogas (Divine Alignments)
+                </div>
                 
+        <div class="yoga-card-clean auspicious">
+            <div class="yoga-card-header">
+                <div class="yoga-title">Imperial Raj Yog (Supreme Sovereign Grace)</div>
+                <span class="yoga-pill gold">Imperial Sovereignty • Supreme Auspiciousness</span>
+            </div>
+            <div class="yoga-desc">Rare Imperial Raj Yog alignment grants elevated societal honor, unyielding administrative authority, and immense luxury during favorable Dasha cycles.</div>
+        </div>
+        
+        <div class="yoga-card-clean auspicious">
+            <div class="yoga-card-header">
+                <div class="yoga-title">Kuber Lakshmi Will Plane (Material Luxury & Fortune Yog)</div>
+                <span class="yoga-pill gold">Horizontal Line 2 (6-7-5) • Mixed Vibrations</span>
+            </div>
+            <div class="yoga-desc">Synthesis of Venus (6), Ketu (7), and Mercury (5). Confers lifelong material luxuries, premium vehicles, prime properties, magnetic sales oratory, and unyielding willpower. Attracts abundance effortlessly.</div>
+        </div>
+        
+        <div class="yoga-card-clean auspicious">
+            <div class="yoga-card-header">
+                <div class="yoga-title">Surya-Ketu Raja Bhagyodaya Yog (Lucky Early Earning)</div>
+                <span class="yoga-pill gold">Pair 1-7 (Surya-Ketu) • Mixed Vibrations</span>
+            </div>
+            <div class="yoga-desc">Both 1 and 7 are intrinsically lucky. Brings early employment/income in youth, prestigious government connections or civil stature, and steadfast loyalty in interpersonal relationships.</div>
+        </div>
+        
+        <div class="yoga-card-clean auspicious">
+            <div class="yoga-card-header">
+                <div class="yoga-title">Mangal-Budh Vyapar Ratna Yog (Street-Smart Commercial Acumen)</div>
+                <span class="yoga-pill gold">Pair 9-5 (Mangal-Budh) • Superior (+)</span>
+            </div>
+            <div class="yoga-desc">Mars dramatically accelerates Mercury's mental speed. Generates razor-sharp street smartness, fast deal closures, lucrative commercial margins, and fearless business execution without loss.</div>
+        </div>
+        
             </div>
 
-            <!-- Challenging Doshas -->
-            <div class="section-title">⚠ Challenging Planetary Yogas & Doshas (Karmic Hurdles & Remedial Protection)</div>
-            <div class="yogas-grid-clean">
+            <!-- Inauspicious Doshas -->
+            <div style="margin-bottom: 8px;">
+                <div style="font-size: 9px; font-weight: 800; color: #991b1b; text-transform: uppercase; margin-bottom: 4px;">
+                    ⚠ Challenging Planetary Yogas & Doshas (Karmic Hurdles & Remedial Protection)
+                </div>
                 
             <div class="yoga-card-clean inauspicious">
                 <div class="yoga-card-header">
-                    <div class="yoga-title" style="color: #991b1b;">Mercury-Rahu Bandhan Dosha (Contractual Traps & Health Confinement)</div>
-                    <span class="yoga-pill ruby">Pair 5-4 (Missing 9) • Bandhan Dosha</span>
+                    <div class="yoga-title" style="color: #991b1b;">Sun-Mars Agni Sangharsh Dosha (Fiery Temper, Impatience & Collision)</div>
+                    <span class="yoga-pill ruby">Pair 1-9 (Missing 3) • Agni Dosha</span>
                 </div>
-                <div class="yoga-desc">Activated when 5 and 4 combine with missing 9. Ties the native down through ambiguous contractual disputes, bureaucratic audit inquiries, audit penalties, or prolonged clinical bed-rest. Even fours (44) mitigate the affliction and ensure swift release.</div>
-                <div class="yoga-remedy-strip"><strong>Remedial Mitigation Key:</strong> Feed green spinach/fodder to cows every Wednesday; chant 'Om Budhaya Namah' and 'Om Gan Ganapataye Namah' 108 times; get all legal and business agreements thoroughly audited by an advocate before signing.</div>
-            </div>
-            
-            <div class="yoga-card-clean inauspicious">
-                <div class="yoga-card-header">
-                    <div class="yoga-title" style="color: #991b1b;">Saturn-Rahu Hava Mahal & Kasht Dosha (Air Castles, Speculation Losses & Accidents)</div>
-                    <span class="yoga-pill ruby">Pair 8-4 (Missing 2) • Hava Mahal Dosha</span>
-                </div>
-                <div class="yoga-desc">Triggered when 8 and 4 appear with missing 2. Induces tendency to build unrealistic castles in the air, falling into high-risk get-rich-quick speculative traps (crypto, intraday, lottery), physical accident-proneness, and turbulence in married life.</div>
-                <div class="yoga-remedy-strip"><strong>Remedial Mitigation Key:</strong> Strictly refrain from speculative day-trading, gambling, or unverified schemes; worship Lord Bhairav or Hanuman; keep a solid silver square block at home; feed mustard-oil smeared rotis to black stray dogs on Saturdays.</div>
+                <div class="yoga-desc">Both Sun and Mars are extremely hot fiery planets. When present without Jupiter (3)'s stabilizing wisdom, native suffers from persistent anger, burning impatience, friction with teammates, and blood pressure fluctuations despite brilliant surgical/technical intellect.</div>
+                <div class="yoga-remedy-strip"><strong>Remedial Mitigation Key:</strong> Drink water stored overnight in a silver glass; practice 10 minutes of Anulom-Vilom and Sheetali Pranayama daily; avoid excessively hot and spicy foods; cultivate a 5-second pause before responding in anger.</div>
             </div>
             
             </div>
 
-            <!-- Planetary Vibrations -->
-            <div class="section-title">📊 Planetary Vibrations Analysis (+ / -)</div>
-            <div class="vibrations-grid">
-                
+            <!-- Planetary Vibrations Spectrum (9 Planets) -->
+            <div>
+                <div style="font-size: 9px; font-weight: 800; color: #0f172a; text-transform: uppercase; margin-bottom: 4px;">
+                    📊 Planetary Vibrations Analysis (+ / -) (Planetary Spectrum 1-9)
+                </div>
+                <div class="vibes-dashboard-grid">
+                    
+        <div class="vibe-card badge-pos">
+            <div class="vibe-header">
+                <span class="vibe-num">No. 1 (1x)</span>
+                <span class="vibe-type-badge">Positive (+)</span>
+            </div>
+            
+            <div class="vibe-body">Positive (+1 Solar Vitality): Endows the native with supreme solar vitality, majestic authority, charismatic leadership, and regal confidence ('King-like life'). Natural pioneer and executive decision-maker with an indomitable aura; commands high institutional respect, attracts lucrative financial opportunities, and steadfastly protects subordinates.</div>
+        </div>
+        
+        <div class="vibe-card badge-pos">
+            <div class="vibe-header">
+                <span class="vibe-num">No. 2 (1x)</span>
+                <span class="vibe-type-badge">Positive (+)</span>
+            </div>
+            
+            <div class="vibe-body">Positive (+2 Lunar Grace): Endows gentle motherly empathy, soothing artistic elegance, deep psychological intuition, and hypnotic diplomatic charm. Exceptional ability to build harmonious partnerships, diffuse conflicts, and provide profound emotional healing and aesthetic comfort to loved ones.</div>
+        </div>
+        
         <div class="vibe-card badge-pos">
             <div class="vibe-header">
                 <span class="vibe-num">No. 3 (1x)</span>
@@ -1222,15 +2013,6 @@ body {
             </div>
             
             <div class="vibe-body">Positive (+3 Jupiterian Wisdom): Supreme Guru wisdom, uncompromising moral ethics, profound advisory eloquence, and visionary academic intellect. Natural counselor, teacher, and spiritual strategist; deeply rooted in family harmony, incorruptible integrity, and revered societal honor.</div>
-        </div>
-        
-        <div class="vibe-card badge-neg">
-            <div class="vibe-header">
-                <span class="vibe-num">No. 4 (1x)</span>
-                <span class="vibe-type-badge">Challenging / Negative (-)</span>
-            </div>
-            
-            <div class="vibe-body">Challenging (-4 Rahu Volatility): Unpredictable volatility, erratic decision-making, unexpected sudden financial drains, and vulnerability to legal/confinement traps (Bandhan). Restless nature leading to fruitless travels, chronic dissatisfaction, and defiance of established order.</div>
         </div>
         
         <div class="vibe-card badge-pos">
@@ -1251,13 +2033,13 @@ body {
             <div class="vibe-body">Positive (+6 Venusian Elegance & Luxury): Sovereign aesthetic refinement, magnetic social charisma, supreme hospitality, and effortless attraction of luxury vehicles, designer estates, and lavish comforts. Endowed with profound creative genius in cinema, arts, culinary delights, and joyful romantic fidelity.</div>
         </div>
         
-        <div class="vibe-card badge-pos">
+        <div class="vibe-card badge-neg">
             <div class="vibe-header">
-                <span class="vibe-num">No. 7 (1x)</span>
-                <span class="vibe-type-badge">Positive (+)</span>
+                <span class="vibe-num">No. 7 (2x)</span>
+                <span class="vibe-type-badge">Challenging / Negative (-)</span>
             </div>
             
-            <div class="vibe-body">Positive (+7 Ketu Spiritual Fortitude): Transcendent spiritual awakening, penetrating analytical intuition, divine crisis protection, and profound mastery in healing and occult sciences. Blessed with exceptional good fortune in overcoming hurdles, foreign settlement success, and peaceful karmic stability.</div>
+            <div class="vibe-body">Challenging (-7 Ketu Skepticism & Disconnect): Hyper-skeptical over-analysis ('splitting hairs'), emotional detachment, vulnerability to sudden betrayals, and deep disillusionment in romance ('plastic love'). Chronic restlessness, aimless travels, and acute marital misunderstandings.</div>
         </div>
         
         <div class="vibe-card badge-neg">
@@ -1278,28 +2060,28 @@ body {
             <div class="vibe-body">Challenging (-9 Martial Wrath & Bandhan Risk): Explosive volcanic rage, reckless impatience, belligerent argumentation, and vulnerability to accidents or litigation (Bandhan Yoga). Tendency to act on hot impulses, burning valuable relationships, and imposing domineering force over subordinates.</div>
         </div>
         
-            </div>
-            <div style="font-size: 7.2px; color: #475569; font-style: italic; margin-top: 2px; border-top: 0.5px solid #e2e8f0; padding-top: 2px;">
-                Dynamic Vedic Principle: Unlike permanent inborn traits, planetary vibrations dynamically fluctuate under active Mahadasha, Antardasha, and Pratyantar Dasha cycles. A number that is challenging in the inborn chart can become auspicious during a Dasha (e.g. Number 8 becoming 88 / Even 8), and an auspicious number can become challenging (e.g. Number 9 becoming 99 / Multiple 9) for that specific period.
+                </div>
             </div>
         </div>
 
-        <!-- Curiosity Preview Hook Box for Step 4 -->
-        <div class="curiosity-hook-card">
-            <div class="curiosity-icon">🔮</div>
-            <div class="curiosity-content">
-                <div class="curiosity-text">🔮 NEXT STEP PREVIEW: Your Personalized Life Forecast & Sacred Remedies — What do the planets reveal about your wealth, career, relationships, and health? Turn to Page 4 for your 8-Pillar Life Predictions and your personalized Vedic Remedial Protocol...</div>
-            </div>
+        <div>
+            
+        <div class="curiosity-box">
+            <div class="curiosity-pill">NEXT CHAPTER</div>
+            <div class="curiosity-text">🔮 CHAPTER 9 PREVIEW: Turn to Page 10 for your 8-Pillar Life Predictions, personalized Vedic Remedies, and Official Verification Seal...</div>
         </div>
-
-        <div class="page-footer">
-            <span class="footer-stamp">CONSULTATION BY JIGAR THAKKAR (📞 +91 9377614772) • ROHIT SHARMA (SAMPLE)</span>
-            <span>Page 3 of 4</span>
+        
+            
+        <div class="footer">
+            <div><strong>Jigar Thakkar</strong> • Certified Vedic Numerologist & Vastu Consultant • Phone: +91 9377614772</div>
+            <div>Page 9 of 10</div>
+        </div>
+        
         </div>
     </div>
 </div>
 
-<!-- ==================== PAGE 4: PREDICTIONS, REMEDIES & CERTIFICATION ==================== -->
+<!-- ==================== PAGE 10: CHAPTER 9 - PREDICTIONS, REMEDIES & SEAL ==================== -->
 <div class="page">
     <div class="page-border"></div>
     <div class="page-border-inner"></div>
@@ -1310,17 +2092,18 @@ body {
 
     <div class="page-content">
         <div>
-            <!-- Step Navigation Banner -->
-            <div class="step-banner">
-                <div class="step-banner-left">
-                    <span class="step-badge-pill">STEP 4 OF 4: 8-PILLAR LIFE PREDICTIONS & SACRED REMEDIES</span>
-                    <span class="step-banner-sub">Personalized Future Guidance & Certified Remedial Protocol</span>
-                </div>
-                <div class="step-banner-consultant">Consultant: Jigar Thakkar | 📞 +91 9377614772</div>
+            
+        <div class="chap-banner">
+            <div class="chap-banner-left">
+                <span class="chap-badge-pill">CHAPTER 9 OF 9 • FUTURE PREDICTIONS & REMEDIES</span>
+                <span class="chap-banner-sub">8-Pillar Life Predictions, Sacred Vedic Remedies & Official Certification</span>
             </div>
+            <div class="chap-banner-consultant">Jigar Thakkar • Vedic Astrologer</div>
+        </div>
+        
+            <div class="section-title">🔮 8-Pillar Life Predictions, Sacred Vedic Remedies & Official Certification</div>
 
-            <!-- Predictions 2x4 Grid -->
-            <div class="section-title">🔮 Comprehensive Life Predictions</div>
+            <!-- 8-Pillar Predictions 2x4 Grid -->
             <div class="preds-grid">
                 
             <div class="pred-card">
@@ -1328,7 +2111,7 @@ body {
                     <span class="pred-icon">💰</span>
                     <span class="pred-title">Finance & Wealth Predictions</span>
                 </div>
-                <div class="pred-body">Your Vedic chart reflects a financial lifestyle baseline of: Moderate & Progressive. Exercise disciplined prudence in capital investments during the current phase; avoid uncalculated speculations. </div>
+                <div class="pred-body">Your Vedic chart reflects a financial lifestyle baseline of: High (Affluent Standard of Living). Currently active Dasha periods (MD 3 and AD 8) strongly favor wealth creation, lucrative business expansion, and liquidity. Presence of Number 2 indicates fluctuating cash liquidity; maintaining automated conservative savings is highly advised.</div>
             </div>
             
             <div class="pred-card">
@@ -1336,7 +2119,7 @@ body {
                     <span class="pred-icon">🏠</span>
                     <span class="pred-title">Property & Real Estate Predictions</span>
                 </div>
-                <div class="pred-body">Real Estate Acquisition Potential: Moderate (Requires Sustained Effort). </div>
+                <div class="pred-body">Real Estate Acquisition Potential: Highly Favorable (Strong Real Estate Potential). The currently active Dasha cycle (MD 3 / AD 8) marks a prime window for acquiring property or initiating construction.</div>
             </div>
             
             <div class="pred-card">
@@ -1352,7 +2135,7 @@ body {
                     <span class="pred-icon">📚</span>
                     <span class="pred-title">Education & Intellectual Strengths</span>
                 </div>
-                <div class="pred-body">Your intellectual framework is strongly shaped by Root Number 3. You possess a sharp analytical mindset suited for structured, deep problem solving. Best aligned fields of study and profession: Teaching, Education, Law/Judiciary, Vedic Sciences/Astrology, Banking/Finance, Publishing, Spiritual Counseling, Advisory Roles.</div>
+                <div class="pred-body">Your intellectual framework is strongly shaped by Root Number 6. You possess a sharp analytical mindset suited for structured, deep problem solving. Best aligned fields of study and profession: Luxury Goods, Fashion/Apparel, Interior Design, Film/Media/Entertainment, Automobile Dealership, Cosmetics, Luxury Hospitality, Jewelry.</div>
             </div>
             
             <div class="pred-card">
@@ -1360,7 +2143,7 @@ body {
                     <span class="pred-icon">✈️</span>
                     <span class="pred-title">Travel & Foreign Settlement</span>
                 </div>
-                <div class="pred-body">Presence of Number 7 indicates luxury journeys to developed countries, cultural research, and restorative spiritual travels.</div>
+                <div class="pred-body">Destiny Number 7 creates exceptionally strong prospects for international relocation, foreign PR/citizenship, and cross-border commercial success.</div>
             </div>
             
             <div class="pred-card">
@@ -1368,7 +2151,7 @@ body {
                     <span class="pred-icon">⚖️</span>
                     <span class="pred-title">Litigation, Disputes & Court Cases</span>
                 </div>
-                <div class="pred-body">Presence of combinations like (9 & 4) or (5 & 4) counsels vigilance regarding legal agreements and partnership documentation. Per Vedic numerology, these trigger court proceedings only when active for 2+ consecutive years in Dasha cycles. Fortunately, stabilizing numbers (+7 / +8) in your matrix act as anchors, facilitating out-of-court settlements or judicial exoneration.</div>
+                <div class="pred-body">The birth grid is well-shielded against legal controversies. No persistent litigation indicators are observed. Maintain customary contractual transparency.</div>
             </div>
             
             <div class="pred-card">
@@ -1384,59 +2167,58 @@ body {
                     <span class="pred-icon">🌿</span>
                     <span class="pred-title">Health & Vitality Predictions</span>
                 </div>
-                <div class="pred-body">Per Root Number 3, prime anatomical zones of physiological sensitivity include: Liver, gallbladder, arterial blood circulation, diabetes, cholesterol. Consume morning water stored in a copper vessel and avoid excessively rich, greasy diets.</div>
+                <div class="pred-body">Per Root Number 6, prime anatomical zones of physiological sensitivity include: Kidneys, urinary tract, reproductive vitality, throat, throat vocal cords, diabetes. Consume morning water stored in a copper vessel and avoid excessively rich, greasy diets.</div>
             </div>
             
             </div>
 
-            <!-- Remedies 2x3 Grid -->
-            <div class="section-title">🌿 Vedic Remedial Measures & Guidance</div>
+            <!-- Master 6-Pillar Vedic Remedies -->
             <div class="remedies-grid">
                 
         <div class="remedy-card">
             <div class="remedy-num">1</div>
             <div class="remedy-content">
-                <div class="remedy-label"><span style="margin-right:3px;">💎</span>Gemstone & Crystal Recommendation</div>
-                <div class="remedy-text">Wear Natural Yellow Sapphire (Pukhraj) 3.25 to 5.25 Ratti in Gold or Brass on the Index finger on Thursday morning. (Crystal: Citrine or Yellow Topaz)</div>
+                <div class="remedy-label"><span style="margin-right:4px;">💎</span>Gemstone & Crystal Recommendation</div>
+                <div class="remedy-text">Wear Natural Diamond, White Zircon, or Australian Opal 5 to 7 Ratti in Silver on the Ring finger on Friday morning. (Crystal: Clear Quartz or Rose Quartz)</div>
             </div>
         </div>
         
         <div class="remedy-card">
             <div class="remedy-num">2</div>
             <div class="remedy-content">
-                <div class="remedy-label"><span style="margin-right:3px;">📿</span>Sacred Vedic Mantras</div>
-                <div class="remedy-text">Om Gram Greem Groum Sah Gurave Namah (108 times on Thursday morning).</div>
+                <div class="remedy-label"><span style="margin-right:4px;">📿</span>Sacred Vedic Mantras</div>
+                <div class="remedy-text">Om Shram Shreem Shroum Sah Shukraya Namah (108 times on Friday morning).</div>
             </div>
         </div>
         
         <div class="remedy-card">
             <div class="remedy-num">3</div>
             <div class="remedy-content">
-                <div class="remedy-label"><span style="margin-right:3px;">🌾</span>Vrat & Fasting Discipline</div>
-                <div class="remedy-text">Thursday. Wear yellow garments; do not wash hair or cut nails on this day.</div>
+                <div class="remedy-label"><span style="margin-right:4px;">🌾</span>Vrat & Fasting Discipline</div>
+                <div class="remedy-text">Friday. Strictly avoid sour foods (curd, lemons, pickles) on this day.</div>
             </div>
         </div>
         
         <div class="remedy-card">
             <div class="remedy-num">4</div>
             <div class="remedy-content">
-                <div class="remedy-label"><span style="margin-right:3px;">🤝</span>Charity & Daana (Donations)</div>
-                <div class="remedy-text">Donate chana dal, turmeric, yellow sweets (laddoo), yellow bananas, or religious scripture books on Thursday.</div>
+                <div class="remedy-label"><span style="margin-right:4px;">🤝</span>Charity & Daana (Donations)</div>
+                <div class="remedy-text">Donate white rice, sugar candy (mishri), pure cow ghee, perfumes, or white silk clothes to women on Friday.</div>
             </div>
         </div>
         
         <div class="remedy-card">
             <div class="remedy-num">5</div>
             <div class="remedy-content">
-                <div class="remedy-label"><span style="margin-right:3px;">🕊️</span>Seva (Selfless Service & Karma Correction)</div>
-                <div class="remedy-text">Serve mentors and teachers. Offer water and light a mustard oil or ghee lamp near a Peepal or Banana tree on Thursday.</div>
+                <div class="remedy-label"><span style="margin-right:4px;">🕊️</span>Seva (Selfless Service & Karma Correction)</div>
+                <div class="remedy-text">Respect women, spouse, and mother. Apply natural non-alcoholic sandalwood or rose attar (perfume) daily.</div>
             </div>
         </div>
         
         <div class="remedy-card">
             <div class="remedy-num">6</div>
             <div class="remedy-content">
-                <div class="remedy-label"><span style="margin-right:3px;">🎨</span>General Vedic Remedies (Wealth, Health, Harmony)</div>
+                <div class="remedy-label"><span style="margin-right:4px;">🎨</span>General Vedic Remedies (Wealth, Health, Harmony)</div>
                 <div class="remedy-text"><strong>Health:</strong> Store drinking water in a 100% pure copper jug overnight and drink the first glass on an empty stomach at dawn. Expose the body to gentle morning sunlight for 15 minutes to charge prana. • <strong>Wealth:</strong> Place an energized Shri Kuber Yantra wrapped in clean green or red silk cloth inside your cash locker facing North. Burn pure bhimseni camphor (kapoor) with 2 cloves in the evening to clear stagnant vibrations.</div>
             </div>
         </div>
@@ -1445,37 +2227,28 @@ body {
 
             
 
-            <!-- Master Deluxe Certification & Copyright Card -->
-            <div class="cert-stamp-card-deluxe">
-                <div>
-                    <div class="cert-title">Certified Astrological Verification & Seal</div>
-                    <div class="cert-desc">This report is prepared and certified by Jigar Thakkar, Certified Numerologist, adhering strictly to authenticated Vedic Numerology algorithms and planetary principles. May the planetary energies guide you towards prosperity, good health, and spiritual enlightenment.</div>
-                    <div class="cert-contact-bar">
-                        <span>📞 Phone / WhatsApp: +91 9377614772</span>
-                        <span>✉ Email: jigar93776@gmail.com</span>
+            <!-- Astrological Seal & Official Verification Card -->
+            <div class="seal-card">
+                <div class="seal-symbol">🕉️</div>
+                <div class="seal-content">
+                    <div class="seal-title">Certified Astrological Verification & Seal</div>
+                    <div class="seal-text">
+                        This report is prepared and certified by Jigar Thakkar, Certified Numerologist, adhering strictly to authenticated Vedic Numerology algorithms and planetary principles. May the planetary energies guide you towards prosperity, good health, and spiritual enlightenment.
                     </div>
-                    <div style="font-size:7px;color:#94a3b8;margin-top:2px;">© 2026 Jigar Thakkar. All Rights Reserved. Prepared exclusively for the named client through authenticated Vedic Numerology. Unauthorized copying or redistribution is strictly prohibited.</div>
-                </div>
-                <div class="cert-seal-deluxe">
-                    <span>VEDIC</span>
-                    <span>CERTIFIED</span>
-                    <span>JIGAR T.</span>
-                    <span>✦ 2026 ✦</span>
+                    <div class="seal-blessing">
+                        ✦ ✨ YOUR SACRED ROADMAP TO TRANSFORMATION: Apply these prescribed remedies with faith and dedication. For deeper 1-on-1 personalized guidance, birth chart analysis, or Vastu audits, connect directly with Jigar Thakkar at +91 9377614772.
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Empowered Action / Success Note -->
-        <div class="curiosity-hook-card action-card">
-            <div class="curiosity-icon">✨</div>
-            <div class="curiosity-content">
-                <div class="curiosity-text">✨ YOUR EMPOWERED TRANSFORMATION: Practice these prescribed remedies with faith and consistency. For personalized 1-on-1 consultations or Vastu audits, contact Jigar Thakkar directly.</div>
-            </div>
+        <div>
+            
+        <div class="footer">
+            <div><strong>Jigar Thakkar</strong> • Certified Vedic Numerologist & Vastu Consultant • Phone: +91 9377614772</div>
+            <div>Page 10 of 10</div>
         </div>
-
-        <div class="page-footer">
-            <span class="footer-stamp">© 2026 Jigar Thakkar. All Rights Reserved. Prepared exclusively for the named client through authenticated Vedic Numerology. Unauthorized copying or redistribution is strictly prohibited.</span>
-            <span>Page 4 of 4</span>
+        
         </div>
     </div>
 </div>
