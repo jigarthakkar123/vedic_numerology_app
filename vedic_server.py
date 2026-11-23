@@ -12,7 +12,7 @@ from typing import Optional, List
 from datetime import datetime
 from fastapi import FastAPI, HTTPException, Query, Body
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 from pydantic import BaseModel
 
 # Add current folder to sys.path
@@ -45,6 +45,11 @@ class ClientProfileRequest(BaseModel):
 def clean_filename(name: str) -> str:
     """Removes special characters to produce safe filenames."""
     return "".join(c for c in name if c.isalnum() or c in (' ', '_', '-')).rstrip().replace(' ', '_')
+
+@app.get("/favicon.ico")
+async def get_favicon():
+    svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🕉️</text></svg>'
+    return Response(content=svg, media_type="image/svg+xml")
 
 @app.post("/api/analyze")
 async def analyze_chart(req: ClientProfileRequest):
