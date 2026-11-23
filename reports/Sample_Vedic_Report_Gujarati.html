@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <title>વૈયક્તિક વૈદિક અંકશાસ્ત્ર માર્ગદર્શન અહેવાલ - રોહિત શર્મા (સેમ્પલ રિપોર્ટ)</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 @page {
-    size: A4;
+    size: A4 portrait;
     margin: 0;
 }
 
@@ -23,15 +23,15 @@ body {
     font-family: 'Plus Jakarta Sans', 'Shruti', 'Noto Sans Gujarati', -apple-system, sans-serif;
     color: #1e293b;
     background-color: #ffffff;
-    font-size: 10.3px;
-    line-height: 1.44;
+    font-size: 9.6px;
+    line-height: 1.42;
 }
 
 .page {
     width: 210mm;
     height: 297mm;
     max-height: 297mm;
-    padding: 12mm 15mm 11mm 15mm;
+    padding: 10mm 13mm 9mm 13mm;
     background: #ffffff;
     position: relative;
     page-break-after: always;
@@ -45,35 +45,35 @@ body {
 /* Ornamental Borders */
 .page-border {
     position: absolute;
-    top: 5mm;
-    left: 5mm;
-    right: 5mm;
-    bottom: 5mm;
-    border: 1.5px solid #d4af37;
+    top: 4.5mm;
+    left: 4.5mm;
+    right: 4.5mm;
+    bottom: 4.5mm;
+    border: 1.2px solid #d4af37;
     pointer-events: none;
     z-index: 1;
 }
 .page-border-inner {
     position: absolute;
-    top: 6.5mm;
-    left: 6.5mm;
-    right: 6.5mm;
-    bottom: 6.5mm;
+    top: 6mm;
+    left: 6mm;
+    right: 6mm;
+    bottom: 6mm;
     border: 0.5px solid #e2c275;
     pointer-events: none;
     z-index: 1;
 }
 .corner-ornament {
     position: absolute;
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
     border-color: #b38728;
     z-index: 2;
 }
-.corner-tl { top: 4.5mm; left: 4.5mm; border-top: 3px solid #b38728; border-left: 3px solid #b38728; }
-.corner-tr { top: 4.5mm; right: 4.5mm; border-top: 3px solid #b38728; border-right: 3px solid #b38728; }
-.corner-bl { bottom: 4.5mm; left: 4.5mm; border-bottom: 3px solid #b38728; border-left: 3px solid #b38728; }
-.corner-br { bottom: 4.5mm; right: 4.5mm; border-bottom: 3px solid #b38728; border-right: 3px solid #b38728; }
+.corner-tl { top: 4.2mm; left: 4.2mm; border-top: 2.5px solid #b38728; border-left: 2.5px solid #b38728; }
+.corner-tr { top: 4.2mm; right: 4.2mm; border-top: 2.5px solid #b38728; border-right: 2.5px solid #b38728; }
+.corner-bl { bottom: 4.2mm; left: 4.2mm; border-bottom: 2.5px solid #b38728; border-left: 2.5px solid #b38728; }
+.corner-br { bottom: 4.2mm; right: 4.2mm; border-bottom: 2.5px solid #b38728; border-right: 2.5px solid #b38728; }
 
 .page-content {
     position: relative;
@@ -84,120 +84,125 @@ body {
     justify-content: space-between;
 }
 
-/* Main Header */
+/* Step Navigation Bar */
+.step-banner {
+    background: linear-gradient(135deg, #091124 0%, #172554 100%);
+    border: 1px solid #d4af37;
+    border-radius: 6px;
+    padding: 5px 9px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 7px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.step-banner-left {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+.step-badge-pill {
+    background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+    color: #0f172a;
+    font-size: 8px;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 12px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 1px 3px rgba(245,158,11,0.3);
+}
+.step-banner-sub {
+    font-size: 8.8px;
+    font-weight: 600;
+    color: #fef08a;
+    letter-spacing: 0.3px;
+}
+.step-banner-consultant {
+    font-size: 7.8px;
+    color: #93c5fd;
+    font-weight: 500;
+}
+
+/* Main Header on Page 1 */
 .report-main-header {
     text-align: center;
-    padding-bottom: 6px;
-    border-bottom: 1.5px solid #e8dec9;
-    margin-bottom: 8px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #e8dec9;
+    margin-bottom: 7px;
 }
 .om-symbol {
-    font-size: 15px;
+    font-size: 13px;
     color: #b38728;
     font-weight: 700;
     letter-spacing: 2px;
 }
 .main-title {
     font-family: 'Cinzel', serif;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 800;
     color: #0f172a;
-    letter-spacing: 1.5px;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
     margin: 1px 0;
 }
 .sub-title {
-    font-size: 9.5px;
+    font-size: 8.8px;
     color: #854d0e;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
     font-weight: 600;
-}
-.sub-title strong {
-    color: #0f172a;
-    font-weight: 700;
-}
-
-/* Mini Header for subsequent pages */
-.page-header-mini {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 4px;
-    border-bottom: 1px solid #e2c275;
-    margin-bottom: 8px;
-}
-.page-header-mini .mini-title {
-    font-family: 'Cinzel', serif;
-    font-size: 11px;
-    font-weight: 700;
-    color: #0f172a;
-    letter-spacing: 0.8px;
-}
-.page-header-mini .consultant-tag {
-    font-size: 9px;
-    color: #854d0e;
-    background: #fef9c3;
-    padding: 2px 8px;
-    border-radius: 6px;
-    font-weight: 600;
-    border: 1px solid #fde047;
 }
 
 /* Section Titles */
 .section-title {
     font-family: 'Cinzel', serif;
-    font-size: 11.5px;
+    font-size: 11px;
     font-weight: 700;
     color: #0f172a;
-    border-left: 3.5px solid #b38728;
-    padding-left: 7px;
-    margin-bottom: 6px;
+    border-left: 3px solid #b38728;
+    padding-left: 6px;
+    margin-bottom: 5px;
+    margin-top: 4px;
     display: flex;
     align-items: center;
     letter-spacing: 0.4px;
 }
 
-/* Profile Card */
+/* Profile Hero Card */
 .profile-card {
     background: linear-gradient(135deg, #fdfbf7 0%, #f7f3e8 100%);
-    border: 1.5px solid #d4af37;
-    border-radius: 7px;
-    padding: 8px 12px;
-    margin-bottom: 8px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
-}
-.profile-grid-container {
-    display: grid;
-    grid-template-columns: 1fr 165px;
-    gap: 12px;
-    align-items: center;
+    border: 1.2px solid #d4af37;
+    border-radius: 6px;
+    padding: 7px 10px;
+    margin-bottom: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
 }
 .client-data-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4px 8px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px 6px;
+    margin-bottom: 6px;
 }
 .data-pill {
     background: #ffffff;
-    border: 1px solid #e2d7ba;
+    border: 1px solid #e2e8f0;
     border-radius: 4px;
     padding: 3px 6px;
-}
-.data-pill .label {
-    font-size: 7.5px;
-    color: #64748b;
-    text-transform: uppercase;
-    font-weight: 700;
-    letter-spacing: 0.3px;
-}
-.data-pill .value {
-    font-size: 11px;
-    font-weight: 700;
-    color: #0f172a;
 }
 .data-pill.highlight {
     background: #fffbeb;
     border-color: #f59e0b;
+}
+.data-pill .label {
+    font-size: 7.2px;
+    text-transform: uppercase;
+    color: #64748b;
+    font-weight: 700;
+}
+.data-pill .value {
+    font-size: 9.4px;
+    font-weight: 700;
+    color: #0f172a;
 }
 .data-pill.highlight .value {
     color: #b45309;
@@ -208,13 +213,13 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
-    margin-bottom: 6px;
+    margin-bottom: 5px;
 }
 .grid-box-card {
-    background: #fdfbf7;
+    background: #ffffff;
     border: 1.2px solid #d4af37;
     border-radius: 5px;
-    padding: 5px 6px;
+    padding: 4px 6px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -228,8 +233,8 @@ body {
     font-weight: 800;
     color: #854d0e;
     text-transform: uppercase;
-    letter-spacing: 0.4px;
-    margin-bottom: 2px;
+    letter-spacing: 0.3px;
+    margin-bottom: 1px;
     text-align: center;
 }
 .grid-caption.dasha {
@@ -248,7 +253,7 @@ body {
     gap: 2px;
     background: #b38728;
     padding: 2px;
-    border-radius: 4px;
+    border-radius: 3px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 .vedic-grid.dasha {
@@ -263,12 +268,10 @@ body {
     font-size: 11px;
     font-weight: 700;
     color: #0f172a;
-    overflow: hidden;
 }
 .vedic-cell.natal-cell.active {
     background: #fef3c7;
     color: #92400e;
-    font-size: 11.5px;
     font-weight: 800;
 }
 .vedic-cell.dasha-cell {
@@ -281,294 +284,259 @@ body {
 }
 .vedic-cell.empty {
     color: #cbd5e1;
-    font-size: 8.5px;
+    font-size: 8px;
 }
 .chip {
-    font-size: 8.5px;
+    font-size: 8px;
     font-weight: 800;
     padding: 1px 3px;
-    border-radius: 3px;
+    border-radius: 2px;
     line-height: 1;
-    border: 1px solid transparent;
 }
-.chip-natal { background: #fef3c7; color: #854d0e; border-color: #fde047; }
-.chip-md { background: #e0f2fe; color: #0284c7; border-color: #38bdf8; }
-.chip-ad { background: #dcfce7; color: #15803d; border-color: #22c55e; }
-.chip-pd { background: #f3e8ff; color: #6d28d9; border-color: #7c3aed; }
+.chip-natal { background: #fef3c7; color: #854d0e; border: 1px solid #fde047; }
+.chip-md { background: #e0f2fe; color: #0284c7; border: 1px solid #38bdf8; }
+.chip-ad { background: #dcfce7; color: #15803d; border: 1px solid #22c55e; }
+.chip-pd { background: #f3e8ff; color: #6d28d9; border: 1px solid #7c3aed; }
 
 .grid-legend-bar {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
     background: #f8fafc;
     border: 1px solid #e2e8f0;
     border-radius: 4px;
-    padding: 2.5px 8px;
-    margin-bottom: 6px;
-    font-size: 7.2px;
+    padding: 2px 7px;
+    margin-bottom: 5px;
+    font-size: 7px;
     font-weight: 700;
 }
 .legend-pill { display: inline-flex; align-items: center; gap: 3px; }
-.legend-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+.legend-dot { width: 5.5px; height: 5.5px; border-radius: 50%; display: inline-block; }
 .dot-natal { background: #d4af37; }
 .dot-md { background: #38bdf8; }
 .dot-ad { background: #22c55e; }
 .dot-pd { background: #7c3aed; }
 
-/* Planetary Friendship Compass Box */
-.compass-box {
+/* Planetary Friendship & Allies Strip */
+.allies-box {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-left: 3.5px solid #3b82f6;
-    border-radius: 6px;
-    padding: 6px 10px;
-    margin-bottom: 8px;
+    border-left: 3px solid #3b82f6;
+    border-radius: 5px;
+    padding: 5px 8px;
+    margin-bottom: 6px;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 6px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 4px;
 }
-.compass-item {
+.allies-item {
     display: flex;
     flex-direction: column;
 }
-.compass-label {
-    font-size: 7.5px;
+.allies-label {
+    font-size: 6.8px;
     text-transform: uppercase;
     color: #64748b;
     font-weight: 700;
 }
-.compass-val {
-    font-size: 10px;
+.allies-val {
+    font-size: 9px;
     font-weight: 700;
     color: #0f172a;
 }
-.compass-val.green { color: #166534; }
-.compass-val.orange { color: #b45309; }
-.compass-val.red { color: #991b1b; }
+.allies-val.green { color: #166534; }
+.allies-val.orange { color: #b45309; }
+.allies-val.red { color: #991b1b; }
 
 .name-harmony-bar {
     background: #f0fdf4;
     border: 1px solid #86efac;
-    border-radius: 5px;
-    padding: 4px 8px;
-    font-size: 8.8px;
+    border-radius: 4px;
+    padding: 3.5px 7px;
+    font-size: 8.4px;
     color: #166534;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     line-height: 1.35;
 }
 
-/* Badges Bar */
-.meta-badge-bar {
-    display: flex;
+/* 2-Column Traits & Precautions */
+.traits-duo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 6px;
-    margin-bottom: 7px;
+    margin-bottom: 5px;
 }
-.meta-badge {
+.traits-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    padding: 5px 7px;
+}
+.traits-card.strengths {
+    border-left: 3px solid #16a34a;
+    background: #fcfdfc;
+}
+.traits-card.precautions {
+    border-left: 3px solid #f59e0b;
+    background: #fefdfa;
+}
+.traits-card-header {
+    font-size: 8.4px;
+    font-weight: 800;
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.traits-card.strengths .traits-card-header { color: #166534; }
+.traits-card.precautions .traits-card-header { color: #b45309; }
+
+.quality-list-clean, .precaution-list-clean {
+    list-style: none;
+    padding-left: 0;
+}
+.quality-item-clean, .precaution-item-clean {
+    font-size: 8.3px;
+    color: #334155;
+    line-height: 1.32;
+    margin-bottom: 2.5px;
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+}
+.bullet-icon { color: #16a34a; font-size: 8px; font-weight: bold; flex-shrink: 0; }
+.precaution-icon { color: #ea580c; font-size: 8px; font-weight: bold; flex-shrink: 0; }
+
+/* Curiosity Teaser Hook Box */
+.curiosity-hook-card {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    border: 1.2px solid #f59e0b;
+    border-radius: 5px;
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: auto;
+    margin-bottom: 4px;
+    box-shadow: 0 1px 3px rgba(245,158,11,0.15);
+}
+.curiosity-icon {
+    font-size: 15px;
+    flex-shrink: 0;
+}
+.curiosity-content {
+    flex: 1;
+}
+.curiosity-text {
+    font-size: 7.8px;
+    font-weight: 600;
+    color: #78350f;
+    line-height: 1.32;
+}
+.curiosity-hook-card.action-card {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border-color: #22c55e;
+}
+.curiosity-hook-card.action-card .curiosity-text {
+    color: #14532d;
+}
+
+/* Page 2: 3-Tier Time Horizons */
+.intro-lead-pill {
     background: #f8fafc;
     border: 1px solid #cbd5e1;
     border-radius: 4px;
-    padding: 3px 6px;
-    font-size: 9px;
-    font-weight: 600;
-    color: #334155;
-    flex: 1;
-    text-align: center;
-}
-.meta-badge span {
-    color: #b45309;
-    font-weight: 700;
-}
-
-/* Quality List */
-.quality-list-single {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 4.5px;
-    margin-bottom: 8px;
-}
-.quality-item-single {
-    position: relative;
-    padding-left: 13px;
-    font-size: 9.6px;
-    color: #334155;
-    line-height: 1.38;
-}
-.quality-item-single::before {
-    content: "◆";
-    position: absolute;
-    left: 0;
-    top: 0;
-    color: #d4af37;
-    font-size: 7px;
-}
-
-/* Precautions Box */
-.root-precautions-box {
-    background: #fffaf0;
-    border: 1.5px solid #fed7aa;
-    border-radius: 6px;
-    padding: 8px 12px;
-    margin-top: 3px;
-}
-.root-precautions-header {
-    font-family: 'Cinzel', serif;
-    font-size: 10.5px;
-    font-weight: 700;
-    color: #b45309;
-    margin-bottom: 4px;
-    padding-bottom: 2px;
-    border-bottom: 1px solid #fed7aa;
-}
-.root-precautions-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3.5px 12px;
-    list-style: none;
-}
-.root-precautions-grid li {
-    position: relative;
-    padding-left: 11px;
-    font-size: 9.1px;
-    color: #334155;
-    line-height: 1.32;
-}
-.root-precautions-grid li::before {
-    content: "•";
-    position: absolute;
-    left: 1px;
-    top: -2px;
-    font-size: 12px;
-    color: #ea580c;
-}
-
-/* Dasha Banner */
-.dasha-summary-bar {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 7px;
-    background: #f8fafc;
-    border: 1.5px solid #cbd5e1;
-    border-radius: 6px;
-    padding: 6px 9px;
-    margin-bottom: 8px;
-}
-.dasha-box {
-    text-align: center;
-}
-.dasha-box .d-label {
-    font-size: 7.5px;
-    text-transform: uppercase;
-    color: #64748b;
-    font-weight: 700;
-}
-.dasha-box .d-val {
-    font-size: 12px;
-    font-weight: 800;
-    color: #1e3a8a;
-    margin: 1px 0;
-}
-.dasha-box .d-span {
-    font-size: 7.5px;
+    padding: 3px 7px;
+    font-size: 8px;
     color: #475569;
+    font-weight: 600;
+    margin-bottom: 5px;
 }
-
-/* 3-Tier Period Forecast Cards */
 .tier-card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 5px;
-    padding: 6px 9px;
-    margin-bottom: 6px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    padding: 5px 8px;
+    margin-bottom: 5px;
 }
-.tier-card.tier-md { border-left: 3.5px solid #0284c7; }
-.tier-card.tier-ad { border-left: 3.5px solid #16a34a; }
-.tier-card.tier-pd { border-left: 3.5px solid #7c3aed; background: #faf5ff; }
+.tier-card.tier-md { border-left: 3.5px solid #0284c7; background: #fbfdff; }
+.tier-card.tier-ad { border-left: 3.5px solid #16a34a; background: #fbfdfc; }
+.tier-card.tier-pd { border-left: 3.5px solid #7c3aed; background: #fbfaff; }
 
 .tier-header-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 3px;
+    margin-bottom: 2.5px;
     border-bottom: 1px dashed #e2e8f0;
-    padding-bottom: 2.5px;
+    padding-bottom: 2px;
 }
 .tier-badge {
-    font-size: 7.5px;
+    font-size: 7.2px;
     font-weight: 800;
     text-transform: uppercase;
     padding: 1.5px 5px;
     border-radius: 3px;
-    letter-spacing: 0.3px;
 }
 .badge-md { background: #e0f2fe; color: #0284c7; border: 1px solid #7dd3fc; }
 .badge-ad { background: #dcfce7; color: #16a34a; border: 1px solid #86efac; }
 .badge-pd { background: #ffedd5; color: #ea580c; border: 1px solid #fdba74; }
 
-.tier-title-main { font-size: 9.5px; font-weight: 800; color: #0f172a; }
+.tier-title-main { font-size: 9.2px; font-weight: 800; color: #0f172a; }
 .tier-date-span { font-size: 7.5px; font-weight: 700; color: #475569; }
-
-.tier-text-content { font-size: 8.5px; color: #1e293b; line-height: 1.35; margin-bottom: 2.5px; }
-.tier-note-bar { font-size: 7.8px; color: #0369a1; background: #f0f9ff; padding: 2px 5px; border-radius: 3px; margin-top: 2px; }
+.tier-text-content { font-size: 8.3px; color: #1e293b; line-height: 1.34; margin-bottom: 2px; }
+.tier-note-bar { font-size: 7.6px; color: #0369a1; background: #f0f9ff; padding: 2px 5px; border-radius: 3px; margin-top: 2px; }
 .tier-subgrid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 4px;
-    margin-top: 3px;
-    font-size: 8px;
+    margin-top: 2.5px;
+    font-size: 7.8px;
     color: #334155;
 }
 .tier-dos-donts-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 6px;
-    margin-top: 3px;
+    gap: 5px;
+    margin-top: 2px;
 }
-.do-box {
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
+.do-box, .dont-box {
     border-radius: 4px;
-    padding: 3.5px 6px;
-    font-size: 7.8px;
+    padding: 3px 5px;
+    font-size: 7.6px;
 }
-.dont-box {
-    background: #fef2f2;
-    border: 1px solid #fecaca;
-    border-radius: 4px;
-    padding: 3.5px 6px;
-    font-size: 7.8px;
-}
-.do-title { font-weight: 800; color: #166534; font-size: 8px; margin-bottom: 2px; }
-.dont-title { font-weight: 800; color: #991b1b; font-size: 8px; margin-bottom: 2px; }
+.do-box { background: #f0fdf4; border: 1px solid #bbf7d0; }
+.dont-box { background: #fef2f2; border: 1px solid #fecaca; }
+.do-title { font-weight: 800; color: #166534; margin-bottom: 1.5px; }
+.dont-title { font-weight: 800; color: #991b1b; margin-bottom: 1.5px; }
 .do-box ul, .dont-box ul { list-style: none; padding-left: 0; }
-.do-box li { padding-left: 8px; position: relative; margin-bottom: 1.5px; line-height: 1.25; }
-.do-box li::before { content: "✔"; position: absolute; left: 0; font-size: 7px; color: #16a34a; }
-.dont-box li { padding-left: 8px; position: relative; margin-bottom: 1.5px; line-height: 1.25; }
-.dont-box li::before { content: "✖"; position: absolute; left: 0; font-size: 7px; color: #dc2626; }
+.do-box li, .dont-box li { padding-left: 7px; position: relative; margin-bottom: 1.5px; line-height: 1.25; }
+.do-box li::before { content: "✔"; position: absolute; left: 0; font-size: 6.5px; color: #16a34a; }
+.dont-box li::before { content: "✖"; position: absolute; left: 0; font-size: 6.5px; color: #dc2626; }
 
 /* Roadmap Calendar Table */
 .roadmap-table-wrap {
-    margin-top: 5px;
+    margin-top: 4px;
     border: 1px solid #e2e8f0;
-    border-radius: 5px;
+    border-radius: 4px;
     overflow: hidden;
+    margin-bottom: 5px;
 }
 .roadmap-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 7.5px;
+    font-size: 7.3px;
 }
 .roadmap-table th {
     background: #f8fafc;
     color: #475569;
     font-weight: 800;
-    padding: 3px 5px;
+    padding: 2.5px 5px;
     border-bottom: 1px solid #e2e8f0;
     text-transform: uppercase;
 }
 .roadmap-table td {
-    padding: 2.5px 5px;
+    padding: 2px 5px;
     border-bottom: 1px solid #f1f5f9;
     color: #1e293b;
 }
@@ -581,9 +549,9 @@ body {
     border-bottom: 1px solid #fef08a;
 }
 .status-chip {
-    font-size: 6.8px;
+    font-size: 6.6px;
     font-weight: 800;
-    padding: 1px 4px;
+    padding: 1px 3.5px;
     border-radius: 2px;
     display: inline-block;
     background: #f1f5f9;
@@ -591,39 +559,54 @@ body {
 }
 .status-chip.active { background: #fef08a; color: #854d0e; border: 1px solid #facc15; }
 
-/* Yogas Quad Grid */
-.yogas-quad-grid {
+/* Page 3: Yogas & Vibrations */
+.yogas-grid-clean {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 6px;
-    margin-bottom: 7px;
+    gap: 5px;
+    margin-bottom: 5px;
 }
-.yoga-card-quad {
+.yoga-card-clean {
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 5px;
     padding: 4px 6px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
 }
-.yoga-card-quad.auspicious {
+.yoga-card-clean.auspicious {
     border-left: 3px solid #16a34a;
-    background: #f0fdf4;
+    background: #fbfdfc;
 }
-.yoga-card-quad.inauspicious {
+.yoga-card-clean.inauspicious {
     border-left: 3px solid #e11d48;
-    background: #fff1f2;
+    background: #fffafa;
 }
-.yoga-tag-mini.gold {
-    background: #fef3c7;
-    color: #92400e;
-    border-color: #fde047;
+.yoga-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2px;
+    padding-bottom: 1.5px;
+    border-bottom: 1px dashed #e2e8f0;
 }
-.yoga-tag-mini.ruby {
-    background: #fee2e2;
-    color: #991b1b;
-    border-color: #fca5a5;
+.yoga-title {
+    font-size: 9.2px;
+    font-weight: 700;
+    color: #0f172a;
 }
-.yoga-remedy-note {
+.yoga-pill {
+    font-size: 7.2px;
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+.yoga-pill.gold { background: #fef3c7; color: #92400e; border: 1px solid #fde047; }
+.yoga-pill.ruby { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+.yoga-desc {
+    font-size: 8px;
+    color: #334155;
+    line-height: 1.3;
+}
+.yoga-remedy-strip {
     font-size: 7.2px;
     color: #991b1b;
     margin-top: 2px;
@@ -631,136 +614,79 @@ body {
     border-top: 1px dashed #fecdd3;
     line-height: 1.25;
 }
-.yoga-card-quad-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 3px;
-    padding-bottom: 2px;
-    border-bottom: 1px dashed #e2e8f0;
-}
-.yoga-card-quad-title {
-    font-size: 10px;
-    font-weight: 700;
-    color: #0f172a;
-}
-.yoga-tag-mini {
-    font-size: 7.5px;
-    font-weight: 700;
-    padding: 1.5px 4px;
-    border-radius: 3px;
-    background: #f1f5f9;
-    color: #475569;
-    border: 1px solid #cbd5e1;
-}
-.yoga-tag-mini.gold {
-    background: #fef3c7;
-    color: #92400e;
-    border-color: #fde047;
-}
-.yoga-card-quad-body {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-.yoga-line-mini {
-    font-size: 9px;
-    color: #334155;
-    line-height: 1.32;
-}
 
 /* Vibrations Grid */
 .vibrations-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 5px;
-    margin-bottom: 7px;
+    gap: 4.5px;
+    margin-bottom: 4px;
 }
-.vibe-item {
+.vibe-card {
     border-radius: 4px;
-    padding: 4px 7px;
-    font-size: 8.8px;
+    padding: 3.5px 6px;
 }
-.vibe-item.badge-pos {
-    background: #f0fdf4;
-    border: 1px solid #86efac;
-}
-.vibe-item.badge-neg {
-    background: #fef2f2;
-    border: 1px solid #fecaca;
-}
+.vibe-card.badge-pos { background: #f0fdf4; border: 1px solid #86efac; }
+.vibe-card.badge-neg { background: #fef2f2; border: 1px solid #fecaca; }
 .vibe-header {
     display: flex;
     justify-content: space-between;
     font-weight: 700;
     margin-bottom: 1px;
 }
-.badge-pos .vibe-num { color: #166534; }
-.badge-neg .vibe-num { color: #991b1b; }
-.vibe-text {
-    font-size: 8.5px;
-    color: #334155;
-    line-height: 1.28;
-}
+.badge-pos .vibe-num { color: #166534; font-size: 8.5px; }
+.badge-neg .vibe-num { color: #991b1b; font-size: 8.5px; }
+.vibe-type-badge { font-size: 7.2px; font-weight: 700; }
+.badge-pos .vibe-type-badge { color: #166534; }
+.badge-neg .vibe-type-badge { color: #991b1b; }
+.vibe-shift-tag { font-size: 7px; font-weight: 700; margin-bottom: 1px; }
+.vibe-body { font-size: 7.8px; color: #334155; line-height: 1.26; }
 
-/* Predictions 2x4 Grid */
+/* Page 4: Predictions 2x4 Grid */
 .preds-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4.5px 6px;
-    margin-bottom: 6px;
-}
-.pred-card {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 4px;
-    padding: 4px 7px;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5px;
-}
-.pred-header {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    border-bottom: 1px solid #f1f5f9;
-    padding-bottom: 1.5px;
-}
-.pred-icon {
-    color: #d4af37;
-    font-size: 8px;
-}
-.pred-title {
-    font-size: 9px;
-    font-weight: 700;
-    color: #0f172a;
-}
-.pred-body {
-    font-size: 8.2px;
-    color: #334155;
-    line-height: 1.28;
-}
-
-/* Remedies 2-Column Grid */
-.remedies-sequence {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 4px 6px;
     margin-bottom: 5px;
 }
-.remedy-card-seq {
+.pred-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 4px 6px;
+}
+.pred-header {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 1.5px;
+    margin-bottom: 2px;
+}
+.pred-icon { font-size: 9px; }
+.pred-title { font-size: 8.8px; font-weight: 700; color: #0f172a; }
+.pred-body { font-size: 8px; color: #334155; line-height: 1.28; }
+
+/* Remedies 2x3 Grid */
+.remedies-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 6px;
+    margin-bottom: 5px;
+}
+.remedy-card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 4px;
     padding: 3.5px 6px;
     display: flex;
-    gap: 6px;
+    gap: 5px;
     align-items: center;
 }
-.remedy-num-seq {
-    width: 17px;
-    height: 17px;
-    min-width: 17px;
+.remedy-num {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
     border-radius: 50%;
     background: #fef3c7;
     color: #92400e;
@@ -768,97 +694,61 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 8.5px;
+    font-size: 8px;
     font-weight: 800;
 }
-.remedy-content-seq {
-    flex: 1;
-}
-.remedy-label-seq {
-    font-size: 7.8px;
-    font-weight: 700;
-    color: #854d0e;
-    text-transform: uppercase;
-    margin-bottom: 1px;
-}
-.remedy-text-seq {
-    font-size: 8.2px;
-    color: #334155;
-    line-height: 1.25;
-}
-    color: #334155;
-    line-height: 1.33;
-}
+.remedy-content { flex: 1; }
+.remedy-label { font-size: 7.6px; font-weight: 700; color: #854d0e; text-transform: uppercase; }
+.remedy-text { font-size: 8px; color: #334155; line-height: 1.24; }
 
-/* Consultant Notes Box */
-.consultant-notes-box {
-    background: #fdfbf7;
-    border: 1.5px dashed #d4af37;
-    border-radius: 6px;
-    padding: 6px 10px;
-    margin-bottom: 7px;
-}
-.consultant-notes-header {
-    font-family: 'Cinzel', serif;
-    font-size: 9.5px;
-    font-weight: 700;
-    color: #92400e;
-    margin-bottom: 2px;
-}
-.consultant-notes-body {
-    font-size: 9px;
-    color: #334155;
-    line-height: 1.33;
-}
-
-/* Master Deluxe Certification & Copyright Card */
+/* Deluxe Master Certification Seal */
 .cert-stamp-card-deluxe {
     background: linear-gradient(135deg, #091124 0%, #1e293b 100%);
-    border: 1.5px solid #d4af37;
-    border-radius: 7px;
-    padding: 9px 13px;
+    border: 1.2px solid #d4af37;
+    border-radius: 6px;
+    padding: 7px 11px;
     color: #f8fafc;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-top: auto;
-    margin-bottom: 2px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    margin-bottom: 3px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
 }
 .cert-title {
     font-family: 'Cinzel', serif;
-    font-size: 10.5px;
+    font-size: 10px;
     color: #fbbf24;
     font-weight: 700;
-    letter-spacing: 0.8px;
-    margin-bottom: 2px;
+    letter-spacing: 0.6px;
+    margin-bottom: 1.5px;
 }
 .cert-desc {
-    font-size: 8.5px;
+    font-size: 7.8px;
     color: #cbd5e1;
-    line-height: 1.32;
-    max-width: 470px;
+    line-height: 1.3;
+    max-width: 460px;
 }
 .cert-contact-bar {
     display: flex;
-    gap: 12px;
-    margin-top: 4px;
-    font-size: 8.5px;
+    gap: 10px;
+    margin-top: 3px;
+    font-size: 8px;
     color: #fde047;
     font-weight: 600;
 }
 .cert-seal-deluxe {
     border: 1.5px dashed #d4af37;
     border-radius: 50%;
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    font-size: 7px;
+    font-size: 6.5px;
     font-weight: 700;
     color: #fbbf24;
     text-transform: uppercase;
@@ -872,9 +762,9 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 4px;
+    padding-top: 3px;
     border-top: 1px solid #e2c275;
-    font-size: 8px;
+    font-size: 7.8px;
     color: #64748b;
     margin-top: auto;
 }
@@ -898,6 +788,15 @@ body {
 
     <div class="page-content">
         <div>
+            <!-- Step Navigation Banner -->
+            <div class="step-banner">
+                <div class="step-banner-left">
+                    <span class="step-badge-pill">પગલું ૧ / ૪: તમારી મૂળ આત્મિક ઊર્જા અને કુંડળી</span>
+                    <span class="step-banner-sub">મૂળ વ્યક્તિત્વ, યુગલ વૈદિક ચક્ર અને જન્મજાત ગુણો</span>
+                </div>
+                <div class="step-banner-consultant">Consultant: Jigar Thakkar | 📞 +91 9377614772</div>
+            </div>
+
             <!-- Header -->
             <div class="report-main-header">
                 <div class="om-symbol">॥ श्री गणेशाय नमः ॥</div>
@@ -905,9 +804,9 @@ body {
                 <div class="sub-title">Prepared by: <strong>Jigar Thakkar</strong> (પ્રમાણિત વૈદિક અંકશાસ્ત્રી અને વાસ્તુ સલાહકાર) • 📞 +91 9377614772 • ✉ jigar93776@gmail.com</div>
             </div>
 
-            <!-- Profile Card with Dual Grids -->
+            <!-- Profile Hero Card -->
             <div class="profile-card">
-                <div class="client-data-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 5px;">
+                <div class="client-data-grid">
                     <div class="data-pill">
                         <div class="label">જાતકનું નામ</div>
                         <div class="value">રોહિત શર્મા (સેમ્પલ રિપોર્ટ)</div>
@@ -953,7 +852,7 @@ body {
                         </div>
                     </div>
                     <div class="grid-box-card dasha">
-                        <div class="grid-caption dasha">🌌 દશા અને ગોચર સક્રિય ચક્ર (હાલના ગ્રહીય સ્પંદનો)</div>
+                        <div class="grid-caption dasha">🪐 દશા અને ગોચર સક્રિય ચક્ર (હાલના ગ્રહીય સ્પંદનો)</div>
                         <div class="grid-subtext">ગતિશીલ સક્રિયતા: મૂળ જન્મ (સુવર્ણ) + મહાદશા (આકાશી) + અંતર્દશા (લીલો) + પ્રત્યંતર દશા (નારંગી)</div>
                         <div class="vedic-grid dasha">
                             <div class="vedic-cell dasha-cell active"><span class="chip chip-natal">3</span></div>
@@ -979,56 +878,66 @@ body {
                 </div>
             </div>
 
-            <!-- Planetary Friendship Compass Box -->
-            <div class="compass-box">
-                <div class="compass-item">
-                    <span class="compass-label">મિત્ર અંકો (સહયોગી)</span>
-                    <span class="compass-val green">1, 2, 3, 9</span>
+            <!-- Planetary Allies & Harmony Strip -->
+            <div class="allies-box">
+                <div class="allies-item">
+                    <span class="allies-label">મિત્ર અંકો (સહયોગી)</span>
+                    <span class="allies-val green">1, 2, 3, 9</span>
                 </div>
-                <div class="compass-item">
-                    <span class="compass-label">સમ અંકો (તટસ્થ)</span>
-                    <span class="compass-val orange">5, 7</span>
+                <div class="allies-item">
+                    <span class="allies-label">સમ અંકો (તટસ્થ)</span>
+                    <span class="allies-val orange">5, 7</span>
                 </div>
-                <div class="compass-item">
-                    <span class="compass-label">શત્રુ / વર્જિત અંકો</span>
-                    <span class="compass-val red">6</span>
+                <div class="allies-item">
+                    <span class="allies-label">શત્રુ / વર્જિત અંકો</span>
+                    <span class="allies-val red">6</span>
                 </div>
-                <div class="compass-item">
-                    <span class="compass-label">શુભ વાસ્તુ દિશા</span>
-                    <span class="compass-val">ઈશાન ખૂણો (North-East)</span>
+                <div class="allies-item">
+                    <span class="allies-label">શુભ વાસ્તુ દિશા</span>
+                    <span class="allies-val">ઈશાન ખૂણો (North-East)</span>
                 </div>
-                <div class="compass-item">
-                    <span class="compass-label">શુભ ધાતુ</span>
-                    <span class="compass-val">સોનું અને પિત્તળ</span>
+                <div class="allies-item">
+                    <span class="allies-label">શુભ ધાતુ</span>
+                    <span class="allies-val">સોનું અને પિત્તળ</span>
                 </div>
-                <div class="compass-item">
-                    <span class="compass-label">અનુકૂળ રત્ન</span>
-                    <span class="compass-val">પોખરાજ (Yellow Sapphire)</span>
+                <div class="allies-item">
+                    <span class="allies-label">અનુકૂળ રત્ન</span>
+                    <span class="allies-val">પોખરાજ (Yellow Sapphire)</span>
                 </div>
             </div>
 
             <div class="name-harmony-bar"><strong>નામ સ્પંદન સંતુલન:</strong> નામાંક 0 આપના ગ્રહીય ચક્ર સાથે સંતુલિત અને તટસ્થ સ્પંદન જાળવે છે. સ્થિર પરિણામો આપે છે.</div>
 
-            <!-- Moolank Qualities -->
-            <div class="section-title">મૂળાંકના મૂળભૂત ગુણધર્મો અને સ્વભાવ (No. 3)</div>
-            <ul class="quality-list-single">
-                <li class="quality-item-single">જ્ઞાની, બુદ્ધિશાળી, આશાવાદી અને જન્મજાત ઉત્તમ શિક્ષક કે માર્ગદર્શક.</li>
-<li class="quality-item-single">દાર્શનિક ઊંડાણ, ધર્મનિષ્ઠ નીતિમત્તા અને સમાજમાં આદરણીય સલાહ આપનાર વ્યક્તિ.</li>
-<li class="quality-item-single">પ્રેરણાદાયી વાક્ચાતુર્ય; ઉત્કૃષ્ટ વક્તા, કાઉન્સિલર અને પ્રબુદ્ધ કેળવણીકાર.</li>
-<li class="quality-item-single">ઉદાર હૃદય, સત્ય, કાયદા અને આધ્યાત્મિક જ્ઞાનની ખોજ કરનાર તેજસ્વી સ્વભાવ.</li>
+            <!-- Inborn Traits & Precautions 2-Column Split -->
+            <div class="traits-duo-grid">
+                <div class="traits-card strengths">
+                    <div class="traits-card-header">✦ મૂળાંકના મૂળભૂત ગુણધર્મો અને સ્વભાવ (No. 3)</div>
+                    <ul class="quality-list-clean">
+                        <li class="quality-item-clean"><span class="bullet-icon">✦</span><span>જ્ઞાની, બુદ્ધિશાળી, આશાવાદી અને જન્મજાત ઉત્તમ શિક્ષક કે માર્ગદર્શક.</span></li>
+<li class="quality-item-clean"><span class="bullet-icon">✦</span><span>દાર્શનિક ઊંડાણ, ધર્મનિષ્ઠ નીતિમત્તા અને સમાજમાં આદરણીય સલાહ આપનાર વ્યક્તિ.</span></li>
+<li class="quality-item-clean"><span class="bullet-icon">✦</span><span>પ્રેરણાદાયી વાક્ચાતુર્ય; ઉત્કૃષ્ટ વક્તા, કાઉન્સિલર અને પ્રબુદ્ધ કેળવણીકાર.</span></li>
+<li class="quality-item-clean"><span class="bullet-icon">✦</span><span>ઉદાર હૃદય, સત્ય, કાયદા અને આધ્યાત્મિક જ્ઞાનની ખોજ કરનાર તેજસ્વી સ્વભાવ.</span></li>
 
-            </ul>
+                    </ul>
+                </div>
+                <div class="traits-card precautions">
+                    <div class="traits-card-header">⚠ મૂળાંક માટે અગત્યની સાવચેતીઓ (No. 3)</div>
+                    <ul class="precaution-list-clean">
+                        <li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>વગર માંગ્યે સલાહ આપવાની કે પોતાના જ્ઞાનનું અભિમાન રાખવાની વૃત્તિથી દૂર રહેવું.</span></li>
+<li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>એક સાથે બહુ બધા ક્ષેત્રોમાં ધ્યાન ભટકાવીને શક્તિનો વ્યય ન કરવો.</span></li>
+<li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>વધુ પડતી મીઠાઈ અને તળેલો ખોરાક ટાળવો જેથી પાચન અને લીવરની તંદુરસ્તી જળવાય.</span></li>
+<li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>સામેવાળાના વિચારોનો પણ આદર કરવો; ચર્ચા-વિચારણામાં જિદ્દી કે હઠીલા ન બનવું.</span></li>
 
-            <!-- Moolank Precautions -->
-            <div class="root-precautions-box">
-                <div class="root-precautions-header">⚠ મૂળાંક માટે અગત્યની સાવચેતીઓ (No. 3)</div>
-                <ul class="root-precautions-grid">
-                    <li>વગર માંગ્યે સલાહ આપવાની કે પોતાના જ્ઞાનનું અભિમાન રાખવાની વૃત્તિથી દૂર રહેવું.</li>
-<li>એક સાથે બહુ બધા ક્ષેત્રોમાં ધ્યાન ભટકાવીને શક્તિનો વ્યય ન કરવો.</li>
-<li>વધુ પડતી મીઠાઈ અને તળેલો ખોરાક ટાળવો જેથી પાચન અને લીવરની તંદુરસ્તી જળવાય.</li>
-<li>સામેવાળાના વિચારોનો પણ આદર કરવો; ચર્ચા-વિચારણામાં જિદ્દી કે હઠીલા ન બનવું.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
 
-                </ul>
+        <!-- Curiosity Preview Hook Box for Step 2 -->
+        <div class="curiosity-hook-card">
+            <div class="curiosity-icon">🔮</div>
+            <div class="curiosity-content">
+                <div class="curiosity-text">🔍 આગળના પગલાંની ઝલક: શું તમે જાણો છો કે હાલમાં કયો મોટો ગ્રહ સમયગાળો તમારા જીવન પર શાસન કરી રહ્યો છે? પેજ ૨ પર જુઓ તમારી મહાદશા અને માસિક રોડમેપ...</div>
             </div>
         </div>
 
@@ -1050,13 +959,21 @@ body {
 
     <div class="page-content">
         <div>
-            <div class="page-header-mini">
-                <div class="mini-title">મહાદશા: દીર્ઘકાલીન મુખ્ય જીવન ચક્ર ફલાદેશ • અંતર્દશા: વાર્ષિક ૧-વર્ષીય વિસ્તૃત ફલાદેશ</div>
-                <div class="consultant-tag">Consultant: Jigar Thakkar | 📞 +91 9377614772</div>
+            <!-- Step Navigation Banner -->
+            <div class="step-banner">
+                <div class="step-banner-left">
+                    <span class="step-badge-pill">પગલું ૨ / ૪: તમારો સમય ચક્ર અને દશા રોડમેપ</span>
+                    <span class="step-banner-sub">મહાદશા, અંતર્દશા અને ૯-તબક્કાવાર માસિક સમયરેખા</span>
+                </div>
+                <div class="step-banner-consultant">Consultant: Jigar Thakkar | 📞 +91 9377614772</div>
+            </div>
+
+            <div class="intro-lead-pill">
+                ✦ <strong>Vedic Timing Principles:</strong> Your destiny unfolds in 3 synchronized concentric cycles: <strong>Mahadasha</strong> (Macro Era), <strong>Antardasha</strong> (Annual 1-Year Focus), and <strong>Pratyantar Dasha</strong> (Monthly Sub-Phase).
             </div>
 
             <!-- Tier 1: Mahadasha (Macro Multi-Year Cycle) -->
-            <div class="section-title">🌌 મહાદશા: દીર્ઘકાલીન મુખ્ય જીવન ચક્ર ફલાદેશ</div>
+            <div class="section-title">🪐 મહાદશા: દીર્ઘકાલીન મુખ્ય જીવન ચક્ર ફલાદેશ</div>
             <div class="tier-card tier-md">
                 <div class="tier-header-bar">
                     <span class="tier-badge badge-md">Mahadasha 9</span>
@@ -1204,6 +1121,14 @@ body {
             </div>
         </div>
 
+        <!-- Curiosity Preview Hook Box for Step 3 -->
+        <div class="curiosity-hook-card">
+            <div class="curiosity-icon">⚡</div>
+            <div class="curiosity-content">
+                <div class="curiosity-text">⚡ આગળના પગલાંની ઝલક: તમારી જન્મકુંડળીમાં કયા દૈવી રાજયોગો કે કર્મિક દોષો છુપાયેલા છે? જાણવા માટે પેજ ૩ પર આગળ વધો...</div>
+            </div>
+        </div>
+
         <div class="page-footer">
             <span class="footer-stamp">CONSULTATION BY JIGAR THAKKAR (📞 +91 9377614772) • રોહિત શર્મા (સેમ્પલ રિપોર્ટ)</span>
             <span>પાનું 2 નું 4</span>
@@ -1222,137 +1147,148 @@ body {
 
     <div class="page-content">
         <div>
-            <div class="page-header-mini">
-                <div class="mini-title">ભાગ્યાંકના જીવન પથ અને ભાગ્ય પ્રભાવ • જન્મ કુંડળીમાં સક્રિય મુખ્ય યોગો</div>
-                <div class="consultant-tag">Consultant: Jigar Thakkar | 📞 +91 9377614772</div>
+            <!-- Step Navigation Banner -->
+            <div class="step-banner">
+                <div class="step-banner-left">
+                    <span class="step-badge-pill">પગલું ૩ / ૪: ભાગ્યાંક માર્ગ અને દુર્લભ ગ્રહ યોગો</span>
+                    <span class="step-banner-sub">જીવન લક્ષ્ય, શુભ-અશુભ ગ્રહ યોગો અને ગ્રહીય સ્પંદન</span>
+                </div>
+                <div class="step-banner-consultant">Consultant: Jigar Thakkar | 📞 +91 9377614772</div>
             </div>
 
-            <!-- Bhagyank Qualities -->
-            <div class="section-title">ભાગ્યાંકના જીવન પથ અને ભાગ્ય પ્રભાવ (No. 5 - બુધ (Budh))</div>
-            <ul class="quality-list-single">
-                <li class="quality-item-single">હાજરજવાબી, બહુમુખી પ્રતિભા ધરાવતા, ઝડપથી અનુકૂલન સાધનાર અને વેપાર-વાણિજ્યમાં નિષ્ણાત.</li>
-<li class="quality-item-single">ઉર્જાવાન, જોખમ લેવાની હિંમત ધરાવતા, આકર્ષક વ્યક્તિત્વ અને વેપારી સૂઝબૂઝવાળા.</li>
-<li class="quality-item-single">નેટવર્કિંગ, મુસાફરી, શેરબજાર, મીડિયા અને માર્કેટિંગમાં કુદરતી આવડત ધરાવતા.</li>
-<li class="quality-item-single">સંતુલન જાળવવામાં અગ્રેસર અને વિવિધ લોકો કે વિચારોને સરળતાથી જોડનાર કડીરૂપ.</li>
+            <!-- Destiny Path 2-Column Split -->
+            <div class="section-title">🌟 ભાગ્યાંકના જીવન પથ અને ભાગ્ય પ્રભાવ (No. 5 - બુધ (Budh))</div>
+            <div class="traits-duo-grid">
+                <div class="traits-card strengths">
+                    <div class="traits-card-header">✦ Soul Calling & Destiny Gifts</div>
+                    <ul class="quality-list-clean">
+                        <li class="quality-item-clean"><span class="bullet-icon">✦</span><span>હાજરજવાબી, બહુમુખી પ્રતિભા ધરાવતા, ઝડપથી અનુકૂલન સાધનાર અને વેપાર-વાણિજ્યમાં નિષ્ણાત.</span></li>
+<li class="quality-item-clean"><span class="bullet-icon">✦</span><span>ઉર્જાવાન, જોખમ લેવાની હિંમત ધરાવતા, આકર્ષક વ્યક્તિત્વ અને વેપારી સૂઝબૂઝવાળા.</span></li>
+<li class="quality-item-clean"><span class="bullet-icon">✦</span><span>નેટવર્કિંગ, મુસાફરી, શેરબજાર, મીડિયા અને માર્કેટિંગમાં કુદરતી આવડત ધરાવતા.</span></li>
+<li class="quality-item-clean"><span class="bullet-icon">✦</span><span>સંતુલન જાળવવામાં અગ્રેસર અને વિવિધ લોકો કે વિચારોને સરળતાથી જોડનાર કડીરૂપ.</span></li>
 
-            </ul>
+                    </ul>
+                </div>
+                <div class="traits-card precautions">
+                    <div class="traits-card-header">⚠ Essential Growth Guidelines</div>
+                    <ul class="precaution-list-clean">
+                        <li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>મનની અતિ-ચંચળતા, એકાગ્રતાનો અભાવ અને ગભરામણ પર કાબૂ રાખવા ધ્યાન અને પ્રાણાયામ કરવા.</span></li>
+<li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>કોઈપણ વ્યવસાય કે નોકરીને પૂરતો સમય આપ્યા વગર ઉતાવળમાં વારંવાર બદલવાનું ટાળવું.</span></li>
+<li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>વાણીમાં મીઠાશ રાખવી; કટાક્ષવાળા શબ્દો કે વિચાર્યા વગર બોલવાનું ટાળવું.</span></li>
+<li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>માનસિક તણાવ અને અનિદ્રાથી બચવા માટે નિયમિત ઊંઘ અને સમયપત્રકનું પાલન કરવું.</span></li>
 
-            <!-- Bhagyank Precautions -->
-            <div class="root-precautions-box" style="margin-bottom: 7px;">
-                <div class="root-precautions-header">⚠ ભાગ્યાંક માટે અગત્યની સાવચેતીઓ (No. 5)</div>
-                <ul class="root-precautions-grid">
-                    <li>મનની અતિ-ચંચળતા, એકાગ્રતાનો અભાવ અને ગભરામણ પર કાબૂ રાખવા ધ્યાન અને પ્રાણાયામ કરવા.</li>
-<li>કોઈપણ વ્યવસાય કે નોકરીને પૂરતો સમય આપ્યા વગર ઉતાવળમાં વારંવાર બદલવાનું ટાળવું.</li>
-<li>વાણીમાં મીઠાશ રાખવી; કટાક્ષવાળા શબ્દો કે વિચાર્યા વગર બોલવાનું ટાળવું.</li>
-<li>માનસિક તણાવ અને અનિદ્રાથી બચવા માટે નિયમિત ઊંઘ અને સમયપત્રકનું પાલન કરવું.</li>
-
-                </ul>
+                    </ul>
+                </div>
             </div>
 
-            <!-- Auspicious Yogas Quad -->
-            <div class="section-title">âœ§ શુભ ગ્રહીય યોગ (દૈવી ઉર્જા ચક્ર)</div>
-            <div class="yogas-quad-grid" style="margin-bottom: 4px;">
+            <!-- Auspicious Yogas -->
+            <div class="section-title">✨ શુભ ગ્રહીય યોગ (દૈવી ઉર્જા ચક્ર)</div>
+            <div class="yogas-grid-clean">
                 
             </div>
 
-            <!-- Inauspicious Yogas & Doshas Quad -->
+            <!-- Challenging Doshas -->
             <div class="section-title">⚠ અશુભ યોગ અને દોષ (કર્મ અવરોધો અને નિવારણ ઉપાયો)</div>
-            <div class="yogas-quad-grid" style="margin-bottom: 4px;">
+            <div class="yogas-grid-clean">
                 
-            <div class="yoga-card-quad inauspicious">
-                <div class="yoga-card-quad-header">
-                    <div class="yoga-card-quad-title" style="color: #991b1b;">બુધ-રાહુ બંધન દોષ (કરાર વિવાદ, છેતરપિંડી અને સ્વાસ્થ્ય અડચણ)</div>
-                    <span class="yoga-tag-mini ruby">જોડી 5-4 (ગેરહાજર 9) • બંધન દોષ</span>
+            <div class="yoga-card-clean inauspicious">
+                <div class="yoga-card-header">
+                    <div class="yoga-title" style="color: #991b1b;">બુધ-રાહુ બંધન દોષ (કરાર વિવાદ, છેતરપિંડી અને સ્વાસ્થ્ય અડચણ)</div>
+                    <span class="yoga-pill ruby">જોડી 5-4 (ગેરહાજર 9) • બંધન દોષ</span>
                 </div>
-                <div class="yoga-card-quad-body">
-                    <div class="yoga-line-mini">જ્યારે 5 અને 4 સાથે આવે અને 9 ગેરહાજર હોય. આ અસ્પષ્ટ કરારોમાં ફસાવું, ઓડિટ/કાનૂની નોટિસો આવવી કે બીમારીને લીધે લાંબો સમય પથારીવશ થવાનો યોગ બનાવે છે. બેવડા 4 (44) ની હાજરીથી રાહત ઝડપી મળે છે.</div>
-                    <div class="yoga-remedy-note"><strong>દોષ નિવારણ અને શાંતિ ઉપાય:</strong> દર બુધવારે ગાયને લીલું ઘાસ કે પાલક ખવડાવવી; 'ૐ બુધાય નમઃ' અને 'ૐ ગં ગણપતયે નમઃ' નો 108 વાર જાપ કરવો; કોઈપણ કરાર પર સહી કરતા પહેલા વકીલની સલાહ અચૂક લેવી.</div>
-                </div>
+                <div class="yoga-desc">જ્યારે 5 અને 4 સાથે આવે અને 9 ગેરહાજર હોય. આ અસ્પષ્ટ કરારોમાં ફસાવું, ઓડિટ/કાનૂની નોટિસો આવવી કે બીમારીને લીધે લાંબો સમય પથારીવશ થવાનો યોગ બનાવે છે. બેવડા 4 (44) ની હાજરીથી રાહત ઝડપી મળે છે.</div>
+                <div class="yoga-remedy-strip"><strong>દોષ નિવારણ અને શાંતિ ઉપાય:</strong> દર બુધવારે ગાયને લીલું ઘાસ કે પાલક ખવડાવવી; 'ૐ બુધાય નમઃ' અને 'ૐ ગં ગણપતયે નમઃ' નો 108 વાર જાપ કરવો; કોઈપણ કરાર પર સહી કરતા પહેલા વકીલની સલાહ અચૂક લેવી.</div>
             </div>
             
-            <div class="yoga-card-quad inauspicious">
-                <div class="yoga-card-quad-header">
-                    <div class="yoga-card-quad-title" style="color: #991b1b;">શનિ-રાહુ હવા મહેલ અને કષ્ટ દોષ (હવાઈ કિલ્લા, સટ્ટામાં નુકસાન અને અકસ્માત)</div>
-                    <span class="yoga-tag-mini ruby">જોડી 8-4 (ગેરહાજર 2) • હવા મહેલ દોષ</span>
+            <div class="yoga-card-clean inauspicious">
+                <div class="yoga-card-header">
+                    <div class="yoga-title" style="color: #991b1b;">શનિ-રાહુ હવા મહેલ અને કષ્ટ દોષ (હવાઈ કિલ્લા, સટ્ટામાં નુકસાન અને અકસ્માત)</div>
+                    <span class="yoga-pill ruby">જોડી 8-4 (ગેરહાજર 2) • હવા મહેલ દોષ</span>
                 </div>
-                <div class="yoga-card-quad-body">
-                    <div class="yoga-line-mini">જ્યારે 8 અને 4 હોય પણ 2 ગેરહાજર હોય. જાતક વ્યવહારિકતા ભૂલીને હવાઈ કિલ્લા બનાવે છે, સટ્ટો કે જોખમી સ્કીમોમાં મોટું નુકસાન કરે છે. આ યોગ અકસ્માતનો ભય અને દાંપત્યજીવનમાં તણાવ પેદા કરે છે.</div>
-                    <div class="yoga-remedy-note"><strong>દોષ નિવારણ અને શાંતિ ઉપાય:</strong> શેરબજારના સટ્ટા, ક્રિપ્ટો કે લૉટરીથી સંપૂર્ણ દૂર રહેવું; કાળભૈરવ કે હનુમાનજીની ઉપાસના કરવી; ઘરમાં ચાંદીની નાની ચોરસ લગડી રાખવી; શનિવારે કાળા કૂતરાને સરસવનું તેલ લગાડેલી રોટલી ખવડાવવી.</div>
-                </div>
+                <div class="yoga-desc">જ્યારે 8 અને 4 હોય પણ 2 ગેરહાજર હોય. જાતક વ્યવહારિકતા ભૂલીને હવાઈ કિલ્લા બનાવે છે, સટ્ટો કે જોખમી સ્કીમોમાં મોટું નુકસાન કરે છે. આ યોગ અકસ્માતનો ભય અને દાંપત્યજીવનમાં તણાવ પેદા કરે છે.</div>
+                <div class="yoga-remedy-strip"><strong>દોષ નિવારણ અને શાંતિ ઉપાય:</strong> શેરબજારના સટ્ટા, ક્રિપ્ટો કે લૉટરીથી સંપૂર્ણ દૂર રહેવું; કાળભૈરવ કે હનુમાનજીની ઉપાસના કરવી; ઘરમાં ચાંદીની નાની ચોરસ લગડી રાખવી; શનિવારે કાળા કૂતરાને સરસવનું તેલ લગાડેલી રોટલી ખવડાવવી.</div>
             </div>
             
             </div>
 
             <!-- Planetary Vibrations -->
-            <div class="section-title">ગ્રહીય સ્પંદન વિશ્લેષણ (+ / -)</div>
+            <div class="section-title">📊 ગ્રહીય સ્પંદન વિશ્લેષણ (+ / -)</div>
             <div class="vibrations-grid">
                 
-        <div class="vibe-item badge-pos">
+        <div class="vibe-card badge-pos">
             <div class="vibe-header">
                 <span class="vibe-num">No. 3 (1x)</span>
-                <span class="vibe-type">સકારાત્મક (+)</span>
+                <span class="vibe-type-badge">સકારાત્મક (+)</span>
             </div>
             
-            <div class="vibe-text">સકારાત્મક (+3 ગુરુ બૃહસ્પતિ જ્ઞાન): ગુરુ બૃહસ્પતિની દિવ્ય વિદ્વત્તા, અડગ નૈતિક મૂલ્યો, પ્રભાવશાળી માર્ગદર્શન અને ઉચ્ચ શૈક્ષણિક બુદ્ધિ. પરિવાર પ્રત્યે સમર્પણ, પ્રમાણિકતા અને સમાજમાં પૂજનીય મોભો ધરાવતા ઉત્તમ સલાહકાર અને શિક્ષક.</div>
+            <div class="vibe-body">સકારાત્મક (+3 ગુરુ બૃહસ્પતિ જ્ઞાન): ગુરુ બૃહસ્પતિની દિવ્ય વિદ્વત્તા, અડગ નૈતિક મૂલ્યો, પ્રભાવશાળી માર્ગદર્શન અને ઉચ્ચ શૈક્ષણિક બુદ્ધિ. પરિવાર પ્રત્યે સમર્પણ, પ્રમાણિકતા અને સમાજમાં પૂજનીય મોભો ધરાવતા ઉત્તમ સલાહકાર અને શિક્ષક.</div>
         </div>
         
-        <div class="vibe-item badge-neg">
+        <div class="vibe-card badge-neg">
             <div class="vibe-header">
                 <span class="vibe-num">No. 4 (1x)</span>
-                <span class="vibe-type">પડકારરૂપ / નકારાત્મક (-)</span>
+                <span class="vibe-type-badge">પડકારરૂપ / નકારાત્મક (-)</span>
             </div>
             
-            <div class="vibe-text">પડકારરૂપ (-4 રાહુ બંધન દોષ): અનિશ્ચિત વર્તન, અચાનક આર્થિક નુકસાન, કાનૂની અડચણો અથવા બંધન/હોસ્પિટલના યોગ. આયોજન વગર કામ કરવાની ટેવ, નકામી મુસાફરી, બેફામ ખર્ચ અને અશાંત મગજ.</div>
+            <div class="vibe-body">પડકારરૂપ (-4 રાહુ બંધન દોષ): અનિશ્ચિત વર્તન, અચાનક આર્થિક નુકસાન, કાનૂની અડચણો અથવા બંધન/હોસ્પિટલના યોગ. આયોજન વગર કામ કરવાની ટેવ, નકામી મુસાફરી, બેફામ ખર્ચ અને અશાંત મગજ.</div>
         </div>
         
-        <div class="vibe-item badge-pos">
+        <div class="vibe-card badge-pos">
             <div class="vibe-header">
                 <span class="vibe-num">No. 5 (1x)</span>
-                <span class="vibe-type">સકારાત્મક (+)</span>
+                <span class="vibe-type-badge">સકારાત્મક (+)</span>
             </div>
             
-            <div class="vibe-text">સકારાત્મક (+5 બુધ વેપાર કુશળતા): અતિ તેજ વેપારી બુદ્ધિ, અદભુત વાકચાતુર્ય, ઉત્કૃષ્ટ સોદાબાજી અને ઝડપી નાણાકીય વૃદ્ધિ કરવાની કુશળતા. સંબંધોનું ઉત્તમ નેટવર્કિંગ અને ગમે તેવી સ્થિતિમાંથી નફો કમાઈ લેવાની વ્યવહારિક સૂઝ.</div>
+            <div class="vibe-body">સકારાત્મક (+5 બુધ વેપાર કુશળતા): અતિ તેજ વેપારી બુદ્ધિ, અદભુત વાકચાતુર્ય, ઉત્કૃષ્ટ સોદાબાજી અને ઝડપી નાણાકીય વૃદ્ધિ કરવાની કુશળતા. સંબંધોનું ઉત્તમ નેટવર્કિંગ અને ગમે તેવી સ્થિતિમાંથી નફો કમાઈ લેવાની વ્યવહારિક સૂઝ.</div>
         </div>
         
-        <div class="vibe-item badge-pos">
+        <div class="vibe-card badge-pos">
             <div class="vibe-header">
                 <span class="vibe-num">No. 6 (1x)</span>
-                <span class="vibe-type">સકારાત્મક (+)</span>
+                <span class="vibe-type-badge">સકારાત્મક (+)</span>
             </div>
             
-            <div class="vibe-text">સકારાત્મક (+6 શુક્રનું ભવ્ય ઐશ્વર્ય): શુક્રનું અપ્રતિમ સૌંદર્ય, ચુંબકીય આકર્ષણ, ભવ્ય વૈભવ, ઉત્તમ વાહન-મકાન સુખ અને કલાત્મક પ્રતિભા. સિનેમા, ફેશન, સંગીત અને મહેમાનગતિમાં અગ્રેસર રહેવાની અને વૈભવી જીવન જીવવાની કૃપા.</div>
+            <div class="vibe-body">સકારાત્મક (+6 શુક્રનું ભવ્ય ઐશ્વર્ય): શુક્રનું અપ્રતિમ સૌંદર્ય, ચુંબકીય આકર્ષણ, ભવ્ય વૈભવ, ઉત્તમ વાહન-મકાન સુખ અને કલાત્મક પ્રતિભા. સિનેમા, ફેશન, સંગીત અને મહેમાનગતિમાં અગ્રેસર રહેવાની અને વૈભવી જીવન જીવવાની કૃપા.</div>
         </div>
         
-        <div class="vibe-item badge-pos">
+        <div class="vibe-card badge-pos">
             <div class="vibe-header">
                 <span class="vibe-num">No. 7 (1x)</span>
-                <span class="vibe-type">સકારાત્મક (+)</span>
+                <span class="vibe-type-badge">સકારાત્મક (+)</span>
             </div>
             
-            <div class="vibe-text">સકારાત્મક (+7 કેતુની આધ્યાત્મિક કૃપા): આધ્યાત્મિક જાગૃતિ, ગહન આંતરિક દ્રષ્ટિ, રહસ્યમય વિદ્યાઓ અને હીલિંગમાં નિપુણતા તથા મુશ્કેલીઓમાં ઈશ્વરીય રક્ષણ. વિદેશ પ્રવાસ અને સ્થાયી થવાના ઉત્તમ યોગ, અણધાર્યો ભાગ્યોદય અને શાંત પ્રકૃતિ.</div>
+            <div class="vibe-body">સકારાત્મક (+7 કેતુની આધ્યાત્મિક કૃપા): આધ્યાત્મિક જાગૃતિ, ગહન આંતરિક દ્રષ્ટિ, રહસ્યમય વિદ્યાઓ અને હીલિંગમાં નિપુણતા તથા મુશ્કેલીઓમાં ઈશ્વરીય રક્ષણ. વિદેશ પ્રવાસ અને સ્થાયી થવાના ઉત્તમ યોગ, અણધાર્યો ભાગ્યોદય અને શાંત પ્રકૃતિ.</div>
         </div>
         
-        <div class="vibe-item badge-neg">
+        <div class="vibe-card badge-neg">
             <div class="vibe-header">
                 <span class="vibe-num">No. 8 (1x)</span>
-                <span class="vibe-type">પડકારરૂપ / નકારાત્મક (-)</span>
+                <span class="vibe-type-badge">પડકારરૂપ / નકારાત્મક (-)</span>
             </div>
             
-            <div class="vibe-text">પડકારરૂપ (-8 શનિ વિષ દોષ): અતિશય સંઘર્ષ, કામોમાં વિલંબ, માનસિક નિરાશા (વિષ દોષ), જીદ્દીપણું અને એકલતા. જૂના અણબનાવ મનમાં રાખી મૂકવા, સાંધા/હાડકાના રોગો અને સટ્ટાકીય આકાંક્ષાઓમાં હવાઈ કિલ્લા બનાવી ધન ગુમાવવું.</div>
+            <div class="vibe-body">પડકારરૂપ (-8 શનિ વિષ દોષ): અતિશય સંઘર્ષ, કામોમાં વિલંબ, માનસિક નિરાશા (વિષ દોષ), જીદ્દીપણું અને એકલતા. જૂના અણબનાવ મનમાં રાખી મૂકવા, સાંધા/હાડકાના રોગો અને સટ્ટાકીય આકાંક્ષાઓમાં હવાઈ કિલ્લા બનાવી ધન ગુમાવવું.</div>
         </div>
         
-        <div class="vibe-item badge-neg">
+        <div class="vibe-card badge-neg">
             <div class="vibe-header">
                 <span class="vibe-num">No. 9 (2x)</span>
-                <span class="vibe-type">પડકારરૂપ / નકારાત્મક (-)</span>
+                <span class="vibe-type-badge">પડકારરૂપ / નકારાત્મક (-)</span>
             </div>
             
-            <div class="vibe-text">પડકારરૂપ (-9 મંગળ ક્રોધ દોષ): જ્વાળામુખી જેવો ભયંકર ક્રોધ, અધીરાઈ, આક્રમક વાણી અને અકસ્માત કે કોર્ટ-કચેરી (બંધન દોષ) માં ફસાઈ જવાનું જોખમ. ઉતાવળા નિર્ણયોથી સંબંધોમાં તિરાડ પાડવી અને રક્તચાપ/અશાંતિ ભોગવવી.</div>
+            <div class="vibe-body">પડકારરૂપ (-9 મંગળ ક્રોધ દોષ): જ્વાળામુખી જેવો ભયંકર ક્રોધ, અધીરાઈ, આક્રમક વાણી અને અકસ્માત કે કોર્ટ-કચેરી (બંધન દોષ) માં ફસાઈ જવાનું જોખમ. ઉતાવળા નિર્ણયોથી સંબંધોમાં તિરાડ પાડવી અને રક્તચાપ/અશાંતિ ભોગવવી.</div>
         </div>
         
             </div>
-            <div style="font-size: 7.2px; color: #475569; font-style: italic; margin-top: 3px; border-top: 0.5px solid #e2e8f0; padding-top: 2px;">
+            <div style="font-size: 7.2px; color: #475569; font-style: italic; margin-top: 2px; border-top: 0.5px solid #e2e8f0; padding-top: 2px;">
                 વૈદિક જ્યોતિષ સિદ્ધાંત: સ્થાયી જન્મજાત લક્ષણોથી વિપરીત, મહાદશા, અંતર્દશા અને પ્રત્યંતર દશાના પ્રભાવ હેઠળ ગ્રહીય સ્પંદનો સમય અનુસાર બદલાય છે. જન્મ કુંડળીમાં પડકારરૂપ (-) અંક દશામાં બેવડો બનીને શુભ (+) થઈ શકે છે (જેમ કે અંક 8 નું 88 બનવું), અને શુભ અંક બેવડી ઉર્જાથી પડકારરૂપ (-) બની શકે છે (જેમ કે અંક 9 નું 99 બનવું).
+            </div>
+        </div>
+
+        <!-- Curiosity Preview Hook Box for Step 4 -->
+        <div class="curiosity-hook-card">
+            <div class="curiosity-icon">🔮</div>
+            <div class="curiosity-content">
+                <div class="curiosity-text">🔮 આગળના પગલાંની ઝલક: ધન, મિલકત, કારકિર્દી, લગ્નજીવન અને સ્વાસ્થ્યમાં આગળ શું છે? જાણો પેજ ૪ પર સંપૂર્ણ આગાહી અને સચોટ વૈદિક ઉપાયો...</div>
             </div>
         </div>
 
@@ -1374,17 +1310,22 @@ body {
 
     <div class="page-content">
         <div>
-            <div class="page-header-mini">
-                <div class="mini-title">વિગતવાર જીવન ભવિષ્યવાણી • વૈદિક નિવારક ઉપાયો અને માર્ગદર્શન</div>
-                <div class="consultant-tag">Consultant: Jigar Thakkar | 📞 +91 9377614772</div>
+            <!-- Step Navigation Banner -->
+            <div class="step-banner">
+                <div class="step-banner-left">
+                    <span class="step-badge-pill">પગલું ૪ / ૪: ૮-સ્તંભ જીવન આગાહી અને સિદ્ધ ઉપાયો</span>
+                    <span class="step-banner-sub">સંપૂર્ણ ભવિષ્ય ફલાદેશ અને પ્રમાણિત વૈદિક ઉપચાર</span>
+                </div>
+                <div class="step-banner-consultant">Consultant: Jigar Thakkar | 📞 +91 9377614772</div>
             </div>
 
-            <div class="section-title">વિગતવાર જીવન ભવિષ્યવાણી</div>
+            <!-- Predictions 2x4 Grid -->
+            <div class="section-title">🔮 વિગતવાર જીવન ભવિષ્યવાણી</div>
             <div class="preds-grid">
                 
             <div class="pred-card">
                 <div class="pred-header">
-                    <span class="pred-icon">✦</span>
+                    <span class="pred-icon">💰</span>
                     <span class="pred-title">નાણાકીય સંપત્તિ અને આવકની આગાહી</span>
                 </div>
                 <div class="pred-body">આપના વૈદિક ચક્ર મુજબ જીવનધોરણનું સ્તર મધ્યમ અને પ્રગતિશીલ છે. હાલના સમયમાં નાણાકીય રોકાણોમાં સાવચેતી રાખવી; સટ્ટાકીય કે ઉતાવળા જોખમી રોકાણોથી દૂર રહેવું. </div>
@@ -1392,7 +1333,7 @@ body {
             
             <div class="pred-card">
                 <div class="pred-header">
-                    <span class="pred-icon">✦</span>
+                    <span class="pred-icon">🏠</span>
                     <span class="pred-title">જમીન, મકાન અને સ્થાવર મિલકત યોગ</span>
                 </div>
                 <div class="pred-body">મિલકત પ્રાપ્તિનો યોગ: પરિશ્રમ બાદ મધ્યમ યોગ. </div>
@@ -1400,7 +1341,7 @@ body {
             
             <div class="pred-card">
                 <div class="pred-header">
-                    <span class="pred-icon">✦</span>
+                    <span class="pred-icon">🚗</span>
                     <span class="pred-title">વાહન ખરીદી અને સુખ ભવિષ્યવાણી</span>
                 </div>
                 <div class="pred-body">શુક્ર (6) અને રાહુ (4) વાહન સુખના મુખ્ય કારક છે. વાહન ખરીદતી વખતે આપના અનુકૂળ અંકો (5, 6 અથવા 1) ના સરવાળાવાળી નંબર પ્લેટ પસંદ કરવી હિતાવહ છે. વાહન ચલાવતી વખતે અતિ-ઝડપ ટાળવી અને ટ્રાફિક નિયમોનું ચુસ્ત પાલન કરવું.</div>
@@ -1408,7 +1349,7 @@ body {
             
             <div class="pred-card">
                 <div class="pred-header">
-                    <span class="pred-icon">✦</span>
+                    <span class="pred-icon">📚</span>
                     <span class="pred-title">શિક્ષણ અને બૌદ્ધિક ક્ષમતા</span>
                 </div>
                 <div class="pred-body">આપની બૌદ્ધિક ક્ષમતા પર મૂળાંક 3 નો વિશેષ પ્રભાવ છે. આપ ઊંડું ચિંતન, ટેકનિકલ વિશ્લેષણ અને આયોજનબદ્ધ કાર્યોમાં કુદરતી નિપુણતા ધરાવો છો. આપના માટે સૌથી યોગ્ય અભ્યાસ અને કાર્યક્ષેત્રો: શિક્ષણ અને પ્રોફેસર, કાયદો અને ન્યાયતંત્ર, જ્યોતિષ અને શાસ્ત્રો, બેંકિંગ અને ફાઇનાન્સ, પ્રકાશન, આધ્યાત્મિક માર્ગદર્શન, સલાહકાર.</div>
@@ -1416,7 +1357,7 @@ body {
             
             <div class="pred-card">
                 <div class="pred-header">
-                    <span class="pred-icon">✦</span>
+                    <span class="pred-icon">✈️</span>
                     <span class="pred-title">પ્રવાસ અને વિદેશ ગમન યોગ</span>
                 </div>
                 <div class="pred-body">અંક 7 ની હાજરી વિકસિત દેશોની આરામદાયક, ધંધાકીય કે આધ્યાત્મિક વિદેશ યાત્રાઓના પ્રબળ યોગ બનાવે છે.</div>
@@ -1424,7 +1365,7 @@ body {
             
             <div class="pred-card">
                 <div class="pred-header">
-                    <span class="pred-icon">✦</span>
+                    <span class="pred-icon">⚖️</span>
                     <span class="pred-title">વિવાદ, કોર્ટ કચેરી અને મુકદ્દમા ભવિષ્યવાણી</span>
                 </div>
                 <div class="pred-body">કુંડળીમાં 9 અને 4 અથવા 5 અને 4 ની હાજરી કાનૂની દસ્તાવેજો અને વિવાદોમાં સાવચેત રહેવાનો સંકેત આપે છે. વૈદિક નિયમ મુજબ જો આ યોગ સતત 2 કે વધુ વર્ષ સુધી દશામાં સક્રિય રહે તો જ કોર્ટ-કચેરીના વિવાદ બને છે. સદનસીબે આપની કુંડળીમાં સ્થિરક અંકો (7/8) હાજર હોવાથી મધ્યસ્થી કે ધીરજપૂર્વક ન્યાય દ્વારા મામલો આપની તરફેણમાં થાળે પડે છે.</div>
@@ -1432,7 +1373,7 @@ body {
             
             <div class="pred-card">
                 <div class="pred-header">
-                    <span class="pred-icon">✦</span>
+                    <span class="pred-icon">❤️</span>
                     <span class="pred-title">લગ્ન જીવન, સંબંધો અને સુમેળ</span>
                 </div>
                 <div class="pred-body">દામ્પત્ય જીવનમાં સુખ અને સંવાદિતા જાળવવા માટે ખુલ્લા અને પારદર્શક સંવાદની જરૂર છે. અહંકાર (-1) કે વધુ પડતા કામના બોજ (-8) ને લગ્નજીવન વચ્ચે ન આવવા દો. જીવનસાથીની લાગણીઓનું સન્માન કરવાથી અને શુક્રવારે ભેટ આપવાથી સંબંધોમાં મધુરતા જળવાશે.</div>
@@ -1440,7 +1381,7 @@ body {
             
             <div class="pred-card">
                 <div class="pred-header">
-                    <span class="pred-icon">✦</span>
+                    <span class="pred-icon">🌿</span>
                     <span class="pred-title">સ્વાસ્થ્ય, રોગ અને સુરક્ષા માર્ગદર્શન</span>
                 </div>
                 <div class="pred-body">મૂળાંક 3 મુજબ શરીરના સંવેદનશીલ અંગો છે: લીવર, પિત્તાશય, લોહીનું ભ્રમણ, ડાયાબિટીસ અને કોલેસ્ટ્રોલ. સવારે તાંબાના વાસણમાં રાખેલું પાણી પીવું અને વધુ પડતો તેલ-મસાલાવાળો ખોરાક ટાળવો.</div>
@@ -1448,54 +1389,55 @@ body {
             
             </div>
 
-            <div class="section-title">વૈદિક નિવારક ઉપાયો અને માર્ગદર્શન</div>
-            <div class="remedies-sequence">
+            <!-- Remedies 2x3 Grid -->
+            <div class="section-title">🌿 વૈદિક નિવારક ઉપાયો અને માર્ગદર્શન</div>
+            <div class="remedies-grid">
                 
-        <div class="remedy-card-seq">
-            <div class="remedy-num-seq">1</div>
-            <div class="remedy-content-seq">
-                <div class="remedy-label-seq">રત્ન અને ક્રિસ્ટલ પરામર્શ</div>
-                <div class="remedy-text-seq">ગુરુવારે સવારે સોના કે પંચધાતુમાં 3.25 થી 5.25 રત્તીનો કુદરતી પીળો પોખરાજ તર્જની (પહેલી આંગળી)માં ધારણ કરવો. (Crystal: સિટ્રીન અથવા પીળો પોખરાજ)</div>
+        <div class="remedy-card">
+            <div class="remedy-num">1</div>
+            <div class="remedy-content">
+                <div class="remedy-label"><span style="margin-right:3px;">💎</span>રત્ન અને ક્રિસ્ટલ પરામર્શ</div>
+                <div class="remedy-text">ગુરુવારે સવારે સોના કે પંચધાતુમાં 3.25 થી 5.25 રત્તીનો કુદરતી પીળો પોખરાજ તર્જની (પહેલી આંગળી)માં ધારણ કરવો. (Crystal: સિટ્રીન અથવા પીળો પોખરાજ)</div>
             </div>
         </div>
         
-        <div class="remedy-card-seq">
-            <div class="remedy-num-seq">2</div>
-            <div class="remedy-content-seq">
-                <div class="remedy-label-seq">પવિત્ર વૈદિક મંત્ર સાધના</div>
-                <div class="remedy-text-seq">ૐ ગ્રાં ગ્રીં ગ્રૌં સઃ ગુરવે નમઃ (ગુરુવારે સવારે 108 વાર જાપ).</div>
+        <div class="remedy-card">
+            <div class="remedy-num">2</div>
+            <div class="remedy-content">
+                <div class="remedy-label"><span style="margin-right:3px;">📿</span>પવિત્ર વૈદિક મંત્ર સાધના</div>
+                <div class="remedy-text">ૐ ગ્રાં ગ્રીં ગ્રૌં સઃ ગુરવે નમઃ (ગુરુવારે સવારે 108 વાર જાપ).</div>
             </div>
         </div>
         
-        <div class="remedy-card-seq">
-            <div class="remedy-num-seq">3</div>
-            <div class="remedy-content-seq">
-                <div class="remedy-label-seq">વ્રત અને ઉપવાસ નિયમો</div>
-                <div class="remedy-text-seq">ગુરુવારનું વ્રત. પીળા વસ્ત્રો પહેરવા; આ દિવસે માથું ધોવું કે નખ કાપવા નહીં.</div>
+        <div class="remedy-card">
+            <div class="remedy-num">3</div>
+            <div class="remedy-content">
+                <div class="remedy-label"><span style="margin-right:3px;">🌾</span>વ્રત અને ઉપવાસ નિયમો</div>
+                <div class="remedy-text">ગુરુવારનું વ્રત. પીળા વસ્ત્રો પહેરવા; આ દિવસે માથું ધોવું કે નખ કાપવા નહીં.</div>
             </div>
         </div>
         
-        <div class="remedy-card-seq">
-            <div class="remedy-num-seq">4</div>
-            <div class="remedy-content-seq">
-                <div class="remedy-label-seq">દાન અને પુણ્ય કર્મ</div>
-                <div class="remedy-text-seq">ગુરુવારે ચણાની દાળ, હળદર, બેસનના લાડુ, કેળાં કે ધાર્મિક પુસ્તકો મંદિર કે ગુરુજનને દાન કરવા.</div>
+        <div class="remedy-card">
+            <div class="remedy-num">4</div>
+            <div class="remedy-content">
+                <div class="remedy-label"><span style="margin-right:3px;">🤝</span>દાન અને પુણ્ય કર્મ</div>
+                <div class="remedy-text">ગુરુવારે ચણાની દાળ, હળદર, બેસનના લાડુ, કેળાં કે ધાર્મિક પુસ્તકો મંદિર કે ગુરુજનને દાન કરવા.</div>
             </div>
         </div>
         
-        <div class="remedy-card-seq">
-            <div class="remedy-num-seq">5</div>
-            <div class="remedy-content-seq">
-                <div class="remedy-label-seq">સેવા અને કર્મ સુધારણા</div>
-                <div class="remedy-text-seq">ગુરુજનો અને શિક્ષકોની સેવા કરવી. ગુરુવારે કેળના કે પીપળાના વૃક્ષને જળ ચડાવીને દીવો પ્રગટાવવો.</div>
+        <div class="remedy-card">
+            <div class="remedy-num">5</div>
+            <div class="remedy-content">
+                <div class="remedy-label"><span style="margin-right:3px;">🕊️</span>સેવા અને કર્મ સુધારણા</div>
+                <div class="remedy-text">ગુરુજનો અને શિક્ષકોની સેવા કરવી. ગુરુવારે કેળના કે પીપળાના વૃક્ષને જળ ચડાવીને દીવો પ્રગટાવવો.</div>
             </div>
         </div>
         
-        <div class="remedy-card-seq">
-            <div class="remedy-num-seq">6</div>
-            <div class="remedy-content-seq">
-                <div class="remedy-label-seq">સામાન્ય વૈદિક ઉપાયો (ધન, આરોગ્ય અને શાંતિ)</div>
-                <div class="remedy-text-seq"><strong>Health:</strong> રાત્રે શુદ્ધ તાંબાના વાસણમાં પાણી ભરી રાખવું અને વહેલી સવારે સૂર્યોદય સમયે નરણા કોઠે તે જળ પીવું. સવારે 15 મિનિટ સૂર્યના કુમળા તડકામાં બેસી પ્રાણ ઊર્જા મેળવવી. <br><strong>Wealth:</strong> પોતાની તિજોરી કે ગલ્લામાં ઉત્તર દિશા તરફ મુખ રાખી લાલ કે લીલા રેશમી વસ્ત્રમાં શ્રી કુબેર યંત્ર સ્થાપિત કરવું. સાંજના સમયે શુદ્ધ ભીમસેની કપૂર અને બે લવિંગ પ્રગટાવી ઘરમાં ધૂપ કરવો. <br><strong>Harmony:</strong> ઘરના નૈઋત્ય ખૂણાના બેડરૂમમાં કુદરતી રોઝ ક્વાર્ટ્ઝ ક્રિસ્ટલ રાખવું. અઠવાડિયામાં એક વાર (ખાસ કરીને મંગળવારે) પાણીમાં સિંધવ મીઠું નાખીને પોતું કરવું જેથી નકારાત્મક ઊર્જા દૂર થાય.</div>
+        <div class="remedy-card">
+            <div class="remedy-num">6</div>
+            <div class="remedy-content">
+                <div class="remedy-label"><span style="margin-right:3px;">🎨</span>સામાન્ય વૈદિક ઉપાયો (ધન, આરોગ્ય અને શાંતિ)</div>
+                <div class="remedy-text"><strong>Health:</strong> રાત્રે શુદ્ધ તાંબાના વાસણમાં પાણી ભરી રાખવું અને વહેલી સવારે સૂર્યોદય સમયે નરણા કોઠે તે જળ પીવું. સવારે 15 મિનિટ સૂર્યના કુમળા તડકામાં બેસી પ્રાણ ઊર્જા મેળવવી. • <strong>Wealth:</strong> પોતાની તિજોરી કે ગલ્લામાં ઉત્તર દિશા તરફ મુખ રાખી લાલ કે લીલા રેશમી વસ્ત્રમાં શ્રી કુબેર યંત્ર સ્થાપિત કરવું. સાંજના સમયે શુદ્ધ ભીમસેની કપૂર અને બે લવિંગ પ્રગટાવી ઘરમાં ધૂપ કરવો.</div>
             </div>
         </div>
         
@@ -1512,7 +1454,7 @@ body {
                         <span>📞 ફોન / વ્હોટ્સએપ: +91 9377614772</span>
                         <span>✉ ઇમેઇલ: jigar93776@gmail.com</span>
                     </div>
-                    <div style="font-size:7.5px;color:#94a3b8;margin-top:3px;">© 2026 જીગર ઠક્કર. સર્વાધિકાર સુરક્ષિત. આ રિપોર્ટ પ્રામાણિક વૈદિક અંકશાસ્ત્ર દ્વારા ફક્ત સંબંધિત જાતક માટે તૈયાર કરવામાં આવ્યો છે. નકલ કરવી કાનૂની ગુનો છે.</div>
+                    <div style="font-size:7px;color:#94a3b8;margin-top:2px;">© 2026 જીગર ઠક્કર. સર્વાધિકાર સુરક્ષિત. આ રિપોર્ટ પ્રામાણિક વૈદિક અંકશાસ્ત્ર દ્વારા ફક્ત સંબંધિત જાતક માટે તૈયાર કરવામાં આવ્યો છે. નકલ કરવી કાનૂની ગુનો છે.</div>
                 </div>
                 <div class="cert-seal-deluxe">
                     <span>VEDIC</span>
@@ -1520,6 +1462,14 @@ body {
                     <span>JIGAR T.</span>
                     <span>✦ 2026 ✦</span>
                 </div>
+            </div>
+        </div>
+
+        <!-- Empowered Action / Success Note -->
+        <div class="curiosity-hook-card action-card">
+            <div class="curiosity-icon">✨</div>
+            <div class="curiosity-content">
+                <div class="curiosity-text">✨ તમારી સફળતાનો પવિત્ર માર્ગ: આપેલા વૈદિક ઉપાયો શ્રદ્ધાપૂર્વક અપનાવો. વિશેષ અંગત માર્ગદર્શન માટે જીગર ઠક્કરનો સીધો સંપર્ક કરો.</div>
             </div>
         </div>
 

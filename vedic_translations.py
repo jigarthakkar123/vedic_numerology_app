@@ -112,7 +112,19 @@ UI_TEXT = {
         "of": "of",
         "consultant_notes": "Personalized Notes & Special Instructions from Jigar Thakkar",
         "phone_label": "Phone / WhatsApp",
-        "email_label": "Email"
+        "email_label": "Email",
+        "step_1_badge": "STEP 1 OF 4: YOUR COSMIC IDENTITY & SOUL MATRIX",
+        "step_1_title": "Core Inborn Personality, Dual Vedic Grids & Planetary Allies",
+        "step_2_badge": "STEP 2 OF 4: YOUR COSMIC TIMELINE & DASHA ROADMAP",
+        "step_2_title": "3-Tier Macro Cycles & 12-Month Action Timing Matrix",
+        "step_3_badge": "STEP 3 OF 4: DESTINY PATH, RARE YOGAS & PLANETARY VIBRATIONS",
+        "step_3_title": "Life Purpose, Special Planetary Combinations & Energetic Shifts",
+        "step_4_badge": "STEP 4 OF 4: 8-PILLAR LIFE PREDICTIONS & SACRED REMEDIES",
+        "step_4_title": "Personalized Future Guidance & Certified Remedial Protocol",
+        "curiosity_hook_1": "🔍 NEXT STEP PREVIEW: The Secrets of Your Cosmic Timeline — Why do certain years bring effortless growth while others test your endurance? Turn to Page 2 to discover your active 9-Year Mahadasha, your current Annual Focus, and your exact Month-by-Month Timing Matrix...",
+        "curiosity_hook_2": "⚡ NEXT STEP PREVIEW: Unlocking Your Rare Yogas & Hidden Powers — Are there rare planetary combinations granting you sudden windfalls or karmic hurdles? Turn to Page 3 to explore your Destiny Path and active Divine Yogas...",
+        "curiosity_hook_3": "🔮 NEXT STEP PREVIEW: Your Personalized Life Forecast & Sacred Remedies — What do the planets reveal about your wealth, career, relationships, and health? Turn to Page 4 for your 8-Pillar Life Predictions and your personalized Vedic Remedial Protocol...",
+        "curiosity_hook_4": "✨ YOUR EMPOWERED TRANSFORMATION: Practice these prescribed remedies with faith and consistency. For personalized 1-on-1 consultations or Vastu audits, contact Jigar Thakkar directly."
     },
     "hi": {
         "title": "वैदिक अंकशास्त्र स्टूडियो",
@@ -201,7 +213,19 @@ UI_TEXT = {
         "of": "का",
         "consultant_notes": "जिगर ठक्कर की विशेष व्यक्तिगत टिप्पणी एवं परामर्श",
         "phone_label": "फोन / व्हाट्सएप",
-        "email_label": "ईमेल"
+        "email_label": "ईमेल",
+        "step_1_badge": "चरण १ / ४: आपकी मूल आत्मिक ऊर्जा व वैदिक चक्र",
+        "step_1_title": "मूल व्यक्तित्व, युगल वैदिक चक्र एवं स्वाभाविक गुण",
+        "step_2_badge": "चरण २ / ४: आपका समय चक्र एवं दशा फल",
+        "step_2_title": "महादशा, अंतर्दशा एवं ९-चरणीय मासिक समयरेखा",
+        "step_3_badge": "चरण ३ / ४: भाग्यांक मार्ग एवं दुर्लभ ग्रह योग",
+        "step_3_title": "जीवन पथ, शुभ-अशुभ ग्रह योग एवं गतिज स्पंदन",
+        "step_4_badge": "चरण ४ / ४: अष्ट-स्तंभ भविष्यवाणियां एवं सिद्ध उपाय",
+        "step_4_title": "विस्तृत जीवन फलादेश एवं प्रमाणित वैदिक उपचार",
+        "curiosity_hook_1": "🔍 अगले चरण की झलक: क्या आप जानते हैं कि आपका जीवन इस समय किस बड़े ग्रह चक्र से गुजर रहा है? यह जानने के लिए पृष्ठ २ पर जाएं, जहां आपकी सक्रिय महादशा और मासिक समयरेखा का रहस्य खुलेगा...",
+        "curiosity_hook_2": "⚡ अगले चरण की झलक: आपकी जन्मकुंडली में कौन से दुर्लभ राजयोग या कर्म दोष सक्रिय हैं जो आपके भाग्य को प्रभावित कर रहे हैं? जानिए पृष्ठ ३ पर...",
+        "curiosity_hook_3": "🔮 अगले चरण की झलक: धन, संपत्ति, करियर, दांपत्य और स्वास्थ्य में आगे क्या लिखा है? जानिए पृष्ठ ४ पर अष्ट-स्तंभ भविष्यवाणियां और सटीक वैदिक उपाय...",
+        "curiosity_hook_4": "✨ आपकी सफलता का मार्ग: इन पवित्र वैदिक उपायों को नियमपूर्वक अपनाएं। व्यक्तिगत परामर्श हेतु ज्योतिषाचार्य जिगर ठक्कर से संपर्क करें।"
     },
     "gu": {
         "title": "વૈદિક અંકશાસ્ત્ર સ્ટુડિયો",
@@ -290,7 +314,19 @@ UI_TEXT = {
         "of": "નું",
         "consultant_notes": "જીગર ઠક્કરની વિશેષ અંગત નોંધ અને ઉપાયો",
         "phone_label": "ફોન / વ્હોટ્સએપ",
-        "email_label": "ઇમેઇલ"
+        "email_label": "ઇમેઇલ",
+        "step_1_badge": "પગલું ૧ / ૪: તમારી મૂળ આત્મિક ઊર્જા અને કુંડળી",
+        "step_1_title": "મૂળ વ્યક્તિત્વ, યુગલ વૈદિક ચક્ર અને જન્મજાત ગુણો",
+        "step_2_badge": "પગલું ૨ / ૪: તમારો સમય ચક્ર અને દશા રોડમેપ",
+        "step_2_title": "મહાદશા, અંતર્દશા અને ૯-તબક્કાવાર માસિક સમયરેખા",
+        "step_3_badge": "પગલું ૩ / ૪: ભાગ્યાંક માર્ગ અને દુર્લભ ગ્રહ યોગો",
+        "step_3_title": "જીવન લક્ષ્ય, શુભ-અશુભ ગ્રહ યોગો અને ગ્રહીય સ્પંદન",
+        "step_4_badge": "પગલું ૪ / ૪: ૮-સ્તંભ જીવન આગાહી અને સિદ્ધ ઉપાયો",
+        "step_4_title": "સંપૂર્ણ ભવિષ્ય ફલાદેશ અને પ્રમાણિત વૈદિક ઉપચાર",
+        "curiosity_hook_1": "🔍 આગળના પગલાંની ઝલક: શું તમે જાણો છો કે હાલમાં કયો મોટો ગ્રહ સમયગાળો તમારા જીવન પર શાસન કરી રહ્યો છે? પેજ ૨ પર જુઓ તમારી મહાદશા અને માસિક રોડમેપ...",
+        "curiosity_hook_2": "⚡ આગળના પગલાંની ઝલક: તમારી જન્મકુંડળીમાં કયા દૈવી રાજયોગો કે કર્મિક દોષો છુપાયેલા છે? જાણવા માટે પેજ ૩ પર આગળ વધો...",
+        "curiosity_hook_3": "🔮 આગળના પગલાંની ઝલક: ધન, મિલકત, કારકિર્દી, લગ્નજીવન અને સ્વાસ્થ્યમાં આગળ શું છે? જાણો પેજ ૪ પર સંપૂર્ણ આગાહી અને સચોટ વૈદિક ઉપાયો...",
+        "curiosity_hook_4": "✨ તમારી સફળતાનો પવિત્ર માર્ગ: આપેલા વૈદિક ઉપાયો શ્રદ્ધાપૂર્વક અપનાવો. વિશેષ અંગત માર્ગદર્શન માટે જીગર ઠક્કરનો સીધો સંપર્ક કરો."
     }
 }
 
