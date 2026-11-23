@@ -31,9 +31,10 @@ from vedic_engine import compile_full_numerology_profile
 from vedic_pdf_builder import build_report_html, render_pdf_from_html
 from vedic_mailer import send_report_email
 
-# Payment Gateway Configuration
-RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID", "").strip()
-RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET", "").strip()
+# Payment Gateway & Studio Security Configuration
+RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID", "rzp_test_U3YFvFMHdXx7Kh").strip()
+RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET", "qbrbOZsgI1F1B7lfTyyHVbgo").strip()
+STUDIO_PIN = os.environ.get("STUDIO_PIN", "93776").strip()
 
 app = FastAPI(
     title="Vedic Numerology Studio API",
@@ -223,13 +224,43 @@ class FunnelVerifyRequest(BaseModel):
     email: str
     phone: Optional[str] = ""
 
+@app.get("/")
 @app.get("/order")
 async def get_sales_funnel_page():
-    """Serves the high-converting Instagram Sales Funnel landing page."""
+    """Serves the high-converting Instagram Sales Funnel landing page as default."""
     order_page = os.path.join(STATIC_DIR, "order.html")
     if os.path.exists(order_page):
         return FileResponse(order_page, media_type="text/html")
     return FileResponse(os.path.join(STATIC_DIR, "index.html"), media_type="text/html")
+
+@app.get("/studio")
+@app.get("/consultant")
+async def get_private_consultant_studio():
+    """Serves Jigar Thakkar's private consultation studio."""
+    return FileResponse(os.path.join(STATIC_DIR, "index.html"), media_type="text/html")
+
+@app.get("/sample-report")
+@app.get("/sample-report/{lang}")
+async def get_sample_report(lang: str = "en"):
+    """Serves sample 4-page Vedic Numerology reports for preview."""
+    lang_map = {
+        "en": "Sample_Vedic_Report_English.pdf",
+        "hi": "Sample_Vedic_Report_Hindi.pdf",
+        "gu": "Sample_Vedic_Report_Gujarati.pdf"
+    }
+    fname = lang_map.get(lang, "Sample_Vedic_Report_English.pdf")
+    fpath = os.path.join(REPORTS_DIR, fname)
+    if not os.path.exists(fpath):
+        fpath = os.path.join(REPORTS_DIR, "Sample_Vedic_Report_English.pdf")
+    return FileResponse(fpath, media_type="application/pdf", filename=fname)
+
+@app.post("/api/verify-pin")
+async def verify_studio_pin(body: dict = Body(...)):
+    """Verifies access PIN for the private consultant studio."""
+    pin = str(body.get("pin", "")).strip()
+    if pin == STUDIO_PIN:
+        return {"success": True, "message": "Access granted"}
+    raise HTTPException(status_code=401, detail="Incorrect Consultant PIN.")
 
 @app.get("/order/success")
 async def get_order_success_page():

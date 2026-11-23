@@ -535,6 +535,61 @@
         <p>© 2026 Jigar Thakkar • Certified Vedic Numerologist & Vastu Consultant • Phone: +91 9377614772 • Email: jigar93776@gmail.com</p>
     </footer>
 
+    <!-- Studio PIN Protection Modal for Jigar Thakkar -->
+    <div id="pin-lock-overlay" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(6, 9, 19, 0.96); z-index: 99999; backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: #0f172a; border: 1.5px solid #d4af37; border-radius: 14px; max-width: 420px; width: 100%; padding: 30px 24px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.8);">
+            <div style="font-size: 38px; color: #fbbf24; margin-bottom: 8px;">ॐ</div>
+            <h2 style="font-family: 'Cinzel', serif; font-size: 18px; color: #fbbf24; margin-bottom: 6px;">Jigar Thakkar's Private Studio</h2>
+            <p style="font-size: 12px; color: #94a3b8; line-height: 1.5; margin-bottom: 20px;">
+                This professional consultation workspace is private. Please enter your Consultant Access PIN to unlock your client chart engine.
+            </p>
+            <form id="pin-form" onsubmit="event.preventDefault(); verifyPin();">
+                <input type="password" id="studio-pin-input" placeholder="Enter Access PIN" maxlength="10" style="width: 100%; background: #1e293b; border: 1.5px solid #334155; border-radius: 8px; padding: 12px; color: #fff; font-size: 18px; text-align: center; letter-spacing: 4px; margin-bottom: 14px; outline: none; font-family: monospace;">
+                <div id="pin-error" style="display: none; color: #f87171; font-size: 12px; margin-bottom: 12px; font-weight: 600;">Incorrect PIN. Please try again.</div>
+                <button type="submit" style="width: 100%; background: linear-gradient(135deg, #d4af37 0%, #f59e0b 100%); color: #000000; font-weight: 800; font-size: 14px; padding: 12px; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(212,175,55,0.4);">
+                    🔓 Unlock Studio
+                </button>
+            </form>
+            <div style="margin-top: 20px; font-size: 11px; color: #64748b;">
+                Public visitors: <a href="/order" style="color: #fbbf24; text-decoration: none;">Go to Client Order Page (₹499) →</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function checkStudioLock() {
+            if (sessionStorage.getItem('studio_unlocked') !== 'true') {
+                document.getElementById('pin-lock-overlay').style.display = 'flex';
+                setTimeout(() => { document.getElementById('studio-pin-input').focus(); }, 100);
+            }
+        }
+        async function verifyPin() {
+            const pin = document.getElementById('studio-pin-input').value.trim();
+            const errEl = document.getElementById('pin-error');
+            try {
+                const res = await fetch('/api/verify-pin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pin })
+                });
+                if (res.ok) {
+                    sessionStorage.setItem('studio_unlocked', 'true');
+                    document.getElementById('pin-lock-overlay').style.display = 'none';
+                } else {
+                    errEl.style.display = 'block';
+                    document.getElementById('studio-pin-input').value = '';
+                }
+            } catch(e) {
+                if (pin === '93776') {
+                    sessionStorage.setItem('studio_unlocked', 'true');
+                    document.getElementById('pin-lock-overlay').style.display = 'none';
+                } else {
+                    errEl.style.display = 'block';
+                }
+            }
+        }
+        checkStudioLock();
+    </script>
     <script src="/app.js"></script>
 </body>
 </html>
