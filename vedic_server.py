@@ -32,8 +32,8 @@ from vedic_pdf_builder import build_report_html, render_pdf_from_html
 from vedic_mailer import send_report_email
 
 # Payment Gateway & Studio Security Configuration
-RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID", "rzp_test_U3YFvFMHdXx7Kh").strip()
-RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET", "qbrbOZsgI1F1B7lfTyyHVbgo").strip()
+RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID", "rzp_live_U3adT4C3QizYI6").strip()
+RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET", "vygv3MsTkfykO6eLZo5EPZ2O").strip()
 STUDIO_PIN = os.environ.get("STUDIO_PIN", "93776").strip()
 
 app = FastAPI(
