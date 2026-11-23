@@ -10,7 +10,7 @@ let currentProfile = null;
 document.addEventListener('DOMContentLoaded', () => {
     initEventListeners();
     updateWeekdayDisplay();
-    fetchAnalysis();
+    fetchAnalysis(false);
     refreshHistory();
 });
 
@@ -19,7 +19,15 @@ function initEventListeners() {
     const form = document.getElementById('numerology-form');
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-        fetchAnalysis();
+        fetchAnalysis(true);
+    });
+
+    // Mobile View Switcher (Client Setup <-> Kundali & Reports)
+    document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const view = btn.dataset.view;
+            switchMobileView(view);
+        });
     });
 
     // Date picker change
@@ -32,7 +40,7 @@ function initEventListeners() {
             document.querySelectorAll('.lang-pill').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentLang = btn.dataset.lang;
-            fetchAnalysis();
+            fetchAnalysis(false);
         });
     });
 
@@ -98,8 +106,34 @@ function hideStatus() {
     banner.style.display = 'none';
 }
 
+// Switch between Client Setup and Kundali Dashboard on Mobile
+function switchMobileView(view) {
+    const sidebar = document.getElementById('panel-sidebar');
+    const dashboard = document.getElementById('panel-dashboard');
+    const formBtn = document.querySelector('.mobile-nav-btn[data-view="form"]');
+    const dashBtn = document.querySelector('.mobile-nav-btn[data-view="dashboard"]');
+
+    if (view === 'dashboard') {
+        if (formBtn) formBtn.classList.remove('active');
+        if (dashBtn) dashBtn.classList.add('active');
+        if (sidebar) sidebar.classList.remove('active-mobile');
+        if (dashboard) {
+            dashboard.classList.add('active-mobile');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    } else {
+        if (dashBtn) dashBtn.classList.remove('active');
+        if (formBtn) formBtn.classList.add('active');
+        if (dashboard) dashboard.classList.remove('active-mobile');
+        if (sidebar) {
+            sidebar.classList.add('active-mobile');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+}
+
 // Fetch Full Calculation Analysis
-async function fetchAnalysis() {
+async function fetchAnalysis(autoSwitch = false) {
     const payload = getFormData();
     showStatus('Calculating planetary vibrations and assembling Vedic chart...', 'loading');
 
@@ -118,6 +152,11 @@ async function fetchAnalysis() {
         currentProfile = json.data;
         renderDashboard(currentProfile);
         hideStatus();
+
+        // On mobile devices, auto-switch to Kundali & Reports view when user calculates
+        if (autoSwitch && window.innerWidth <= 991) {
+            switchMobileView('dashboard');
+        }
     } catch (err) {
         showStatus(`Error: ${err.message}`, 'error');
     }

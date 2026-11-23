@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Jigar Thakkar - Vedic Numerology Studio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,15 +15,16 @@
         <div class="header-container">
             <div class="header-brand">
                 <div class="sacred-om">ॐ</div>
-                <div>
+                <div class="brand-text-block">
                     <h1 class="brand-title">JIGAR THAKKAR'S VEDIC NUMEROLOGY STUDIO</h1>
                     <p class="brand-subtitle">Certified Vedic Numerologist & Vastu Consultant • Automated Trilingual Blueprint Engine</p>
                 </div>
             </div>
             <div class="header-controls">
                 <div class="consultant-contact-pill">
-                    <span>📞 +91 9377614772</span>
-                    <span>✉ jigar93776@gmail.com</span>
+                    <a href="tel:+919377614772" class="contact-link">📞 +91 9377614772</a>
+                    <span class="contact-sep">•</span>
+                    <a href="mailto:jigar93776@gmail.com" class="contact-link">✉ jigar93776@gmail.com</a>
                 </div>
                 <div class="lang-switch-pills">
                     <button class="lang-pill active" data-lang="en">English</button>
@@ -32,13 +33,26 @@
                 </div>
             </div>
         </div>
+
+        <!-- Mobile Segmented View Switcher (Visible only on mobile/small tablets) -->
+        <div class="mobile-view-nav">
+            <button class="mobile-nav-btn active" data-view="form">
+                <span class="m-icon">📝</span> Client Setup
+            </button>
+            <button class="mobile-nav-btn" data-view="dashboard">
+                <span class="m-icon">📊</span> Kundali & Reports
+            </button>
+        </div>
     </header>
 
     <!-- Main Workspace Container -->
     <main class="app-main">
+        <!-- Floating Global Status/Toast Banner -->
+        <div id="status-banner" class="status-banner" style="display: none;"></div>
+
         <div class="workspace-grid">
             <!-- Left Side: Client Consultation Form -->
-            <aside class="sidebar-panel">
+            <aside id="panel-sidebar" class="sidebar-panel active-mobile">
                 <div class="card panel-card">
                     <div class="panel-header">
                         <span class="icon">📜</span>
@@ -52,8 +66,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="client-phone">Client WhatsApp / Phone <span class="label-hint">(Optional)</span></label>
-                            <input type="text" id="client-phone" placeholder="e.g. 9876543210" value="">
+                            <label for="client-phone">Client WhatsApp / Mobile <span class="label-hint">(For direct 1-click delivery)</span></label>
+                            <input type="tel" id="client-phone" placeholder="e.g. 9876543210" value="">
                         </div>
 
                         <div class="form-row">
@@ -73,37 +87,37 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="target-date">Forecast Consultation Date</label>
+                            <label for="target-date">Consultation / Forecast Date</label>
                             <input type="date" id="target-date" value="2026-11-21">
                         </div>
 
                         <div class="form-group">
                             <label for="consultant-notes">
-                                Personalized Notes & Recommendations
-                                <span class="label-hint">(Printed on Page 4 of PDF)</span>
+                                Personalized Notes & Custom Remedies
+                                <span class="label-hint">(Appears on Page 4 of PDF)</span>
                             </label>
                             <textarea id="consultant-notes" rows="3" placeholder="Add specific guidance or custom remedies for this client...">Regular practice of morning Surya Arghya in a copper vessel and wearing recommended Hessonite is strongly advised for maximum planetary harmony.</textarea>
                         </div>
 
-                        <!-- Action Buttons -->
+                        <!-- Action Buttons Stack -->
                         <div class="action-buttons-stack">
-                            <button type="submit" id="btn-calculate" class="btn btn-primary">
+                            <button type="submit" id="btn-calculate" class="btn btn-primary btn-touch">
                                 <span class="btn-icon">🔮</span> Calculate & Analyze Chart
                             </button>
 
                             <div class="pdf-actions-header">1-Click PDF Generation</div>
                             <div class="pdf-btn-grid">
-                                <button type="button" id="btn-pdf-en" class="btn btn-gold" data-pdflang="en">
-                                    <span>📄 English PDF</span>
+                                <button type="button" id="btn-pdf-en" class="btn btn-gold btn-touch" data-pdflang="en">
+                                    <span class="b-icon">📄</span> <span>English PDF</span>
                                 </button>
-                                <button type="button" id="btn-pdf-hi" class="btn btn-gold" data-pdflang="hi">
-                                    <span>📄 हिन्दी PDF</span>
+                                <button type="button" id="btn-pdf-hi" class="btn btn-gold btn-touch" data-pdflang="hi">
+                                    <span class="b-icon">📄</span> <span>हिन्दी PDF</span>
                                 </button>
-                                <button type="button" id="btn-pdf-gu" class="btn btn-gold" data-pdflang="gu">
-                                    <span>📄 ગુજરાતી PDF</span>
+                                <button type="button" id="btn-pdf-gu" class="btn btn-gold btn-touch" data-pdflang="gu">
+                                    <span class="b-icon">📄</span> <span>ગુજરાતી PDF</span>
                                 </button>
                             </div>
-                            <button type="button" id="btn-pdf-all" class="btn btn-accent">
+                            <button type="button" id="btn-pdf-all" class="btn btn-accent btn-touch">
                                 <span class="btn-icon">📦</span> Generate All 3 Languages
                             </button>
                         </div>
@@ -113,9 +127,11 @@
                 <!-- Recent Generated Reports Box -->
                 <div class="card recent-reports-card">
                     <div class="panel-header-mini">
-                        <span class="icon">📁</span>
-                        <h3>Generated Client Reports</h3>
-                        <button id="btn-refresh-history" class="btn-icon-mini" title="Refresh">↻</button>
+                        <div class="hdr-left">
+                            <span class="icon">📁</span>
+                            <h3>Generated Client Reports</h3>
+                        </div>
+                        <button id="btn-refresh-history" class="btn-icon-mini" title="Refresh">↻ Refresh</button>
                     </div>
                     <div id="recent-reports-list" class="reports-list">
                         <div class="empty-state">No reports generated yet in this session.</div>
@@ -124,17 +140,14 @@
             </aside>
 
             <!-- Right Side: Interactive Analytical Dashboard -->
-            <section class="dashboard-panel">
-                <!-- Status & Notification Banner -->
-                <div id="status-banner" class="status-banner" style="display: none;"></div>
-
-                <!-- Top Quick Stats Overview -->
+            <section id="panel-dashboard" class="dashboard-panel">
+                <!-- Top Quick Stats Overview (2x2 on Mobile, 4x1 on Desktop) -->
                 <div class="quick-stats-row">
                     <!-- Basic Number (Moolank) Card -->
                     <div class="stat-card">
                         <div class="stat-icon">👑</div>
                         <div class="stat-info">
-                            <div class="stat-label" id="lbl-bn">Moolank (Basic No)</div>
+                            <div class="stat-label" id="lbl-bn">Moolank (Basic)</div>
                             <div class="stat-value" id="val-bn">4</div>
                             <div class="stat-sub" id="sub-bn">Rahu (राहु)</div>
                         </div>
@@ -144,7 +157,7 @@
                     <div class="stat-card">
                         <div class="stat-icon">🌟</div>
                         <div class="stat-info">
-                            <div class="stat-label" id="lbl-dn">Bhagyank (Destiny No)</div>
+                            <div class="stat-label" id="lbl-dn">Bhagyank (Destiny)</div>
                             <div class="stat-value" id="val-dn">8</div>
                             <div class="stat-sub" id="sub-dn">Saturn (शनि)</div>
                         </div>
@@ -154,7 +167,7 @@
                     <div class="stat-card">
                         <div class="stat-icon">✍</div>
                         <div class="stat-info">
-                            <div class="stat-label">Name No (Namank)</div>
+                            <div class="stat-label">Namank (Name No)</div>
                             <div class="stat-value" id="val-namank">1</div>
                             <div class="stat-sub" id="sub-namank">Harmonious Alignment</div>
                         </div>
@@ -164,7 +177,7 @@
                     <div class="stat-card">
                         <div class="stat-icon">⏳</div>
                         <div class="stat-info">
-                            <div class="stat-label">Active Dasha Cycle</div>
+                            <div class="stat-label">Active Dasha</div>
                             <div class="stat-value-sm" id="val-dasha">MD: 3 | AD: 1 | PD: 2</div>
                             <div class="stat-sub" id="sub-dasha">Active through 2027</div>
                         </div>
@@ -173,14 +186,16 @@
 
                 <!-- Main Analysis Tabs Container -->
                 <div class="card dashboard-card">
-                    <!-- Tab Navigation -->
-                    <nav class="dashboard-tabs">
-                        <button class="tab-btn active" data-tab="tab-grid">🌟 Natal Grid & Compatibility Compass</button>
-                        <button class="tab-btn" data-tab="tab-dasha">⏳ Dasha Timeline (MD/AD/PD)</button>
-                        <button class="tab-btn" data-tab="tab-yogas">⚖️ Active Yogas & Raj Yog</button>
-                        <button class="tab-btn" data-tab="tab-predictions">🔮 Life Predictions</button>
-                        <button class="tab-btn" data-tab="tab-remedies">🕉️ Vedic Remedies</button>
-                    </nav>
+                    <!-- Tab Navigation with Smooth Horizontal Scroll -->
+                    <div class="tabs-scroll-wrapper">
+                        <nav class="dashboard-tabs">
+                            <button class="tab-btn active" data-tab="tab-grid">🌟 Natal Grid & Compass</button>
+                            <button class="tab-btn" data-tab="tab-dasha">⏳ Dasha (MD/AD/PD)</button>
+                            <button class="tab-btn" data-tab="tab-yogas">⚖️ Yogas & Raj Yog</button>
+                            <button class="tab-btn" data-tab="tab-predictions">🔮 Life Predictions</button>
+                            <button class="tab-btn" data-tab="tab-remedies">🕉️ Vedic Remedies</button>
+                        </nav>
+                    </div>
 
                     <!-- Tab 1: Natal Grid & Compatibility Compass -->
                     <div id="tab-grid" class="tab-content active">
@@ -189,7 +204,7 @@
                             <div class="compass-dash-header">🧭 Planetary Friendship Matrix & Life Compass</div>
                             <div class="compass-dash-grid">
                                 <div class="c-dash-item">
-                                    <span class="c-dash-label">Friendly Numbers (Allies)</span>
+                                    <span class="c-dash-label">Friendly Numbers</span>
                                     <span class="c-dash-val text-green" id="dash-friendly">4, 5, 6, 8</span>
                                 </div>
                                 <div class="c-dash-item">
@@ -197,11 +212,11 @@
                                     <span class="c-dash-val text-orange" id="dash-neutral">7, 3</span>
                                 </div>
                                 <div class="c-dash-item">
-                                    <span class="c-dash-label">Unfriendly / Avoid Numbers</span>
+                                    <span class="c-dash-label">Avoid / Enemy Numbers</span>
                                     <span class="c-dash-val text-red" id="dash-enemy">1, 2, 9</span>
                                 </div>
                                 <div class="c-dash-item">
-                                    <span class="c-dash-label">Auspicious Vastu Direction</span>
+                                    <span class="c-dash-label">Auspicious Direction</span>
                                     <span class="c-dash-val" id="dash-direction">South-West (नैऋत्य)</span>
                                 </div>
                                 <div class="c-dash-item">
@@ -219,6 +234,7 @@
                         </div>
 
                         <div class="grid-section-layout">
+                            <!-- 3x3 Grid Visual Column -->
                             <div class="grid-visual-col">
                                 <div class="vedic-grid-card">
                                     <div class="grid-card-title">3x3 Vedic Birth Grid (Natal Kundali)</div>
@@ -234,8 +250,8 @@
                                         <div class="v-cell" id="gc-4"><span class="c-num">4</span><span class="c-val">4</span></div>
                                     </div>
                                     <div class="grid-legend">
-                                        <span class="legend-item"><span class="legend-dot active"></span> Active in Chart</span>
-                                        <span class="legend-item"><span class="legend-dot empty"></span> Dormant / Absent</span>
+                                        <span class="legend-item"><span class="legend-dot active"></span> Active Digits</span>
+                                        <span class="legend-item"><span class="legend-dot empty"></span> Absent</span>
                                     </div>
                                 </div>
 
@@ -246,10 +262,11 @@
                                 </div>
                             </div>
 
+                            <!-- Vibrations Breakdown Column -->
                             <div class="grid-details-col">
                                 <h3 class="section-heading">Planetary Vibrations Breakdown (+ / -)</h3>
                                 <div id="vibrations-list" class="vibrations-container">
-                                    <!-- Dynamic Vibrations will be injected here -->
+                                    <!-- Dynamic Vibrations injected here -->
                                 </div>
                             </div>
                         </div>
@@ -292,6 +309,7 @@
                         </div>
 
                         <h3 class="section-heading mt-4">Lifetime Mahadasha Sequence (45-Year Cyclic Table)</h3>
+                        <div class="table-scroll-hint">👈 Swipe table horizontally to view full dates 👉</div>
                         <div class="table-responsive">
                             <table class="dasha-table">
                                 <thead>
