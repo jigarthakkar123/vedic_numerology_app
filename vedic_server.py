@@ -239,6 +239,19 @@ async def get_order_success_page():
         return FileResponse(success_page, media_type="text/html")
     return FileResponse(os.path.join(STATIC_DIR, "index.html"), media_type="text/html")
 
+@app.get("/privacy")
+@app.get("/terms")
+@app.get("/refund-policy")
+@app.get("/shipping-policy")
+@app.get("/contact")
+@app.get("/legal")
+async def get_legal_policies():
+    """Serves the mandatory Razorpay compliance policy pages."""
+    legal_path = os.path.join(STATIC_DIR, "legal.html")
+    if os.path.exists(legal_path):
+        return FileResponse(legal_path, media_type="text/html")
+    return FileResponse(os.path.join(STATIC_DIR, "index.html"), media_type="text/html")
+
 @app.get("/api/funnel/config")
 async def get_funnel_config():
     """Returns gateway configuration status."""
