@@ -240,7 +240,9 @@ async def get_private_consultant_studio():
     return FileResponse(os.path.join(STATIC_DIR, "index.html"), media_type="text/html")
 
 @app.get("/sample-report")
+@app.head("/sample-report")
 @app.get("/sample-report/{lang}")
+@app.head("/sample-report/{lang}")
 async def get_sample_report(lang: str = "en"):
     """Serves sample 4-page Vedic Numerology reports for preview (with auto-generation fallback)."""
     lang_clean = (lang or "en").lower().strip()
