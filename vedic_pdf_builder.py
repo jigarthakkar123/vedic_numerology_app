@@ -71,13 +71,28 @@ def build_report_html(data: Dict[str, Any]) -> str:
     elif lang == "gu":
         font_family = "'Plus Jakarta Sans', 'Shruti', 'Noto Sans Gujarati', -apple-system, sans-serif"
 
-    # Vedic Grid Cells HTML (3x3)
-    grid_html = ""
-    for cell in grid["cells"]:
+    # 1. Dual Vedic Grids HTML
+    natal_grid = data.get("natal_grid", grid)
+    dasha_grid = data.get("dasha_grid", {})
+    three_tier = data.get("three_tier_forecast", {})
+
+    # Natal Grid Cells HTML (3x3)
+    natal_grid_html = ""
+    for cell in natal_grid["cells"]:
         if cell["count"] > 0:
-            grid_html += f'<div class="vedic-cell active">{cell["str"]}</div>\n'
+            natal_grid_html += f'<div class="vedic-cell natal-cell active">{cell["str"]}</div>\n'
         else:
-            grid_html += f'<div class="vedic-cell empty">-</div>\n'
+            natal_grid_html += f'<div class="vedic-cell natal-cell empty">-</div>\n'
+
+    # Dasha Grid Cells HTML (3x3) with multi-color chips
+    dasha_grid_html = ""
+    for cell in dasha_grid.get("cells", natal_grid["cells"]):
+        items = cell.get("items", [])
+        if items:
+            chips_html = "".join([f'<span class="chip chip-{it["source"]}">{it["val"]}</span>' for it in items])
+            dasha_grid_html += f'<div class="vedic-cell dasha-cell active">{chips_html}</div>\n'
+        else:
+            dasha_grid_html += f'<div class="vedic-cell dasha-cell empty">-</div>\n'
 
     # Moolank Qualities List HTML
     m_qual_html = "".join([f'<li class="quality-item-single">{q}</li>\n' for q in m_qualities])
@@ -91,7 +106,29 @@ def build_report_html(data: Dict[str, Any]) -> str:
     # Bhagyank Precautions Grid HTML
     b_prec_html = "".join([f'<li>{p}</li>\n' for p in b_precautions])
 
-    # Yogas Cards HTML
+    # 3-Tier Forecast HTML for Page 2
+    md_data = three_tier.get("mahadasha", {})
+    ad_data = three_tier.get("antardasha", {})
+    pd_data = three_tier.get("pratyantar_dasha", {})
+    roadmap_data = three_tier.get("pd_roadmap", [])
+
+    # Road map table rows
+    roadmap_rows_html = ""
+    for r in roadmap_data:
+        active_cls = "active-phase" if r.get("is_active") else ""
+        badge_txt = "★ ACTIVE" if r.get("is_active") else r.get("tone", "")
+        roadmap_rows_html += f"""
+        <tr class="{active_cls}">
+            <td style="font-weight:700;">Phase {r['phase']} ({r['planet']})</td>
+            <td style="text-align:center;"><strong>No. {r['number']}</strong></td>
+            <td style="text-align:center;">{r['duration_days']} Days</td>
+            <td style="text-align:center;">{r['start_str']}</td>
+            <td style="text-align:center;">{r['end_str']}</td>
+            <td style="text-align:center;"><span class="status-chip {'active' if r.get('is_active') else ''}">{badge_txt}</span></td>
+        </tr>
+        """
+
+    # Yogas Cards HTML (Page 3)
     yogas_html = ""
     for y in yogas[:4]:
         yogas_html += f"""
@@ -106,7 +143,7 @@ def build_report_html(data: Dict[str, Any]) -> str:
         </div>
         """
 
-    # Vibration badges on Page 2
+    # Vibration badges on Page 3
     vibe_badges_html = ""
     for v in vibrations:
         badge_cls = "badge-pos" if v["type"] == "+" else "badge-neg"
@@ -120,7 +157,7 @@ def build_report_html(data: Dict[str, Any]) -> str:
         </div>
         """
 
-    # Predictions Cards HTML (Page 3)
+    # Predictions Cards HTML (Page 4)
     pred_categories = ["finance", "property", "vehicle", "education", "travel", "litigation", "relationship", "health"]
     preds_html = ""
     for cat in pred_categories:
@@ -135,6 +172,9 @@ def build_report_html(data: Dict[str, Any]) -> str:
                 <div class="pred-body">{p_data['desc']}</div>
             </div>
             """
+
+    pd_dos_html = "".join([f"<li>{d}</li>" for d in pd_data.get("dos", [])])
+    pd_donts_html = "".join([f"<li>{d}</li>" for d in pd_data.get("donts", [])])
 
     # Remedies Cards HTML (Page 4)
     remedy_items = [
@@ -374,50 +414,117 @@ body {{
     color: #b45309;
 }}
 
-/* 3x3 Vedic Grid */
-.vedic-grid-wrapper {{
+/* Dual Vedic Grids Layout */
+.dual-grids-row {{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 6px;
+}}
+.grid-box-card {{
+    background: #fdfbf7;
+    border: 1.2px solid #d4af37;
+    border-radius: 5px;
+    padding: 5px 6px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }}
+.grid-box-card.dasha {{
+    border-color: #38bdf8;
+    background: #f0f9ff;
+}}
 .grid-caption {{
     font-size: 8px;
-    font-weight: 700;
+    font-weight: 800;
     color: #854d0e;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
     margin-bottom: 2px;
+    text-align: center;
+}}
+.grid-caption.dasha {{
+    color: #0369a1;
+}}
+.grid-subtext {{
+    font-size: 6.8px;
+    color: #64748b;
+    margin-bottom: 3px;
+    text-align: center;
 }}
 .vedic-grid {{
     display: grid;
-    grid-template-columns: repeat(3, 38px);
-    grid-template-rows: repeat(3, 30px);
+    grid-template-columns: repeat(3, 40px);
+    grid-template-rows: repeat(3, 26px);
     gap: 2px;
     background: #b38728;
-    padding: 2.5px;
+    padding: 2px;
     border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(179, 135, 40, 0.2);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}}
+.vedic-grid.dasha {{
+    background: #0284c7;
 }}
 .vedic-cell {{
     background: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 11.5px;
+    border-radius: 2px;
+    font-size: 11px;
     font-weight: 700;
     color: #0f172a;
-    border-radius: 2px;
+    overflow: hidden;
 }}
-.vedic-cell.active {{
+.vedic-cell.natal-cell.active {{
     background: #fef3c7;
     color: #92400e;
-    font-size: 12.5px;
+    font-size: 11.5px;
     font-weight: 800;
+}}
+.vedic-cell.dasha-cell {{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    flex-wrap: wrap;
+    padding: 1px;
 }}
 .vedic-cell.empty {{
     color: #cbd5e1;
-    font-size: 9px;
+    font-size: 8.5px;
 }}
+.chip {{
+    font-size: 8.5px;
+    font-weight: 800;
+    padding: 1px 3px;
+    border-radius: 3px;
+    line-height: 1;
+    border: 1px solid transparent;
+}}
+.chip-natal {{ background: #fef3c7; color: #854d0e; border-color: #fde047; }}
+.chip-md {{ background: #e0f2fe; color: #0284c7; border-color: #38bdf8; }}
+.chip-ad {{ background: #dcfce7; color: #15803d; border-color: #22c55e; }}
+.chip-pd {{ background: #ffedd5; color: #c2410c; border-color: #fb923c; }}
+
+.grid-legend-bar {{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 2.5px 8px;
+    margin-bottom: 6px;
+    font-size: 7.2px;
+    font-weight: 700;
+}}
+.legend-pill {{ display: inline-flex; align-items: center; gap: 3px; }}
+.legend-dot {{ width: 6px; height: 6px; border-radius: 50%; display: inline-block; }}
+.dot-natal {{ background: #d4af37; }}
+.dot-md {{ background: #38bdf8; }}
+.dot-ad {{ background: #22c55e; }}
+.dot-pd {{ background: #fb923c; }}
 
 /* Planetary Friendship Compass Box */
 .compass-box {{
@@ -577,6 +684,124 @@ body {{
     color: #475569;
 }}
 
+/* 3-Tier Period Forecast Cards */
+.tier-card {{
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    padding: 6px 9px;
+    margin-bottom: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}}
+.tier-card.tier-md {{ border-left: 3.5px solid #0284c7; }}
+.tier-card.tier-ad {{ border-left: 3.5px solid #16a34a; }}
+.tier-card.tier-pd {{ border-left: 3.5px solid #ea580c; }}
+
+.tier-header-bar {{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3px;
+    border-bottom: 1px dashed #e2e8f0;
+    padding-bottom: 2.5px;
+}}
+.tier-badge {{
+    font-size: 7.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 1.5px 5px;
+    border-radius: 3px;
+    letter-spacing: 0.3px;
+}}
+.badge-md {{ background: #e0f2fe; color: #0284c7; border: 1px solid #7dd3fc; }}
+.badge-ad {{ background: #dcfce7; color: #16a34a; border: 1px solid #86efac; }}
+.badge-pd {{ background: #ffedd5; color: #ea580c; border: 1px solid #fdba74; }}
+
+.tier-title-main {{ font-size: 9.5px; font-weight: 800; color: #0f172a; }}
+.tier-date-span {{ font-size: 7.5px; font-weight: 700; color: #475569; }}
+
+.tier-text-content {{ font-size: 8.5px; color: #1e293b; line-height: 1.35; margin-bottom: 2.5px; }}
+.tier-note-bar {{ font-size: 7.8px; color: #0369a1; background: #f0f9ff; padding: 2px 5px; border-radius: 3px; margin-top: 2px; }}
+.tier-subgrid {{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    margin-top: 3px;
+    font-size: 8px;
+    color: #334155;
+}}
+.tier-dos-donts-grid {{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: 3px;
+}}
+.do-box {{
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 4px;
+    padding: 3.5px 6px;
+    font-size: 7.8px;
+}}
+.dont-box {{
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 4px;
+    padding: 3.5px 6px;
+    font-size: 7.8px;
+}}
+.do-title {{ font-weight: 800; color: #166534; font-size: 8px; margin-bottom: 2px; }}
+.dont-title {{ font-weight: 800; color: #991b1b; font-size: 8px; margin-bottom: 2px; }}
+.do-box ul, .dont-box ul {{ list-style: none; padding-left: 0; }}
+.do-box li {{ padding-left: 8px; position: relative; margin-bottom: 1.5px; line-height: 1.25; }}
+.do-box li::before {{ content: "✔"; position: absolute; left: 0; font-size: 7px; color: #16a34a; }}
+.dont-box li {{ padding-left: 8px; position: relative; margin-bottom: 1.5px; line-height: 1.25; }}
+.dont-box li::before {{ content: "✖"; position: absolute; left: 0; font-size: 7px; color: #dc2626; }}
+
+/* Roadmap Calendar Table */
+.roadmap-table-wrap {{
+    margin-top: 5px;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    overflow: hidden;
+}}
+.roadmap-table {{
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 7.5px;
+}}
+.roadmap-table th {{
+    background: #f8fafc;
+    color: #475569;
+    font-weight: 800;
+    padding: 3px 5px;
+    border-bottom: 1px solid #e2e8f0;
+    text-transform: uppercase;
+}}
+.roadmap-table td {{
+    padding: 2.5px 5px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #1e293b;
+}}
+.roadmap-table tr.active-phase {{
+    background: #fffbeb;
+    font-weight: 700;
+}}
+.roadmap-table tr.active-phase td {{
+    color: #854d0e;
+    border-bottom: 1px solid #fef08a;
+}}
+.status-chip {{
+    font-size: 6.8px;
+    font-weight: 800;
+    padding: 1px 4px;
+    border-radius: 2px;
+    display: inline-block;
+    background: #f1f5f9;
+    color: #475569;
+}}
+.status-chip.active {{ background: #fef08a; color: #854d0e; border: 1px solid #facc15; }}
+
 /* Yogas Quad Grid */
 .yogas-quad-grid {{
     display: grid;
@@ -667,60 +892,60 @@ body {{
 .preds-grid {{
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 6.5px;
-    margin-bottom: 7px;
+    gap: 4.5px 6px;
+    margin-bottom: 6px;
 }}
 .pred-card {{
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 5px;
-    padding: 6.5px 9px;
+    border-radius: 4px;
+    padding: 4px 7px;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 1.5px;
 }}
 .pred-header {{
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 3px;
     border-bottom: 1px solid #f1f5f9;
-    padding-bottom: 2px;
+    padding-bottom: 1.5px;
 }}
 .pred-icon {{
     color: #d4af37;
-    font-size: 8.5px;
+    font-size: 8px;
 }}
 .pred-title {{
-    font-size: 9.6px;
+    font-size: 9px;
     font-weight: 700;
     color: #0f172a;
 }}
 .pred-body {{
-    font-size: 8.9px;
+    font-size: 8.2px;
     color: #334155;
-    line-height: 1.33;
+    line-height: 1.28;
 }}
 
-/* Remedies Sequence */
+/* Remedies 2-Column Grid */
 .remedies-sequence {{
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-bottom: 7px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 6px;
+    margin-bottom: 5px;
 }}
 .remedy-card-seq {{
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 5px;
-    padding: 5.5px 9px;
+    border-radius: 4px;
+    padding: 3.5px 6px;
     display: flex;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
 }}
 .remedy-num-seq {{
-    width: 20px;
-    height: 20px;
-    min-width: 20px;
+    width: 17px;
+    height: 17px;
+    min-width: 17px;
     border-radius: 50%;
     background: #fef3c7;
     color: #92400e;
@@ -728,21 +953,24 @@ body {{
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 9.5px;
+    font-size: 8.5px;
     font-weight: 800;
 }}
 .remedy-content-seq {{
     flex: 1;
 }}
 .remedy-label-seq {{
-    font-size: 8.5px;
+    font-size: 7.8px;
     font-weight: 700;
     color: #854d0e;
     text-transform: uppercase;
     margin-bottom: 1px;
 }}
 .remedy-text-seq {{
-    font-size: 9px;
+    font-size: 8.2px;
+    color: #334155;
+    line-height: 1.25;
+}}
     color: #334155;
     line-height: 1.33;
 }}
@@ -844,7 +1072,7 @@ body {{
 </head>
 <body>
 
-<!-- ==================== PAGE 1: CLIENT DETAILS & MOOLANK PROFILE ==================== -->
+<!-- ==================== PAGE 1: CLIENT DETAILS & DUAL VEDIC GRIDS ==================== -->
 <div class="page">
     <div class="page-border"></div>
     <div class="page-border-inner"></div>
@@ -862,42 +1090,59 @@ body {{
                 <div class="sub-title">Prepared by: <strong>{consultant['name']}</strong> ({consultant['title']}) • 📞 {consultant['phone']} • ✉ {consultant['email']}</div>
             </div>
 
-            <!-- Profile Card -->
+            <!-- Profile Card with Dual Grids -->
             <div class="profile-card">
-                <div class="profile-grid-container">
-                    <div class="client-data-grid">
-                        <div class="data-pill">
-                            <div class="label">{ui['full_name']}</div>
-                            <div class="value">{client['name']}</div>
-                        </div>
-                        <div class="data-pill">
-                            <div class="label">{ui['dob']}</div>
-                            <div class="value">{client['dob']} ({client['weekday']})</div>
-                        </div>
-                        <div class="data-pill highlight">
-                            <div class="label">{ui['basic_number']}</div>
-                            <div class="value">{core['bn']} • {core['bn_planet']}</div>
-                        </div>
-                        <div class="data-pill highlight">
-                            <div class="label">{ui['destiny_number']}</div>
-                            <div class="value">{core['dn']} • {core['dn_planet']}</div>
-                        </div>
-                        <div class="data-pill">
-                            <div class="label">{ui['name_number']} (Namank)</div>
-                            <div class="value">{core.get('namank', 1)} • {core['bn_planet'].split()[0]}</div>
-                        </div>
-                        <div class="data-pill">
-                            <div class="label">{ui['dasha_timeline']}</div>
-                            <div class="value">MD: {dasha['active_md']['number']} | AD: {dasha['active_ad']['ad_number']} | PD: {dasha['active_pd']['number']}</div>
-                        </div>
+                <div class="client-data-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 5px;">
+                    <div class="data-pill">
+                        <div class="label">{ui['full_name']}</div>
+                        <div class="value">{client['name']}</div>
                     </div>
+                    <div class="data-pill">
+                        <div class="label">{ui['dob']}</div>
+                        <div class="value">{client['dob']} ({client['weekday']})</div>
+                    </div>
+                    <div class="data-pill">
+                        <div class="label">{ui['name_number']} (Namank)</div>
+                        <div class="value">{core.get('namank', 1)} • {core['bn_planet'].split()[0]}</div>
+                    </div>
+                    <div class="data-pill highlight">
+                        <div class="label">{ui['basic_number']}</div>
+                        <div class="value">{core['bn']} • {core['bn_planet']}</div>
+                    </div>
+                    <div class="data-pill highlight">
+                        <div class="label">{ui['destiny_number']}</div>
+                        <div class="value">{core['dn']} • {core['dn_planet']}</div>
+                    </div>
+                    <div class="data-pill">
+                        <div class="label">{ui['dasha_timeline']}</div>
+                        <div class="value">MD: {dasha['active_md']['number']} | AD: {dasha['active_ad']['ad_number']} | PD: {dasha['active_pd']['number']}</div>
+                    </div>
+                </div>
 
-                    <div class="vedic-grid-wrapper">
-                        <div class="grid-caption">{ui['vedic_grid_title']}</div>
+                <!-- Dual Grids Side-by-Side (Natal vs Dasha Activation) -->
+                <div class="dual-grids-row">
+                    <div class="grid-box-card">
+                        <div class="grid-caption">👑 {ui['natal_grid_title']}</div>
+                        <div class="grid-subtext">{ui['natal_grid_sub']}</div>
                         <div class="vedic-grid">
-                            {grid_html}
+                            {natal_grid_html}
                         </div>
                     </div>
+                    <div class="grid-box-card dasha">
+                        <div class="grid-caption dasha">🌌 {ui['dasha_grid_title']}</div>
+                        <div class="grid-subtext">{ui['dasha_grid_sub']}</div>
+                        <div class="vedic-grid dasha">
+                            {dasha_grid_html}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Color Legend Bar -->
+                <div class="grid-legend-bar">
+                    <span class="legend-pill"><span class="legend-dot dot-natal"></span> {ui['legend_natal']}</span>
+                    <span class="legend-pill"><span class="legend-dot dot-md"></span> {ui['legend_md']}</span>
+                    <span class="legend-pill"><span class="legend-dot dot-ad"></span> {ui['legend_ad']}</span>
+                    <span class="legend-pill"><span class="legend-dot dot-pd"></span> {ui['legend_pd']}</span>
                 </div>
             </div>
 
@@ -953,7 +1198,98 @@ body {{
     </div>
 </div>
 
-<!-- ==================== PAGE 2: BHAGYANK, DASHA & YOGAS ==================== -->
+<!-- ==================== PAGE 2: 3-TIER VEDIC PERIOD FORECAST & CALENDAR ROADMAP ==================== -->
+<div class="page">
+    <div class="page-border"></div>
+    <div class="page-border-inner"></div>
+    <div class="corner-ornament corner-tl"></div>
+    <div class="corner-ornament corner-tr"></div>
+    <div class="corner-ornament corner-bl"></div>
+    <div class="corner-ornament corner-br"></div>
+
+    <div class="page-content">
+        <div>
+            <div class="page-header-mini">
+                <div class="mini-title">{ui['tier_mahadasha_title']} • {ui['tier_antardasha_title']}</div>
+                <div class="consultant-tag">Consultant: {consultant['name']} | 📞 {consultant['phone']}</div>
+            </div>
+
+            <!-- Tier 1: Mahadasha (Macro Multi-Year Cycle) -->
+            <div class="section-title">🌌 {ui['tier_mahadasha_title']}</div>
+            <div class="tier-card tier-md">
+                <div class="tier-header-bar">
+                    <span class="tier-badge badge-md">Mahadasha {md_data.get('number')}</span>
+                    <span class="tier-title-main">{md_data.get('planet')} • {md_data.get('duration')}</span>
+                    <span class="tier-date-span">Active: {md_data.get('start_str')} — {md_data.get('end_str')}</span>
+                </div>
+                <div class="tier-text-content">{md_data.get('description', '')}</div>
+                <div class="tier-note-bar"><strong>💰 {ui['pred_finance']}:</strong> {md_data.get('rule_note', '')}</div>
+            </div>
+
+            <!-- Tier 2: Antardasha (Annual 1-Year Forecast) -->
+            <div class="section-title">📅 {ui['tier_antardasha_title']}</div>
+            <div class="tier-card tier-ad">
+                <div class="tier-header-bar">
+                    <span class="tier-badge badge-ad">Antardasha {ad_data.get('number')}</span>
+                    <span class="tier-title-main">{ad_data.get('planet')} • Annual Cycle</span>
+                    <span class="tier-date-span">Active: {ad_data.get('start_str')} — {ad_data.get('end_str')}</span>
+                </div>
+                <div class="tier-text-content">{ad_data.get('annual_theme', '')}</div>
+                <div class="tier-subgrid">
+                    <div><strong>✈ {ui['pred_travel']}:</strong> {ad_data.get('travel_forecast', '')}</div>
+                    <div><strong>🏢 {ui['pred_property']}:</strong> {ad_data.get('asset_forecast', '')}</div>
+                </div>
+            </div>
+
+            <!-- Tier 3: Pratyantar Dasha (Active Monthly Sub-Phase) -->
+            <div class="section-title">🌙 {ui['tier_pratyantar_title']}</div>
+            <div class="tier-card tier-pd">
+                <div class="tier-header-bar">
+                    <span class="tier-badge badge-pd">Pratyantar {pd_data.get('number')}</span>
+                    <span class="tier-title-main">{pd_data.get('planet')} • Active {pd_data.get('duration_days')} Days</span>
+                    <span class="tier-date-span">Active Window: {pd_data.get('start_str')} — {pd_data.get('end_str')}</span>
+                </div>
+                <div class="tier-dos-donts-grid">
+                    <div class="do-box">
+                        <div class="do-title">✔ {ui['monthly_dos']}:</div>
+                        <ul>{pd_dos_html}</ul>
+                    </div>
+                    <div class="dont-box">
+                        <div class="dont-title">⚠ {ui['monthly_donts']}:</div>
+                        <ul>{pd_donts_html}</ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Annual 9-Phase Roadmap Table -->
+            <div class="section-title">📅 {ui['pd_roadmap_title']}</div>
+            <div class="roadmap-table-wrap">
+                <table class="roadmap-table">
+                    <thead>
+                        <tr>
+                            <th>Phase / Planet</th>
+                            <th style="text-align:center;">No.</th>
+                            <th style="text-align:center;">Days</th>
+                            <th style="text-align:center;">Start Date</th>
+                            <th style="text-align:center;">End Date</th>
+                            <th style="text-align:center;">Tone / Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {roadmap_rows_html}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="page-footer">
+            <span class="footer-stamp">CONSULTATION BY JIGAR THAKKAR (📞 +91 9377614772) • {client['name'].upper()}</span>
+            <span>{ui['page']} 2 {ui['of']} 4</span>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== PAGE 3: BHAGYANK, YOGAS & PLANETARY VIBRATIONS ==================== -->
 <div class="page">
     <div class="page-border"></div>
     <div class="page-border-inner"></div>
@@ -967,25 +1303,6 @@ body {{
             <div class="page-header-mini">
                 <div class="mini-title">{ui['bhagyank_qualities']} • {ui['active_yogas']}</div>
                 <div class="consultant-tag">Consultant: {consultant['name']} | 📞 {consultant['phone']}</div>
-            </div>
-
-            <!-- Dasha Timeline Bar -->
-            <div class="dasha-summary-bar">
-                <div class="dasha-box">
-                    <div class="d-label">{ui['mahadasha']}</div>
-                    <div class="d-val">No. {dasha['active_md']['number']}</div>
-                    <div class="d-span">{dasha['active_md']['start_str']} - {dasha['active_md']['end_str']}</div>
-                </div>
-                <div class="dasha-box">
-                    <div class="d-label">{ui['antardasha']}</div>
-                    <div class="d-val">No. {dasha['active_ad']['ad_number']}</div>
-                    <div class="d-span">{dasha['active_ad']['start_str']} - {dasha['active_ad']['end_str']}</div>
-                </div>
-                <div class="dasha-box">
-                    <div class="d-label">{ui['pratyantar_dasha']}</div>
-                    <div class="d-val">No. {dasha['active_pd']['number']}</div>
-                    <div class="d-span">{dasha['active_pd']['start_str']} - {dasha['active_pd']['end_str']}</div>
-                </div>
             </div>
 
             <!-- Bhagyank Qualities -->
@@ -1017,40 +1334,12 @@ body {{
 
         <div class="page-footer">
             <span class="footer-stamp">CONSULTATION BY JIGAR THAKKAR (📞 +91 9377614772) • {client['name'].upper()}</span>
-            <span>{ui['page']} 2 {ui['of']} 4</span>
-        </div>
-    </div>
-</div>
-
-<!-- ==================== PAGE 3: COMPREHENSIVE LIFE PREDICTIONS ==================== -->
-<div class="page">
-    <div class="page-border"></div>
-    <div class="page-border-inner"></div>
-    <div class="corner-ornament corner-tl"></div>
-    <div class="corner-ornament corner-tr"></div>
-    <div class="corner-ornament corner-bl"></div>
-    <div class="corner-ornament corner-br"></div>
-
-    <div class="page-content">
-        <div>
-            <div class="page-header-mini">
-                <div class="mini-title">{ui['predictions_title']}</div>
-                <div class="consultant-tag">Consultant: {consultant['name']} | 📞 {consultant['phone']}</div>
-            </div>
-
-            <div class="preds-grid">
-                {preds_html}
-            </div>
-        </div>
-
-        <div class="page-footer">
-            <span class="footer-stamp">CONSULTATION BY JIGAR THAKKAR (📞 +91 9377614772) • {client['name'].upper()}</span>
             <span>{ui['page']} 3 {ui['of']} 4</span>
         </div>
     </div>
 </div>
 
-<!-- ==================== PAGE 4: REMEDIAL MEASURES & CERTIFICATION ==================== -->
+<!-- ==================== PAGE 4: PREDICTIONS, REMEDIES & CERTIFICATION ==================== -->
 <div class="page">
     <div class="page-border"></div>
     <div class="page-border-inner"></div>
@@ -1062,8 +1351,13 @@ body {{
     <div class="page-content">
         <div>
             <div class="page-header-mini">
-                <div class="mini-title">{ui['remedies_title']}</div>
+                <div class="mini-title">{ui['predictions_title']} • {ui['remedies_title']}</div>
                 <div class="consultant-tag">Consultant: {consultant['name']} | 📞 {consultant['phone']}</div>
+            </div>
+
+            <div class="section-title">{ui['predictions_title']}</div>
+            <div class="preds-grid">
+                {preds_html}
             </div>
 
             <div class="section-title">{ui['remedies_title']}</div>
@@ -1082,7 +1376,7 @@ body {{
                         <span>📞 {ui['phone_label']}: {consultant['phone']}</span>
                         <span>✉ {ui['email_label']}: {consultant['email']}</span>
                     </div>
-                    <div style="font-size:7.5px;color:#94a3b8;margin-top:4px;">{consultant['copyright']}</div>
+                    <div style="font-size:7.5px;color:#94a3b8;margin-top:3px;">{consultant['copyright']}</div>
                 </div>
                 <div class="cert-seal-deluxe">
                     <span>VEDIC</span>

@@ -236,37 +236,71 @@
                             </div>
                         </div>
 
-                        <div class="grid-section-layout">
-                            <!-- 3x3 Grid Visual Column -->
-                            <div class="grid-visual-col">
-                                <div class="vedic-grid-card">
-                                    <div class="grid-card-title">3x3 Vedic Birth Grid (Natal Kundali)</div>
-                                    <div class="vedic-3x3-container">
+                        <div class="grid-section-layout-dual">
+                            <!-- Dual Grids Side-by-Side: Natal Grid & Dasha Transit Grid -->
+                            <div class="dual-grids-web-row">
+                                <!-- Natal Birth Grid Card -->
+                                <div class="web-grid-card natal-grid-card">
+                                    <div class="web-grid-hdr">
+                                        <span class="grid-hdr-icon">👑</span>
+                                        <div>
+                                            <div class="grid-card-title" id="web-natal-grid-title">Natal Birth Grid (मूल जन्म चक्र)</div>
+                                            <div class="grid-card-sub" id="web-natal-grid-sub">Lifetime Inborn Vibrational Matrix</div>
+                                        </div>
+                                    </div>
+                                    <div class="vedic-3x3-container natal" id="natal-grid-container">
                                         <div class="v-cell" id="gc-3"><span class="c-num">3</span><span class="c-val">-</span></div>
-                                        <div class="v-cell" id="gc-1"><span class="c-num">1</span><span class="c-val">11</span></div>
+                                        <div class="v-cell" id="gc-1"><span class="c-num">1</span><span class="c-val">-</span></div>
                                         <div class="v-cell" id="gc-9"><span class="c-num">9</span><span class="c-val">-</span></div>
                                         <div class="v-cell" id="gc-6"><span class="c-num">6</span><span class="c-val">-</span></div>
                                         <div class="v-cell" id="gc-7"><span class="c-num">7</span><span class="c-val">-</span></div>
                                         <div class="v-cell" id="gc-5"><span class="c-num">5</span><span class="c-val">-</span></div>
-                                        <div class="v-cell" id="gc-2"><span class="c-num">2</span><span class="c-val">2</span></div>
-                                        <div class="v-cell" id="gc-8"><span class="c-num">8</span><span class="c-val">88</span></div>
-                                        <div class="v-cell" id="gc-4"><span class="c-num">4</span><span class="c-val">4</span></div>
-                                    </div>
-                                    <div class="grid-legend">
-                                        <span class="legend-item"><span class="legend-dot active"></span> Active Digits</span>
-                                        <span class="legend-item"><span class="legend-dot empty"></span> Absent</span>
+                                        <div class="v-cell" id="gc-2"><span class="c-num">2</span><span class="c-val">-</span></div>
+                                        <div class="v-cell" id="gc-8"><span class="c-num">8</span><span class="c-val">-</span></div>
+                                        <div class="v-cell" id="gc-4"><span class="c-num">4</span><span class="c-val">-</span></div>
                                     </div>
                                 </div>
 
-                                <div class="charms-badge-group">
-                                    <div class="charm-badge"><strong>Lucky Days:</strong> <span id="charm-days">Saturday, Sunday</span></div>
-                                    <div class="charm-badge"><strong>Lucky Numbers:</strong> <span id="charm-nums">4, 5, 6, 8</span></div>
-                                    <div class="charm-badge"><strong>Auspicious Colors:</strong> <span id="charm-colors">Electric Blue, Grey</span></div>
+                                <!-- Dasha & Transit Infusion Grid Card -->
+                                <div class="web-grid-card dasha-grid-card">
+                                    <div class="web-grid-hdr">
+                                        <span class="grid-hdr-icon">🌌</span>
+                                        <div>
+                                            <div class="grid-card-title dasha" id="web-dasha-grid-title">Dasha & Transit Grid (दशा एवं गोचर चक्र)</div>
+                                            <div class="grid-card-sub" id="web-dasha-grid-sub">Infusion of Active MD • AD • PD Vibrations</div>
+                                        </div>
+                                    </div>
+                                    <div class="vedic-3x3-container dasha" id="dasha-grid-container">
+                                        <div class="v-cell v-cell-dasha" id="gdc-3"><span class="c-num">3</span><div class="chips-wrap">-</div></div>
+                                        <div class="v-cell v-cell-dasha" id="gdc-1"><span class="c-num">1</span><div class="chips-wrap">-</div></div>
+                                        <div class="v-cell v-cell-dasha" id="gdc-9"><span class="c-num">9</span><div class="chips-wrap">-</div></div>
+                                        <div class="v-cell v-cell-dasha" id="gdc-6"><span class="c-num">6</span><div class="chips-wrap">-</div></div>
+                                        <div class="v-cell v-cell-dasha" id="gdc-7"><span class="c-num">7</span><div class="chips-wrap">-</div></div>
+                                        <div class="v-cell v-cell-dasha" id="gdc-5"><span class="c-num">5</span><div class="chips-wrap">-</div></div>
+                                        <div class="v-cell v-cell-dasha" id="gdc-2"><span class="c-num">2</span><div class="chips-wrap">-</div></div>
+                                        <div class="v-cell v-cell-dasha" id="gdc-8"><span class="c-num">8</span><div class="chips-wrap">-</div></div>
+                                        <div class="v-cell v-cell-dasha" id="gdc-4"><span class="c-num">4</span><div class="chips-wrap">-</div></div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- Vibrations Breakdown Column -->
-                            <div class="grid-details-col">
+                            <!-- 4-Color Legend Bar -->
+                            <div class="color-legend-web-bar" id="web-color-legend">
+                                <span class="c-leg-pill"><span class="c-dot dot-natal"></span> <span id="leg-natal">Natal Inborn (मूल जन्म चक्र)</span></span>
+                                <span class="c-leg-pill"><span class="c-dot dot-md"></span> <span id="leg-md">Mahadasha (दीर्घकालिक चक्र)</span></span>
+                                <span class="c-leg-pill"><span class="c-dot dot-ad"></span> <span id="leg-ad">Antardasha (वार्षिक चक्र)</span></span>
+                                <span class="c-leg-pill"><span class="c-dot dot-pd"></span> <span id="leg-pd">Pratyantar (मासिक चक्र)</span></span>
+                            </div>
+
+                            <!-- Charms Badges Bar -->
+                            <div class="charms-badge-row">
+                                <div class="charm-badge"><strong>Lucky Days:</strong> <span id="charm-days">Saturday, Sunday</span></div>
+                                <div class="charm-badge"><strong>Lucky Numbers:</strong> <span id="charm-nums">4, 5, 6, 8</span></div>
+                                <div class="charm-badge"><strong>Auspicious Colors:</strong> <span id="charm-colors">Electric Blue, Grey</span></div>
+                            </div>
+
+                            <!-- Vibrations Breakdown Section -->
+                            <div class="grid-details-col mt-4">
                                 <h3 class="section-heading">Planetary Vibrations Breakdown (+ / -)</h3>
                                 <div id="vibrations-list" class="vibrations-container">
                                     <!-- Dynamic Vibrations injected here -->
@@ -287,23 +321,23 @@
                         </div>
                     </div>
 
-                    <!-- Tab 2: Dasha Timeline -->
+                    <!-- Tab 2: Dasha Timeline & 3-Tier Horizon Predictions -->
                     <div id="tab-dasha" class="tab-content">
                         <h3 class="section-heading">Active Planetary Periods (MD • AD • PD)</h3>
                         <div class="dasha-active-cards">
-                            <div class="dasha-card highlight">
+                            <div class="dasha-card highlight card-md">
                                 <div class="d-tag">CURRENT MAHADASHA (MD)</div>
                                 <div class="d-num" id="dasha-md-num">Mahadasha 3</div>
                                 <div class="d-planet" id="dasha-md-planet">Jupiter (गुरु)</div>
                                 <div class="d-dates" id="dasha-md-dates">04/11/2024 to 04/11/2027</div>
                             </div>
-                            <div class="dasha-card highlight">
+                            <div class="dasha-card highlight card-ad">
                                 <div class="d-tag">CURRENT ANTARDASHA (AD)</div>
                                 <div class="d-num" id="dasha-ad-num">Antardasha 1</div>
                                 <div class="d-planet" id="dasha-ad-planet">Sun (सूर्य)</div>
                                 <div class="d-dates" id="dasha-ad-dates">04/11/2026 to 04/11/2027</div>
                             </div>
-                            <div class="dasha-card highlight">
+                            <div class="dasha-card highlight card-pd">
                                 <div class="d-tag">CURRENT PRATYANTAR DASHA (PD)</div>
                                 <div class="d-num" id="dasha-pd-num">Pratyantar Dasha 2</div>
                                 <div class="d-planet" id="dasha-pd-planet">Moon (चंद्र)</div>
@@ -311,6 +345,109 @@
                             </div>
                         </div>
 
+                        <!-- 3-Tier Horizon Precision Predictions -->
+                        <h3 class="section-heading mt-4">3-Tier Precision Predictions (Macro • Annual • Monthly)</h3>
+                        <div class="three-tier-display-stack">
+                            <!-- Tier 1: Mahadasha Macro Forecast -->
+                            <div class="tier-card-web tier-web-md">
+                                <div class="tier-card-web-hdr">
+                                    <div class="tier-hdr-title">
+                                        <span class="tier-badge-pill md-pill">Tier 1 • Macro Cycle</span>
+                                        <h4 id="tier-md-title">🌌 Mahadasha (दीर्घकालिक चक्र)</h4>
+                                    </div>
+                                    <div class="tier-hdr-dates" id="tier-md-dates">2024 - 2027 (3 Years)</div>
+                                </div>
+                                <div class="tier-card-web-body">
+                                    <div class="tier-tone-bar" id="tier-md-tone-bar">
+                                        <strong>Financial & Status Trajectory:</strong> <span id="tier-md-tone" class="tone-badge">Expansive (+)</span>
+                                    </div>
+                                    <div class="tier-web-desc" id="tier-md-desc">
+                                        Loading Mahadasha life cycle forecast...
+                                    </div>
+                                    <div class="tier-web-rule" id="tier-md-rule">
+                                        <strong>Vedic Principle:</strong> Activations of beneficial numbers (+3, +5, +6, +8) produce rapid asset and status accumulation.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tier 2: Antardasha Annual Forecast -->
+                            <div class="tier-card-web tier-web-ad">
+                                <div class="tier-card-web-hdr">
+                                    <div class="tier-hdr-title">
+                                        <span class="tier-badge-pill ad-pill">Tier 2 • Annual Forecast</span>
+                                        <h4 id="tier-ad-title">📅 Antardasha (वार्षिक अंतर्दशा फलकथन)</h4>
+                                    </div>
+                                    <div class="tier-hdr-dates" id="tier-ad-dates">Birthday to Birthday (1 Year)</div>
+                                </div>
+                                <div class="tier-card-web-body">
+                                    <div class="tier-web-desc" id="tier-ad-theme">
+                                        Loading annual theme forecast...
+                                    </div>
+                                    <div class="tier-sub-indicators-grid">
+                                        <div class="sub-ind-box">
+                                            <span class="ind-icon">✈</span>
+                                            <div>
+                                                <div class="ind-label">Travel & Movement</div>
+                                                <div class="ind-val" id="tier-ad-travel">High probability of journeys</div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-ind-box">
+                                            <span class="ind-icon">🏠</span>
+                                            <div>
+                                                <div class="ind-label">Property & Assets</div>
+                                                <div class="ind-val" id="tier-ad-assets">Favorable asset timing</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tier 3: Pratyantar Dasha Monthly Forecast -->
+                            <div class="tier-card-web tier-web-pd">
+                                <div class="tier-card-web-hdr">
+                                    <div class="tier-hdr-title">
+                                        <span class="tier-badge-pill pd-pill">Tier 3 • Monthly Forecast</span>
+                                        <h4 id="tier-pd-title">🌙 Pratyantar Dasha (मासिक प्रत्यंतर दशा फलकथन)</h4>
+                                    </div>
+                                    <div class="tier-hdr-dates" id="tier-pd-dates">Active Sub-Phase (Duration = Number × 8 Days)</div>
+                                </div>
+                                <div class="tier-card-web-body">
+                                    <div class="tier-dos-donts-web-grid">
+                                        <div class="web-do-box">
+                                            <div class="box-hdr-do">✔ Auspicious Actions (Do's)</div>
+                                            <ul id="tier-pd-dos" class="tier-list-do"></ul>
+                                        </div>
+                                        <div class="web-dont-box">
+                                            <div class="box-hdr-dont">✖ Strict Precautions (Don'ts)</div>
+                                            <ul id="tier-pd-donts" class="tier-list-dont"></ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 9-Phase Pratyantar Dasha Calendar Table -->
+                        <h3 class="section-heading mt-4" id="hdr-pd-roadmap">📅 Annual 9-Phase Pratyantar Dasha Calendar (360-Day Cyclic Roadmap)</h3>
+                        <div class="table-scroll-hint">👈 Swipe table horizontally to inspect all 9 monthly sub-phases 👉</div>
+                        <div class="table-responsive">
+                            <table class="dasha-table pd-roadmap-table">
+                                <thead>
+                                    <tr>
+                                        <th>Phase & Planet</th>
+                                        <th style="text-align:center;">Root No</th>
+                                        <th style="text-align:center;">Duration</th>
+                                        <th style="text-align:center;">Commencement</th>
+                                        <th style="text-align:center;">Completion</th>
+                                        <th style="text-align:center;">Tone / Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pd-roadmap-body">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- 45-Year Cyclic Mahadasha Table -->
                         <h3 class="section-heading mt-4">Lifetime Mahadasha Sequence (45-Year Cyclic Table)</h3>
                         <div class="table-scroll-hint">👈 Swipe table horizontally to view full dates 👉</div>
                         <div class="table-responsive">

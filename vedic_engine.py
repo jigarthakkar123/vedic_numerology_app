@@ -708,6 +708,405 @@ def generate_life_predictions(
     
     return preds
 
+def calculate_dasha_grid(
+    grid_info: Dict[str, Any], active_md: int, active_ad: int, active_pd: int, dn: int, lang: str = "en"
+) -> Dict[str, Any]:
+    """
+    Constructs the Dasha & Transit Activation Grid.
+    Combines Natal Birth numbers with current Active Mahadasha (MD), Antardasha (AD),
+    and Pratyantar Dasha (PD) numbers with distinct color coding:
+    - Natal Inborn: Sacred Gold (#d4af37)
+    - Mahadasha (Long-Term): Sky Blue (#38bdf8)
+    - Antardasha (Yearly): Emerald Green (#22c55e)
+    - Pratyantar Dasha (Monthly): Sunset Orange (#fb923c)
+    """
+    natal_counts = grid_info["counts"]
+    items_by_num = {i: [] for i in range(1, 10)}
+    
+    # Add Natal occurrences
+    for d in grid_info["digits"]:
+        items_by_num[d].append({
+            "val": d,
+            "source": "natal",
+            "source_code": "NAT",
+            "source_name": UI_TEXT[lang]["legend_natal"],
+            "color": "#d4af37" # Sacred Gold
+        })
+        
+    # Add Active Mahadasha (MD - Long Term)
+    if active_md and 1 <= active_md <= 9:
+        items_by_num[active_md].append({
+            "val": active_md,
+            "source": "md",
+            "source_code": "MD",
+            "source_name": UI_TEXT[lang]["legend_md"],
+            "color": "#38bdf8" # Sky Blue
+        })
+        
+    # Add Active Antardasha (AD - Yearly)
+    if active_ad and 1 <= active_ad <= 9:
+        items_by_num[active_ad].append({
+            "val": active_ad,
+            "source": "ad",
+            "source_code": "AD",
+            "source_name": UI_TEXT[lang]["legend_ad"],
+            "color": "#22c55e" # Emerald Green
+        })
+        
+    # Add Active Pratyantar Dasha (PD - Monthly)
+    if active_pd and 1 <= active_pd <= 9:
+        items_by_num[active_pd].append({
+            "val": active_pd,
+            "source": "pd",
+            "source_code": "PD",
+            "source_name": UI_TEXT[lang]["legend_pd"],
+            "color": "#fb923c" # Sunset Orange
+        })
+        
+    total_counts = {i: len(items_by_num[i]) for i in range(1, 10)}
+    period_vibrations = evaluate_vibrations(total_counts, dn)
+    
+    # 3x3 Vedic Grid Layout Order: 3, 1, 9, 6, 7, 5, 2, 8, 4
+    dasha_cells = []
+    for num in [3, 1, 9, 6, 7, 5, 2, 8, 4]:
+        natal_c = natal_counts.get(num, 0)
+        tot_c = total_counts[num]
+        items = items_by_num[num]
+        
+        has_md = any(it["source"] == "md" for it in items)
+        has_ad = any(it["source"] == "ad" for it in items)
+        has_pd = any(it["source"] == "pd" for it in items)
+        is_new = natal_c == 0 and tot_c > 0
+        is_amp = natal_c > 0 and tot_c > natal_c
+        
+        dasha_cells.append({
+            "num": num,
+            "natal_count": natal_c,
+            "total_count": tot_c,
+            "items": items,
+            "is_active": tot_c > 0,
+            "is_newly_activated": is_new,
+            "is_amplified": is_amp,
+            "has_md": has_md,
+            "has_ad": has_ad,
+            "has_pd": has_pd,
+            "natal_vibe": evaluate_vibrations(natal_counts, dn).get(num, "absent"),
+            "period_vibe": period_vibrations.get(num, "absent")
+        })
+        
+    return {
+        "cells": dasha_cells,
+        "total_counts": total_counts,
+        "items_by_num": items_by_num,
+        "period_vibrations": period_vibrations
+    }
+
+def generate_three_tier_predictions(
+    bn: int, dn: int, natal_grid: Dict[str, Any], dasha_grid: Dict[str, Any],
+    md_info: Dict[str, Any], ad_info: Dict[str, Any], pd_info: Dict[str, Any],
+    lang: str = "en"
+) -> Dict[str, Any]:
+    """
+    Generates 3-Tier Time Horizon Predictions:
+    1. Mahadasha: Long-term Macro Period (multi-year cycle)
+    2. Antardasha: Yearly Forecast (1-year cycle from birthday to birthday)
+    3. Pratyantar Dasha: Monthly Forecast (active sub-phase & 9-phase calendar roadmap)
+    """
+    active_md_num = md_info["active_md"]["number"]
+    active_md_planet = PLANET_INFO[active_md_num][lang]["planet"]
+    md_start_str = md_info["active_md"]["start_str"]
+    md_end_str = md_info["active_md"]["end_str"]
+    md_duration = md_info["active_md"]["duration"]
+    
+    active_ad_num = ad_info["ad_number"]
+    active_ad_planet = PLANET_INFO[active_ad_num][lang]["planet"]
+    ad_start_str = ad_info["start_str"]
+    ad_end_str = ad_info["end_str"]
+    
+    active_pd_num = pd_info["active_pd"]["number"]
+    active_pd_planet = PLANET_INFO[active_pd_num][lang]["planet"]
+    pd_start_str = pd_info["active_pd"]["start_str"]
+    pd_end_str = pd_info["active_pd"]["end_str"]
+    pd_days = pd_info["active_pd"]["duration_days"]
+    
+    natal_counts = natal_grid["counts"]
+    tot_counts = dasha_grid["total_counts"]
+    period_vibes = dasha_grid["period_vibrations"]
+    
+    # ---------------- 1. MAHADASHA (LONG-TERM MACRO CYCLE) ----------------
+    # Finance rule: +3, +6, +8, +5 activates -> very good for finance / growth; -4, -8, -9, -6, -1, -3 -> caution
+    is_md_fin_fav = active_md_num in [3, 5, 6, 8]
+    
+    md_descriptions = {
+        1: {
+            "en": f"You are traversing the 1-Year Mahadasha of Sun ({active_md_planet}). This is a golden macro period for career elevation, supreme executive authority, and founding new life milestones. Government relations, promotions, and public recognition are heavily favored. Maintain magnanimity and guard against ego clash.",
+            "hi": f"आप सूर्य ({active_md_planet}) की 1-वर्षीय महादशा से गुजर रहे हैं। यह उच्च प्रशासनिक प्रतिष्ठा, शासकीय लाभ और जीवन में नए कीर्तिमान स्थापित करने का स्वर्णिम काल है। पदोन्नति और सामाजिक सम्मान प्रबल रहेगा। अहंकार और क्रोध से बचें।",
+            "gu": f"આપ સૂર્ય ({active_md_planet}) ની 1-વર્ષીય મહાદશામાંથી પસાર થઈ રહ્યા છો. આ ઉચ્ચ વહીવટી પ્રતિષ્ઠા, સરકારી લાભ અને જીવનમાં નવી સિદ્ધિઓ હાંસલ કરવાનો સુવર્ણ કાળ છે. પદોન્નતિ અને સામાજિક સન્માન વધશે. અહંકાર ટાળવો."
+        },
+        2: {
+            "en": f"You are traversing the 2-Year Mahadasha of Moon ({active_md_planet}). This period emphasizes domestic peace, emotional partnerships, creative arts, and maternal blessings. Intuition and empathetic leadership flourish. Practice meditation and daily pranayama to maintain emotional stability.",
+            "hi": f"आप चंद्रमा ({active_md_planet}) की 2-वर्षीय महादशा में हैं। यह अवधि पारिवारिक सुख, दांपत्य सामंजस्य, कलात्मक सृजन और माता के आशीर्वाद की है। अंतःप्रेरणा बलवान रहेगी। मानसिक शांति और अनिद्रा से बचाव हेतु नियमित ध्यान आवश्यक है।",
+            "gu": f"આપ ચંદ્ર ({active_md_planet}) ની 2-વર્ષીય મહાદશામાં છો. આ સમયગાળો કૌટુંબિક સુખ, ભાગીદારી, કલા અને માતાના આશીર્વાદનો છે. મનોબળ સ્થિર રાખવા અને અનિદ્રા ટાળવા રોજેરોજ ધ્યાન અને પ્રાણાયામ કરવા."
+        },
+        3: {
+            "en": f"You are traversing the 3-Year Mahadasha of Jupiter ({active_md_planet}). An extraordinarily auspicious period for intellect, advisory roles, children's prosperity, and financial accumulation. Your counsel will be sought after, and ethical business ventures yield substantial long-term wealth.",
+            "hi": f"आप देवगुरु बृहस्पति ({active_md_planet}) की 3-वर्षीय महादशा में हैं। यह अवधि ज्ञान, विद्या, संतान सुख और उत्तम धन संचय के लिए अत्यंत फलदायी है। आपके परामर्श की समाज में मांग बढ़ेगी और नैतिक व्यापारिक उपक्रमों में दीर्घकालिक समृद्धि प्राप्त होगी।",
+            "gu": f"આપ દેવગુરુ બૃહસ્પતિ ({active_md_planet}) ની 3-વર્ષીય મહાદશામાં છો. આ સમય જ્ઞાન, શિક્ષણ, સંતાન સુખ અને અઢળક ધન સંચય માટે અતિ ઉત્તમ છે. સમાજમાં આપનું માન વધશે અને પ્રામાણિક વેપારમાં ભારે સફળતા મળશે."
+        },
+        4: {
+            "en": f"You are traversing the 4-Year Mahadasha of Rahu ({active_md_planet}). A period of dramatic shifts, out-of-the-box thinking, technological breakthroughs, and unconventional wealth avenues. Ensure all contracts are legally scrutinized; refrain from purchasing property exclusively in your own name.",
+            "hi": f"आप राहु ({active_md_planet}) की 4-वर्षीय महादशा में हैं। यह आकस्मिक परिवर्तनों, विदेशी संपर्कों, तकनीकी अनुसंधान और अपरंपरागत सफलता का काल है। कानूनी समझौतों में अत्यधिक सावधानी बरतें और संपत्ति केवल अपने अकेले नाम पर खरीदने से बचें।",
+            "gu": f"આપ રાહુ ({active_md_planet}) ની 4-વર્ષીય મહાદશામાં છો. આ અણધાર્યા ફેરફારો, વિદેશી સંપર્કો, ટેકનોલોજી અને વિશેષ આવકનો ગાળો છે. કાનૂની દસ્તાવેજોમાં ચકાસણી રાખવી અને મિલકત ફક્ત પોતાના એકલા નામે ન લેવી."
+        },
+        5: {
+            "en": f"You are traversing the 5-Year Mahadasha of Mercury ({active_md_planet}). A powerhouse phase for commercial trading, marketing, intellectual investments, and rapid financial liquidity. Communication and deal negotiations will run at peak agility. Cash flow remains abundant.",
+            "hi": f"आप बुध ({active_md_planet}) की 5-वर्षीय महादशा में हैं। यह व्यापारिक विस्तार, वित्तीय लेन-देन, बौद्धिक कार्य और प्रचुर धन लाभ का सर्वोच्च काल है। आपके निर्णय सटीक रहेंगे और वाक्पटुता से बड़े व्यापारिक अनुबंध सहज संपन्न होंगे।",
+            "gu": f"આપ બુધ ({active_md_planet}) ની 5-વર્ષીય મહાદશામાં છો. આ વેપાર-ધંધાનો વ્યાપ વધારવાનો, શેરબજાર/રોકાણ અને પ્રચુર નાણાકીય પ્રવાહનો સમય છે. આપની કુશાગ્ર બુદ્ધિથી અટકેલા નાણાં છૂટા થશે."
+        },
+        6: {
+            "en": f"You are traversing the 6-Year Mahadasha of Venus ({active_md_planet}). A splendid multi-year cycle of worldly luxuries, vehicles, marital bliss, artistic elegance, and aristocratic comforts. Business in lifestyle, hospitality, and luxury goods experiences exponential expansion.",
+            "hi": f"आप शुक्र ({active_md_planet}) की 6-वर्षीय महादशा में हैं। यह भौतिक सुख-सुविधाओं, वाहन क्रय, दांपत्य प्रेम और ऐश्वर्य का काल है। सौंदर्य, फैशन, कला और विलासिता से जुड़े कार्यों में अप्रत्याशित सफलता और मान-सम्मान मिलेगा।",
+            "gu": f"આપ શુક્ર ({active_md_planet}) ની 6-વર્ષીય મહાદશામાં છો. આ ભૌતિક સુખ-સગવડો, નવા વાહન, દાંપત્ય સુખ અને વૈભવી જીવનશૈલીનો સમય છે. કલા, ફેશન, આભૂષણો અને સુંદરતાના ક્ષેત્રમાં અપ્રતિમ લાભ થશે."
+        },
+        7: {
+            "en": f"You are traversing the 7-Year Mahadasha of Ketu ({active_md_planet}). A profound chapter for spiritual realization, research, philosophical mastery, and long-distance travel or foreign settlement. High intuition protects you from adversities. Practice selfless philanthropy.",
+            "hi": f"आप केतु ({active_md_planet}) की 7-वर्षीय महादशा में हैं। यह गहन आध्यात्मिक जागृति, शोध, गुप्त विद्याओं और विदेश गमन/स्थायी निवास का प्रमुख समय है। आपकी छठी इंद्री (सहज ज्ञान) अत्यंत तीव्र रहेगी जो हर संकट से रक्षा करेगी।",
+            "gu": f"આપ કેતુ ({active_md_planet}) ની 7-વર્ષીય મહાદશામાં છો. આ આધ્યાત્મિક સાધના, સંશોધન, રહસ્ય વિદ્યાઓ અને વિદેશ વસવાટનો પ્રબળ કાળ છે. આપની આંતરિક પ્રેરણા આપને યોગ્ય માર્ગ બતાવશે."
+        },
+        8: {
+            "en": f"You are traversing the 8-Year Mahadasha of Saturn ({active_md_planet}). The grand cycle of perseverance, karmic justice, solid wealth foundations, and real estate consolidation. Hard work translates into unbreakable empire building. Avoid shortcuts and maintain discipline.",
+            "hi": f"आप शनिदेव ({active_md_planet}) की 8-वर्षीय महादशा में हैं। यह कर्म फल, कठोर परिश्रम, स्थायी अचल संपत्ति और अटूट साम्राज्य निर्माण का काल है। ધીરજ અને નિયમિતતા સે किया गया परिश्रम आपको समाज में शीर्ष स्थान प्रदान करेगा।",
+            "gu": f"આપ શનિદેવ ({active_md_planet}) ની 8-વર્ષીય મહાદશામાં છો. આ કર્મ ફળ, અથાક પરિશ્રમ, સ્થાવર મિલકતો અને કાયમી સામ્રાજ્ય રચવાનો ગાળો છે. શોર્ટકટ ટાળવા અને ધીરજ રાખવાથી અનંત સફળતા મળશે."
+        },
+        9: {
+            "en": f"You are traversing the 9-Year Mahadasha of Mars ({active_md_planet}). A dynamic period of valor, physical drive, competitive dominance, real estate deals, and executive command. Bold moves bring decisive victories. Keep impulsive anger and blood pressure strictly managed.",
+            "hi": f"आप मंगल ({active_md_planet}) की 9-वर्षीय महादशा में हैं। यह असीम ऊर्जा, साहस, प्रतिस्पर्धी विजय, भूमि क्रय और प्रशासनिक नेतृत्व का काल है। साहसिक निर्णयों में विजय मिलेगी। उग्रता व जल्दबाजी पर नियंत्रण रखें।",
+            "gu": f"આપ મંગળ ({active_md_planet}) ની 9-વર્ષીય મહાદશામાં છો. આ અદમ્ય ઉત્સાહ, સાહસ, જમીન-મિલકતના સોદા અને વહીવટી નેતૃત્વનો સમય છે. ઉતાવળિયો ગુસ્સો ટાળીને લીધેલા નિર્ણયો વિજય અપાવશે."
+        }
+    }
+    
+    # ---------------- 2. ANTARDASHA (YEARLY FORECAST) ----------------
+    has_travel_in_ad = (natal_counts.get(4, 0) > 0 or natal_counts.get(7, 0) > 0) and active_ad_num in [4, 5, 6, 7]
+    has_property_in_ad = (period_vibes.get(1) == "+" or period_vibes.get(8) == "+") or active_ad_num in [1, 5, 6]
+    
+    ad_annual_themes = {
+        1: {
+            "en": "Year of Authority & New Career Breakthroughs: High recognition, promotion, leadership assignments, and administrative triumphs.",
+            "hi": "अधिकार एवं नए व्यावसायिक आरंभ का वर्ष: उच्च पद, पदोन्नति, नेतृत्व के अवसर और प्रशासनिक कार्यों में विशेष विजय।",
+            "gu": "અધિકાર અને નવી શરૂઆતનું વર્ષ: ઉચ્ચ પદ, પ્રમોશન, નેતૃત્વની તકો અને સરકારી કાર્યોમાં વિશેષ યશ."
+        },
+        2: {
+            "en": "Year of Emotional Partnerships & Creative Balance: Auspicious for joint ventures, diplomatic negotiations, and artistic expressions.",
+            "hi": "भावनात्मक साझेदारी एवं रचनात्मक संतुलन का वर्ष: संयुक्त व्यापार, कूटनीतिक समझौतों और कलात्मक कार्यों हेतु अत्यंत शुभ।",
+            "gu": "ભાગીદારી અને રચનાત્મક સંતુલનનું વર્ષ: સંયુક્ત વેપાર, કરારો અને કલા ક્ષેત્રે ઉત્તમ પરિણામો આપશે."
+        },
+        3: {
+            "en": "Year of Wisdom, Family Expansion & Wealth Multiplier: Academic achievements, guru guidance, high financial gains, and family celebrations.",
+            "hi": "ज्ञान, पारिवारिक मांगलिक कार्य एवं धन वृद्धि का वर्ष: उच्च शिक्षा, गुरु कृपा, वित्तीय लाभ और परिवार में उत्सव के योग।",
+            "gu": "જ્ઞાન, પરિવારમાં શુભ પ્રસંગો અને ધનવૃદ્ધિનું વર્ષ: ઉચ્ચ અભ્યાસ, વડીલોના આશીર્વાદ અને નાણાકીય પ્રગતિ."
+        },
+        4: {
+            "en": "Year of Sudden Shifts & Technical Innovation: Unconventional opportunities, foreign connections; maintain strict contractual vigilance.",
+            "hi": "आकस्मिक परिवर्तन एवं तकनीकी प्रगति का वर्ष: नए अपरंपरागत अवसर, विदेशी संपर्क; अनुबंधों व वाहन मामलों में सतर्कता रखें।",
+            "gu": "અણધાર્યા ફેરફારો અને ટેકનિકલ પ્રગતિનું વર્ષ: નવીન તકો, વિદેશી સંપર્કો; લખાણો અને વાહનોમાં સાવચેતી રાખવી."
+        },
+        5: {
+            "en": "Year of Commercial Expansion & High Liquidity: Lucrative business trading, quick deal turnover, travel, and strong cash flow.",
+            "hi": "व्यापारिक विस्तार एवं प्रचुर नकदी प्रवाह का वर्ष: व्यावसायिक अनुबंध, विपणन में भारी सफलता, यात्राएं और सुदृढ़ आर्थिक लाभ।",
+            "gu": "વેપાર વૃદ્ધિ અને પ્રચુર ધનલાભનું વર્ષ: નવા કરારો, માર્કેટિંગમાં સફળતા, મુસાફરી અને ઉત્તમ રોકડ પ્રવાહ."
+        },
+        6: {
+            "en": "Year of Luxuries, Marital Bliss & Asset Comforts: Purchase of luxury vehicles, home beautification, harmonious relationships, and female support.",
+            "hi": "ऐश्वर्य, दांपत्य सुख एवं वाहन-संपत्ति का वर्ष: विलासिता सामग्री, नवीन वाहन क्रय, गृह सज्जा और दांपत्य में प्रगाढ़ता।",
+            "gu": "વૈભવ, દાંપત્ય સુખ અને વાહન-મિલકતનું વર્ષ: નવા વાહનની ખરીદી, ઘર સુશોભન અને સંબધોમાં મધુરતા."
+        },
+        7: {
+            "en": "Year of Spiritual Awakening & Far Travel: Deep research, philosophical clarity, foreign journeys, and peaceful inner contentment.",
+            "hi": "आध्यात्मिक उन्नति, शोध एवं विदेश यात्रा का वर्ष: गहन चिंतन, तीर्थाटन, दूरस्थ यात्राएं और आत्मिक शांति का संचय।",
+            "gu": "આધ્યાત્મિક ઉન્નતિ, સંશોધન અને વિદેશ પ્રવાસનું વર્ષ: ઊંડું ચિંતન, યાત્રાઓ અને આંતરિક શાંતિ."
+        },
+        8: {
+            "en": "Year of Karmic Fruition & Solid Property Consolidation: Concrete business foundations, long-term investments, real estate acquisitions.",
+            "hi": "कर्म फल एवं अचल संपत्ति सुदृढ़ीकरण का वर्ष: स्थायी व्यापारिक नींव, भूमि-भवन क्रय और गंभीर दीर्घकालिक उपलब्धियां।",
+            "gu": "કર્મ ફળ અને સ્થાવર મિલકત પ્રાપ્તિનું વર્ષ: મજબૂત વેપાર પાયો, જમીન-મકાન ખરીદી અને ગંભીર સિદ્ધિઓ."
+        },
+        9: {
+            "en": "Year of Dynamic Energy, Courage & Bold Conquest: Decisive initiatives, clearing old hurdles, administrative command; avoid heated disputes.",
+            "hi": "ऊर्जा, साहस एवं लक्ष्य सिद्धि का वर्ष: साहसिक कदम, पुरानी बाधाओं की समाप्ति, प्रशासनिक धाक; विवादों से बचें।",
+            "gu": "ઊર્જા, સાહસ અને ધ્યેય પ્રાપ્તિનું વર્ષ: સાહસિક નિર્ણયો, જૂની અડચણોનો અંત; વિવાદો ટાળવા."
+        }
+    }
+    
+    # ---------------- 3. PRATYANTAR DASHA (MONTHLY FORECAST & ROADMAP) ----------------
+    pd_dos_donts = {
+        1: {
+            "dos": {
+                "en": ["Meet government authorities or senior management", "Launch bold executive initiatives", "Perform morning Surya Arghya"],
+                "hi": ["उच्च अधिकारियों या प्रबंधकों से भेंट करें", "नए प्रशासनिक निर्णय लें", "प्रातःकाल सूर्य अर्घ्य दें"],
+                "gu": ["ઉચ્ચ અધિકારીઓ કે વડીલો સાથે બેઠક કરો", "નવા વહીવટી નિર્ણયો લો", "સવારે સૂર્યને અર્ઘ્ય આપો"]
+            },
+            "donts": {
+                "en": ["Avoid ego friction with colleagues", "Do not ignore cardiovascular health or blood pressure"],
+                "hi": ["सहकर्मियों से अहंकार का टकराव न करें", "रक्तचाप व हृदय स्वास्थ्य की अनदेखी न करें"],
+                "gu": ["સાથીદારો સાથે અહંકારનો ટકરાવ ટાળવો", "બ્લડ પ્રેશર બાબતે બેદરકાર ન રહેવું"]
+            }
+        },
+        2: {
+            "dos": {
+                "en": ["Sign partnership agreements", "Focus on creative design and marketing", "Spend quality time with mother"],
+                "hi": ["साझेदारी के अनुबंध संपन्न करें", "रचनात्मक व कलात्मक कार्यों पर ध्यान दें", "माता की सेवा करें"],
+                "gu": ["ભાગીદારીના કરારો પૂરા કરો", "કલાત્મક અને ડિઝાઇનિંગ કાર્યો કરો", "માતાની સેવા-આશીર્વાદ લો"]
+            },
+            "donts": {
+                "en": ["Avoid mood swings and over-thinking", "Refrain from taking major financial decisions late at night"],
+                "hi": ["मानसिक चंचलता व अवसाद से बचें", "देर रात में कोई बड़ा आर्थिक फैसला न लें"],
+                "gu": ["મૂડ સ્વિંગ્સ અને વધુ પડતો વિચાર ટાળવો", "મોડી રાત્રે કોઈ મોટો નાણાકીય નિર્ણય ન લેવો"]
+            }
+        },
+        3: {
+            "dos": {
+                "en": ["Take blessings from mentors, teachers, and gurus", "Enroll in high-value education/certifications", "Offer yellow sweets/chana to cows"],
+                "hi": ["गुरुजनों व आचार्यों का आशीर्वाद लें", "ज्ञानवर्धक कोर्स या प्रमाणन आरंभ करें", "गुरुवार को गाय को चना-गुड़ खिलाएं"],
+                "gu": ["ગુરુજનો અને વડીલોના આશીર્વાદ લો", "જ્ઞાનવર્ધક અભ્યાસ કે કોર્સ શરૂ કરો", "ગાયને ચણા-ગોળ અર્પણ કરો"]
+            },
+            "donts": {
+                "en": ["Do not compromise on business ethics", "Avoid overeating sweets or heavy foods"],
+                "hi": ["व्यापारिक नैतिकता से समझौता न करें", "अत्यधिक मीठे या भारी भोजन से बचें"],
+                "gu": ["વેપારની નૈતિકતા સાથે બાંધછોડ ન કરવી", "વધુ પડતો ભારે ખોરાક ટાળવો"]
+            }
+        },
+        4: {
+            "dos": {
+                "en": ["Harness technology and modern automation tools", "Explore foreign tie-ups or digital expansion", "Worship Lord Ganesha to remove obstacles"],
+                "hi": ["आधुनिक तकनीकी व डिजिटल उपकरणों का उपयोग करें", "विदेशी संपर्कों पर काम करें", "भगवान गणेश की आराधना करें"],
+                "gu": ["નવીન ટેકનોલોજી અને ડિજિટલ સાધનો વાપરો", "વિદેશી સંપર્કો પર કામ કરો", "ભગવાન ગણેશની પૂજા કરો"]
+            },
+            "donts": {
+                "en": ["Do not purchase vehicle/gadgets purely in personal name", "Avoid unverified speculative schemes"],
+                "hi": ["वाहन या गैजेट केवल अपने अकेले नाम पर न खरीदें", "सट्टेबाजी और अनिश्चित योजनाओं से दूर रहें"],
+                "gu": ["વાહન ફક્ત પોતાના એકલા નામે ન ખરીદવું", "સટ્ટાકીય કે અજાણી સ્કીમોથી દૂર રહેવું"]
+            }
+        },
+        5: {
+            "dos": {
+                "en": ["Close sales deals and client contracts", "Organize budgets and optimize cash flows", "Offer green fodder to cows on Wednesday"],
+                "hi": ["व्यापारिक सौदों व अनुबंधों पर हस्ताक्षर करें", "वित्तीय बजट व्यवस्थित करें", "बुधवार को गाय को हरा चारा खिलाएं"],
+                "gu": ["વેપારી ડીલ અને ગ્રાહક કરારો પાકા કરો", "બજેટ અને રોકડ વ્યવહારો ગોઠવો", "બુધવારે ગાયને લીલું ઘાસ ખવડાવો"]
+            },
+            "donts": {
+                "en": ["Avoid sharp, blunt or sarcastic speech", "Do not scatter focus across too many tasks"],
+                "hi": ["कड़वी या व्यंग्यपूर्ण वाणी से बचें", "एक साथ बहुत अधिक कार्यों में ध्यान न भटकाएं"],
+                "gu": ["કડવી કે કટાક્ષભરી વાણી ટાળવી", "એકસાથે બહુ બધા કામોમાં ધ્યાન ન વહેંચવું"]
+            }
+        },
+        6: {
+            "dos": {
+                "en": ["Purchase lifestyle assets, gifts, and fine clothing", "Host celebratory social gatherings", "Respect and support female associates"],
+                "hi": ["सौंदर्य सामग्री, वस्त्र व उपहार क्रय करें", "पारिवारिक व सामाजिक उत्सव आयोजित करें", "स्त्री वर्ग का सम्मान करें"],
+                "gu": ["નવા વસ્ત્રો, આભૂષણો કે ભેટની ખરીદી કરો", "કૌટુંબિક પ્રસંગોનું આયોજન કરો", "સ્ત્રીઓનું સન્માન અને સહયોગ કરો"]
+            },
+            "donts": {
+                "en": ["Do not indulge in wasteful luxury expenditures", "Avoid frivolous romantic entanglements"],
+                "hi": ["दिखावे और फिजूलखर्ची से बचें", "अनावश्यक वासनात्मक आकर्षणों से दूर रहें"],
+                "gu": ["ખોટા દેખાડા અને ઉડાઉ ખર્ચા ટાળવા", "અનૈતિક આકર્ષણોથી દૂર રહેવું"]
+            }
+        },
+        7: {
+            "dos": {
+                "en": ["Dedicate time to spiritual research, mantras, and yoga", "Undertake peaceful retreat journeys", "Donate to orphanages or feed street animals"],
+                "hi": ["मंत्र साधना, योग व शोध कार्यों में समय लगाएं", "तीर्थ यात्रा या शांत स्थलों का भ्रमण करें", "अनाथों को दान दें या मूक जीवों को भोजन कराएं"],
+                "gu": ["મંત્ર સાધના, ધ્યાન અને સંશોધનમાં સમય આપો", "તીર્થયાત્રા કે શાંત સ્થળે પ્રવાસ કરો", "અનાથોને દાન આપો અને અબોલ જીવોને ચણ નાખો"]
+            },
+            "donts": {
+                "en": ["Avoid over-analyzing past events or suspecting close ones", "Do not isolate yourself completely"],
+                "hi": ["अतीत की बातों का बाल की खाल न निकालें", "दूसरों पर अकारण संदेह न करें"],
+                "gu": ["ભૂતકાળની વાતોનું વધુ વિશ્લેષણ ન કરવું", "બીજા પર અકારણ શંકા ન કરવી"]
+            }
+        },
+        8: {
+            "dos": {
+                "en": ["Execute rigorous physical and professional duties", "Invest in long-term blue-chip assets and real estate", "Help laborers and underprivileged persons on Saturday"],
+                "hi": ["कठोर परिश्रम व संगठित कार्यशैली अपनाएं", "दीर्घकालिक अचल संपत्ति पर विचार करें", "शनिवार को निर्धनों या श्रमिकों को भोजन/वस्त्र दें"],
+                "gu": ["શિસ્તબદ્ધ અને યોજનાબદ્ધ મહેનત કરો", "લાંબા ગાળાના રોકાણ અને જમીન-મકાન બાબતે આગળ વધો", "શનિવારે શ્રમિકો અને ગરીબોને મદદ કરો"]
+            },
+            "donts": {
+                "en": ["Avoid quick-rich shortcuts or speculative trading", "Refrain from buying iron items on Saturdays"],
+                "hi": ["सट्टेबाजी व शीघ्र धन कमाने के प्रलोभन से बचें", "शनिवार को लोहे का फर्नीचर या धातु न खरीदें"],
+                "gu": ["ઝડપી પૈસા કમાવાના શોર્ટકટ ટાળવા", "શનિવારે લોખંડની ચીજવસ્તુઓ ન ખરીદવી"]
+            }
+        },
+        9: {
+            "dos": {
+                "en": ["Take decisive executive decisions", "Engage in energetic fitness, sports, or property deals", "Recite Hanuman Chalisa daily"],
+                "hi": ["साहसिक व त्वरित निर्णय लें", "भूमि सौदों व शारीरिक फिटनेस पर ध्यान दें", "प्रतिदिन श्री हनुमान चालीसा का पाठ करें"],
+                "gu": ["સાહસિક અને ત્વરિત નિર્ણયો લો", "જમીન-મિલકતના સોદા અને સ્વાસ્થ્ય પર ધ્યાન આપો", "રોજેરોજ શ્રી હનુમાન ચાલીસાનો પાઠ કરો"]
+            },
+            "donts": {
+                "en": ["Avoid hot-headed arguments and rash driving", "Control blood pressure and avoid excess salt on Tuesday"],
+                "hi": ["क्रोध, उग्र बहस और तेज वाहन चलाने से बचें", "मंगलवार को नमक का कम सेवन करें"],
+                "gu": ["ઉગ્ર બોલાચાલી અને ઝડપી વાહન ચલાવવું ટાળવું", "મંગળવારે મીઠાનું સેવન ઓછું કરવું"]
+            }
+        }
+    }
+    
+    # 9-Phase Roadmap Assembly
+    pd_roadmap = []
+    for idx, p in enumerate(pd_info["periods"], 1):
+        p_num = p["number"]
+        p_planet = PLANET_INFO[p_num][lang]["planet"]
+        p_tone = "Auspicious (+)" if p_num in [1, 3, 5, 6] else ("Favorable" if p_num in [7, 8] else "Dynamic / Caution")
+        if lang == "hi":
+            p_tone = "अत्यंत शुभ (+)" if p_num in [1, 3, 5, 6] else ("अनुकूल" if p_num in [7, 8] else "सावधानी / ऊर्जा")
+        elif lang == "gu":
+            p_tone = "અતિ શુભ (+)" if p_num in [1, 3, 5, 6] else ("સાનુકૂળ" if p_num in [7, 8] else "સાવચેતી / સક્રિય")
+            
+        pd_roadmap.append({
+            "phase": idx,
+            "number": p_num,
+            "planet": p_planet,
+            "duration_days": p["duration_days"],
+            "start_str": p["start_str"],
+            "end_str": p["end_str"],
+            "is_active": p["is_active"],
+            "tone": p_tone
+        })
+
+    return {
+        "mahadasha": {
+            "title": UI_TEXT[lang]["tier_mahadasha_title"],
+            "number": active_md_num,
+            "planet": active_md_planet,
+            "duration": f"{md_duration} Years",
+            "start_str": md_start_str,
+            "end_str": md_end_str,
+            "financial_tone": "Expansive (+)" if is_md_fin_fav else "Consolidating / Hedged (-)",
+            "description": md_descriptions[active_md_num][lang],
+            "rule_note": "Rule: If Mahadasha activates numbers +3, +5, +6, or +8, finance and status expand exponentially; while challenging numbers advise protective asset hedging."
+        },
+        "antardasha": {
+            "title": UI_TEXT[lang]["tier_antardasha_title"],
+            "number": active_ad_num,
+            "planet": active_ad_planet,
+            "duration": "1 Year (Annual)",
+            "start_str": ad_start_str,
+            "end_str": ad_end_str,
+            "annual_theme": ad_annual_themes[active_ad_num][lang],
+            "travel_forecast": "High probability of domestic or foreign journey" if has_travel_in_ad else "Standard local travel",
+            "asset_forecast": "Favorable annual alignment for real estate or vehicle acquisition" if has_property_in_ad else "Maintain existing assets"
+        },
+        "pratyantar_dasha": {
+            "title": UI_TEXT[lang]["tier_pratyantar_title"],
+            "number": active_pd_num,
+            "planet": active_pd_planet,
+            "duration_days": pd_days,
+            "start_str": pd_start_str,
+            "end_str": pd_end_str,
+            "dos": pd_dos_donts[active_pd_num]["dos"][lang],
+            "donts": pd_dos_donts[active_pd_num]["donts"][lang]
+        },
+        "pd_roadmap": pd_roadmap
+    }
+
 def compile_full_numerology_profile(
     name: str, dob_str: str, gender: str = "Male",
     target_date_str: str = None, lang: str = "en",
@@ -756,7 +1155,18 @@ def compile_full_numerology_profile(
     ad_info = calculate_antardasha(birth_date, target_date)
     pd_info = calculate_pratyantar_dasha(ad_info["ad_number"], ad_info["start"], target_date)
     
-    # Active Yogas
+    # Active Dasha & Transit Grid (MD + AD + PD Infusion)
+    active_md_num = md_info["active_md"]["number"]
+    active_ad_num = ad_info["ad_number"]
+    active_pd_num = pd_info["active_pd"]["number"]
+    dasha_grid_info = calculate_dasha_grid(grid_info, active_md_num, active_ad_num, active_pd_num, dn, lang)
+    
+    # 3-Tier Period Forecast (Mahadasha, Antardasha, Pratyantar Dasha)
+    three_tier = generate_three_tier_predictions(
+        bn, dn, grid_info, dasha_grid_info, md_info, ad_info, pd_info, lang
+    )
+    
+    # Active Yogas (Evaluating both Natal and Period-amplified)
     active_yogas = detect_active_yogas(grid_info["counts"], vibrations, lang)
     
     # Life Predictions
@@ -846,6 +1256,15 @@ def compile_full_numerology_profile(
         },
         "compass": compass,
         "grid": grid_info,
+        "natal_grid": grid_info,
+        "dasha_grid": dasha_grid_info,
+        "three_tier_forecast": three_tier,
+        "color_legend": {
+            "natal": {"name": UI_TEXT[lang]["legend_natal"], "code": "NAT", "color": "#d4af37"},
+            "md": {"name": UI_TEXT[lang]["legend_md"], "code": "MD", "color": "#38bdf8"},
+            "ad": {"name": UI_TEXT[lang]["legend_ad"], "code": "AD", "color": "#22c55e"},
+            "pd": {"name": UI_TEXT[lang]["legend_pd"], "code": "PD", "color": "#fb923c"}
+        },
         "vibrations": vibration_list,
         "moolank_qualities": NUMBER_QUALITIES[bn][lang],
         "moolank_precautions": NUMBER_PRECAUTIONS[bn][lang],

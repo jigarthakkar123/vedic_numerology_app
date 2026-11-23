@@ -202,9 +202,9 @@ function renderDashboard(data) {
     document.getElementById('charm-nums').textContent = core.favourable_nums;
     document.getElementById('charm-colors').textContent = core.favourable_colors;
 
-    // 3x3 Vedic Grid Cells
-    // Order in grid cells: 3, 1, 9, 6, 7, 5, 2, 8, 4
-    for (let cell of grid.cells) {
+    // 3x3 Vedic Natal Grid Cells (Inborn Matrix)
+    const natalGrid = data.natal_grid || grid;
+    for (let cell of natalGrid.cells) {
         const el = document.getElementById(`gc-${cell.num}`);
         if (el) {
             const valSpan = el.querySelector('.c-val');
@@ -216,6 +216,36 @@ function renderDashboard(data) {
                 valSpan.textContent = '-';
             }
         }
+    }
+
+    // 3x3 Vedic Dasha & Transit Grid Cells (MD • AD • PD Infusion with Multi-Color Chips)
+    const dashaGrid = data.dasha_grid || natalGrid;
+    for (let cell of dashaGrid.cells) {
+        const el = document.getElementById(`gdc-${cell.num}`);
+        if (el) {
+            const wrap = el.querySelector('.chips-wrap');
+            if (cell.items && cell.items.length > 0) {
+                el.classList.add('active');
+                wrap.innerHTML = cell.items.map(it => `<span class="chip chip-${it.source}">${it.val}</span>`).join('');
+            } else {
+                el.classList.remove('active');
+                wrap.textContent = '-';
+            }
+        }
+    }
+
+    // Dynamic UI Labels & Color Legend
+    if (data.color_legend) {
+        if (document.getElementById('leg-natal')) document.getElementById('leg-natal').textContent = data.color_legend.natal.name;
+        if (document.getElementById('leg-md')) document.getElementById('leg-md').textContent = data.color_legend.md.name;
+        if (document.getElementById('leg-ad')) document.getElementById('leg-ad').textContent = data.color_legend.ad.name;
+        if (document.getElementById('leg-pd')) document.getElementById('leg-pd').textContent = data.color_legend.pd.name;
+    }
+    if (data.ui) {
+        if (document.getElementById('web-natal-grid-title')) document.getElementById('web-natal-grid-title').textContent = data.ui.natal_grid_title;
+        if (document.getElementById('web-natal-grid-sub')) document.getElementById('web-natal-grid-sub').textContent = data.ui.natal_grid_sub;
+        if (document.getElementById('web-dasha-grid-title')) document.getElementById('web-dasha-grid-title').textContent = data.ui.dasha_grid_title;
+        if (document.getElementById('web-dasha-grid-sub')) document.getElementById('web-dasha-grid-sub').textContent = data.ui.dasha_grid_sub;
     }
 
     // Vibrations List
@@ -248,6 +278,66 @@ function renderDashboard(data) {
     document.getElementById('dasha-ad-dates').textContent = `${dasha.active_ad.start_str} to ${dasha.active_ad.end_str}`;
     document.getElementById('dasha-pd-num').textContent = `Pratyantar Dasha ${dasha.active_pd.number}`;
     document.getElementById('dasha-pd-dates').textContent = `${dasha.active_pd.start_str} to ${dasha.active_pd.end_str}`;
+
+    // 3-Tier Horizon Precision Predictions
+    const threeTier = data.three_tier_forecast || {};
+    const md = threeTier.mahadasha || {};
+    const ad = threeTier.antardasha || {};
+    const pd = threeTier.pratyantar_dasha || {};
+
+    // Tier 1: Mahadasha
+    if (document.getElementById('tier-md-title')) document.getElementById('tier-md-title').textContent = md.title || `🌌 Mahadasha ${dasha.active_md.number}`;
+    if (document.getElementById('tier-md-dates')) document.getElementById('tier-md-dates').textContent = `${md.start_str || dasha.active_md.start_str} to ${md.end_str || dasha.active_md.end_str} (${md.duration || ''})`;
+    if (document.getElementById('tier-md-tone')) {
+        const toneEl = document.getElementById('tier-md-tone');
+        toneEl.textContent = md.financial_tone || 'Active';
+        toneEl.className = md.financial_tone && md.financial_tone.includes('+') ? 'tone-badge text-green' : 'tone-badge text-orange';
+    }
+    if (document.getElementById('tier-md-desc')) document.getElementById('tier-md-desc').textContent = md.description || '';
+    if (document.getElementById('tier-md-rule')) document.getElementById('tier-md-rule').innerHTML = `<strong>Vedic Principle:</strong> ${md.rule_note || ''}`;
+
+    // Tier 2: Antardasha
+    if (document.getElementById('tier-ad-title')) document.getElementById('tier-ad-title').textContent = ad.title || `📅 Antardasha ${dasha.active_ad.ad_number}`;
+    if (document.getElementById('tier-ad-dates')) document.getElementById('tier-ad-dates').textContent = `${ad.start_str || dasha.active_ad.start_str} to ${ad.end_str || dasha.active_ad.end_str} (${ad.duration || '1 Year'})`;
+    if (document.getElementById('tier-ad-theme')) document.getElementById('tier-ad-theme').textContent = ad.annual_theme || '';
+    if (document.getElementById('tier-ad-travel')) document.getElementById('tier-ad-travel').textContent = ad.travel_forecast || 'Standard';
+    if (document.getElementById('tier-ad-assets')) document.getElementById('tier-ad-assets').textContent = ad.asset_forecast || 'Standard';
+
+    // Tier 3: Pratyantar Dasha
+    if (document.getElementById('tier-pd-title')) document.getElementById('tier-pd-title').textContent = pd.title || `🌙 Pratyantar Dasha ${dasha.active_pd.number}`;
+    if (document.getElementById('tier-pd-dates')) document.getElementById('tier-pd-dates').textContent = `${pd.start_str || dasha.active_pd.start_str} to ${pd.end_str || dasha.active_pd.end_str} (${pd.duration_days || ''} Days)`;
+    
+    const pdDosList = document.getElementById('tier-pd-dos');
+    if (pdDosList && pd.dos) {
+        pdDosList.innerHTML = pd.dos.map(d => `<li>${d}</li>`).join('');
+    }
+    const pdDontsList = document.getElementById('tier-pd-donts');
+    if (pdDontsList && pd.donts) {
+        pdDontsList.innerHTML = pd.donts.map(d => `<li>${d}</li>`).join('');
+    }
+
+    // 9-Phase Pratyantar Dasha Calendar Table
+    const pdBody = document.getElementById('pd-roadmap-body');
+    if (pdBody && threeTier.pd_roadmap) {
+        pdBody.innerHTML = '';
+        for (let r of threeTier.pd_roadmap) {
+            const tr = document.createElement('tr');
+            if (r.is_active) tr.className = 'active-phase';
+            const badgeClass = r.is_active ? 'status-chip active' : 'status-chip';
+            const badgeTxt = r.is_active ? '★ CURRENT' : r.tone;
+            tr.innerHTML = `
+                <td style="font-weight:700;">Phase ${r.phase} (${r.planet})</td>
+                <td style="text-align:center;"><strong>No. ${r.number}</strong></td>
+                <td style="text-align:center;">${r.duration_days} Days</td>
+                <td style="text-align:center;">${r.start_str}</td>
+                <td style="text-align:center;">${r.end_str}</td>
+                <td style="text-align:center;"><span class="${badgeClass}">${badgeTxt}</span></td>
+            `;
+            pdBody.appendChild(tr);
+        }
+    }
+
+    // Lifetime Mahadasha 45-Year Cyclic Table
 
     const dBody = document.getElementById('dasha-timeline-body');
     dBody.innerHTML = '';

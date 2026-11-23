@@ -691,13 +691,71 @@ textarea:focus {
 
 .mt-4 { margin-top: 20px; }
 
-/* ==================== 3x3 Vedic Grid Component ==================== */
+/* ==================== 3x3 Vedic Grid Component & Dual Grids ==================== */
 .grid-section-layout {
     display: grid;
     grid-template-columns: 270px 1fr;
     gap: 20px;
     margin-bottom: 20px;
     align-items: start;
+}
+
+.grid-section-layout-dual {
+    margin-bottom: 20px;
+}
+
+.dual-grids-web-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.web-grid-card {
+    background: var(--bg-input);
+    border: 1.5px solid var(--border-gold);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    transition: all 0.2s ease;
+}
+
+.web-grid-card.dasha-grid-card {
+    border-color: #38bdf8;
+    background: #091322;
+    box-shadow: 0 4px 14px rgba(56, 189, 248, 0.15);
+}
+
+.web-grid-hdr {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    width: 100%;
+}
+
+.grid-hdr-icon {
+    font-size: 20px;
+}
+
+.grid-card-title {
+    font-size: 11.5px;
+    font-weight: 800;
+    color: var(--text-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.grid-card-title.dasha {
+    color: #38bdf8;
+}
+
+.grid-card-sub {
+    font-size: 9.5px;
+    color: var(--text-secondary);
 }
 
 .vedic-grid-card {
@@ -711,16 +769,6 @@ textarea:focus {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.grid-card-title {
-    font-size: 10.5px;
-    font-weight: 700;
-    color: var(--text-gold);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
 .vedic-3x3-container {
     display: grid;
     grid-template-columns: repeat(3, 60px);
@@ -732,6 +780,11 @@ textarea:focus {
     box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
 }
 
+.vedic-3x3-container.dasha {
+    background: #0369a1;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.25);
+}
+
 .v-cell {
     background: var(--bg-card);
     border-radius: 4px;
@@ -741,6 +794,53 @@ textarea:focus {
     justify-content: center;
     position: relative;
     transition: all 0.2s ease;
+}
+
+.v-cell-dasha {
+    padding: 2px;
+}
+
+.chips-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    width: 100%;
+    padding: 2px;
+}
+
+.chip {
+    font-size: 10.5px;
+    font-weight: 800;
+    padding: 1px 4px;
+    border-radius: 3px;
+    line-height: 1.1;
+    display: inline-block;
+}
+
+.chip-natal {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #d4af37;
+}
+
+.chip-md {
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #38bdf8;
+}
+
+.chip-ad {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #22c55e;
+}
+
+.chip-pd {
+    background: #ffedd5;
+    color: #9a3412;
+    border: 1px solid #fb923c;
 }
 
 .v-cell .c-num {
@@ -766,6 +866,47 @@ textarea:focus {
 .v-cell.active .c-val {
     color: #92400e;
     font-size: 17px;
+}
+
+/* 4-Color Legend Bar */
+.color-legend-web-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px 18px;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 8px;
+    padding: 8px 14px;
+    margin-bottom: 12px;
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.c-leg-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+}
+
+.c-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.dot-natal { background: #d4af37; }
+.dot-md { background: #38bdf8; }
+.dot-ad { background: #22c55e; }
+.dot-pd { background: #fb923c; }
+
+.charms-badge-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
 }
 
 .grid-legend {
@@ -922,7 +1063,7 @@ textarea:focus {
     top: -2px;
 }
 
-/* ==================== Dasha Tab ==================== */
+/* ==================== Dasha Tab & 3-Tier Horizon Predictions ==================== */
 .dasha-active-cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -942,6 +1083,13 @@ textarea:focus {
     border-color: var(--border-gold);
     box-shadow: 0 0 10px var(--gold-glow);
 }
+
+.dasha-card.card-md { border-color: #38bdf8 !important; box-shadow: 0 0 10px rgba(56, 189, 248, 0.25); }
+.dasha-card.card-md .d-tag { color: #38bdf8; }
+.dasha-card.card-ad { border-color: #22c55e !important; box-shadow: 0 0 10px rgba(34, 197, 94, 0.25); }
+.dasha-card.card-ad .d-tag { color: #22c55e; }
+.dasha-card.card-pd { border-color: #fb923c !important; box-shadow: 0 0 10px rgba(251, 146, 60, 0.25); }
+.dasha-card.card-pd .d-tag { color: #fb923c; }
 
 .d-tag {
     font-size: 9px;
@@ -967,6 +1115,250 @@ textarea:focus {
 .d-dates {
     font-size: 10.5px;
     color: var(--text-secondary);
+}
+
+/* 3-Tier Horizon Display Stack */
+.three-tier-display-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.tier-card-web {
+    background: var(--bg-input);
+    border: 1.5px solid var(--border-dark);
+    border-radius: 10px;
+    padding: 14px 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    transition: all 0.2s ease;
+}
+
+.tier-web-md {
+    border-left: 4px solid #38bdf8;
+    background: linear-gradient(180deg, rgba(56, 189, 248, 0.05) 0%, rgba(15, 23, 42, 0.4) 100%);
+}
+
+.tier-web-ad {
+    border-left: 4px solid #22c55e;
+    background: linear-gradient(180deg, rgba(34, 197, 94, 0.05) 0%, rgba(15, 23, 42, 0.4) 100%);
+}
+
+.tier-web-pd {
+    border-left: 4px solid #fb923c;
+    background: linear-gradient(180deg, rgba(251, 146, 60, 0.05) 0%, rgba(15, 23, 42, 0.4) 100%);
+}
+
+.tier-card-web-hdr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tier-hdr-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tier-hdr-title h4 {
+    font-size: 13.5px;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: 0.3px;
+}
+
+.tier-badge-pill {
+    font-size: 9.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.4px;
+}
+
+.md-pill { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); }
+.ad-pill { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); }
+.pd-pill { background: rgba(251, 146, 60, 0.15); color: #fb923c; border: 1px solid rgba(251, 146, 60, 0.4); }
+
+.tier-hdr-dates {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.tier-card-web-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tier-tone-bar {
+    font-size: 11.5px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tone-badge {
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 11px;
+}
+
+.tier-web-desc {
+    font-size: 12px;
+    color: var(--text-primary);
+    line-height: 1.45;
+}
+
+.tier-web-rule {
+    font-size: 11px;
+    color: #93c5fd;
+    background: rgba(30, 58, 138, 0.25);
+    border-left: 3px solid #38bdf8;
+    padding: 6px 10px;
+    border-radius: 4px;
+    line-height: 1.35;
+}
+
+.tier-sub-indicators-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.sub-ind-box {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 6px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ind-icon {
+    font-size: 18px;
+    color: var(--text-gold);
+}
+
+.ind-label {
+    font-size: 9.5px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.ind-val {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* Pratyantar Do's and Don'ts Web Grid */
+.tier-dos-donts-web-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.web-do-box {
+    background: rgba(34, 197, 94, 0.08);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: 8px;
+    padding: 10px 14px;
+}
+
+.web-dont-box {
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 8px;
+    padding: 10px 14px;
+}
+
+.box-hdr-do {
+    font-size: 11px;
+    font-weight: 800;
+    color: #4ade80;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.box-hdr-dont {
+    font-size: 11px;
+    font-weight: 800;
+    color: #f87171;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.tier-list-do, .tier-list-dont {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-left: 0;
+}
+
+.tier-list-do li {
+    font-size: 11.5px;
+    color: var(--text-primary);
+    position: relative;
+    padding-left: 14px;
+    line-height: 1.35;
+}
+.tier-list-do li::before {
+    content: "✔";
+    position: absolute;
+    left: 0;
+    color: #4ade80;
+    font-size: 10px;
+}
+
+.tier-list-dont li {
+    font-size: 11.5px;
+    color: var(--text-primary);
+    position: relative;
+    padding-left: 14px;
+    line-height: 1.35;
+}
+.tier-list-dont li::before {
+    content: "✖";
+    position: absolute;
+    left: 0;
+    color: #f87171;
+    font-size: 10px;
+}
+
+/* 9-Phase Roadmap Table */
+.pd-roadmap-table tr.active-phase {
+    background: rgba(251, 146, 60, 0.15) !important;
+    font-weight: 700;
+}
+.pd-roadmap-table tr.active-phase td {
+    color: #fed7aa !important;
+}
+.status-chip {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-secondary);
+}
+.status-chip.active {
+    background: #fb923c;
+    color: #000000;
 }
 
 .table-scroll-hint {
@@ -1211,6 +1603,33 @@ textarea:focus {
     .grid-section-layout {
         grid-template-columns: 1fr;
         gap: 16px;
+    }
+
+    .dual-grids-web-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .charms-badge-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    .tier-sub-indicators-grid,
+    .tier-dos-donts-web-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .tier-card-web-hdr {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .color-legend-web-bar {
+        font-size: 10px;
+        gap: 8px 12px;
     }
 
     .vedic-grid-card {
