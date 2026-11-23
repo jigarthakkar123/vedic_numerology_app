@@ -58,7 +58,7 @@ UI_TEXT = {
         "legend_natal": "Natal Inborn (Gold)",
         "legend_md": "Mahadasha • Multi-Year (Sky Blue)",
         "legend_ad": "Antardasha • Yearly (Emerald Green)",
-        "legend_pd": "Pratyantar • Monthly (Sunset Orange)",
+        "legend_pd": "Pratyantar Dasha • Monthly Sub-Phase (Royal Purple)",
         "tier_mahadasha_title": "Mahadasha: Long-Term Macro Life Cycle",
         "tier_antardasha_title": "Antardasha: Annual 1-Year Forecast",
         "tier_pratyantar_title": "Pratyantar Dasha: Active Monthly Sub-Phase",
@@ -78,6 +78,9 @@ UI_TEXT = {
         "antardasha": "Antardasha (Sub-Period)",
         "pratyantar_dasha": "Pratyantar Dasha (Current Active Phase)",
         "active_yogas": "Active Yogas in Birth Chart",
+        "auspicious_yogas_title": "Auspicious Planetary Yogas (Divine Alignments)",
+        "inauspicious_yogas_title": "Challenging Planetary Yogas & Doshas (Karmic Hurdles & Remedial Protection)",
+        "mitigation_remedy": "Remedial Mitigation Key:",
         "predictions_title": "Comprehensive Life Predictions",
         "pred_finance": "Finance & Wealth Predictions",
         "pred_property": "Property & Real Estate Predictions",
@@ -137,7 +140,7 @@ UI_TEXT = {
         "legend_natal": "जन्मकालीन मूल (स्वर्ण)",
         "legend_md": "महादशा • दीर्घकालीन (आसमानी)",
         "legend_ad": "अंतर्दशा • वार्षिक (पन्ना हरा)",
-        "legend_pd": "प्रत्यंतर • मासिक (नारंगी)",
+        "legend_pd": "प्रत्यंतर दशा • मासिक उप-चक्र (शाही बैंगनी / Royal Purple)",
         "tier_mahadasha_title": "महादशा: दीर्घकालीन मुख्य जीवन चक्र फलादेश",
         "tier_antardasha_title": "अंतर्दशा: वार्षिक १-वर्षीय विस्तृत फलादेश",
         "tier_pratyantar_title": "प्रत्यंतर दशा: सक्रिय मासिक सूक्ष्म फलादेश",
@@ -157,6 +160,9 @@ UI_TEXT = {
         "antardasha": "अंतर्दशा (उप-अवधि)",
         "pratyantar_dasha": "प्रत्यंतर दशा (वर्तमान सक्रिय सूक्ष्म चरण)",
         "active_yogas": "जन्म चक्र में उपस्थित सक्रिय योग",
+        "auspicious_yogas_title": "शुभ ग्रहीय योग (दैवीय ऊर्जा चक्र)",
+        "inauspicious_yogas_title": "अशुभ योग एवं दोष (कर्म बाधाएं एवं निवारण उपाय)",
+        "mitigation_remedy": "दोष निवारण एवं शांति उपाय:",
         "predictions_title": "विस्तृत जीवन भविष्यवाणियाँ",
         "pred_finance": "वित्त एवं धन संपदा भविष्यवाणी",
         "pred_property": "भूमि, भवन एवं अचल संपत्ति भविष्यवाणी",
@@ -216,7 +222,7 @@ UI_TEXT = {
         "legend_natal": "જન્મકાલીન મૂળ (સુવર્ણ)",
         "legend_md": "મહાદશા • દીર્ઘકાલીન (આકાશી વાદળી)",
         "legend_ad": "અંતર્દશા • વાર્ષિક (પન્ના લીલો)",
-        "legend_pd": "પ્રત્યંતર • માસિક (સૂર્યાસ્ત નારંગી)",
+        "legend_pd": "પ્રત્યંતર દશા • માસિક ઉપ-ચક્ર (રોયલ પર્પલ / Royal Purple)",
         "tier_mahadasha_title": "મહાદશા: દીર્ઘકાલીન મુખ્ય જીવન ચક્ર ફલાદેશ",
         "tier_antardasha_title": "અંતર્દશા: વાર્ષિક ૧-વર્ષીય વિસ્તૃત ફલાદેશ",
         "tier_pratyantar_title": "પ્રત્યંતર દશા: સક્રિય માસિક સૂક્ષ્મ ફલાદેશ",
@@ -236,6 +242,9 @@ UI_TEXT = {
         "antardasha": "અંતર્દશા (પેટા-સમયગાળો)",
         "pratyantar_dasha": "પ્રત્યંતર દશા (હાલનો સક્રિય તબક્કો)",
         "active_yogas": "જન્મ કુંડળીમાં સક્રિય મુખ્ય યોગો",
+        "auspicious_yogas_title": "શુભ ગ્રહીય યોગ (દૈવી ઉર્જા ચક્ર)",
+        "inauspicious_yogas_title": "અશુભ યોગ અને દોષ (કર્મ અવરોધો અને નિવારણ ઉપાયો)",
+        "mitigation_remedy": "દોષ નિવારણ અને શાંતિ ઉપાય:",
         "predictions_title": "વિગતવાર જીવન ભવિષ્યવાણી",
         "pred_finance": "નાણાકીય સંપત્તિ અને આવકની આગાહી",
         "pred_property": "જમીન, મકાન અને સ્થાવર મિલકત યોગ",
@@ -681,252 +690,444 @@ NUMBER_PRECAUTIONS = {
 }
 
 # Positive vs Negative Vibrations of Numbers in the Grid
+# Enriched Deep Planetary Vibrations Breakdown (Detailed multi-sentence analysis based on authentic course texts)
 VIBRATION_DETAILS = {
     1: {
         "pos": {
-            "en": "Positive (+1): Dynamic executive power, independent authority, self-respect, pioneering leadership.",
-            "hi": "सकारात्मक (+1): प्रखर नेतृत्व क्षमता, स्वतंत्र सत्ता, आत्मसम्मान और नए कार्यों में अग्रदूत बनना।",
-            "gu": "સકારાત્મક (+1): તેજસ્વી નેતૃત્વ ક્ષમતા, સ્વતંત્ર સત્તા, ખુમારી અને નવા કાર્યોમાં પહેલ કરવાની શક્તિ."
+            "en": "Positive (+1 Solar Vitality): Endows the native with supreme solar vitality, majestic authority, charismatic leadership, and regal confidence ('King-like life'). Natural pioneer and executive decision-maker with an indomitable aura; commands high institutional respect, attracts lucrative financial opportunities, and steadfastly protects subordinates.",
+            "hi": "सकारात्मक (+1 सूर्य का दिव्य तेज): जातक को सूर्य का दिव्य तेज, राजसी मान-सम्मान, निर्भीक नेतृत्व और अटूट आत्मविश्वास ('राजा जैसा जीवन') प्रदान करता है। स्वभाव से स्वाभाविक अगुआ और उच्च प्रशासक, जिनका आभामंडल समाज में सर्वोच्च प्रतिष्ठा, सत्ता और अकूत धन-संपत्ति आकर्षित करता है।",
+            "gu": "સકારાત્મક (+1 સૂર્યનું દિવ્ય તેજ): જાતકને સૂર્યનું દિવ્ય તેજ, રાજા સમાન માન-પ્રતિષ્ઠા, નિર્ભય નેતૃત્વ અને અખૂટ આત્મવિશ્વાસ ('રાજા જેવું જીવન') પ્રદાન કરે છે. વહીવટી સત્તા અને મક્કમ નિર્ણયશક્તિથી સમાજમાં ઉચ્ચ મોભો, અધિકાર તથા વિપુલ આર્થિક સમૃદ્ધિ મેળવે છે."
         },
         "neg": {
-            "en": "Challenging (-1): Ego clashes, dictatorial tone, aggressive speech, difficulties with father/superiors.",
-            "hi": "कठिन (-1): अहंकार का टकराव, तानाशाही रवैया, कटु वाणी, पिता या उच्चाधिकारियों से मतभेद।",
-            "gu": "પડકારરૂપ (-1): અહંકારનો ટકરાવ, હુકમ ચલાવવાની ટેવ, કડવી વાણી, પિતા કે ઉપરી અધિકારીઓ સાથે ઘર્ષણ."
+            "en": "Challenging (-1 Solar Affliction): Over-vibration manifests as extreme egoism, rigid authoritarianism ('my way or highway'), contempt for others' viewpoints, dictatorial dominance, and explosive temper. Tendency to alienate family, severe friction with father or superiors, and susceptibility to deceptive financial schemes or unearned public blame.",
+            "hi": "कठिन (-1 सूर्य अहंकार दोष): अति-ऊर्जा अहंकार, हठधर्मिता ('मेरी मर्जी या कुछ नहीं'), तानाशाही रवैया और उग्र क्रोध का रूप ले लेती है। पिता या उच्चाधिकारियों से निरंतर टकराव, परिजनों की भावनाओं की उपेक्षा और जल्दबाजी में वित्तीय नुकसान या धोखे का गंभीर जोखिम रहता है।",
+            "gu": "પડકારરૂપ (-1 સૂર્ય અહંકાર દોષ): અહંકાર, હઠીલો સ્વભાવ ('મારી વાત જ સાચી'), હુકમશાહી વલણ અને અચાનક આવતો ક્રોધ લાવે છે. પિતા અથવા ઉચ્ચ અધિકારીઓ સાથે મતભેદ, અન્યોની લાગણીઓની અવગણના અને ઉતાવળે નાણાકીય નુકસાન કે છેતરપિંડીનું જોખમ રહે છે."
         }
     },
     2: {
         "pos": {
-            "en": "Positive (+2): Deep intuition, gentle emotional harmony, empathy, diplomatic charm, strong imagination.",
-            "hi": "सकारात्मक (+2): गहन अंतर्ज्ञान, सौम्य भावनात्मक संतुलन, सहानुभूति, राजनयिक व्यवहार और कल्पनाशीलता।",
-            "gu": "સકારાત્મક (+2): ઊંડી આંતરિક સૂઝ, સૌમ્ય ભાવનાત્મક સંતુલન, સહાનુભૂતિ અને ઉત્તમ કલ્પનાશક્તિ."
+            "en": "Positive (+2 Lunar Grace): Endows gentle motherly empathy, soothing artistic elegance, deep psychological intuition, and hypnotic diplomatic charm. Exceptional ability to build harmonious partnerships, diffuse conflicts, and provide profound emotional healing and aesthetic comfort to loved ones.",
+            "hi": "सकारात्मक (+2 चंद्र का वात्सल्य): चंद्र का शीतल वात्सल्य, कलात्मक लालित्य, गहन अंतर्ज्ञान और चुंबकीय राजनयिक आकर्षण प्रदान करता है। साझेदारी में अभूतपूर्व सफलता, विवादों को सहज शांत करने का हुनर और दूसरों को भावनात्मक संबल व सुख देने की अद्वितीय क्षमता।",
+            "gu": "સકારાત્મક (+2 ચંદ્રની શીતળતા): ચંદ્રનો શીતળ પ્રેમ, કલાત્મક સૂઝ, ઊંડી આંતરિક પ્રેરણા અને શાંત રાજદ્વારી કુશળતા આપે છે. ભાગીદારીમાં ઉત્તમ સંવાદિતા, સંબંધોમાં સ્નેહ અને સાથીદારોને સાચો દિલાસો તથા શાંતિ આપવાની અજોડ આવડત."
         },
         "neg": {
-            "en": "Challenging (-2): Extreme mood swings, chronic anxiety, over-dependency, emotional insecurity, depression risk.",
-            "hi": "कठिन (-2): अत्यधिक मानसिक उद्वेગ, चिंता, अत्यधिक निर्भरता, भावनात्मक असुरक्षा एवं अवसाद की संभावना।",
-            "gu": "પડકારરૂપ (-2): અતિશય મૂડ સ્વિંગ્સ, સતત ચિંતા, પરાધીનતા, ભાવનાત્મક અસુરક્ષા અને માનસિક તણાવ."
+            "en": "Challenging (-2 Lunar Vulnerability): Hypersensitivity, emotional vulnerability, chronic anxiety, and unpredictable mood swings. Suffers from acute fear of rejection, painful over-dependency on others' approval, deep melancholy/depression, and escapist coping habits when under sustained emotional pressure.",
+            "hi": "कठिन (-2 चंद्र अवसाद एवं चिंता): अत्यधिक भावुकता, मन का विचलन, अवसाद (डिप्रेशन), असुरक्षा की भावना और गंभीर चिंता। अस्वीकृति का असहनीय भय, दूसरों की प्रशंसा पर अत्यधिक निर्भरता, अकेलेपन का डर और तनाव में नकारात्मक आदतों में फंसने की प्रवृत्ति।",
+            "gu": "પડકારરૂપ (-2 ચંદ્ર અસ્થિરતા દોષ): અતિ સંવેદનશીલતા, માનસિક અસ્થિરતા, સતત ઉદાસીનતા (ડિપ્રેશન) અને નકારાત્મક ચિંતાઓ. બીજા પર વધુ પડતી પરાધીનતા, નિષ્ફળતાનો અસહ્ય ડર અને તણાવમાં વ્યસન કે એકલતા તરફ ઢળી જવાની પ્રવૃત્તિ."
         }
     },
     3: {
         "pos": {
-            "en": "Positive (+3): Noble wisdom, spiritual and moral guidance, scholarly eloquence, respected counsel.",
-            "hi": "सकारात्मक (+3): सात्विक ज्ञान, नैतिक व आध्यात्मिक मार्गदर्शन, विद्वतापूर्ण वाकपटुता, सम्मानित सलाहकार।",
-            "gu": "સકારાત્મક (+3): સાત્વિક જ્ઞાન, નૈતિક અને આધ્યાત્મિક માર્ગદર્શન, ઉત્તમ વક્તૃત્વ અને આદરણીય સલાહકાર."
+            "en": "Positive (+3 Jupiterian Wisdom): Supreme Guru wisdom, uncompromising moral ethics, profound advisory eloquence, and visionary academic intellect. Natural counselor, teacher, and spiritual strategist; deeply rooted in family harmony, incorruptible integrity, and revered societal honor.",
+            "hi": "सकारात्मक (+3 देवगुरु बृहस्पति प्रज्ञा): देवगुरु बृहस्पति की दिव्य प्रज्ञा, अक्षुण्ण नैतिक मूल्य, प्रभावशाली परामर्श वाणी और उत्कृष्ट दूरदर्शिता। स्वाभाविक गुरु, परामर्शदाता एवं नीतिवान मार्गदर्शक, जो परिवार के प्रति समर्पित, रिश्वत व प्रलोभनों से परे और समाज में पूज्यनीय प्रतिष्ठा प्राप्त करते हैं।",
+            "gu": "સકારાત્મક (+3 ગુરુ બૃહસ્પતિ જ્ઞાન): ગુરુ બૃહસ્પતિની દિવ્ય વિદ્વત્તા, અડગ નૈતિક મૂલ્યો, પ્રભાવશાળી માર્ગદર્શન અને ઉચ્ચ શૈક્ષણિક બુદ્ધિ. પરિવાર પ્રત્યે સમર્પણ, પ્રમાણિકતા અને સમાજમાં પૂજનીય મોભો ધરાવતા ઉત્તમ સલાહકાર અને શિક્ષક."
         },
         "neg": {
-            "en": "Challenging (-3): Knowledge ego, unasked preaching, scattered academic focus, metabolic/liver sensitivity.",
-            "hi": "कठिन (-3): ज्ञान का अहंकार, बिना मांगे उपदेश देना, पढ़ाई में भटकाव, लिवर व पाचन में संवेदनशीलता।",
-            "gu": "પડકારરૂપ (-3): જ્ઞાનનું અભિમાન, વગર માંગ્યે ઉપદેશો આપવા, અભ્યાસમાં ચિત્ત ભટકવું, પાચનની નબળાઈ."
+            "en": "Challenging (-3 Jupiter Dogma): Intellectual dogma, moral preachiness, hypocrisy, and obstinate refusal to acknowledge errors. Over-expansion leads to domestic disputes, detachment from family, superficial display of piety, and dictatorial lecturing toward subordinates and kin.",
+            "hi": "कठिन (-3 वैचारिक हठ एवं क्लेश): वैचारिक हठधर्मिता, उपदेशात्मक अहंकार, अपनी भूल न स्वीकारना और नैतिक दिखावा। अधिक संख्या होने पर पारिवारिक क्लेश या वैराग्य, परिजनों से अलगाव, और दूसरों पर अनचाहा नियंत्रण थोपने की कमजोरी।",
+            "gu": "પડકારરૂપ (-3 બૌદ્ધિક અહંકાર દોષ): બૌદ્ધિક અહંકાર, જિદ્દી વલણ, પોતાની ભૂલ ક્યારેય ન સ્વીકારવી અને ધાર્મિકતાનો દેખાડો. વધુ પડતા પ્રભાવથી પારિવારિક અશાંતિ, સંબંધોમાં અણબનાવ અને અન્યો ઉપર પોતાના વિચારો થોપવાની નબળાઈ."
         }
     },
     4: {
         "pos": {
-            "en": "Positive (+4): Structural stability, technical mastery, endurance, unconventional practical breakthroughs.",
-            "hi": "सकारात्मक (+4): सुदृढ़ संरचनात्मक स्थिरता, तकनीकी निपुणता, सहनशक्ति और व्यावहारिक सफलता।",
-            "gu": "સકારાત્મક (+4): સુદૃઢ વ્યવસ્થાપન, ટેકનિકલ કુશળતા, પરિશ્રમ અને વ્યવહારુ ક્ષેત્રે અનોખી સફળતા."
+            "en": "Positive (+4 Rahu Innovation): Groundbreaking out-of-the-box unconventional genius, extraordinary research intellect, sharp analytical logic, and uncanny mastery over modern technology and sales persuasion. Unshakable perseverance that converts unprecedented ideas into tangible reality.",
+            "hi": "सकारात्मक (+4 राहु का नवाचार): लीक से हटकर सोचने की क्रांतिकारी प्रतिभा (आउट-ऑफ-द-बॉक्स), असाधारण शोध बुद्धि, तार्किक विश्लेषण और आधुनिक तकनीक व जनसंपर्क पर अद्भुत पकड़। जटिलतम समस्याओं का अभिनव समाधान निकालने की सामर्थ्य।",
+            "gu": "સકારાત્મક (+4 રાહુનું ક્રાંતિકારી ચિંતન): લકીરથી હટીને વિચારવાની ક્રાંતિકારી પ્રતિભા (આઉટ-ઓફ-ધ-બોક્સ), અસાધારણ સંશોધન બુદ્ધિ અને આધુનિક ટેકનોલોજી તથા સેલ્સ-માર્કેટિંગમાં અદભુત સફળતા. મુશ્કેલ કોયડાઓને સરળતાથી ઉકેલવાની શક્તિ."
         },
         "neg": {
-            "en": "Challenging (-4): Sudden hurdles, unexpected delays, litigation risks, technical glitches, marital friction.",
-            "hi": "कठिन (-4): अप्रत्याशित अड़चनें, विलंब, कानूनी विवादों का जोखिम, तकनीकी बाधाएं, वैवाहिक तनाव।",
-            "gu": "પડકારરૂપ (-4): અચાનક આવતી અડચણો, કામમાં વિલંબ, કાનૂની ગૂંચવણો, દામ્પત્યમાં ખટરાગ."
+            "en": "Challenging (-4 Rahu Volatility): Unpredictable volatility, erratic decision-making, unexpected sudden financial drains, and vulnerability to legal/confinement traps (Bandhan). Restless nature leading to fruitless travels, chronic dissatisfaction, and defiance of established order.",
+            "hi": "कठिन (-4 राहु बंधन एवं व्यय): अप्रत्याशित मानसिक उथल-पुथल, अचानक वित्तीय नुकसान, कानूनी विवाद या बंधन/अस्पताल के योग। बिना योजना के कार्य, व्यर्थ की भागदौड़, अत्यधिक फिजूलखर्ची और मानसिक अस्थिरता का खतरा।",
+            "gu": "પડકારરૂપ (-4 રાહુ બંધન દોષ): અનિશ્ચિત વર્તન, અચાનક આર્થિક નુકસાન, કાનૂની અડચણો અથવા બંધન/હોસ્પિટલના યોગ. આયોજન વગર કામ કરવાની ટેવ, નકામી મુસાફરી, બેફામ ખર્ચ અને અશાંત મગજ."
         }
     },
     5: {
         "pos": {
-            "en": "Positive (+5): Commercial sharpness, versatile communication, adaptability, business networking, balance.",
-            "hi": "सकारात्मक (+5): प्रखर व्यापारिक समझ, बहुमुखी संचार कौशल, परिस्थितियों के अनुकूलन और अद्भुत संतुलन।",
-            "gu": "સકારાત્મક (+5): વેપાર-વાણિજ્યમાં તેજસ્વી સૂઝ, બહુમુખી વાર્તાલાપ કળા, અનુકૂલન અને સંતુલન."
+            "en": "Positive (+5 Mercury Commercial Genius): Lightning-fast commercial intellect, magnetic communication eloquence, supreme negotiation mastery, and cash-flow agility. Supreme networking strategist and business dealmaker who turns every market opportunity into profitable enterprise with joyful versatility.",
+            "hi": "सकारात्मक (+5 बुध की व्यापारिक प्रखरता): तीव्रतम व्यापारिक बुद्धि, वाकपटुता, कुशल सौदेबाजी और द्रुत गति से धन उपार्जन की महारत। व्यावहारिक नेटवर्किंग, बहुआयामी प्रतिभा और कठिन परिस्थितियों में तुरंत लाभ का मार्ग प्रशस्त करने की अद्भुत क्षमता।",
+            "gu": "સકારાત્મક (+5 બુધ વેપાર કુશળતા): અતિ તેજ વેપારી બુદ્ધિ, અદભુત વાકચાતુર્ય, ઉત્કૃષ્ટ સોદાબાજી અને ઝડપી નાણાકીય વૃદ્ધિ કરવાની કુશળતા. સંબંધોનું ઉત્તમ નેટવર્કિંગ અને ગમે તેવી સ્થિતિમાંથી નફો કમાઈ લેવાની વ્યવહારિક સૂઝ."
         },
         "neg": {
-            "en": "Challenging (-5): Chronic restlessness, nervous exhaustion, speech hastiness, speculative losses, instability.",
-            "hi": "कठिन (-5): अत्यधिक चंचलता, स्नायु दुर्बलता, वाणी में उतावलापन, सट्टे में हानि और अस्थिरता।",
-            "gu": "પડકારરૂપ (-5): અતિશય અજંપો, સ્નાયુબદ્ધ તણાવ, બોલવામાં ઉતાવળ, સટ્ટામાં નુકસાન અને અસ્થિરતા."
+            "en": "Challenging (-5 Mercury Calculation): Over-calculative mercantile obsession, extreme restless nervous energy, chronic insomnia, and unscrupulous temptation to cut corners or commit financial fraud ('Iski topi uske sar'). Flitting from venture to venture without sustained commitment.",
+            "hi": "कठिन (-5 अति-चतुराई एवं अनिद्रा): अत्यधिक स्वार्थपरक गणना, धन का लोभ, मानसिक उद्वेग, अनिद्रा (नींद न आना) और अनुचित चतुराई या धोखेबाजी की जोखिम भरी प्रवृत्ति। एक कार्य में स्थिरता न रख पाना और अति-सट्टेबाजी में धन गंवाना।",
+            "gu": "પડકારરૂપ (-5 અતિ-ચતુરતા દોષ): વધુ પડતી સ્વાર્થી ગણતરી, અનિદ્રા, માનસિક અશાંતિ અને છેતરપિંડી કે અયોગ્ય માર્ગે ધન કમાવવાની લાલચ ('આની ટોપી તેના માથે'). કાર્યમાં સ્થિરતા ન રહેવી અને અતિશય ચતુરાઈથી નુકસાન થવું."
         }
     },
     6: {
         "pos": {
-            "en": "Positive (+6): Material luxury, vehicle acquisition, harmonious romance, artistic flair, gracious hospitality.",
-            "hi": "सकारात्मक (+6): भौतिक ऐश्वर्य, वाहन सुख, सुखद दांपत्य व प्रेम, कलात्मक अभिरुचि, श्रेष्ठ आतिथ्य।",
-            "gu": "સકારાત્મક (+6): ભૌતિક વૈભવ, ઉત્તમ વાહન સુખ, મધુર પ્રેમ અને દાંપત્ય, કલાપ્રેમ અને ભવ્ય આતિથ્ય."
+            "en": "Positive (+6 Venusian Elegance & Luxury): Sovereign aesthetic refinement, magnetic social charisma, supreme hospitality, and effortless attraction of luxury vehicles, designer estates, and lavish comforts. Endowed with profound creative genius in cinema, arts, culinary delights, and joyful romantic fidelity.",
+            "hi": "सकारात्मक (+6 शुक्र का राजसी ऐश्वर्य): शुक्र का ऐश्वर्य, सम्मोहक सौंदर्य, विलासिता, उत्तम वाहन-भवन सुख और कलात्मक प्रतिभा। पाक कला, संगीत, फैशन एवं सिनेमा में अपार सफलता, उदार आतिथ्य सत्कार और जीवन में सहजता से सुख-सुविधाएं आकर्षित करने का वरदान।",
+            "gu": "સકારાત્મક (+6 શુક્રનું ભવ્ય ઐશ્વર્ય): શુક્રનું અપ્રતિમ સૌંદર્ય, ચુંબકીય આકર્ષણ, ભવ્ય વૈભવ, ઉત્તમ વાહન-મકાન સુખ અને કલાત્મક પ્રતિભા. સિનેમા, ફેશન, સંગીત અને મહેમાનગતિમાં અગ્રેસર રહેવાની અને વૈભવી જીવન જીવવાની કૃપા."
         },
         "neg": {
-            "en": "Challenging (-6): Extravagant debt, marital conflicts, sensory addictions, reputational scandals.",
-            "hi": "कठिन (-6): फिजूलखर्ची व कर्ज, दांपत्य जीवन में विवाद, व्यसनों का प्रभाव, मानहानि का जोखिम।",
-            "gu": "પડકારરૂપ (-6): દેવું અને બેફામ ખર્ચા, દાંપત્યમાં કલેશ, નબળા વ્યસનો અને બદનામીનું જોખમ."
+            "en": "Challenging (-6 Venusian Excess & Kalaha): Extravagant hedonism, showy brand obsession, marital conflicts, harsh aggressive speech toward partners, and domestic turbulence (Kalaha). Tendency to live beyond means and vulnerability to scandalous controversies or reproductive challenges.",
+            "hi": "कठिन (-6 शुक्र कलह एवं विलासिता दोष): भौतिक दिखावे का अंधानुकरण, कटु वाणी, जीवनसाथी या स्त्रियों से कलह-विवाद, और बेहिसाब फिजूलखर्ची। वासना व अत्यधिक भोग में समय गंवाना, रिश्तों में अविश्वास और संतान प्राप्ति में बाधाएं।",
+            "gu": "પડકારરૂપ (-6 શુક્ર કલહ દોષ): બાહ્ય દેખાડો અને બ્રાન્ડ મોહ, કડવી વાણી, સ્ત્રીઓ કે જીવનસાથી સાથે વિવાદ-ઝઘડા અને અતિશય ખર્ચાળ સ્વભાવ. લક્ઝરી પાછળ દેવું કરવું, સંબંધોમાં અણબનાવ અને પારિવારિક અશાંતિ."
         }
     },
     7: {
         "pos": {
-            "en": "Positive (+7): Occult mastery, deep research abilities, spiritual intuition, foreign travel, philosophical breakthroughs.",
-            "hi": "सकारात्मक (+7): गूढ़ ज्ञान, गहन शोध क्षमता, आध्यात्मिक अंतर्ज्ञान, विदेश यात्रा और दार्शनिक सफलता।",
-            "gu": "સકારાત્મક (+7): ગૂઢ વિદ્યાઓ, ઊંડી સંશોધન ક્ષમતા, આધ્યાત્મિક અંતર્જ્ઞાન, વિદેશ યાત્રા અને દાર્શનિક તેજ."
+            "en": "Positive (+7 Ketu Spiritual Fortitude): Transcendent spiritual awakening, penetrating analytical intuition, divine crisis protection, and profound mastery in healing and occult sciences. Blessed with exceptional good fortune in overcoming hurdles, foreign settlement success, and peaceful karmic stability.",
+            "hi": "सकारात्मक (+7 केतु की आध्यात्मिक कृपा): आध्यात्मिक मुक्ति, गहरी सूक्ष्म अंतर्दृष्टि, पराविद्याओं व हीलिंग में महारत और संकटों में ईश्वरीय दैवीय रक्षा। विदेश गमन एवं बसने के प्रबल योग, आकस्मिक भाग्योदय और विपरीत परिस्थितियों से सहजता से उबरने का सौभाग्य।",
+            "gu": "સકારાત્મક (+7 કેતુની આધ્યાત્મિક કૃપા): આધ્યાત્મિક જાગૃતિ, ગહન આંતરિક દ્રષ્ટિ, રહસ્યમય વિદ્યાઓ અને હીલિંગમાં નિપુણતા તથા મુશ્કેલીઓમાં ઈશ્વરીય રક્ષણ. વિદેશ પ્રવાસ અને સ્થાયી થવાના ઉત્તમ યોગ, અણધાર્યો ભાગ્યોદય અને શાંત પ્રકૃતિ."
         },
         "neg": {
-            "en": "Challenging (-7): Deep isolation, cynicism, betrayal by close associates, emotional vacuum, skin sensitivities.",
-            "hi": "कठिन (-7): अत्यधिक एकाकीपन, संशयवाद, विश्वासघात की आशंका, भावनात्मक शून्यता, त्वचा संबंधी विकार।",
-            "gu": "પડકારરૂપ (-7): અત્યંત એકલવાયાપણું, સંશયી સ્વભાવ, વિશ્વાસઘાતની શક્યતા, માનસિક શૂન્યતા, ચામડીની તકલીફ."
+            "en": "Challenging (-7 Ketu Skepticism & Disconnect): Hyper-skeptical over-analysis ('splitting hairs'), emotional detachment, vulnerability to sudden betrayals, and deep disillusionment in romance ('plastic love'). Chronic restlessness, aimless travels, and acute marital misunderstandings.",
+            "hi": "कठिन (-7 केतु संशय एवं भटकाव): अत्यधिक शक्की मिजाज ('बाल की खाल निकालना'), भावनात्मक अलगाव, विश्वासघात का शिकार होना और वैवाहिक जीवन में असंतोष (प्लास्टिक प्रेम)। व्यर्थ की यात्राएं, मन का भटकाव और एकांतवास की अति।",
+            "gu": "પડકારરૂપ (-7 કેતુ વહેમ દોષ): અતિશય વહેમી સ્વભાવ ('વાળની ખાલ કાઢવી'), લાગણીશૂન્યતા, દગો થવો અને દાંપત્ય જીવનમાં અસંતોષ (પ્લાસ્ટિક લવ). નકામી રઝળપાટ, એકલતા અને જીવનમાં અચાનક આવતા વિષમ ઉતાર-ચઢાવ."
         }
     },
     8: {
         "pos": {
-            "en": "Positive (+8): Real estate empire, immense endurance, executive justice, long-term wealth, karmic mastery.",
-            "hi": "सकारात्मक (+8): विशाल भूमि व अचल संपत्ति, अपार सहनशक्ति, न्यायप्रियता, दीर्घकालिक अकूत धन संपदा।",
-            "gu": "સકારાત્મક (+8): વિશાળ જમીન-મકાનનું સર્જન, અપાર સહનશક્તિ, ન્યાયપ્રિયતા, દીર્ઘકાલીન અખૂટ સંપત્તિ."
+            "en": "Positive (+8 Saturnian Endurance & Titan Wealth): Indomitable perseverance, monumental financial architecture, organizational titan strength, and selfless compassion for the underprivileged. Possesses unyielding karmic patience; reaches supreme heights in industry, heavy enterprise, real estate, and public justice through relentless hard work.",
+            "hi": "सकारात्मक (+8 शनि देव का साम्राज्य): शनि देव का असीम धैर्य, अटूट कर्मठता, विशाल वित्तीय साम्राज्य निर्माण की क्षमता और वंचितों के प्रति सच्ची करुणा। कठिन परिश्रम से शून्य से शिखर तक पहुंचने की शक्ति, अचल संपत्ति, उद्योग व न्याय क्षेत्र में सर्वोच्च कीर्ति।",
+            "gu": "સકારાત્મક (+8 શનિદેવનું સ્થાયી સામ્રાજ્ય): શનિદેવનું અડગ ધૈર્ય, અથાગ પરિશ્રમ, વિશાળ નાણાકીય આયોજન અને દીન-દુખિયાં પ્રત્યે ખરી સંવેદના. શૂન્યમાંથી સર્જન કરવાની શક્તિ, સ્થાવર મિલકતો, મોટા ઉદ્યોગો અને ન્યાયપ્રિયતામાં સર્વોચ્ચ શિખરે પહોંચવાની ક્ષમતા."
         },
         "neg": {
-            "en": "Challenging (-8): Protracted delays, grueling manual struggle, litigation traps, joint stiffness, heavy burdens.",
-            "hi": "कठिन (-8): अत्यधिक विलंब, कठोर संघर्ष, कानूनी मुकदमों में उलझन, जोड़ों में दर्द, भारी जिम्मेदारियां।",
-            "gu": "પડકારરૂપ (-8): અત્યંત વિલંબ, સખત શારીરિક સંઘર્ષ, કોર્ટ કચેરીની જાળ, સાંધાના દુખાવા, ભારે બોજ."
+            "en": "Challenging (-8 Saturnian Delay & Vish Yoga): Grinding struggle, agonizing career delays, chronic melancholia/depression (Vish Yoga), and bitter stubbornness. Tendency to hold long grudges, isolation, bone/joint ailments, and building castles in the air (Hava Mahal) if paired with ungrounded speculation.",
+            "hi": "कठिन (-8 शनि संघर्ष एवं विष दोष): अत्यधिक संघर्ष, कार्यों में भारी विलंब, मानसिक अवसाद (विष दोष), हठधर्मिता और अकेलापन। पुरानी बातों को लेकर मन में कड़वाहट रखना, हड्डियों/जोड़ों के रोग, और सट्टेबाजी में हवा हवाई महल बनाकर धन गंवाना।",
+            "gu": "પડકારરૂપ (-8 શનિ વિષ દોષ): અતિશય સંઘર્ષ, કામોમાં વિલંબ, માનસિક નિરાશા (વિષ દોષ), જીદ્દીપણું અને એકલતા. જૂના અણબનાવ મનમાં રાખી મૂકવા, સાંધા/હાડકાના રોગો અને સટ્ટાકીય આકાંક્ષાઓમાં હવાઈ કિલ્લા બનાવી ધન ગુમાવવું."
         }
     },
     9: {
         "pos": {
-            "en": "Positive (+9): Heroic valor, humanitarian leadership, energetic execution, sports/defense excellence.",
-            "hi": "सकारात्मक (+9): अदम्य साहस, परोपकारी नेतृत्व, त्वरित ऊर्जावान क्रियान्वयन, खेल व रक्षा में शीर्ष सफलता।",
-            "gu": "સકારાત્મક (+9): અપ્રતિમ સાહસ, માનવતાવાદી નેતૃત્વ, વીરતાપૂર્ણ કાર્યશૈલી, રમતગમત અને સુરક્ષામાં અગ્રેસર."
+            "en": "Positive (+9 Martial Valor & Commander Power): Heroic valor, explosive dynamic energy, fearless righteous leadership, and fiery passion for universal justice. Natural protector and powerhouse executor who excels in defense, real estate, sports, surgery, and large-scale administrative operations without backing down.",
+            "hi": "सकारात्मक (+9 मंगल का अदम्य शौर्य): मंगल का अतुलित शौर्य, अदम्य ऊर्जा, अन्याय के विरुद्ध निर्भीक संघर्ष और दृढ़ नेतृत्व क्षमता। रक्षा, खेलकूद, शल्य चिकित्सा (सर्जरी), रियल एस्टेट और बड़े अभियानों में निडरता से विजय प्राप्त करने वाला तेजस्वी सेनापति।",
+            "gu": "સકારાત્મક (+9 મંગળનું પરાક્રમ): મંગળનું અજોડ શૌર્ય, અખૂટ ઉર્જા, અન્યાય સામે લડવાની નિર્ભય હિંમત અને પ્રભાવશાળી નેતૃત્વ. સંરક્ષણ, રમતગમત, સર્જરી, જમીન-મકાન અને સાહસિક કાર્યોમાં વિજય અપાવતો પરાક્રમી સેનાપતિ."
         },
         "neg": {
-            "en": "Challenging (-9): Violent temper, blood pressure volatility, rash accidents, surgical interventions, aggressive clashes.",
-            "hi": "कठिन (-9): उग्र क्रोध, रक्तचाप में असंतुलन, दुर्घटनाओं व चोट का भय, शल्य चिकित्सा (सर्जरी) का योग, विवाद।",
-            "gu": "પડકારરૂપ (-9): અત્યંત ઉગ્ર ગુસ્સો, બ્લડ પ્રેશરની તકલીફ, અકસ્માત અને ઇજાનો ભય, સર્જરીનો યોગ, આક્રમક ઝઘડા."
+            "en": "Challenging (-9 Martial Wrath & Bandhan Risk): Explosive volcanic rage, reckless impatience, belligerent argumentation, and vulnerability to accidents or litigation (Bandhan Yoga). Tendency to act on hot impulses, burning valuable relationships, and imposing domineering force over subordinates.",
+            "hi": "कठिन (-9 मंगल उग्रता एवं बंधन जोखिम): ज्वालामुखी जैसा उग्र क्रोध, अत्यधिक आक्रामकता, व्यर्थ के विवाद और दुर्घटना या कानूनी विवाद (बंधन दोष) में फंसने की आशंका। जल्दबाजी में गलत निर्णय, कटु भाषा से आत्मीय संबंध बिगाड़ना और अशांत रक्तचाप।",
+            "gu": "પડકારરૂપ (-9 મંગળ ક્રોધ દોષ): જ્વાળામુખી જેવો ભયંકર ક્રોધ, અધીરાઈ, આક્રમક વાણી અને અકસ્માત કે કોર્ટ-કચેરી (બંધન દોષ) માં ફસાઈ જવાનું જોખમ. ઉતાવળા નિર્ણયોથી સંબંધોમાં તિરાડ પાડવી અને રક્તચાપ/અશાંતિ ભોગવવી."
         }
     }
 }
 
-# Vedic Yogas in 3x3 Grid
-YOGA_DEFINITIONS = {
+# Authentic Auspicious Planetary Alignments (Shubh Yogas)
+AUSPICIOUS_YOGAS_DEFINITIONS = {
     "thought_plane": {
         "numbers": [3, 1, 9],
-        "name": {"en": "Thought Plane (Mental Power Yog)", "hi": "विचार तल (मानसिक शक्ति योग)", "gu": "વિચાર તલ (માનસિક શક્તિ યોગ)"},
-        "tag": {"en": "Horizontal Line 1 (3-1-9)", "hi": "प्रथम क्षैતિज रेखा (3-1-9)", "gu": "પ્રથમ આડી લાઇન (3-1-9)"},
+        "name": {"en": "Mahapurush Thought Plane (Mental Power & Dominance Yog)", "hi": "महापुरुष विचार तल (मानसिक शक्ति एवं प्रभुत्व योग)", "gu": "મહાપુરુષ વિચાર તલ (માનસિક શક્તિ અને પ્રભુત્વ યોગ)"},
+        "tag": {"en": "Horizontal Line 1 (3-1-9)", "hi": "प्रथम क्षैतिज रेखा (3-1-9)", "gu": "પ્રથમ આડી લાઇન (3-1-9)"},
         "desc": {
-            "en": "Endows the native with immense visionary imagination, strategic brilliance, razor-sharp memory, and intellectual foresight.",
-            "hi": "जातक को अद्भुत दूरदर्शिता, रणनीतिक प्रतिभा, तीव्र स्मरण शक्ति और बौद्धिक योजना निर्माण की अपार क्षमता प्रदान करता है।",
-            "gu": "જાતકને અદ્ભુત કલ્પનાશક્તિ, દીર્ઘદ્રષ્ટિ, તીક્ષ્ણ યાદશક્તિ અને બૌદ્ધિક આયોજનની અસીમ ક્ષમતા પ્રદાન કરે છે."
+            "en": "Complete harmony of Jupiter (3), Sun (1), and Mars (9). Bestows visionary intellect, supreme leadership dominance, unshakable memory, and massive executive authority. The native rises to commanding heights in society.",
+            "hi": "गुरु (3), सूर्य (1) और मंगल (9) का त्रिवेणी संगम। जातक को अद्भुत दूरदर्शिता, सर्वोच्च प्रशासनिक प्रभुत्व, तीव्र स्मरण शक्ति और समाज में निर्विवाद नेतृत्व प्रदान करता है।",
+            "gu": "ગુરુ (3), સૂર્ય (1) અને મંગળ (9) નો દિવ્ય સંગમ. જાતકને અસાધારણ દીર્ઘદ્રષ્ટિ, સર્વોચ્ચ વહીવટી પ્રભુત્વ, તીક્ષ્ણ સ્મરણશક્તિ અને સમાજમાં અગ્રણી નેતૃત્વ પ્રદાન કરે છે."
         }
     },
     "will_plane": {
         "numbers": [6, 7, 5],
-        "name": {"en": "Will Plane (Determination Yog)", "hi": "इच्छा तल (संकल्प शक्ति योग)", "gu": "ઈચ્છા તલ (સંકલ્પ શક્તિ યોગ)"},
-        "tag": {"en": "Horizontal Line 2 (6-7-5)", "hi": "द्वितीय क्षैતિज रेखा (6-7-5)", "gu": "બીજી આડી લાઇન (6-7-5)"},
+        "name": {"en": "Kuber Lakshmi Will Plane (Material Luxury & Fortune Yog)", "hi": "कुबेर लक्ष्मी इच्छा तल (भौतिक ऐश्वर्य एवं संकल्प योग)", "gu": "કુબેર લક્ષ્મી ઈચ્છા તલ (ભૌતિક ઐશ્વર્ય અને સંકલ્પ યોગ)"},
+        "tag": {"en": "Horizontal Line 2 (6-7-5)", "hi": "द्वितीय क्षैतिज रेखा (6-7-5)", "gu": "બીજી આડી લાઇન (6-7-5)"},
         "desc": {
-            "en": "Grants indomitable willpower, extraordinary resilience, and an unwavering ability to overcome any crisis through determination.",
-            "hi": "जातक को अदम्य इच्छाशक्ति, असाधारण मानसिक दृढ़ता और किसी भी संकट से उबरने का अटूट संकल्प प्रदान करता है।",
-            "gu": "જાતકને અજેય મનોબળ, અસાધારણ આત્મવિશ્વાસ અને મુશ્કેલ પરિસ્થિતિઓ સામે લડીને વિજય મેળવવાની ક્ષમતા આપે છે."
+            "en": "Synthesis of Venus (6), Ketu (7), and Mercury (5). Confers lifelong material luxuries, premium vehicles, prime properties, magnetic sales oratory, and unyielding willpower. Attracts abundance effortlessly.",
+            "hi": "शुक्र (6), केतु (7) और बुध (5) का दिव्य योग। जीवनभर प्रचुर विलासिता, लक्जरी वाहन, भव्य भवन, सम्मोहक वाकपटुता और किसी भी संकट से उबरने का अडिग संकल्प प्रदान करता है।",
+            "gu": "શુક્ર (6), કેતુ (7) અને બુધ (5) નો મહાન યોગ. જીવનભર અખૂટ ભૌતિક સુખ-સગવડ, વૈભવી વાહન-મકાન, વાકચાતુર્ય અને સંકલ્પબળ દ્વારા લક્ષ્મી કૃપા પ્રાપ્ત કરાવે છે."
         }
     },
-    "action_plane": {
-        "numbers": [2, 8, 4],
-        "name": {"en": "Action Plane (Practical Execution Yog)", "hi": "कर्म तल (व्यावहारिक कर्म योग)", "gu": "કર્મ તલ (વ્યવહારુ કર્મ યોગ)"},
-        "tag": {"en": "Horizontal Line 3 (2-8-4)", "hi": "तृतीय क्षैतिज रेखा (2-8-4)", "gu": "ત્રીજી આડી લાઇન (2-8-4)"},
+    "intuition_plane": {
+        "numbers": [3, 7, 9],
+        "name": {"en": "Tri-Netra Spiritual & Intuition Plane (Occult Awakening Yog)", "hi": "त्रिनेत्र आध्यात्मिक एवं अंतर्ज्ञान तल (गूढ़ रहस्य योग)", "gu": "ત્રિનેત્ર આધ્યાત્મિક અને અંતર્જ્ઞાન તલ (ગૂઢ રહસ્ય યોગ)"},
+        "tag": {"en": "Spiritual Diagonal (3-7-9)", "hi": "आध्यात्मिक विकर्ण (3-7-9)", "gu": "આધ્યાત્મિક વિકર્ણ (3-7-9)"},
         "desc": {
-            "en": "Transforms dreams into tangible reality; bestows tireless practical execution, discipline, grounded logic, and material success.",
-            "hi": "सपनों को धरातल पर साकार करने की शक्ति; अथक परिश्रम, अनुशासन, व्यावहारिक तर्क और भौतिक सफलता दिलाता है।",
-            "gu": "સપનાઓને જમીન પર સાકાર કરવાની શક્તિ; અથાક પરિશ્રમ, શિસ્ત, વ્યવહારુ બુદ્ધિ અને સ્થાવર ભૌતિક સંપત્તિ આપે છે."
+            "en": "Union of Jupiter (3), Ketu (7), and Mars (9). Unlocks penetrating psychic intuition, prophetic foresight, profound occult aptitude, and divine crisis protection. Inspires selfless humanitarian service.",
+            "hi": "गुरु (3), केतु (7) और मंगल (9) का आध्यात्मिक संगम। जातक को त्रिकालदर्शी अंतर्ज्ञान, पराविद्याओं में सिद्धि, संकटों में ईश्वरीय दैवीय रक्षा और जनकल्याणकारी भावना प्रदान करता है।",
+            "gu": "ગુરુ (3), કેતુ (7) અને મંગળ (9) નો દિવ્ય આધ્યાત્મિક સમન્વય. જાતકને ઊંડી આંતરિક સૂઝ, રહસ્ય વિદ્યાઓમાં નિપુણતા, ઈશ્વરીય સહાય અને પરોપકારની ભાવના આપે છે."
         }
     },
     "vision_line": {
         "numbers": [3, 6, 2],
-        "name": {"en": "Knowledge & Intuition Line (Guru-Shukra-Chandra)", "hi": "ज्ञान एवं अंतर्ज्ञान रेखा (3-6-2)", "gu": "જ્ઞાન અને અંતર્જ્ઞાન રેખા (3-6-2)"},
+        "name": {"en": "Kala-Vidya Knowledge Line (Guru-Shukra-Chandra Yog)", "hi": "कला-विद्या ज्ञान रेखा (गुरु-शुक्र-चंद्र योग)", "gu": "કલા-વિદ્યા જ્ઞાન રેખા (ગુરુ-શુક્ર-ચંદ્ર યોગ)"},
         "tag": {"en": "Vertical Line 1 (3-6-2)", "hi": "प्रथम ऊर्ध्वाधर रेखा (3-6-2)", "gu": "પ્રથમ ઊભી લાઇન (3-6-2)"},
         "desc": {
-            "en": "Combines spiritual wisdom, artistic sophistication, and profound intuition; natural aptitude for occult sciences and counseling.",
-            "hi": "आध्यात्मिक ज्ञान, कलात्मक वैभव और तीव्र अंतर्ज्ञान का संगम; परामर्श, अध्यात्म एवं गूढ़ विज्ञानों में अद्वितीय सफलता।",
-            "gu": "આધ્યાત્મિક જ્ઞાન, કલાત્મક વૈભવ અને તીવ્ર આંતરિક સૂઝનો સંગમ; શિક્ષણ, સલાહકાર અને ગૂઢ વિજ્ઞાનમાં ઉત્કૃષ્ટ સફળતા."
+            "en": "Melds Guru's wisdom, Venus's artistic refinement, and Moon's emotional empathy. Bestows unmatched flair for media, performing arts, high-level counseling, and aesthetic cultural leadership.",
+            "hi": "गुरु का ज्ञान, शुक्र का कलात्मक वैभव और चंद्र की संवेदनशीलता। मीडिया, सिनेमा, संगीत, उच्चस्तरीय परामर्श और रचनात्मक क्षेत्रों में शिखर प्रतिष्ठा दिलाता है।",
+            "gu": "ગુરુનું જ્ઞાન, શુક્રનું કલાત્મક સૌંદર્ય અને ચંદ્રની સંવેદનશીલતા. મીડિયા, કલા, સંગીત અને શ્રેષ્ઠ સલાહકાર તરીકે સમાજમાં વિશિષ્ટ નામના અપાવે છે."
         }
     },
     "balance_line": {
         "numbers": [1, 7, 8],
-        "name": {"en": "Balance & Executive Power Line (Surya-Ketu-Shani)", "hi": "संतुलन एवं प्रशासनिक रेखा (1-7-8)", "gu": "સંતુલન અને વહીવટી શક્તિ રેખા (1-7-8)"},
+        "name": {"en": "Rajyadhikari Balance & Executive Sovereign Line (1-7-8)", "hi": "राज्याधिकारी संतुलन एवं प्रशासनिक संप्रभु रेखा (1-7-8)", "gu": "રાજ્યાધિકારી સંતુલન અને વહીવટી સાર્વભૌમ રેખા (1-7-8)"},
         "tag": {"en": "Vertical Line 2 (1-7-8)", "hi": "द्वितीय ऊर्ध्वाधर रेखा (1-7-8)", "gu": "બીજી ઊભી લાઇન (1-7-8)"},
         "desc": {
-            "en": "A rare Raj Yog granting immense judicial, administrative, and organizational endurance; capable of managing massive enterprises.",
-            "hi": "एक दुर्लभ राजयोग जो जातक को महान प्रशासनिक, न्यायिक और संगठनात्मक शक्ति देता है; विशाल संस्थानों के संचालन में सक्षम।",
-            "gu": "એક દુર્લભ રાજયોગ જે જાતકને ઉત્તમ વહીવટી, ન્યાયિક અને સંગઠનાત્મક શક્તિ આપે છે; વિશાળ સંસ્થાઓ ચલાવવામાં નિપુણ."
+            "en": "Imperial alignment of Sun (1), Ketu (7), and Saturn (8). Endows massive endurance, administrative justice, institutional command, and capacity to build and govern massive organizations.",
+            "hi": "सूर्य (1), केतु (7) और शनि (8) का दुर्लभ राजयोग। जातक को महान प्रशासनिक, न्यायिक और संगठनात्मक शक्ति प्रदान करता है; विशाल संस्थानों व उद्यमों के संचालन में समर्थ।",
+            "gu": "સૂર્ય (1), કેતુ (7) અને શનિ (8) નો દુર્લભ રાજયોગ. જાતકને ઉત્તમ વહીવટી, ન્યાયિક અને સંગઠનાત્મક શક્તિ આપે છે; વિશાળ સંસ્થાઓ ચલાવવામાં અજોડ નિપુણતા."
         }
     },
     "business_line": {
         "numbers": [9, 5, 4],
-        "name": {"en": "Enterprise & Wealth Line (Mangal-Budh-Rahu)", "hi": "व्यापार एवं समृद्धि रेखा (9-5-4)", "gu": "વેપાર અને સમૃદ્ધિ રેખા (9-5-4)"},
+        "name": {"en": "Vyapar Samriddhi Enterprise & Commercial Line (9-5-4)", "hi": "व्यापार समृद्धि एवं वाणिज्य रेखा (9-5-4)", "gu": "વેપાર સમૃદ્ધિ અને વાણિજ્ય રેખા (9-5-4)"},
         "tag": {"en": "Vertical Line 3 (9-5-4)", "hi": "तृतीय ऊर्ध्वाधर रेखा (9-5-4)", "gu": "ત્રીજી ઊભી લાઇન (9-5-4)"},
         "desc": {
-            "en": "Endows supreme commercial sharpness, quick risk-taking, digital/technical innovation, and massive wealth generation.",
-            "hi": "प्रखर व्यापारिक बुद्धि, त्वरित जोखिम लेने का साहस, तकनीकी नवाचार और व्यापार से अकूत धन कमाने की अद्वितीय क्षमता।",
-            "gu": "અસાધારણ વ્યાપારી સૂઝ, ઝડપી સાહસ કરવાની હિંમત, ટેકનોલોજી અને વેપાર દ્વારા વિપુલ ધન કમાવવાની ક્ષમતા."
+            "en": "Combines Mars's courage, Mercury's trading acumen, and Rahu's unconventional genius. Creates commercial empires, master negotiators, international trade tycoons, and tech innovators.",
+            "hi": "मंगल का साहस, बुध की व्यापारिक समझ और राहु की क्रांतिकारी सोच। बड़े वाणिज्यिक साम्राज्य, अंतरराष्ट्रीय व्यापार और तकनीकी नवाचारों में अभूतपूर्व सफलता दिलाता है।",
+            "gu": "મંગળનું સાહસ, બુધની વેપારી સૂઝ અને રાહુની અનોખી શોધક બુદ્ધિ. મોટા વેપાર, આંતરરાષ્ટ્રીય વ્યવસાય અને નવી ટેકનોલોજીમાં અઢળક નફો કરાવે છે."
+        }
+    },
+    "combination_1_7": {
+        "numbers": [1, 7],
+        "name": {"en": "Surya-Ketu Raja Bhagyodaya Yog (Lucky Early Earning)", "hi": "सूर्य-केतु राज भाग्योदय योग (शीघ्र आजीविका एवं भाग्य वृद्धि)", "gu": "સૂર્ય-કેતુ રાજ ભાગ્યોદય યોગ (ઝડપી કારકિર્દી અને ભાગ્યોદય)"},
+        "tag": {"en": "Pair 1-7 (Surya-Ketu)", "hi": "युगल 1-7 (सूर्य-केतु)", "gu": "જોડી 1-7 (સૂર્ય-કેતુ)"},
+        "desc": {
+            "en": "Both 1 and 7 are intrinsically lucky. Brings early employment/income in youth, prestigious government connections or civil stature, and steadfast loyalty in interpersonal relationships.",
+            "hi": "अंक 1 और 7 दोनों अत्यंत भाग्यशाली हैं। जातक को अल्पायु में ही रोजगार/धनार्जन, सरकारी तंत्र से लाभ या उच्च प्रतिष्ठा, तथा प्रेम व संबंधों में गहरी वफादारी प्रदान करता है।",
+            "gu": "અંક 1 અને 7 બંને અતિ ભાગ્યશાળી છે. જાતકને નાની ઉંમરે નોકરી/આવક, સરકારી લાભ કે મોભાદાર પદ અને સંબંધોમાં અડગ વફાદારી અપાવે છે."
         }
     },
     "combination_3_1": {
         "numbers": [3, 1],
-        "name": {"en": "Guru-Surya Yog (Authority & Honor)", "hi": "गुरु-सूर्य योग (सम्मान एवं सत्ता)", "gu": "ગુરુ-સૂર્ય યોગ (માન-સન્માન અને સત્તા)"},
-        "tag": {"en": "Pair 3-1", "hi": "युગલ 3-1", "gu": "જોડી 3-1"},
+        "name": {"en": "Guru-Surya Brahmavidya & Adhyaksh Yog (Authority & Honor)", "hi": "गुरु-सूर्य ब्रह्मविद्या एवं अध्यक्ष योग (सर्वोच्च सम्मान एवं सत्ता)", "gu": "ગુરુ-સૂર્ય બ્રહ્મવિદ્યા અને અધ્યક્ષ યોગ (સર્વોચ્ચ સન્માન અને સત્તા)"},
+        "tag": {"en": "Pair 3-1 (Guru-Surya)", "hi": "युगल 3-1 (गुरु-सूर्य)", "gu": "જોડી 3-1 (ગુરુ-સૂર્ય)"},
         "desc": {
-            "en": "Brings high government or institutional respect, mentoring stature, and righteous administrative standing.",
-            "hi": "शासन, समाज एवं उच्च संस्थानों में आदर-सम्मान, श्रेष्ठ मार्गदर्शन और धर्मनिष्ठ प्रशासनिक प्रतिष्ठा दिलाता है।",
-            "gu": "સરકાર અને સમાજમાં ઊંચો મોભો, આદરણીય પદવી, ઉત્કૃષ્ટ માર્ગદર્શન અને સન્માનજનક સત્તા અપાવે છે."
+            "en": "Scholastic brilliance, higher academic degrees, and revered professional stature. The native earns enduring renown as an advisor, institutional director, consultant, or moral thought leader.",
+            "hi": "उच्च शिक्षा, विद्वता और समाज में पूज्यनीय स्थान। जातक एक श्रेष्ठ सलाहकार, प्रशासनिक निर्देशक, प्राध्यापक अथवा नीतिवान मार्गदर्शक बनकर सर्वोच्च ख्याति प्राप्त करता है।",
+            "gu": "ઉચ્ચ શિક્ષણ, પ્રખર જ્ઞાન અને સમાજમાં આદરણીય સ્થાન. જાતક ઉત્તમ સલાહકાર, ડિરેક્ટર, પ્રોફેસર કે માર્ગદર્શક બનીને દીર્ઘકાલીન યશ પ્રાપ્ત કરે છે."
         }
     },
-    "combination_1_9": {
-        "numbers": [1, 9],
-        "name": {"en": "Surya-Mangal Yog (Dynamic Commander)", "hi": "सूर्य-मंगल योग (ऊर्जावान सेनापति)", "gu": "સૂર્ય-મંગળ યોગ (તેજસ્વી સેનાપતિ)"},
-        "tag": {"en": "Pair 1-9", "hi": "युगल 1-9", "gu": "જોડી 1-9"},
+    "combination_1_2": {
+        "numbers": [1, 2],
+        "name": {"en": "Surya-Chandra Rajyadhikari Yog (Executive & Political Rise)", "hi": "सूर्य-चंद्र राज्याधिकारी योग (प्रशासनिक एवं राजनीतिक उत्थान)", "gu": "સૂર્ય-ચંદ્ર રાજ્યાધિકારી યોગ (વહીવટી અને રાજકીય ઉત્થાન)"},
+        "tag": {"en": "Pair 1-2 (Surya-Chandra)", "hi": "युगल 1-2 (सूर्य-चंद्र)", "gu": "જોડી 1-2 (સૂર્ય-ચંદ્ર)"},
         "desc": {
-            "en": "Fierce courage, relentless energy, commanding speech, and exceptional capacity to lead during crises.",
-            "hi": "अदम्य साहस, असीम शारीरिक व मानसिक ऊर्जा, प्रभावशाली वाणी और संकट में आगे बढ़कर नेतृत्व करने की शक्ति।",
-            "gu": "અસાધારણ હિંમત, અખૂટ શારીરિક શક્તિ, પ્રભાવશાળી વાણી અને મુશ્કેલ સમયમાં આગળ વધીને નેતૃત્વ કરવાની ક્ષમતા."
+            "en": "Blends solar executive willpower with lunar emotional mass-appeal. Propels native into top management, political governance, or public leadership with substantial financial stature.",
+            "hi": "सूर्य का दृढ़ संकल्प और चंद्र का जन-आकर्षण। जातक को उच्च प्रशासनिक पदों, राजनीतिक नेतृत्व या विशाल जनसमूह के संचालक के रूप में अपार सम्मान व वैभव दिलाता है।",
+            "gu": "સૂર્યનો દ્રઢ સંકલ્પ અને ચંદ્રનું જન-આકર્ષણ. જાતકને સિનિયર મેનેજમેન્ટ, રાજકારણ કે જાહેર જીવનમાં મોખરાનું સ્થાન અને ઉત્તમ નાણાકીય મોભો આપે છે."
+        }
+    },
+    "combination_9_5": {
+        "numbers": [9, 5],
+        "name": {"en": "Mangal-Budh Vyapar Ratna Yog (Street-Smart Commercial Acumen)", "hi": "मंगल-बुध व्यापार रत्न योग (कुशाग्र व्यापारिक प्रतिभा)", "gu": "મંગળ-બુધ વેપાર રત્ન યોગ (તીક્ષ્ણ વ્યાપારી સૂઝ)"},
+        "tag": {"en": "Pair 9-5 (Mangal-Budh)", "hi": "युगल 9-5 (मंगल-बुध)", "gu": "જોડી 9-5 (મંગળ-બુધ)"},
+        "desc": {
+            "en": "Mars dramatically accelerates Mercury's mental speed. Generates razor-sharp street smartness, fast deal closures, lucrative commercial margins, and fearless business execution without loss.",
+            "hi": "मंगल बुध की बौद्धिक गति को कई गुना बढ़ा देता है। जातक अत्यंत चतुर, व्यावहारिक, त्वरित सौदे करने वाला और व्यापार में कभी घाटा न खाने वाला सफल उद्यमी बनता है।",
+            "gu": "મંગળ બુધની ગતિને અત્યંત ઝડપી બનાવે છે. જાતક વ્યવહારુ, સમયસૂચક, નફાકારક સોદા પાર પાડનાર અને વેપારમાં ક્યારેય નુકસાન ન કરનાર સફળ વેપારી બને છે."
+        }
+    },
+    "combination_6_7": {
+        "numbers": [6, 7],
+        "name": {"en": "Shukra-Ketu Akarshan & Chamatkar Yog (Charisma & Sudden Luck)", "hi": "शुक्र-केतु आकर्षण एवं चमत्कार योग (सम्मोहन एवं आकस्मिक लाभ)", "gu": "શુક્ર-કેતુ આકર્ષણ અને ચમત્કાર યોગ (મોહકતા અને આકસ્મિક લાભ)"},
+        "tag": {"en": "Pair 6-7 (Shukra-Ketu)", "hi": "युगल 6-7 (शुक्र-केतु)", "gu": "જોડી 6-7 (શુક્ર-કેતુ)"},
+        "desc": {
+            "en": "Magnetic romantic charisma, captivating artistic presence, passion for luxury and music, and sudden unexpected windfalls or strokes of fortune.",
+            "hi": "सम्मोहक व्यक्तित्व, विपरीत लिंग के प्रति आकर्षण, संगीत व कला में गहरी रुचि और जीवन में अचानक धन लाभ व चमत्कारी भाग्योदय के योग बनाता है।",
+            "gu": "આકર્ષક વ્યક્તિત્વ, કળા-સંગીતનો શોખ, રોમેન્ટિક સંબંધો અને જીવનમાં અણધાર્યા આર્થિક લાભ તથા ચમત્કારિક પ્રગતિના યોગ બનાવે છે."
         }
     },
     "combination_6_5": {
         "numbers": [6, 5],
-        "name": {"en": "Lakshmi Yog / Kuber Yog (Budh-Shukra)", "hi": "लक्ष्मी योग / कुबेर योग (बुध-शुक्र)", "gu": "લક્ષ્મી યોગ / કુબેર યોગ (બુધ-શુક્ર)"},
-        "tag": {"en": "Pair 6-5", "hi": "युगल 6-5", "gu": "જોડી 6-5"},
+        "name": {"en": "Lakshmi-Kuber Yog (Commercial Fortune & Wealth Magnetism)", "hi": "लक्ष्मी-कुबेर योग (अखंड धन एवं व्यापारिक ऐश्वर्य)", "gu": "લક્ષ્મી-કુબેર યોગ (અખંડ ધન અને વેપારી ઐશ્વર્ય)"},
+        "tag": {"en": "Pair 6-5 (Budh-Shukra)", "hi": "युगल 6-5 (बुध-शुक्र)", "gu": "જોડી 6-5 (બુધ-શુક્ર)"},
         "desc": {
-            "en": "Supreme financial and commercial blessing; brings lucrative sales, charming negotiation, and luxury lifestyle.",
-            "hi": "धन एवं वैभव का महायोग; व्यापार में भारी मुनाफा, मधुर संवाद शैली और सर्व प्रकार के भौतिक सुख-साधनों की प्राप्ति।",
-            "gu": "ધન અને વૈભવનો અદભુત યોગ; વેપારમાં અઢળક નફો, આકર્ષક વાતચીત કળા અને સર્વ પ્રકારના ભૌતિક સુખોની પ્રાપ્તિ."
+            "en": "Unites Lakshmi's luxury (6) with Mercury's trade acumen (5). Creates lucrative wealth inflows, retail expansion, glamorous brand enterprises, and enduring prosperity.",
+            "hi": "शुक्र के विलासिता सुख और बुध की वाणिज्यिक समझ का मिलन। निरंतर धन प्रवाह, ब्रांडेड व्यवसाय, विपुल बचत और जीवन में समस्त भौतिक ऐश्वर्य प्रदान करता है।",
+            "gu": "શુક્રના ભૌતિક સુખ અને બુધની વેપારી બુદ્ધિનો અદભુત યોગ. અવિરત ધનલાભ, બ્રાન્ડેડ બિઝનેસ, મબલક બચત અને સુખી સમૃદ્ધ જીવન આપે છે."
         }
     },
-    "combination_8_4": {
-        "numbers": [8, 4],
-        "name": {"en": "Shani-Rahu Yog (Technical Mastery & Sudden Rise)", "hi": "शनि-राहु योग (तकनीकी दक्षता व आकस्मिक उत्थान)", "gu": "શનિ-રાહુ યોગ (ટેકનિકલ નિપુણતા અને અચાનક પ્રગતિ)"},
-        "tag": {"en": "Pair 8-4", "hi": "युगल 8-4", "gu": "જોડી 8-4"},
+    "combination_6_2": {
+        "numbers": [6, 2],
+        "name": {"en": "Shukra-Chandra Kala Ratna Yog (Aesthetic & Media Acumen)", "hi": "शुक्र-चंद्र कला रत्न योग (सौंदर्य एवं मीडिया ख्याति)", "gu": "શુક્ર-ચંદ્ર કલા રત્ન યોગ (સૌંદર્ય અને મીડિયા ખ્યાતિ)"},
+        "tag": {"en": "Pair 6-2 (Shukra-Chandra)", "hi": "युगल 6-2 (शुक्र-चंद्र)", "gu": "જોડી 6-2 (શુક્ર-ચંદ્ર)"},
         "desc": {
-            "en": "Deep technical, mechanical, and systemic mastery; initial grinding struggles followed by sudden, monumental breakthroughs.",
-            "hi": "गहन तकनीकी, इंजीनियरिंग व प्रणालियों की समझ; प्रारंभिक कड़े संघर्ष के बाद अचानक जीवन में भारी सफलता।",
-            "gu": "ઊંડી ટેકનિકલ અને વ્યવસ્થાપકીય સૂઝ; શરૂઆતના કઠિન સંઘર્ષ બાદ અચાનક જીવનમાં મોટો ઉછાળો અને સફળતા."
+            "en": "Deep artistic sensitivity, glamorous creative flair, and emotional magnetism. Flourishes in media, cinema, culinary arts, fashion, and interpersonal PR.",
+            "hi": "गहन कलात्मक संवेदनशीलता, आकर्षक छवि और रचनात्मक लालित्य। फिल्म, संगीत, जनसंपर्क, आतिथ्य और सौंदर्य प्रसाधनों के क्षेत्र में व्यापक ख्याति दिलाता है।",
+            "gu": "ગહન કલાત્મક સંવેદના, આકર્ષક દેખાવ અને સર્જનાત્મકતા. ફિલ્મ, મીડિયા, સંગીત, પબ્લિક રિલેશન્સ અને ફેશનમાં ઉત્કૃષ્ટ સફળતા અપાવે છે."
         }
     },
-    "combination_2_8": {
-        "numbers": [2, 8],
-        "name": {"en": "Chandra-Shani Yog (Real Estate & Patience)", "hi": "चंद्र-शनि योग (भूमि संपदा एवं धैर्य)", "gu": "ચંદ્ર-શનિ યોગ (જમીન-મકાન અને ધૈર્ય)"},
-        "tag": {"en": "Pair 2-8", "hi": "युगल 2-8", "gu": "જોડી 2-8"},
+    "combination_1_5": {
+        "numbers": [1, 5],
+        "name": {"en": "Surya-Budh Budhaditya Yog (Intellect & Oratory Excellence)", "hi": "सूर्य-बुध बुधादित्य योग (प्रखर बुद्धि एवं ओजस्वी वाणी)", "gu": "સૂર્ય-બુધ બુધાદિત્ય યોગ (પ્રખર બુદ્ધિ અને ઓજસ્વી વાણી)"},
+        "tag": {"en": "Pair 1-5 (Surya-Budh)", "hi": "युगल 1-5 (सूर्य-बुध)", "gu": "જોડી 1-5 (સૂર્ય-બુધ)"},
         "desc": {
-            "en": "Bestows patient emotional maturity and significant gains in immovable property/land, though requires emotional discipline.",
-            "hi": "जातक को परिपक्व धैर्य और अचल संपत्ति व भूमि से भारी लाभ दिलाता है, हालांकि मन को स्थिर रखने की आवश्यकता होती है।",
-            "gu": "જાતકને મક્કમ ધીરજ અને જમીન-મકાન તથા સ્થાવર મિલકતમાંથી મોટો લાભ અપાવે છે, પણ મનની શાંતિ જાળવવી જરૂરી છે."
+            "en": "Superior analytical intelligence, eloquence in speech, rapid problem-solving, and revered stature in commerce, publishing, law, or public administration.",
+            "hi": "शास्त्रीय बुधादित्य योग। प्रखर तार्किक बुद्धि, ओजस्वी वक्ता, त्वरित निर्णय क्षमता और व्यापार, कानून या प्रशासनिक सेवाओं में उच्च आदर दिलाता है।",
+            "gu": "શાસ્ત્રીય બુધાદિત્ય યોગ. તેજસ્વી બુદ્ધિ, સચોટ વક્તૃત્વ, ત્વરિત નિર્ણયશક્તિ અને વેપાર, કાયદો કે વહીવટી ક્ષેત્રે મોટો મોભો આપે છે."
         }
     },
-    "combination_9_4": {
-        "numbers": [9, 4],
-        "name": {"en": "Mangal-Rahu Axis (Drive & Vigilance Yog)", "hi": "मंगल-राहु योग (तीव्र ऊर्जा एवं सावधानी)", "gu": "મંગળ-રાહુ યોગ (તીવ્ર ઊર્જા અને સાવચેતી)"},
-        "tag": {"en": "Pair 9-4", "hi": "युगल 9-4", "gu": "જોડી 9-4"},
+    "combination_1_6": {
+        "numbers": [1, 6],
+        "name": {"en": "Surya-Shukra Vaibhav Yog (Royal Prosperity & Grandeur)", "hi": "सूर्य-शुक्र वैभव योग (राजसी ऐश्वर्य एवं भव्य जीवनशैली)", "gu": "સૂર્ય-શુક્ર વૈભવ યોગ (રાજસી ઐશ્વર્ય અને ભવ્ય જીવનશૈલી)"},
+        "tag": {"en": "Pair 1-6 (Surya-Shukra)", "hi": "युगल 1-6 (सूर्य-शुक्र)", "gu": "જોડી 1-6 (સૂર્ય-શુક્ર)"},
         "desc": {
-            "en": "Explosive ambitious drive; requires conscious care to avoid rash arguments, litigation, or impulsive risks.",
-            "hi": "प्रचंड महत्वाकांक्षा व ऊर्जा; कानूनी विवादों, वाद-विवादों और जल्दबाजी में लिए गए निर्णयों से विशेष सावधानी आवश्यक।",
-            "gu": "પ્રચંડ મહત્વાકાંક્ષા અને જોશ; કાનૂની વિવાદો, ઉતાવળા નિર્ણયો અને વાહન ચલાવતી વખતે ખાસ સાવચેતી રાખવી જરૂરી."
-        }
-    },
-    "combination_7_8": {
-        "numbers": [7, 8],
-        "name": {"en": "Ketu-Shani Yog (Occult & Sudden Gains)", "hi": "केतु-शनि योग (गूढ़ ज्ञान एवं अप्रत्याशित लाभ)", "gu": "કેતુ-શનિ યોગ (ગૂઢ જ્ઞાન અને આકસ્મિક લાભ)"},
-        "tag": {"en": "Pair 7-8", "hi": "युगल 7-8", "gu": "જોડી 7-8"},
-        "desc": {
-            "en": "Deep interest in mysticism, philosophy, research, and unexpected inheritance or financial recoveries.",
-            "hi": "गूढ़ विद्याओं, साधना, रिसर्च में गहरी रुचि तथा अचानक पैतृक संपत्ति या रुके हुए धन की प्राप्ति का योग।",
-            "gu": "ગૂઢ વિદ્યાઓ, આધ્યાત્મિક ચિંતન, સંશોધન અને અણધારી વારસાગત મિલકત કે અટવાયેલા નાણાં પાછા મળવાનો યોગ."
+            "en": "Harmonizes solar authority with Venusian luxury. Bestows a regal standard of living, high social prestige, taste for fine luxuries, and executive magnetism.",
+            "hi": "सूर्य के अधिकार और शुक्र की विलासिता का समन्वय। जातक को उच्च रहन-सहन, सामाजिक रुतबा, सुरुचिपूर्ण जीवनशैली और चुम्बकीय आकर्षण प्रदान करता है।",
+            "gu": "સૂર્યના અધિકાર અને શુક્રના વૈભવનો સમન્વય. જાતકને શાહી જીવનશૈલી, સામાજિક મોભો, વૈભવી શોખ અને આકર્ષક નેતૃત્વ પ્રદાન કરે છે."
         }
     }
 }
 
-# Suitable Professions by Number (1-9)
+# Authentic Challenging Planetary Combinations & Doshas (With Root Causes & Concrete Remedial Mitigations)
+INAUSPICIOUS_YOGAS_DEFINITIONS = {
+    "bandhan_yog_94": {
+        "numbers": [9, 4],
+        "name": {"en": "Mars-Rahu Bandhan Dosha (Confinement, Court Litigation & Injury)", "hi": "मंगल-राहु बंधन दोष (न्यायालयीन विवाद, कारावास एवं स्वास्थ्य बंधन)", "gu": "મંગળ-રાહુ બંધન દોષ (કાનૂની અડચણો, કોર્ટ-કચેરી અને સ્વાસ્થ્ય બંધન)"},
+        "tag": {"en": "Pair 9-4 (Missing 5) • Bandhan Dosha", "hi": "युगल 9-4 (अनुपस्थित 5) • बंधन दोष", "gu": "જોડી 9-4 (ગેરહાજર 5) • બંધન દોષ"},
+        "desc": {
+            "en": "Activated when 9 and 4 appear together with missing 5. Restricts native's freedom through legal disputes, sudden court litigation, police inquiries, hospitalization bed-rest, or reckless verbal outbursts. Note: Even fours (double 44) reduce the severity, enabling rapid bail or recovery, whereas double nines (99) aggravate anger and legal vulnerabilities.",
+            "hi": "जब चक्र में 9 और 4 उपस्थित हों और 5 अनुपस्थित हो। यह जातक की स्वतंत्रता को बाधित करता है—मुकदमेबाजी, अदालती विवाद, अचानक अस्पताल में भर्ती होना, या अनियंत्रित वाणी से विवाद। विशेष: 4 की सम संख्या (44) होने पर प्रभाव घटता है तथा जमानत या स्वास्थ्य लाभ शीघ्र होता है, जबकि 99 होने पर उग्रता व संकट बढ़ते हैं।",
+            "gu": "જ્યારે કુંડળીમાં 9 અને 4 હોય પણ 5 ગેરહાજર હોય. આ જાતકની સ્વતંત્રતા છીનવે છે—કોર્ટ-કચેરી, કાનૂની વિવાદ, અચાનક હોસ્પિટલના ખાટલે પડવું કે જીભ પર કાબૂ ન રહેવો. વિશેષ: જો બેવડો 4 (44) હોય તો અસર ઓછી થાય છે અને જામીન કે રિકવરી ઝડપી મળે છે, પણ બેવડો 9 (99) હોય તો ગુસ્સો અને જોખમ વધે છે."
+        },
+        "remedy": {
+            "en": "Recite Hanuman Chalisa daily; chant Rahu Beej Mantra ('Om Bhram Bhreem Bhroum Sah Rahave Namah') 108 times on Wednesday/Saturday evenings; donate dark blankets to sweepers; keep a solid silver square plate in wallet; strictly avoid signing hasty legal guarantees.",
+            "hi": "प्रतिदिन हनुमान चालीसा का पाठ करें; शनिवार व बुधवार शाम राहु बीज मंत्र ('ॐ भ्रां भ्रीं भ्रौं सः राहवे नमः') का 108 बार जप करें; सफाईकर्मियों को काले कंबल या तिल का दान करें; चांदी का ठोस चौकोर टुकड़ा जेब में रखें; बिना सोचे किसी की कानूनी जमानत न लें।",
+            "gu": "દરરોજ હનુમાન ચાલીસાનો પાઠ કરવો; બુધવાર/શનિવારે સાંજે રાહુ બીજ મંત્ર ('ૐ ભ્રાં ભ્રીં ભ્રૌં સઃ રાહવે નમઃ') નો 108 વાર જાપ કરવો; સફાઈ કર્મચારીઓને ધાબળાનું દાન કરવું; પર્સમાં ચાંદીનો ચોરસ ટુકડો રાખવો; ઉતાવળે કોઈના જામીન ન બનવું."
+        }
+    },
+    "bandhan_yog_54": {
+        "numbers": [5, 4],
+        "name": {"en": "Mercury-Rahu Bandhan Dosha (Contractual Traps & Health Confinement)", "hi": "बुध-राहु बंधन दोष (दस्तावेजी विवाद, धोखाधड़ी एवं स्वास्थ्य बाधा)", "gu": "બુધ-રાહુ બંધન દોષ (કરાર વિવાદ, છેતરપિંડી અને સ્વાસ્થ્ય અડચણ)"},
+        "tag": {"en": "Pair 5-4 (Missing 9) • Bandhan Dosha", "hi": "युगल 5-4 (अनुपस्थित 9) • बंधन दोष", "gu": "જોડી 5-4 (ગેરહાજર 9) • બંધન દોષ"},
+        "desc": {
+            "en": "Activated when 5 and 4 combine with missing 9. Ties the native down through ambiguous contractual disputes, bureaucratic audit inquiries, audit penalties, or prolonged clinical bed-rest. Even fours (44) mitigate the affliction and ensure swift release.",
+            "hi": "जब 5 और 4 एक साथ आएं और 9 न हो। यह अस्पष्ट अनुबंधों में फंसने, कानूनी ऑडिट नोटिसों, वित्तीय विवादों या लंबी बीमारी के कारण बेड-रेस्ट का योग बनाता है। 44 की उपस्थिति होने पर कानूनी राहत शीघ्र मिलती है।",
+            "gu": "જ્યારે 5 અને 4 સાથે આવે અને 9 ગેરહાજર હોય. આ અસ્પષ્ટ કરારોમાં ફસાવું, ઓડિટ/કાનૂની નોટિસો આવવી કે બીમારીને લીધે લાંબો સમય પથારીવશ થવાનો યોગ બનાવે છે. બેવડા 4 (44) ની હાજરીથી રાહત ઝડપી મળે છે."
+        },
+        "remedy": {
+            "en": "Feed green spinach/fodder to cows every Wednesday; chant 'Om Budhaya Namah' and 'Om Gan Ganapataye Namah' 108 times; get all legal and business agreements thoroughly audited by an advocate before signing.",
+            "hi": "प्रत्येक बुधवार गाय को हरा चारा या पालक खिलाएं; 'ॐ बुधाय नमः' और 'ॐ गं गणपतये नमः' का 108 बार जप करें; किसी भी व्यावसायिक अनुबंध पर हस्ताक्षर करने से पहले कानूनी परामर्श अवश्य लें।",
+            "gu": "દર બુધવારે ગાયને લીલું ઘાસ કે પાલક ખવડાવવી; 'ૐ બુધાય નમઃ' અને 'ૐ ગં ગણપતયે નમઃ' નો 108 વાર જાપ કરવો; કોઈપણ કરાર પર સહી કરતા પહેલા વકીલની સલાહ અચૂક લેવી."
+        }
+    },
+    "apaman_yog_18": {
+        "numbers": [1, 8],
+        "name": {"en": "Sun-Saturn Apaman & Pitru Sangharsh Dosha (Public Insult & Ego Clash)", "hi": "सूर्य-शनि अपमान एवं पितृ संघर्ष दोष (सार्वजनिक तिरस्कार व मतभेद)", "gu": "સૂર્ય-શનિ અપમાન અને પિતૃ સંઘર્ષ દોષ (જાહેર અપમાન અને મતભેદ)"},
+        "tag": {"en": "Pair 1-8 (Missing 7) • Apaman Dosha", "hi": "युगल 1-8 (अनुपस्थित 7) • अपमान दोष", "gu": "જોડી 1-8 (ગેરહાજર 7) • અપમાન દોષ"},
+        "desc": {
+            "en": "Activated when numbers 1 and 8 combine with missing 7. Sun (father) and Saturn (son) are planetary arch-rivals. Subjects native to unmerited insults, false accusations at workplace, friction with father or superiors, and delayed recognition.",
+            "hi": "जब 1 और 8 उपस्थित हों और 7 न हो। सूर्य और शनि के परस्पर शत्रुता के कारण जातक को बिना कारण अपमान, कार्यस्थल पर झूठे आक्षेप, पिता से गंभीर वैचारिक मतभेद और अथक परिश्रम के बाद भी श्रेय न मिलने का दंश झेलना पड़ता है।",
+            "gu": "જ્યારે 1 અને 8 હોય અને 7 ગેરહાજર હોય. સૂર્ય અને શનિના પરસ્પર વેરને કારણે જાતકને વગર વાંકે અપમાન, ઓફિસમાં ખોટા આક્ષેપ, પિતા સાથે વિખવાદ અને સખત મહેનત છતાં યશ ન મળવાની પીડા ભોગવવી પડે છે."
+        },
+        "remedy": {
+            "en": "Offer Arghya (fresh water mixed with kumkum, red sandalwood, and red flowers in a copper vessel) to the rising Sun daily; touch father's feet every morning for blessings; recite Aditya Hridaya Stotram; strictly abstain from alcohol and leather products on Saturdays.",
+            "hi": "नित्य प्रातः तांबे के लोटे में जल, कुमकुम व लाल पुष्प डालकर सूर्य देव को अर्घ्य दें; प्रतिदिन पिता के चरण स्पर्श कर आशीर्वाद लें; आदित्य हृदय स्तोत्र का पाठ करें; शनिवार को मदिरा व चमड़े की वस्तुओं से पूर्ण परहेज रखें।",
+            "gu": "રોજ સવારે તાંબાના લોટામાં જળ, કંકુ અને લાલ ફૂલ પધરાવી સૂર્યનારાયણને અર્ઘ્ય આપવું; રોજ પિતાના ચરણસ્પર્શ કરી આશીર્વાદ લેવા; આદિત્ય હૃદય સ્તોત્રનો પાઠ કરવો; શનિવારે દારૂ કે ચામડાની વસ્તુઓથી દૂર રહેવું."
+        }
+    },
+    "vish_yog_28": {
+        "numbers": [2, 8],
+        "name": {"en": "Moon-Saturn Vish Dosha (Depression, Emotional Toxicity & Melancholy)", "hi": "चंद्र-शनि विष दोष (मानसिक अवसाद, विषाद एवं भावनात्मक संताप)", "gu": "ચંદ્ર-શનિ વિષ દોષ (માનસિક તણાવ, ડિપ્રેશન અને ભાવનાત્મક પીડા)"},
+        "tag": {"en": "Pair 2-8 (Missing 4) • Vish Dosha", "hi": "युगल 2-8 (अनुपस्थित 4) • विष दोष", "gu": "જોડી 2-8 (ગેરહાજર 4) • વિષ દોષ"},
+        "desc": {
+            "en": "Occurs when Moon (2) and Saturn (8) appear with missing 4. Creates heavy emotional toxicity, chronic depressive thoughts, anxiety loops, and delays in marital happiness. Native oscillates between superiority complex (if 1 or 9 present) or inferiority complex. Note: Situation stabilizes significantly with double eight (88).",
+            "hi": "चंद्र (2) और शनि (8) का मिलन जब 4 अनुपस्थित हो। यह विष योग जातक को मानसिक अवसाद (डिप्रेशन), अकेलेपन की पीड़ा, निराशा और दांपत्य में नीरसता देता है। चार्ट में 1 या 9 होने पर सुपीरियरिटी कॉम्प्लेक्स अन्यथा हीनभावना रहती है। विशेष: 88 होने पर स्थिति संभलती है।",
+            "gu": "ચંદ્ર (2) અને શનિ (8) નો યોગ જ્યારે 4 ગેરહાજર હોય. આ વિષ દોષ જાતકને ઊંડું ડિપ્રેશન, એકલતા, નિરાશા અને દાંપત્યજીવનમાં અશાંતિ આપે છે. કુંડળીમાં 1 કે 9 હોય તો અહંકાર અને ન હોય તો લઘુતાગ્રંથિ અનુભવાય છે. બેવડા 8 (88) થી સ્થિતિમાં ઘણો સુધારો થાય છે."
+        },
+        "remedy": {
+            "en": "Perform Shiv Abhishekam with raw milk and water on Mondays; wear a natural 2-Mukhi Rudraksha capped in silver; immerse a silver square coin in running river water; strictly avoid wearing black or dark navy blue clothes on Mondays.",
+            "hi": "प्रत्येक सोमवार शिवलिंग पर कच्चे दूध और जल से अभिषेक करें; चांदी में मढ़ा 2-मुखी रुद्राક્ષ धारण करें; बहते जल में एक चांदी का चौकोर सिक्का प्रवाहित करें; सोमवार को काले व गहरे नीले वस्त्र पहनने से बचें।",
+            "gu": "દર સોમવારે શિવલિંગ પર કાચા દૂધ અને જળથી અભિષેક કરવો; ચાંદીમાં મઢાવેલો 2-મુખી રુદ્રાક્ષ ધારણ કરવો; વહેતા પાણીમાં ચાંદીનો ચોરસ સિક્કો પધરાવવો; સોમવારે કાળા કે ઘાટા વાદળી કપડાં ન પહેરવા."
+        }
+    },
+    "hava_mahal_84": {
+        "numbers": [8, 4],
+        "name": {"en": "Saturn-Rahu Hava Mahal & Kasht Dosha (Air Castles, Speculation Losses & Accidents)", "hi": "शनि-राहु हवा महल एवं कष्ट दोष (काल्पनिक योजनाएं, सट्टे में हानि व दुर्घटना)", "gu": "શનિ-રાહુ હવા મહેલ અને કષ્ટ દોષ (હવાઈ કિલ્લા, સટ્ટામાં નુકસાન અને અકસ્માત)"},
+        "tag": {"en": "Pair 8-4 (Missing 2) • Hava Mahal Dosha", "hi": "युगल 8-4 (अनुपस्थित 2) • हवा महल दोष", "gu": "જોડી 8-4 (ગેરહાજર 2) • હવા મહેલ દોષ"},
+        "desc": {
+            "en": "Triggered when 8 and 4 appear with missing 2. Induces tendency to build unrealistic castles in the air, falling into high-risk get-rich-quick speculative traps (crypto, intraday, lottery), physical accident-proneness, and turbulence in married life.",
+            "hi": "जब 8 और 4 उपस्थित हों और 2 न हो। जातक हवाई योजनाएं बनाता है ('हवा महल'), बिना आधार के सट्टेबाजी या जोखिम भरे निवेश में धन गंवाता है। यह योग दुर्घटना प्रवणता और दांपत्य जीवन में कलह उत्पन्न करता है।",
+            "gu": "જ્યારે 8 અને 4 હોય પણ 2 ગેરહાજર હોય. જાતક વ્યવહારિકતા ભૂલીને હવાઈ કિલ્લા બનાવે છે, સટ્ટો કે જોખમી સ્કીમોમાં મોટું નુકસાન કરે છે. આ યોગ અકસ્માતનો ભય અને દાંપત્યજીવનમાં તણાવ પેદા કરે છે."
+        },
+        "remedy": {
+            "en": "Strictly refrain from speculative day-trading, gambling, or unverified schemes; worship Lord Bhairav or Hanuman; keep a solid silver square block at home; feed mustard-oil smeared rotis to black stray dogs on Saturdays.",
+            "hi": "सट्टेबाजी, शेयर बाजार के इंट्राडे ट्रेडिंग व लॉटरी से पूर्ण दूरी बनाएं; श्री भैरव या हनुमान जी की आराधना करें; घर में चांदी की ठोस ईंट या गोली रखें; शनिवार शाम काले श्वान (कुत्ते) को सरसों के तेल से चुपड़ी रोटी खिलाएं।",
+            "gu": "શેરબજારના સટ્ટા, ક્રિપ્ટો કે લૉટરીથી સંપૂર્ણ દૂર રહેવું; કાળભૈરવ કે હનુમાનજીની ઉપાસના કરવી; ઘરમાં ચાંદીની નાની ચોરસ લગડી રાખવી; શનિવારે કાળા કૂતરાને સરસવનું તેલ લગાડેલી રોટલી ખવડાવવી."
+        }
+    },
+    "plastic_love_75": {
+        "numbers": [7, 5],
+        "name": {"en": "Ketu-Mercury Plastic Love & Maya Dosha (Superficial Romance & Betrayal)", "hi": "केतु-बुध प्लास्टिक प्रेम एवं माया दोष (दिखावटी आकर्षण व विछोह)", "gu": "કેતુ-બુધ પ્લાસ્ટિક લવ અને માયા દોષ (દેખાડાનો પ્રેમ અને વિશ્વાસઘાત)"},
+        "tag": {"en": "Pair 7-5 (Missing 6) • Plastic Love Dosha", "hi": "युगल 7-5 (अनुपस्थित 6) • प्लास्टिक प्रेम दोष", "gu": "જોડી 7-5 (ગેરહાજર 6) • પ્લાસ્ટિક લવ દોષ"},
+        "desc": {
+            "en": "Occurs when 7 and 5 appear without 6. Fosters superficial romantic relations devoid of genuine emotional depth ('plastic love and plastic beauty'), heartbreaks, unstable commitments, and vulnerability to betrayal despite witty communication skills.",
+            "hi": "जब 7 और 5 उपस्थित हों और 6 न हो। रिश्तों में भावनात्मक गहराई का अभाव रहता है जिसे 'प्लास्टिक प्रेम' कहा जाता है। दिखावटी आकर्षण, कई प्रेम संबंधों में भटकाव, विश्वासघात और वैवाहिक जीवन में असंतोष उत्पन्न होता है।",
+            "gu": "જ્યારે 7 અને 5 હોય અને 6 ગેરહાજર હોય. સંબંધોમાં સાચા પ્રેમ અને લાગણીનો અભાવ રહે છે જેને 'પ્લાસ્ટિક લવ' કહે છે. બાહ્ય આકર્ષણ પાછળ અંજાવું, પ્રેમમાં દગો મળવો અને દાંપત્યજીવનમાં અસંતોષ ઊભો થાય છે."
+        },
+        "remedy": {
+            "en": "Worship Lord Ganesha with 21 Durva grass shoots every Wednesday; chant 'Om Gan Ganapataye Namah'; offer green whole moong to wild birds; verify partner's emotional integrity and family background before making marriage commitments.",
+            "hi": "प्रत्येक बुधवार भगवान श्री गणेश को 21 दूर्वा अर्पित करें; 'ॐ गं गणपतये नमः' का जप करें; पक्षियों को साबुत हरा मूंग डालें; वैवाहिक या प्रेम संबंधों में केवल बाहरी चमक पर न जाएं, आत्मिक सत्यता परखें।",
+            "gu": "દર બુધવારે ગણપતિ બાપ્પાને 21 દૂર્વા અર્પણ કરવી; 'ૐ ગં ગણપતયે નમઃ' નો જાપ કરવો; પક્ષીઓને આખા મગ ચણવા; લગ્ન કે પ્રેમ સંબંધોમાં માત્ર દેખાવ પર ન જતા પારિવારિક સંસ્કારો ચકાસવા."
+        }
+    },
+    "agni_sangharsh_19": {
+        "numbers": [1, 9],
+        "name": {"en": "Sun-Mars Agni Sangharsh Dosha (Fiery Temper, Impatience & Collision)", "hi": "सूर्य-मंगल अग्नि संघर्ष दोष (उग्र क्रोध, अधीरता एवं टकराव)", "gu": "સૂર્ય-મંગળ અગ્નિ સંઘર્ષ દોષ (તીવ્ર ક્રોધ, અધીરાઈ અને ટકરાવ)"},
+        "tag": {"en": "Pair 1-9 (Missing 3) • Agni Dosha", "hi": "युगल 1-9 (अनुपस्थित 3) • અગ્નિ દોષ", "gu": "જોડી 1-9 (ગેરહાજર 3) • અગ્નિ દોષ"},
+        "desc": {
+            "en": "Both Sun and Mars are extremely hot fiery planets. When present without Jupiter (3)'s stabilizing wisdom, native suffers from persistent anger, burning impatience, friction with teammates, and blood pressure fluctuations despite brilliant surgical/technical intellect.",
+            "hi": "सूर्य और मंगल दोनों अग्नि तत्व के अत्यंत उष्ण ग्रह हैं। गुरु (3) के अभाव में यह उग्र क्रोध, अत्यधिक जल्दबाजी, साथियों से टकराव और रक्तचाप संबंधी परेशानियां देता है, यद्यपि यह तकनीकी व शल्य चिकित्सा में सफलता भी दिलाता है।",
+            "gu": "સૂર્ય અને મંગળ બંને અતિશય ગરમ અગ્નિતત્વના ગ્રહો છે. ગુરુ (3) ના નિયંત્રણ વગર આ ક્રોધ, અધીરાઈ, સાથીદારો સાથે ઝઘડા અને બ્લડ પ્રેશરની તકલીફ આપે છે, જોકે સર્જરી કે ટેકનિકલ ક્ષેત્રે સફળતા પણ અપાવે છે."
+        },
+        "remedy": {
+            "en": "Drink water stored overnight in a silver glass; practice 10 minutes of Anulom-Vilom and Sheetali Pranayama daily; avoid excessively hot and spicy foods; cultivate a 5-second pause before responding in anger.",
+            "hi": "चांदी के गिलास में रखा जल पिएं; प्रतिदिन 10 मिनट अनुलोम-विलोम व शीतली प्राणायाम करें; अत्यधिक तीखे-मसालेदार भोजन से बचें; क्रोध आने पर तुरंत प्रतिक्रिया देने के बजाय 5 सेकंड का मौन रखें।",
+            "gu": "ચાંદીના પ્યાલામાં રાખેલું પાણી પીવું; દરરોજ 10 મિનિટ અનુલોમ-વિલોમ અને શીતળી પ્રાણાયામ કરવા; વધુ પડતો તીખો-મસાલેદાર ખોરાક ટાળવો; ક્રોધ આવે ત્યારે 5 સેકન્ડ શાંત રહેવાની ટેવ પાડવી."
+        }
+    },
+    "kalaha_yog_66_2": {
+        "numbers": [6, 2],
+        "name": {"en": "Shukra-Chandra Kalaha Dosha (Domestic Discord, Foul Speech & Marital Disputes)", "hi": "शुक्र-चंद्र कलह दोष (घरेलू विवाद, कटु वाणी एवं दांपत्य क्लेश)", "gu": "શુક્ર-ચંદ્ર કલહ દોષ (ઘરેલું કંકાસ, કડવી વાણી અને દાંપત્ય ક્લેશ)"},
+        "tag": {"en": "Double 6 with Single 2 • Kalaha Dosha", "hi": "दोहरा 6 एवं 2 • कलह दोष", "gu": "બેવડો 6 અને 2 • કલહ દોષ"},
+        "desc": {
+            "en": "Activated when double six (66) combines with single two (2). Triggers frequent domestic quarrels, foul/abusive language during anger, instigating fights with opposite sex, and persistent friction with spouse.",
+            "hi": "जब चक्र में दो बार 6 (66) और एक बार 2 हो। यह व्यक्ति को गुस्सैल, कटुभाषी, बात-बात पर गाली-गलौज या अपशब्द बोलने वाला और जीवनसाथी या स्त्रियों से बार-बार कलह करने वाला बना देता है।",
+            "gu": "જ્યારે કુંડળીમાં બે વાર 6 (66) અને એક વાર 2 હોય. આ વ્યક્તિને વાતવાતમાં ઉશ્કેરાઈ જનાર, અપશબ્દો બોલનાર અને જીવનસાથી કે સ્ત્રીઓ સાથે વારંવાર ઝઘડા ઊભા કરનાર બનાવે છે."
+        },
+        "remedy": {
+            "en": "Offer white sweets (Rasgulla or Kheer) to young girls on Fridays; wear a natural South Sea pearl in silver on the little finger; place a natural camphor lamp in the bedroom for marital peace; strictly avoid using expletives.",
+            "hi": "शुक्रवार को कन्याओं को सफेद मिठाई (रसगुल्ला या खीर) खिलाएं; कनिष्ठिका अंगुली में चांदी में मोती धारण करें; शयनकक्ष में प्राकृतिक कपूर का डिफ्यूज़र जलाएं; अपशब्दों के प्रयोग से पूरी तरह बचें।",
+            "gu": "શુક્રવારે નાની કન્યાઓને સફેદ મીઠાઈ (રસગુલ્લા કે ખીર) આપવી; ટચલી આંગળીમાં ચાંદીમાં મોતી ધારણ કરવું; બેડરૂમમાં કપૂરનો દીવો પ્રગટાવવો; અપશબ્દો બોલવાની ટેવ સદંતર બંધ કરવી."
+        }
+    },
+    "slow_mind_99_5": {
+        "numbers": [9, 5],
+        "name": {"en": "Mangal-Budh Mati-Bhram Dosha (Mental Sluggishness, Confusion & Indecision)", "hi": "मंगल-बुध मतिभ्रम दोष (मंद बुद्धि, भ्रम एवं निर्णयहीनता)", "gu": "મંગળ-બુધ મતિભ્રમ દોષ (મનની મંદ ગતિ, મૂંઝવણ અને અનિર્ણાયકતા)"},
+        "tag": {"en": "Double 9 with Single 5 (Missing 4) • Mati-Bhram", "hi": "दोहरा 9 एवं 5 (अनुपस्थित 4) • मतिभ्रम दोष", "gu": "બેવડો 9 અને 5 (ગેરહાજર 4) • મતિભ્રમ દોષ"},
+        "desc": {
+            "en": "Activated when double nine (99) combines with single five (5) with missing 4. Mars's excessive heat overpowers Mercury, drastically slowing mental processing speed; causes chronic confusion, poor study retention, and trade hesitation.",
+            "hi": "जब दो बार 9 (99) और एक 5 उपस्थित हों तथा 4 न हो। मंगल का अत्यधिक प्रभाव बुध की गति को दबा देता है जिससे जातक भ्रमित रहता है, दिमाग धीमा काम करता है और पढ़ाई व व्यापारिक निर्णय लेने में कठिनाई होती है।",
+            "gu": "જ્યારે બે વાર 9 (99) અને એક 5 હોય તથા 4 ગેરહાજર હોય. મંગળનો અતિ પ્રભાવ બુધને દબાવી દે છે જેથી મગજ ધીમું ચાલે છે, સતત મૂંઝવણ રહે છે અને અભ્યાસ કે વેપારના નિર્ણયોમાં મુશ્કેલી પડે છે."
+        },
+        "remedy": {
+            "en": "Chant Saraswati Beej Mantra ('Om Aim Saraswatyai Namah') 108 times daily; consume 5 soaked almonds in the morning; wear an energized Budh Yantra in bronze; avoid multi-tasking under time pressure.",
+            "hi": "प्रतिदिन सरस्वती बीज मंत्र ('ॐ ऐं सरस्वत्यै नमः') का 108 बार जप करें; प्रातःकाल 5 भीगे हुए बादाम खाएं; कांसे में प्राण-प्रतिष्ठित बुध यंत्र धारण करें; एक समय में एक ही कार्य पर ध्यान केंद्रित करें।",
+            "gu": "દરરોજ સરસ્વતી બીજ મંત્ર ('ૐ ઐં સરસ્વત્યૈ નમઃ') નો 108 વાર જાપ કરવો; સવારે 5 પલાળેલી બદામ ખાવી; કાંસામાં પ્રાણપ્રતિષ્ઠિત બુધ યંત્ર ધારણ કરવું; એક સમયે એક જ કામ પર ધ્યાન આપવું."
+        }
+    },
+    "chaturya_fraud_55_9": {
+        "numbers": [5, 9],
+        "name": {"en": "Hyper-Mercury Ati-Chaturya Dosha (Scheming Mind, Deception & Audit Risk)", "hi": "अति-चातुर्य एवं छल दोष (अति-चालाकी, धोखाधड़ी व वित्तीय जांच का जोखिम)", "gu": "અતિ-ચાતુર્ય અને કપટ દોષ (વધુ પડતી ચાલાકી, છેતરપિંડી અને કાનૂની તપાસનું જોખમ)"},
+        "tag": {"en": "Multiple 5s with Mars (Missing 4) • Ati-Chaturya", "hi": "अनेक 5 एवं 9 (अनुपस्थित 4) • अति-चातुर्य दोष", "gu": "એકથી વધુ 5 અને 9 (ગેરહાજર 4) • અતિ-ચાતુર્ય દોષ"},
+        "desc": {
+            "en": "Activated when multiple 5s (55 or 555) combine with Mars (9) with missing 4. Generates an over-scheming, hyper-cunning intellect ('Iski topi uske sar') that is tempted to cut ethical corners, risking major financial fraud investigations, tax audits, or sudden insolvency.",
+            "hi": "जब चार्ट में 55 या 555 के साथ 9 हो और 4 अनुपस्थित हो। दिमाग इतना अधिक सक्रिय और धूर्त हो जाता है कि जातक शॉर्टकट या अनैतिक तरीकों ('इसकी टोपी उसके सर') से धन कमाने की फिराक में रहता है, जिससे भारी कानूनी ऑडिट या धोखेबाजी का शिकार होने का खतरा रहता है।",
+            "gu": "જ્યારે કુંડળીમાં 55 કે 555 સાથે 9 હોય અને 4 ન હોય. મગજ અતિશય ચતુર બની જાય છે અને અનૈતિક શોર્ટકટ ('આની ટોપી તેના માથે') વાપરવાની લાલચ જાગે છે, જેથી ઇન્કમટેક્સ ઓડિટ કે છેતરપિંડીના ગંભીર કેસમાં ફસાવાનું જોખમ રહે છે."
+        },
+        "remedy": {
+            "en": "Practice uncompromising integrity in accounting and taxation; chant Vishnu Sahasranama every Wednesday; feed green grass to cows; consult certified financial advisors before finalizing aggressive leveraged investments.",
+            "hi": "खातों व टैक्स में पूर्ण ईमानदारी और पारदर्शिता बरतें; प्रत्येक बुधवार विष्णु सहस्रनाम का पाठ करें; गाय को हरा चारा खिलाएं; अत्यधिक जोखिम भरे सट्टे या अनैतिक सौदों से पूरी तरह दूर रहें।",
+            "gu": "હિસાબ-કિતાબ અને ટેક્સમાં સંપૂર્ણ પ્રમાણિકતા રાખવી; દર બુધવારે વિષ્ણુ સહસ્રનામનો પાઠ કરવો; ગાયને લીલું ઘાસ ખવડાવવું; વધુ પડતા જોખમી સોદા કે અયોગ્ય રસ્તાઓથી દૂર રહેવું."
+        }
+    },
+    "turbulence_plane_284": {
+        "numbers": [2, 8, 4],
+        "name": {"en": "Chandra-Shani-Rahu Action Plane (Extreme Karmic Ups & Downs)", "hi": "चंद्र-शनि-राहु कर्म तल (अत्यधिक उतार-चढ़ाव एवं बेलगाम वाणी)", "gu": "ચંદ્ર-શનિ-રાહુ કર્મ તલ (અતિશય ઉતાર-ચઢાવ અને અંકુશહીન વાણી)"},
+        "tag": {"en": "Horizontal Line 3 (2-8-4) • Turbulence Axis", "hi": "तृतीय क्षैतिज रेखा (2-8-4) • कर्म उथल-पुथल", "gu": "ત્રીજી આડી લાઇન (2-8-4) • કર્મ ઉતાર-ચઢાવ"},
+        "desc": {
+            "en": "Occurs when 2, 8, and 4 assemble across the Action Plane. Native witnesses roller-coaster fortunes—soaring to great heights only to face sudden crashes. Speech can become completely unfiltered ('speaking whatever, whenever, wherever'), and married life is frequently troubled. Note: Even numbers of 4 (44) or 8 (88) significantly stabilize this volatility.",
+            "hi": "जब 2, 8 और 4 तीनों उपस्थित हों। जातक के जीवन में तीव्र उतार-चढ़ाव आते हैं—ऊंचे उठते हैं और अचानक गिरते भी हैं। बिना सोचे-समझे कहीं भी कुछ भी बोल देने की आदत ('व्हाटएवर, व्हेनेवर, व्हेयरएवर') और वैवाहिक जीवन में असंतोष रहता है। 44 या 88 होने पर यह दोष काफी हद तक शांत होता है।",
+            "gu": "જ્યારે 2, 8 અને 4 ત્રણેય હાજર હોય. જીવનમાં તીવ્ર ઉતાર-ચઢાવ આવે છે—ખૂબ ઊંચે પહોંચે અને અચાનક નીચે પડે. ગમે ત્યાં ગમે તે બોલી દેવાની ટેવ અને દાંપત્યજીવનમાં અશાંતિ રહે છે. જો બેવડો 4 (44) કે 8 (88) હોય તો આ દોષ ઘણો શાંત થાય છે."
+        },
+        "remedy": {
+            "en": "Keep a solid pure silver coin gifted by mother always in possession; chant Maha Mrityunjaya Mantra 11 times daily; consciously cultivate disciplined silence in heated arguments; support physically challenged individuals on Saturdays.",
+            "hi": "माता से आशीर्वाद स्वरूप प्राप्त चांदी का ठोस सिक्का सदैव अपने पास रखें; नित्य 11 बार महामृत्युंजय मंत्र का जप करें; आवेश में मौन रहने का अभ्यास करें; शनिवार को दिव्यांग जनों की सेवा व सहायता करें।",
+            "gu": "માતા પાસેથી આશીર્વાદરૂપે મેળવેલો ચાંદીનો સિક્કો હંમેશા પાસે રાખવો; રોજ 11 વાર મહામૃત્યુંજય મંત્રનો જાપ કરવો; આવેશમાં મૌન રહેવાની ટેવ પાડવી; શનિવારે દિવ્યાંગ વ્યક્તિઓની સેવા કરવી."
+        }
+    }
+}
+
+# Consolidated Yogas Registry for System Compatibility
+YOGA_DEFINITIONS = {**AUSPICIOUS_YOGAS_DEFINITIONS, **INAUSPICIOUS_YOGAS_DEFINITIONS}
+
 PROFESSIONS_INFO = {
     1: {
         "en": "Government Services, Administration, CEO/Director, Politics, Defense Leadership, Gold/Jewelry, Solar Energy, Entrepreneurship.",

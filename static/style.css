@@ -255,7 +255,6 @@ body {
     width: 100%;
     min-width: 0;
 }
-}
 
 .panel-header {
     display: flex;
@@ -598,7 +597,7 @@ textarea:focus {
 
 .compass-dash-grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
     gap: 10px;
     margin-bottom: 10px;
 }
@@ -900,9 +899,9 @@ textarea:focus {
 }
 
 .chip-pd {
-    background: #ffedd5;
-    color: #9a3412;
-    border: 1px solid #fb923c;
+    background: #f3e8ff;
+    color: #6d28d9;
+    border: 1px solid #7c3aed;
 }
 
 .v-cell .c-num {
@@ -962,7 +961,7 @@ textarea:focus {
 .dot-natal { background: #d4af37; }
 .dot-md { background: #38bdf8; }
 .dot-ad { background: #22c55e; }
-.dot-pd { background: #fb923c; }
+.dot-pd { background: #7c3aed; }
 
 .charms-badge-row {
     display: grid;
@@ -1088,7 +1087,7 @@ textarea:focus {
 .precautions-header {
     font-family: var(--font-heading);
     font-size: 12.5px;
-    color: #fb923c;
+    color: #a855f7;
     margin-bottom: 8px;
     padding-bottom: 4px;
     border-bottom: 1px solid rgba(251, 146, 60, 0.2);
@@ -1150,8 +1149,8 @@ textarea:focus {
 .dasha-card.card-md .d-tag { color: #38bdf8; }
 .dasha-card.card-ad { border-color: #22c55e !important; box-shadow: 0 0 10px rgba(34, 197, 94, 0.25); }
 .dasha-card.card-ad .d-tag { color: #22c55e; }
-.dasha-card.card-pd { border-color: #fb923c !important; box-shadow: 0 0 10px rgba(251, 146, 60, 0.25); }
-.dasha-card.card-pd .d-tag { color: #fb923c; }
+.dasha-card.card-pd { border-color: #7c3aed !important; box-shadow: 0 0 12px rgba(124, 58, 237, 0.3); }
+.dasha-card.card-pd .d-tag { color: #a855f7; }
 
 .d-tag {
     font-size: 9px;
@@ -1207,8 +1206,8 @@ textarea:focus {
 }
 
 .tier-web-pd {
-    border-left: 4px solid #fb923c;
-    background: linear-gradient(180deg, rgba(251, 146, 60, 0.05) 0%, rgba(15, 23, 42, 0.4) 100%);
+    border-left: 4px solid #7c3aed;
+    background: linear-gradient(180deg, rgba(124, 58, 237, 0.08) 0%, rgba(15, 23, 42, 0.4) 100%);
 }
 
 .tier-card-web-hdr {
@@ -1244,7 +1243,7 @@ textarea:focus {
 
 .md-pill { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); }
 .ad-pill { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); }
-.pd-pill { background: rgba(251, 146, 60, 0.15); color: #fb923c; border: 1px solid rgba(251, 146, 60, 0.4); }
+.pd-pill { background: rgba(124, 58, 237, 0.15); color: #c084fc; border: 1px solid rgba(124, 58, 237, 0.4); }
 
 .tier-hdr-dates {
     font-size: 11px;
@@ -1855,4 +1854,57 @@ textarea:focus {
         font-size: 13px;
     }
 }
+/* ==================== Auspicious & Inauspicious Yogas in Web UI ==================== */
+.yoga-subheading {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 16px 0 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.yoga-subheading.inauspicious {
+    color: #f87171;
+}
+.yoga-display-card.auspicious {
+    border-left: 4px solid #22c55e;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.08) 0%, rgba(15, 23, 42, 0.6) 100%);
+}
+.yoga-display-card.inauspicious {
+    border-left: 4px solid #e11d48;
+    background: linear-gradient(135deg, rgba(225, 29, 72, 0.08) 0%, rgba(15, 23, 42, 0.6) 100%);
+    box-shadow: 0 0 10px rgba(225, 29, 72, 0.12);
+}
+.yoga-tag-mini.ruby {
+    background: rgba(225, 29, 72, 0.18);
+    color: #fda4af;
+    border: 1px solid rgba(225, 29, 72, 0.4);
+}
+.yoga-remedy-box {
+    margin-top: 8px;
+    padding: 8px 10px;
+    background: rgba(225, 29, 72, 0.1);
+    border-radius: 6px;
+    border: 1px dashed rgba(225, 29, 72, 0.35);
+    font-size: 12px;
+    color: #fecdd3;
+    line-height: 1.4;
+}
+.yoga-remedy-box strong {
+    color: #ff8080;
+}
+.no-dosha-banner {
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    color: #4ade80;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
 }

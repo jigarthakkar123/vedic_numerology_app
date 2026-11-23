@@ -128,11 +128,19 @@ def build_report_html(data: Dict[str, Any]) -> str:
         </tr>
         """
 
-    # Yogas Cards HTML (Page 3)
-    yogas_html = ""
-    for y in yogas[:4]:
-        yogas_html += f"""
-        <div class="yoga-card-quad">
+    # Yogas Cards HTML (Page 3) - Auspicious & Inauspicious Doshas
+    auspicious_list = data.get("auspicious_yogas", [])
+    if not auspicious_list:
+        auspicious_list = [y for y in yogas if y.get("category") != "inauspicious"]
+    inauspicious_list = data.get("inauspicious_yogas", [])
+    if not inauspicious_list:
+        inauspicious_list = [y for y in yogas if y.get("category") == "inauspicious"]
+
+    # Auspicious HTML (Top 2-4)
+    auspicious_yogas_html = ""
+    for y in auspicious_list[:4]:
+        auspicious_yogas_html += f"""
+        <div class="yoga-card-quad auspicious">
             <div class="yoga-card-quad-header">
                 <div class="yoga-card-quad-title">{y['name']}</div>
                 <span class="yoga-tag-mini gold">{y['tag']}</span>
@@ -142,6 +150,32 @@ def build_report_html(data: Dict[str, Any]) -> str:
             </div>
         </div>
         """
+
+    # Inauspicious Doshas HTML (Top 2-3)
+    inauspicious_doshas_html = ""
+    if inauspicious_list:
+        for y in inauspicious_list[:2]:
+            remedy_text = y.get('remedy', '')
+            remedy_html = f'<div class="yoga-remedy-note"><strong>{ui.get("mitigation_remedy", "Remedial Mitigation Key:")}</strong> {remedy_text}</div>' if remedy_text else ''
+            inauspicious_doshas_html += f"""
+            <div class="yoga-card-quad inauspicious">
+                <div class="yoga-card-quad-header">
+                    <div class="yoga-card-quad-title" style="color: #991b1b;">{y['name']}</div>
+                    <span class="yoga-tag-mini ruby">{y['tag']}</span>
+                </div>
+                <div class="yoga-card-quad-body">
+                    <div class="yoga-line-mini">{y['desc']}</div>
+                    {remedy_html}
+                </div>
+            </div>
+            """
+    else:
+        no_dosha_text = {
+            "en": "No Adverse Karmic Doshas Active in Chart • The planetary frequencies remain protected by divine harmony.",
+            "hi": "जन्म चक्र में कोई प्रतिकूल ग्रहीय दोष सक्रिय नहीं है • ग्रह ऊर्जा पूर्णतः शांत एवं अनुकूल बनी हुई है।",
+            "gu": "જન્મ કુંડળીમાં કોઈ પ્રતિકૂળ ગ્રહીય દોષ સક્રિય નથી • ગ્રહ ઉર્જા પૂર્ણપણે શાંત અને અનુકૂળ રહે છે."
+        }.get(data.get("client", {}).get("lang", "en"), "No Adverse Karmic Doshas Active in Chart")
+        inauspicious_doshas_html = f'<div style="font-size: 7.8px; color: #15803d; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 4px; padding: 3px 6px; font-weight: 600;">âœ” {no_dosha_text}</div>'
 
     # Vibration badges on Page 3
     vibe_badges_html = ""
@@ -505,7 +539,7 @@ body {{
 .chip-natal {{ background: #fef3c7; color: #854d0e; border-color: #fde047; }}
 .chip-md {{ background: #e0f2fe; color: #0284c7; border-color: #38bdf8; }}
 .chip-ad {{ background: #dcfce7; color: #15803d; border-color: #22c55e; }}
-.chip-pd {{ background: #ffedd5; color: #c2410c; border-color: #fb923c; }}
+.chip-pd {{ background: #f3e8ff; color: #6d28d9; border-color: #7c3aed; }}
 
 .grid-legend-bar {{
     display: flex;
@@ -524,7 +558,7 @@ body {{
 .dot-natal {{ background: #d4af37; }}
 .dot-md {{ background: #38bdf8; }}
 .dot-ad {{ background: #22c55e; }}
-.dot-pd {{ background: #fb923c; }}
+.dot-pd {{ background: #7c3aed; }}
 
 /* Planetary Friendship Compass Box */
 .compass-box {{
@@ -695,7 +729,7 @@ body {{
 }}
 .tier-card.tier-md {{ border-left: 3.5px solid #0284c7; }}
 .tier-card.tier-ad {{ border-left: 3.5px solid #16a34a; }}
-.tier-card.tier-pd {{ border-left: 3.5px solid #ea580c; }}
+.tier-card.tier-pd {{ border-left: 3.5px solid #7c3aed; background: #faf5ff; }}
 
 .tier-header-bar {{
     display: flex;
@@ -813,8 +847,34 @@ body {{
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 5px;
-    padding: 6px 8px;
+    padding: 4px 6px;
     box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}}
+.yoga-card-quad.auspicious {{
+    border-left: 3px solid #16a34a;
+    background: #f0fdf4;
+}}
+.yoga-card-quad.inauspicious {{
+    border-left: 3px solid #e11d48;
+    background: #fff1f2;
+}}
+.yoga-tag-mini.gold {{
+    background: #fef3c7;
+    color: #92400e;
+    border-color: #fde047;
+}}
+.yoga-tag-mini.ruby {{
+    background: #fee2e2;
+    color: #991b1b;
+    border-color: #fca5a5;
+}}
+.yoga-remedy-note {{
+    font-size: 7.2px;
+    color: #991b1b;
+    margin-top: 2px;
+    padding-top: 2px;
+    border-top: 1px dashed #fecdd3;
+    line-height: 1.25;
 }}
 .yoga-card-quad-header {{
     display: flex;
@@ -1319,10 +1379,16 @@ body {{
                 </ul>
             </div>
 
-            <!-- Active Yogas Quad -->
-            <div class="section-title">{ui['active_yogas']}</div>
-            <div class="yogas-quad-grid">
-                {yogas_html}
+            <!-- Auspicious Yogas Quad -->
+            <div class="section-title">âœ§ {ui.get('auspicious_yogas_title', ui['active_yogas'])}</div>
+            <div class="yogas-quad-grid" style="margin-bottom: 4px;">
+                {auspicious_yogas_html}
+            </div>
+
+            <!-- Inauspicious Yogas & Doshas Quad -->
+            <div class="section-title">âš  {ui.get('inauspicious_yogas_title', 'Challenging Planetary Yogas & Doshas')}</div>
+            <div class="yogas-quad-grid" style="margin-bottom: 4px;">
+                {inauspicious_doshas_html}
             </div>
 
             <!-- Planetary Vibrations -->

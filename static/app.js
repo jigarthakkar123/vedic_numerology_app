@@ -354,21 +354,91 @@ function renderDashboard(data) {
         dBody.appendChild(tr);
     }
 
-    // Yogas
+    // Auspicious Yogas & Challenging Doshas
+    const ausContainer = document.getElementById('auspicious-yogas-container');
+    const inausContainer = document.getElementById('inauspicious-yogas-container');
     const yogasContainer = document.getElementById('yogas-container');
-    yogasContainer.innerHTML = '';
-    for (let y of data.yogas) {
-        const yCard = document.createElement('div');
-        const isRaj = y.id === 'raj_yog';
-        yCard.className = `yoga-display-card ${isRaj ? 'raj-yog' : ''}`;
-        yCard.innerHTML = `
-            <div class="c-header">
-                <span class="c-title">${y.name}</span>
-                <span class="c-tag">${y.tag}</span>
-            </div>
-            <div class="c-desc">${y.desc}</div>
-        `;
-        yogasContainer.appendChild(yCard);
+
+    const auspiciousList = data.auspicious_yogas || (data.yogas ? data.yogas.filter(y => y.category !== 'inauspicious') : []);
+    const inauspiciousList = data.inauspicious_yogas || (data.yogas ? data.yogas.filter(y => y.category === 'inauspicious') : []);
+
+    // Localized Headers for Tab 3
+    if (data.ui) {
+        if (document.getElementById('txt-auspicious-title') && data.ui.auspicious_yogas_title) {
+            document.getElementById('txt-auspicious-title').textContent = data.ui.auspicious_yogas_title;
+        }
+        if (document.getElementById('txt-inauspicious-title') && data.ui.inauspicious_yogas_title) {
+            document.getElementById('txt-inauspicious-title').textContent = data.ui.inauspicious_yogas_title;
+        }
+    }
+
+    if (ausContainer) {
+        ausContainer.innerHTML = '';
+        for (let y of auspiciousList) {
+            const yCard = document.createElement('div');
+            const isRaj = y.id === 'raj_yog';
+            yCard.className = `yoga-display-card auspicious ${isRaj ? 'raj-yog' : ''}`;
+            yCard.innerHTML = `
+                <div class="c-header">
+                    <span class="c-title">✦ ${y.name}</span>
+                    <span class="c-tag">${y.tag}</span>
+                </div>
+                <div class="c-desc">${y.desc}</div>
+            `;
+            ausContainer.appendChild(yCard);
+        }
+    }
+
+    if (inausContainer) {
+        inausContainer.innerHTML = '';
+        if (inauspiciousList && inauspiciousList.length > 0) {
+            for (let y of inauspiciousList) {
+                const yCard = document.createElement('div');
+                yCard.className = 'yoga-display-card inauspicious';
+                const remedyLabel = (data.ui && data.ui.mitigation_remedy) ? data.ui.mitigation_remedy : 'Remedial Mitigation Key:';
+                const remedyHtml = y.remedy ? `
+                    <div class="yoga-remedy-box">
+                        <strong>🛡️ ${remedyLabel}</strong> ${y.remedy}
+                    </div>
+                ` : '';
+                yCard.innerHTML = `
+                    <div class="c-header">
+                        <span class="c-title" style="color: #f87171;">⚠ ${y.name}</span>
+                        <span class="c-tag yoga-tag-mini ruby">${y.tag}</span>
+                    </div>
+                    <div class="c-desc">${y.desc}</div>
+                    ${remedyHtml}
+                `;
+                inausContainer.appendChild(yCard);
+            }
+        } else {
+            const noDoshaBanner = document.createElement('div');
+            noDoshaBanner.className = 'no-dosha-banner';
+            const msg = (data.client && data.client.lang === 'hi')
+                ? '✔ जन्म चक्र में कोई प्रतिकूल ग्रहीय दोष सक्रिय नहीं है। ग्रह ऊर्जा पूर्णतः शांत एवं अनुकूल बनी हुई है।'
+                : ((data.client && data.client.lang === 'gu')
+                    ? '✔ જન્મ કુંડળીમાં કોઈ પ્રતિકૂળ ગ્રહીય દોષ સક્રિય નથી. ગ્રહ ઉર્જા પૂર્ણપણે શાંત અને અનુકૂળ રહે છે.'
+                    : '✔ No Adverse Karmic Doshas Active in Chart • The planetary frequencies remain protected by divine harmony.');
+            noDoshaBanner.innerHTML = msg;
+            inausContainer.appendChild(noDoshaBanner);
+        }
+    }
+
+    if (yogasContainer) {
+        yogasContainer.innerHTML = '';
+        for (let y of (data.yogas || [])) {
+            const yCard = document.createElement('div');
+            const isRaj = y.id === 'raj_yog';
+            yCard.className = `yoga-display-card ${isRaj ? 'raj-yog' : ''}`;
+            yCard.innerHTML = `
+                <div class="c-header">
+                    <span class="c-title">${y.name}</span>
+                    <span class="c-tag">${y.tag}</span>
+                </div>
+                <div class="c-desc">${y.desc}</div>
+            `;
+            yogasContainer.appendChild(yCard);
+        }
     }
 
     // Life Predictions

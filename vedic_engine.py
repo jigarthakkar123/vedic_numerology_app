@@ -10,7 +10,7 @@ from datetime import date, datetime, timedelta
 from typing import Dict, List, Any, Tuple
 from vedic_translations import (
     UI_TEXT, PLANET_INFO, NUMBER_QUALITIES, NUMBER_PRECAUTIONS,
-    VIBRATION_DETAILS, YOGA_DEFINITIONS, PROFESSIONS_INFO,
+    VIBRATION_DETAILS, AUSPICIOUS_YOGAS_DEFINITIONS, INAUSPICIOUS_YOGAS_DEFINITIONS, YOGA_DEFINITIONS, PROFESSIONS_INFO,
     NUMBER_REMEDIES, GENERAL_REMEDIES, CONSULTANT_INFO
 )
 
@@ -357,58 +357,249 @@ def calculate_pratyantar_dasha(ad_number: int, ad_start: date, target_date: date
         "active_pd": active_pd
     }
 
-def detect_active_yogas(counts: Dict[int, int], vibrations: Dict[int, str], lang: str) -> List[Dict[str, Any]]:
-    """Identifies all active planes, verticals, combinations, and special yogas."""
-    active_yogas = []
+def detect_active_yogas(counts: Dict[int, int], vibrations: Dict[int, str], lang: str) -> Dict[str, Any]:
+    """
+    Identifies all active Auspicious Yogas (Shubh Yogas) and
+    Inauspicious Yogas / Doshas (Ashubh Yogas with remedies) in the chart.
+    """
+    auspicious = []
+    inauspicious = []
     
-    for yoga_id, yoga in YOGA_DEFINITIONS.items():
-        req_numbers = yoga["numbers"]
-        # Check if all numbers required are present in grid (count > 0)
-        is_present = all(counts.get(n, 0) > 0 for n in req_numbers)
-        if is_present:
-            # Check tone or tags
-            tags = [yoga["tag"].get(lang, yoga["tag"]["en"])]
-            
-            # Check vibrations of constituent numbers
-            constituent_vibes = [vibrations.get(n, "+") for n in req_numbers]
-            if all(v == "+" for v in constituent_vibes):
-                tags.append("Superior (+) / श्रेष्ठ" if lang != "en" else "Superior (+)")
-            elif any(v == "-" for v in constituent_vibes):
-                tags.append("Mixed / मिश्रित" if lang != "en" else "Mixed Vibrations")
-                
-            active_yogas.append({
-                "id": yoga_id,
-                "name": yoga["name"].get(lang, yoga["name"]["en"]),
-                "tag": " • ".join(tags),
-                "desc": yoga["desc"].get(lang, yoga["desc"]["en"]),
-                "numbers": req_numbers
-            })
-            
-    # Raj Yog Check: 3-1-9 present OR 1-7-8 present OR 6-5 present
+    # ---------------- 1. Auspicious Yogas Detection ----------------
+    # Check 3-1-9, 1-7-8, 6-5 Raj Yog first
     has_319 = all(counts.get(n, 0) > 0 for n in [3, 1, 9])
     has_178 = all(counts.get(n, 0) > 0 for n in [1, 7, 8])
     has_65 = all(counts.get(n, 0) > 0 for n in [6, 5])
     
-    if (has_319 or has_178 or has_65) and not any(y["id"] == "raj_yog" for y in active_yogas):
+    if has_319 or has_178 or has_65:
         name_map = {
-            "en": "Special Imperial Raj Yog (Supreme Auspiciousness)",
-            "hi": "विशेष राजयोग (सर्वोच्च ग्रहीय कृपा)",
-            "gu": "વિશેષ રાજયોગ (સર્વોચ્ચ ગ્રહીય કૃપા)"
+            "en": "Imperial Raj Yog (Supreme Sovereign Grace)",
+            "hi": "साम्राज्य राजयोग (सर्वोच्च ग्रहीय कृपा एवं सत्ता)",
+            "gu": "સામ્રાજ્ય રાજયોગ (સર્વોચ્ચ ગ્રહીય કૃપા અને સત્તા)"
+        }
+        tag_map = {
+            "en": "Imperial Sovereignty • Supreme Auspiciousness",
+            "hi": "राजयोग संप्रभुता • सर्वोच्च शुभता",
+            "gu": "રાજયોગ સાર્વભૌમત્વ • સર્વોચ્ચ શુભતા"
         }
         desc_map = {
-            "en": "Strong Raj Yog alignment in the birth chart grants elevated social prestige, magnetic authority, and effortless luxury during favorable Dasha periods.",
-            "hi": "जन्म चक्र में राजयोग का निर्माण जातक को समाज में उच्च मान-प्रतिष्ठा, प्रशासनिक अधिकार और अनुकूल दशाओं में असीम ऐश्वर्य प्रदान करता है।",
-            "gu": "જન્મ કુંડળીમાં રાજયોગનું નિર્માણ જાતકને સમાજમાં ઉચ્ચ માન-પ્રતિષ્ઠા, અધિકાર અને સાનુકૂળ દશાઓમાં ભવ્ય ઐશ્વર્ય પ્રદાન કરે છે."
+            "en": "Rare Imperial Raj Yog alignment grants elevated societal honor, unyielding administrative authority, and immense luxury during favorable Dasha cycles.",
+            "hi": "जन्म चक्र में राजयोग का निर्माण जातक को समाज में सर्वोच्च मान-सम्मान, प्रशासनिक अधिकार और अनुकूल दशाओं में असीम ऐश्वर्य व वैभव प्रदान करता है।",
+            "gu": "જન્મ કુંડળીમાં રાજયોગનું નિર્માણ જાતકને સમાજમાં ઉચ્ચ મોભો, વહીવટી સત્તા અને સાનુકૂળ દશાઓમાં ભવ્ય ઐશ્વર્ય તથા સંપત્તિ પ્રદાન કરે છે."
         }
-        active_yogas.insert(0, {
+        auspicious.append({
             "id": "raj_yog",
             "name": name_map.get(lang, name_map["en"]),
-            "tag": "Imperial Alignment / राजयोग",
+            "tag": tag_map.get(lang, tag_map["en"]),
             "desc": desc_map.get(lang, desc_map["en"]),
-            "numbers": [1, 8] if has_178 else ([3, 1, 9] if has_319 else [6, 5])
+            "numbers": [1, 8] if has_178 else ([3, 1, 9] if has_319 else [6, 5]),
+            "category": "auspicious"
         })
-        
-    return active_yogas
+
+    # Check all Auspicious Yogas
+    for yoga_id, yoga in AUSPICIOUS_YOGAS_DEFINITIONS.items():
+        req_numbers = yoga["numbers"]
+        is_present = all(counts.get(n, 0) > 0 for n in req_numbers)
+        if not is_present:
+            continue
+            
+        # Additional absence conditions for specific pairs based on course texts
+        if yoga_id == "combination_1_7" and counts.get(8, 0) > 0:
+            continue
+        if yoga_id == "combination_3_1" and counts.get(9, 0) > 0:
+            continue
+        if yoga_id == "combination_1_2" and (counts.get(6, 0) > 0 or counts.get(3, 0) > 0):
+            continue
+        if yoga_id == "combination_9_5" and counts.get(4, 0) > 0:
+            continue
+        if yoga_id == "combination_6_7" and counts.get(5, 0) > 0:
+            continue
+        if yoga_id == "combination_6_2" and counts.get(3, 0) > 0:
+            continue
+            
+        tags = [yoga["tag"].get(lang, yoga["tag"]["en"])]
+        constituent_vibes = [vibrations.get(n, "+") for n in req_numbers]
+        if all(v == "+" for v in constituent_vibes):
+            tags.append("Superior (+)" if lang == "en" else ("श्रेष्ठ (+)" if lang == "hi" else "શ્રેષ્ઠ (+)"))
+        elif any(v == "-" for v in constituent_vibes):
+            tags.append("Mixed Vibrations" if lang == "en" else ("मिश्रित ऊर्जा" if lang == "hi" else "મિશ્રિત ઉર્જા"))
+            
+        auspicious.append({
+            "id": yoga_id,
+            "name": yoga["name"].get(lang, yoga["name"]["en"]),
+            "tag": " • ".join(tags),
+            "desc": yoga["desc"].get(lang, yoga["desc"]["en"]),
+            "numbers": req_numbers,
+            "category": "auspicious"
+        })
+
+    # ---------------- 2. Inauspicious Yogas (Doshas) Detection ----------------
+    # 1. Bandhan Yog (9-4 with missing 5)
+    if counts.get(9, 0) > 0 and counts.get(4, 0) > 0 and counts.get(5, 0) == 0:
+        c4 = counts.get(4, 0)
+        c9 = counts.get(9, 0)
+        item = INAUSPICIOUS_YOGAS_DEFINITIONS["bandhan_yog_94"]
+        desc = item["desc"].get(lang, item["desc"]["en"])
+        if c4 % 2 == 0:
+            desc += " [Even 4s active: negative effects diminished; recovery and relief are swift.]" if lang == "en" else (" [सम संख्या में 4 (44) होने से दोष का प्रभाव काफी कम होता है और राहत शीघ्र मिलती है।]" if lang == "hi" else " [બેવડા 4 (44) હોવાથી દોષની અસર ઘટે છે અને મુક્તિ ઝડપથી મળે છે.]")
+        elif c9 >= 2:
+            desc += " [Double 9 active: anger and legal risks are aggravated.]" if lang == "en" else (" [दोहरा 9 होने से मंगल कमजोर होकर उग्रता व संकट को बढ़ाता है।]" if lang == "hi" else " [બેવડો 9 હોવાથી ગુસ્સો અને કાનૂની જોખમ વધે છે.]")
+        inauspicious.append({
+            "id": "bandhan_yog_94",
+            "name": item["name"].get(lang, item["name"]["en"]),
+            "tag": item["tag"].get(lang, item["tag"]["en"]),
+            "desc": desc,
+            "remedy": item["remedy"].get(lang, item["remedy"]["en"]),
+            "numbers": [9, 4],
+            "category": "inauspicious"
+        })
+
+    # 2. Bandhan Yog (5-4 with missing 9)
+    if counts.get(5, 0) > 0 and counts.get(4, 0) > 0 and counts.get(9, 0) == 0:
+        c4 = counts.get(4, 0)
+        item = INAUSPICIOUS_YOGAS_DEFINITIONS["bandhan_yog_54"]
+        desc = item["desc"].get(lang, item["desc"]["en"])
+        if c4 % 2 == 0:
+            desc += " [Even 4s present: dispute intensity reduced.]" if lang == "en" else (" [सम संख्या 4 (44) होने से विवाद का प्रभाव कम होता है।]" if lang == "hi" else " [બેવડા 4 થી વિવાદની અસર ઓછી રહે છે.]")
+        inauspicious.append({
+            "id": "bandhan_yog_54",
+            "name": item["name"].get(lang, item["name"]["en"]),
+            "tag": item["tag"].get(lang, item["tag"]["en"]),
+            "desc": desc,
+            "remedy": item["remedy"].get(lang, item["remedy"]["en"]),
+            "numbers": [5, 4],
+            "category": "inauspicious"
+        })
+
+    # 3. Apaman Yog (1-8 with missing 7)
+    if counts.get(1, 0) > 0 and counts.get(8, 0) > 0 and counts.get(7, 0) == 0:
+        item = INAUSPICIOUS_YOGAS_DEFINITIONS["apaman_yog_18"]
+        inauspicious.append({
+            "id": "apaman_yog_18",
+            "name": item["name"].get(lang, item["name"]["en"]),
+            "tag": item["tag"].get(lang, item["tag"]["en"]),
+            "desc": item["desc"].get(lang, item["desc"]["en"]),
+            "remedy": item["remedy"].get(lang, item["remedy"]["en"]),
+            "numbers": [1, 8],
+            "category": "inauspicious"
+        })
+
+    # 4. Vish Yog (2-8 with missing 4)
+    if counts.get(2, 0) > 0 and counts.get(8, 0) > 0 and counts.get(4, 0) == 0:
+        item = INAUSPICIOUS_YOGAS_DEFINITIONS["vish_yog_28"]
+        desc = item["desc"].get(lang, item["desc"]["en"])
+        if counts.get(8, 0) >= 2:
+            desc += " [Double 8 (88) present: emotional resilience improves substantially.]" if lang == "en" else (" [दोहरा 8 (88) उपस्थित होने से मानसिक दृढ़ता में सुधार होता है।]" if lang == "hi" else " [બેવડો 8 (88) હોવાથી માનસિક મનોબળ સુધરે છે.]")
+        inauspicious.append({
+            "id": "vish_yog_28",
+            "name": item["name"].get(lang, item["name"]["en"]),
+            "tag": item["tag"].get(lang, item["tag"]["en"]),
+            "desc": desc,
+            "remedy": item["remedy"].get(lang, item["remedy"]["en"]),
+            "numbers": [2, 8],
+            "category": "inauspicious"
+        })
+
+    # 5. Hava Mahal Yog (8-4 with missing 2)
+    if counts.get(8, 0) > 0 and counts.get(4, 0) > 0 and counts.get(2, 0) == 0:
+        item = INAUSPICIOUS_YOGAS_DEFINITIONS["hava_mahal_84"]
+        inauspicious.append({
+            "id": "hava_mahal_84",
+            "name": item["name"].get(lang, item["name"]["en"]),
+            "tag": item["tag"].get(lang, item["tag"]["en"]),
+            "desc": item["desc"].get(lang, item["desc"]["en"]),
+            "remedy": item["remedy"].get(lang, item["remedy"]["en"]),
+            "numbers": [8, 4],
+            "category": "inauspicious"
+        })
+
+    # 6. Plastic Love Yog (7-5 with missing 6)
+    if counts.get(7, 0) > 0 and counts.get(5, 0) > 0 and counts.get(6, 0) == 0:
+        item = INAUSPICIOUS_YOGAS_DEFINITIONS["plastic_love_75"]
+        inauspicious.append({
+            "id": "plastic_love_75",
+            "name": item["name"].get(lang, item["name"]["en"]),
+            "tag": item["tag"].get(lang, item["tag"]["en"]),
+            "desc": item["desc"].get(lang, item["desc"]["en"]),
+            "remedy": item["remedy"].get(lang, item["remedy"]["en"]),
+            "numbers": [7, 5],
+            "category": "inauspicious"
+        })
+
+    # 7. Agni Sangharsh (1-9 with missing 3)
+    if counts.get(1, 0) > 0 and counts.get(9, 0) > 0 and counts.get(3, 0) == 0:
+        item = INAUSPICIOUS_YOGAS_DEFINITIONS["agni_sangharsh_19"]
+        inauspicious.append({
+            "id": "agni_sangharsh_19",
+            "name": item["name"].get(lang, item["name"]["en"]),
+            "tag": item["tag"].get(lang, item["tag"]["en"]),
+            "desc": item["desc"].get(lang, item["desc"]["en"]),
+            "remedy": item["remedy"].get(lang, item["remedy"]["en"]),
+            "numbers": [1, 9],
+            "category": "inauspicious"
+        })
+
+    # 8. Kalaha Yog (66 with 2)
+    if counts.get(6, 0) >= 2 and counts.get(2, 0) == 1:
+        item = INAUSPICIOUS_YOGAS_DEFINITIONS["kalaha_yog_66_2"]
+        inauspicious.append({
+            "id": "kalaha_yog_66_2",
+            "name": item["name"].get(lang, item["name"]["en"]),
+            "tag": item["tag"].get(lang, item["tag"]["en"]),
+            "desc": item["desc"].get(lang, item["desc"]["en"]),
+            "remedy": item["remedy"].get(lang, item["remedy"]["en"]),
+            "numbers": [6, 2],
+            "category": "inauspicious"
+        })
+
+    # 9. Slow Mind Yog (99 with 5, missing 4)
+    if counts.get(9, 0) >= 2 and counts.get(5, 0) == 1 and counts.get(4, 0) == 0:
+        item = INAUSPICIOUS_YOGAS_DEFINITIONS["slow_mind_99_5"]
+        inauspicious.append({
+            "id": "slow_mind_99_5",
+            "name": item["name"].get(lang, item["name"]["en"]),
+            "tag": item["tag"].get(lang, item["tag"]["en"]),
+            "desc": item["desc"].get(lang, item["desc"]["en"]),
+            "remedy": item["remedy"].get(lang, item["remedy"]["en"]),
+            "numbers": [9, 5],
+            "category": "inauspicious"
+        })
+
+    # 10. Hyper-Mercury Ati-Chaturya (Multiple 5s with 9, missing 4)
+    if counts.get(5, 0) >= 2 and counts.get(9, 0) >= 1 and counts.get(4, 0) == 0:
+        item = INAUSPICIOUS_YOGAS_DEFINITIONS["chaturya_fraud_55_9"]
+        inauspicious.append({
+            "id": "chaturya_fraud_55_9",
+            "name": item["name"].get(lang, item["name"]["en"]),
+            "tag": item["tag"].get(lang, item["tag"]["en"]),
+            "desc": item["desc"].get(lang, item["desc"]["en"]),
+            "remedy": item["remedy"].get(lang, item["remedy"]["en"]),
+            "numbers": [5, 9],
+            "category": "inauspicious"
+        })
+
+    # 11. Action Plane Turbulence (2-8-4 all present)
+    if counts.get(2, 0) > 0 and counts.get(8, 0) > 0 and counts.get(4, 0) > 0:
+        item = INAUSPICIOUS_YOGAS_DEFINITIONS["turbulence_plane_284"]
+        desc = item["desc"].get(lang, item["desc"]["en"])
+        if counts.get(4, 0) >= 2 or counts.get(8, 0) >= 2:
+            desc += " [Double 4 or 8 present: significantly cushions the volatility.]" if lang == "en" else (" [दोहरा 4 या 8 उपस्थित होने से उतार-चढ़ाव काफी हद तक शांत होता है।]" if lang == "hi" else " [બેવડો 4 કે 8 હોવાથી ઉતાર-ચઢાવ ઘણો અંકુશમાં રહે છે.]")
+        inauspicious.append({
+            "id": "turbulence_plane_284",
+            "name": item["name"].get(lang, item["name"]["en"]),
+            "tag": item["tag"].get(lang, item["tag"]["en"]),
+            "desc": desc,
+            "remedy": item["remedy"].get(lang, item["remedy"]["en"]),
+            "numbers": [2, 8, 4],
+            "category": "inauspicious"
+        })
+
+    all_yogas = auspicious + inauspicious
+    return {
+        "auspicious": auspicious,
+        "inauspicious": inauspicious,
+        "all": all_yogas
+    }
 
 def generate_life_predictions(
     bn: int, dn: int, counts: Dict[int, int], vibrations: Dict[int, str],
@@ -760,7 +951,7 @@ def calculate_dasha_grid(
             "source": "pd",
             "source_code": "PD",
             "source_name": UI_TEXT[lang]["legend_pd"],
-            "color": "#fb923c" # Sunset Orange
+            "color": "#7c3aed" # Royal Purple
         })
         
     total_counts = {i: len(items_by_num[i]) for i in range(1, 10)}
@@ -1167,7 +1358,10 @@ def compile_full_numerology_profile(
     )
     
     # Active Yogas (Evaluating both Natal and Period-amplified)
-    active_yogas = detect_active_yogas(grid_info["counts"], vibrations, lang)
+    yogas_result = detect_active_yogas(grid_info["counts"], vibrations, lang)
+    active_yogas = yogas_result["all"]
+    auspicious_yogas = yogas_result["auspicious"]
+    inauspicious_yogas = yogas_result["inauspicious"]
     
     # Life Predictions
     predictions = generate_life_predictions(
@@ -1263,7 +1457,7 @@ def compile_full_numerology_profile(
             "natal": {"name": UI_TEXT[lang]["legend_natal"], "code": "NAT", "color": "#d4af37"},
             "md": {"name": UI_TEXT[lang]["legend_md"], "code": "MD", "color": "#38bdf8"},
             "ad": {"name": UI_TEXT[lang]["legend_ad"], "code": "AD", "color": "#22c55e"},
-            "pd": {"name": UI_TEXT[lang]["legend_pd"], "code": "PD", "color": "#fb923c"}
+            "pd": {"name": UI_TEXT[lang]["legend_pd"], "code": "PD", "color": "#7c3aed"}
         },
         "vibrations": vibration_list,
         "moolank_qualities": NUMBER_QUALITIES[bn][lang],
@@ -1277,6 +1471,8 @@ def compile_full_numerology_profile(
             "md_timeline": md_info["periods"]
         },
         "yogas": active_yogas,
+        "auspicious_yogas": auspicious_yogas,
+        "inauspicious_yogas": inauspicious_yogas,
         "predictions": predictions,
         "remedies": {
             "moolank_gem": moolank_remedy["gem"][lang],
