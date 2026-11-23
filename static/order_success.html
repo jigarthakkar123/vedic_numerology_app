@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="theme-color" content="#060913">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕉️</text></svg>">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <title>Report Ready! Thank You For Your Order - Jigar Thakkar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #090e1a;
+            --bg-card: #0f172a;
+            --bg-card-subtle: #1e293b;
+            --border-gold: #d4af37;
+            --border-gold-subtle: #856928;
+            --border-dark: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-gold: #fbbf24;
+            --gold-gradient: linear-gradient(135deg, #d4af37 0%, #f59e0b 100%);
+            --font-heading: 'Cinzel', serif;
+            --font-body: 'Plus Jakarta Sans', -apple-system, sans-serif;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 14px;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .success-header {
+            background: linear-gradient(180deg, #0b1329 0%, #080d1a 100%);
+            border-bottom: 1.5px solid var(--border-gold);
+            padding: 16px;
+            text-align: center;
+        }
+        .sacred-om {
+            font-size: 36px;
+            color: var(--text-gold);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+        .brand-title {
+            font-family: var(--font-heading);
+            font-size: 17px;
+            font-weight: 800;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.8px;
+        }
+
+        .success-container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 0 16px;
+            flex: 1;
+        }
+
+        .success-card {
+            background: var(--bg-card);
+            border: 1.5px solid var(--border-gold);
+            border-radius: 14px;
+            padding: 28px 20px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .success-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            animation: bounce 1.2s ease infinite alternate;
+        }
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-8px); }
+        }
+
+        .success-title {
+            font-family: var(--font-heading);
+            font-size: 22px;
+            color: #4ade80;
+            margin-bottom: 8px;
+        }
+
+        .success-sub {
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 22px;
+        }
+
+        .details-box {
+            background: var(--bg-card-subtle);
+            border: 1px solid var(--border-dark);
+            border-radius: 10px;
+            padding: 14px 16px;
+            text-align: left;
+            margin-bottom: 22px;
+            font-size: 12.5px;
+            line-height: 1.6;
+        }
+        .details-box strong {
+            color: var(--text-gold);
+        }
+
+        .btn-download-primary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            background: var(--gold-gradient);
+            color: #000000;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 16px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.45);
+            transition: all 0.2s ease;
+            margin-bottom: 12px;
+        }
+        .btn-download-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.65);
+        }
+
+        .btn-view-secondary {
+            display: inline-block;
+            color: var(--text-gold);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            padding: 8px 16px;
+            border: 1px solid var(--border-gold-subtle);
+            border-radius: 8px;
+            background: rgba(212, 175, 55, 0.08);
+            transition: all 0.2s;
+        }
+        .btn-view-secondary:hover {
+            background: rgba(212, 175, 55, 0.2);
+            color: #ffffff;
+        }
+
+        .whatsapp-box {
+            margin-top: 24px;
+            padding: 14px;
+            background: rgba(34, 197, 94, 0.08);
+            border: 1px solid rgba(34, 197, 94, 0.35);
+            border-radius: 10px;
+            font-size: 12.5px;
+            color: #e2e8f0;
+            line-height: 1.5;
+        }
+        .whatsapp-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #22c55e;
+            color: #ffffff;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 20px;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 11px;
+            color: #64748b;
+            padding: 20px;
+            border-top: 1px solid var(--border-dark);
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+    <header class="success-header">
+        <div class="sacred-om">ॐ</div>
+        <div class="brand-title">JIGAR THAKKAR'S VEDIC NUMEROLOGY STUDIO</div>
+    </header>
+
+    <main class="success-container">
+        <div class="success-card">
+            <div class="success-icon">🎉</div>
+            <h2 class="success-title">Order Confirmed! Your Report Is Ready!</h2>
+            <p class="success-sub">
+                Thank you for your order. Your personalized 4-page Vedic Numerology Consultation Blueprint has been generated and is ready for instant download.
+            </p>
+
+            <div class="details-box">
+                <div>Client Name: <strong id="out-name">Client</strong></div>
+                <div>Delivered to Email: <strong id="out-email">your-email@domain.com</strong></div>
+                <div>Report Language: <strong id="out-lang">English</strong></div>
+                <div style="margin-top: 6px; color: #4ade80; font-size: 11.5px;">
+                    ✔ A complete PDF copy has also been sent to your email inbox.
+                </div>
+            </div>
+
+            <a id="btn-download" href="#" class="btn-download-primary" download>
+                <span>📥 Download Your 4-Page PDF Report Now</span>
+            </a>
+
+            <div>
+                <a id="btn-view" href="#" class="btn-view-secondary" target="_blank">
+                    👁️ View Report Online in Browser
+                </a>
+            </div>
+
+            <!-- WhatsApp Consultation Connect -->
+            <div class="whatsapp-box">
+                <strong>Need 1-on-1 Personalized Guidance or Vastu Consultation?</strong><br>
+                Connect directly with certified numerologist Jigar Thakkar on WhatsApp:
+                <br>
+                <a href="https://wa.me/919377614772?text=Hello%20Jigar%20bhai,%20I%20just%20ordered%20my%20Vedic%20Numerology%20Report%20and%20would%20like%20to%20connect%20for%20further%20guidance." target="_blank" class="whatsapp-link">
+                    <span>💬 Message on WhatsApp (+91 9377614772)</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        © 2026 Jigar Thakkar • Certified Vedic Numerologist & Vastu Consultant • Phone: +91 9377614772 • Email: jigar93776@gmail.com
+    </footer>
+
+    <script>
+        // Parse URL params or sessionStorage
+        const params = new URLSearchParams(window.location.search);
+        const fileName = params.get('file');
+        const clientName = params.get('name') || 'Client';
+        const clientEmail = params.get('email') || 'Your Email';
+        const reportLang = params.get('lang') || 'en';
+
+        document.getElementById('out-name').textContent = clientName;
+        document.getElementById('out-email').textContent = clientEmail;
+        
+        const langMap = { en: 'English (🇬🇧)', hi: 'हिन्दी (🇮🇳)', gu: 'ગુજરાતી (🚩)' };
+        document.getElementById('out-lang').textContent = langMap[reportLang] || reportLang.toUpperCase();
+
+        if (fileName) {
+            document.getElementById('btn-download').href = `/api/download/${encodeURIComponent(fileName)}`;
+            document.getElementById('btn-view').href = `/api/view-html/${encodeURIComponent(fileName.replace('.pdf', '.html'))}`;
+        } else {
+            // Check sessionStorage
+            const last = sessionStorage.getItem('last_order');
+            if (last) {
+                try {
+                    const obj = JSON.parse(last);
+                    document.getElementById('out-name').textContent = obj.client_name || clientName;
+                    document.getElementById('out-email').textContent = obj.email || clientEmail;
+                    document.getElementById('btn-download').href = obj.download_url;
+                    document.getElementById('btn-view').href = obj.html_url;
+                } catch(e) {}
+            }
+        }
+    </script>
+</body>
+</html>

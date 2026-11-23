@@ -8,9 +8,16 @@ and report management.
 import os
 import sys
 import glob
+import time
+import hmac
+import hashlib
+import base64
+import json
+import urllib.request
+import urllib.error
 from typing import Optional, List
 from datetime import datetime
-from fastapi import FastAPI, HTTPException, Query, Body
+from fastapi import FastAPI, HTTPException, Query, Body, BackgroundTasks
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse, Response
 from pydantic import BaseModel
@@ -22,6 +29,11 @@ if BASE_DIR not in sys.path:
 
 from vedic_engine import compile_full_numerology_profile
 from vedic_pdf_builder import build_report_html, render_pdf_from_html
+from vedic_mailer import send_report_email
+
+# Payment Gateway Configuration
+RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID", "").strip()
+RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET", "").strip()
 
 app = FastAPI(
     title="Vedic Numerology Studio API",
@@ -186,6 +198,191 @@ async def list_generated_reports():
             "created": datetime.fromtimestamp(os.path.getmtime(f)).strftime("%d/%m/%Y %H:%M:%S")
         })
     return {"reports": reports}
+
+# ==============================================================================
+# Instagram Automated Sales Funnel Endpoints (₹499 Package)
+# ==============================================================================
+
+class FunnelOrderRequest(BaseModel):
+    name: str
+    dob: str
+    gender: Optional[str] = "Male"
+    lang: Optional[str] = "en"
+    email: str
+    phone: Optional[str] = ""
+    amount: Optional[int] = 499
+
+class FunnelVerifyRequest(BaseModel):
+    order_id: str
+    payment_id: str
+    signature: Optional[str] = ""
+    name: str
+    dob: str
+    gender: Optional[str] = "Male"
+    lang: Optional[str] = "en"
+    email: str
+    phone: Optional[str] = ""
+
+@app.get("/order")
+async def get_sales_funnel_page():
+    """Serves the high-converting Instagram Sales Funnel landing page."""
+    order_page = os.path.join(STATIC_DIR, "order.html")
+    if os.path.exists(order_page):
+        return FileResponse(order_page, media_type="text/html")
+    return FileResponse(os.path.join(STATIC_DIR, "index.html"), media_type="text/html")
+
+@app.get("/order/success")
+async def get_order_success_page():
+    """Serves the instant download and confirmation page after checkout."""
+    success_page = os.path.join(STATIC_DIR, "order_success.html")
+    if os.path.exists(success_page):
+        return FileResponse(success_page, media_type="text/html")
+    return FileResponse(os.path.join(STATIC_DIR, "index.html"), media_type="text/html")
+
+@app.get("/api/funnel/config")
+async def get_funnel_config():
+    """Returns gateway configuration status."""
+    has_keys = bool(RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET)
+    return {
+        "gateway": "razorpay",
+        "is_live": has_keys,
+        "key_id": RAZORPAY_KEY_ID if has_keys else "demo_key",
+        "price_inr": 499,
+        "consultant_phone": "+91 9377614772",
+        "consultant_email": "jigar93776@gmail.com"
+    }
+
+@app.post("/api/funnel/create-order")
+async def create_funnel_order(req: FunnelOrderRequest):
+    """
+    Creates an order for ₹499 via Razorpay API if keys are present,
+    or generates a demo order for simulator testing.
+    """
+    amount_in_paise = (req.amount or 499) * 100
+    receipt_id = f"rcpt_{int(time.time())}_{clean_filename(req.name)[:8]}"
+
+    # Check if live Razorpay keys are configured
+    if RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET:
+        try:
+            url = "https://api.razorpay.com/v1/orders"
+            payload = json.dumps({
+                "amount": amount_in_paise,
+                "currency": "INR",
+                "receipt": receipt_id,
+                "notes": {
+                    "client_name": req.name,
+                    "dob": req.dob,
+                    "lang": req.lang,
+                    "email": req.email,
+                    "phone": req.phone
+                }
+            }).encode("utf-8")
+
+            auth_str = base64.b64encode(f"{RAZORPAY_KEY_ID}:{RAZORPAY_KEY_SECRET}".encode("utf-8")).decode("utf-8")
+            http_req = urllib.request.Request(
+                url,
+                data=payload,
+                headers={
+                    "Content-Type": "application/json",
+                    "Authorization": f"Basic {auth_str}"
+                }
+            )
+
+            with urllib.request.urlopen(http_req, timeout=15) as res:
+                rz_data = json.loads(res.read().decode("utf-8"))
+                return {
+                    "success": True,
+                    "order_id": rz_data["id"],
+                    "amount": amount_in_paise,
+                    "currency": "INR",
+                    "key_id": RAZORPAY_KEY_ID,
+                    "is_live": True,
+                    "receipt": receipt_id
+                }
+        except Exception as e:
+            print(f"[RAZORPAY ERROR] Failed to create live order: {e}")
+
+    # Sandbox / Demo Mode fallback
+    demo_order_id = f"order_demo_{int(time.time())}"
+    return {
+        "success": True,
+        "order_id": demo_order_id,
+        "amount": amount_in_paise,
+        "currency": "INR",
+        "key_id": "demo_key",
+        "is_live": False,
+        "receipt": receipt_id,
+        "note": "Simulator Mode: Live Razorpay credentials pending in environment variables."
+    }
+
+@app.post("/api/funnel/verify-payment")
+async def verify_funnel_payment(req: FunnelVerifyRequest, background_tasks: BackgroundTasks):
+    """
+    Verifies payment signature, generates the 4-page Vedic Numerology PDF report,
+    and delivers it via email and on-screen download.
+    """
+    if RAZORPAY_KEY_SECRET and not req.order_id.startswith("order_demo_"):
+        try:
+            expected_sig = hmac.new(
+                RAZORPAY_KEY_SECRET.encode("utf-8"),
+                f"{req.order_id}|{req.payment_id}".encode("utf-8"),
+                hashlib.sha256
+            ).hexdigest()
+
+            if not hmac.compare_digest(expected_sig, req.signature or ""):
+                raise HTTPException(status_code=400, detail="Invalid payment verification signature.")
+        except HTTPException:
+            raise
+        except Exception as e:
+            print(f"[SIGNATURE VERIFY WARNING] {e}")
+
+    try:
+        profile = compile_full_numerology_profile(
+            name=req.name.strip() or "Client",
+            dob_str=req.dob,
+            gender=req.gender or "Male",
+            lang=req.lang or "en"
+        )
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to calculate Vedic profile: {str(e)}")
+
+    try:
+        html_content = build_report_html(profile)
+        c_name = clean_filename(req.name.strip() or "Client")
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        pdf_filename = f"Vedic_Report_{c_name}_{req.lang}_{timestamp}.pdf"
+        html_filename = f"Vedic_Report_{c_name}_{req.lang}_{timestamp}.html"
+
+        pdf_path = os.path.join(REPORTS_DIR, pdf_filename)
+        html_path = os.path.join(REPORTS_DIR, html_filename)
+
+        with open(html_path, "w", encoding="utf-8") as f:
+            f.write(html_content)
+
+        render_pdf_from_html(html_content, pdf_path)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Report rendering error: {str(e)}")
+
+    if req.email and "@" in req.email:
+        background_tasks.add_task(
+            send_report_email,
+            recipient_email=req.email.strip(),
+            recipient_name=req.name.strip(),
+            lang=req.lang or "en",
+            pdf_path=pdf_path
+        )
+
+    return {
+        "success": True,
+        "filename": pdf_filename,
+        "download_url": f"/api/download/{pdf_filename}",
+        "html_url": f"/api/view-html/{html_filename}",
+        "client_name": req.name,
+        "email": req.email,
+        "lang": req.lang,
+        "order_id": req.order_id,
+        "payment_id": req.payment_id
+    }
 
 # Mount static files to serve the frontend Single Page Application
 app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="static")
