@@ -23,7 +23,10 @@ GMAIL_APP_PASSWORD = os.environ.get("GMAIL_APP_PASSWORD", "cvwjbdjadnvykuos").st
 SENDER_NAME = os.environ.get("SENDER_NAME", "Jigar Thakkar - Vedic Numerology Studio")
 
 # HTTPS Delivery Endpoints (for platforms like Render Free Tier that block outbound SMTP ports 25, 465, 587)
-GMAIL_WEBHOOK_URL = os.environ.get("GMAIL_WEBHOOK_URL", "").strip()
+GMAIL_WEBHOOK_URL = os.environ.get(
+    "GMAIL_WEBHOOK_URL",
+    "https://script.google.com/macros/s/AKfycbwDsh1Kx_a-vOZucU7XJqyUtyhJoYWVV9zxsGv2bDQvYXoL68qVtFHCDhXtK28QpcZD/exec"
+).strip()
 BREVO_API_KEY = os.environ.get("BREVO_API_KEY", "").strip()
 
 EMAIL_TEMPLATES = {
