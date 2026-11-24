@@ -7,6 +7,9 @@ to clients immediately upon successful checkout.
 
 import os
 import smtplib
+import base64
+import json
+import urllib.request
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
@@ -18,6 +21,10 @@ SMTP_PORT = int(os.environ.get("SMTP_PORT", 587))
 GMAIL_USER = os.environ.get("GMAIL_USER", "jigar93776@gmail.com").strip()
 GMAIL_APP_PASSWORD = os.environ.get("GMAIL_APP_PASSWORD", "cvwjbdjadnvykuos").strip()
 SENDER_NAME = os.environ.get("SENDER_NAME", "Jigar Thakkar - Vedic Numerology Studio")
+
+# HTTPS Delivery Endpoints (for platforms like Render Free Tier that block outbound SMTP ports 25, 465, 587)
+GMAIL_WEBHOOK_URL = os.environ.get("GMAIL_WEBHOOK_URL", "").strip()
+BREVO_API_KEY = os.environ.get("BREVO_API_KEY", "").strip()
 
 EMAIL_TEMPLATES = {
     "en": {
@@ -142,6 +149,85 @@ def build_email_html(recipient_name: str, lang: str = "en") -> str:
 """
 
 
+def send_via_webhook(
+    webhook_url: str,
+    recipient_email: str,
+    recipient_name: str,
+    subject: str,
+    html_content: str,
+    pdf_path: str
+) -> Dict[str, Any]:
+    """Sends email via Google Apps Script Web App over HTTPS (port 443 - zero blocked ports)."""
+    try:
+        pdf_b64 = ""
+        pdf_name = "Vedic_Report.pdf"
+        if pdf_path and os.path.exists(pdf_path):
+            with open(pdf_path, "rb") as f:
+                pdf_b64 = base64.b64encode(f.read()).decode("utf-8")
+            pdf_name = os.path.basename(pdf_path)
+
+        payload = {
+            "to": recipient_email,
+            "name": recipient_name,
+            "subject": subject,
+            "html": html_content,
+            "pdf_name": pdf_name,
+            "pdf_base64": pdf_b64
+        }
+
+        req = urllib.request.Request(
+            webhook_url,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json"}
+        )
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            resp_text = resp.read().decode("utf-8")
+            print(f"[MAILER WEBHOOK SUCCESS] Delivered via Google Apps Script: {resp_text}")
+            return {"success": True, "method": "google_apps_script", "recipient": recipient_email}
+    except Exception as e:
+        print(f"[MAILER WEBHOOK ERROR] {e}")
+        return {"success": False, "reason": f"Google Apps Script Webhook error: {str(e)}"}
+
+
+def send_via_brevo(
+    api_key: str,
+    recipient_email: str,
+    recipient_name: str,
+    subject: str,
+    html_content: str,
+    pdf_path: str
+) -> Dict[str, Any]:
+    """Sends email via Brevo HTTPS REST API (port 443 - works on Render Free Tier)."""
+    try:
+        payload = {
+            "sender": {"name": SENDER_NAME, "email": GMAIL_USER},
+            "to": [{"email": recipient_email, "name": recipient_name}],
+            "subject": subject,
+            "htmlContent": html_content
+        }
+        if pdf_path and os.path.exists(pdf_path):
+            with open(pdf_path, "rb") as f:
+                b64 = base64.b64encode(f.read()).decode("utf-8")
+            payload["attachment"] = [{"content": b64, "name": os.path.basename(pdf_path)}]
+
+        req = urllib.request.Request(
+            "https://api.brevo.com/v3/smtp/email",
+            data=json.dumps(payload).encode("utf-8"),
+            headers={
+                "Content-Type": "application/json",
+                "api-key": api_key,
+                "Accept": "application/json"
+            }
+        )
+        with urllib.request.urlopen(req, timeout=25) as resp:
+            resp_text = resp.read().decode("utf-8")
+            print(f"[MAILER BREVO SUCCESS] Delivered via Brevo API: {resp_text}")
+            return {"success": True, "method": "brevo", "recipient": recipient_email}
+    except Exception as e:
+        print(f"[MAILER BREVO ERROR] {e}")
+        return {"success": False, "reason": f"Brevo API error: {str(e)}"}
+
+
 def send_report_email(
     recipient_email: str,
     recipient_name: str,
@@ -149,30 +235,48 @@ def send_report_email(
     pdf_path: str
 ) -> Dict[str, Any]:
     """
-    Sends the 10-page Vedic Numerology report via SMTP.
-    Returns status dictionary with success flag and details.
+    Sends the 10-page Vedic Numerology report to client.
+    Supports Google Apps Script Webhook (HTTPS 443), Brevo REST API (HTTPS 443),
+    and direct SMTP (port 587 / 465).
     """
     if not recipient_email or "@" not in recipient_email:
         return {"success": False, "reason": "Invalid recipient email address"}
 
+    t = EMAIL_TEMPLATES.get(lang, EMAIL_TEMPLATES["en"])
+    subject = t["subject"]
+    html_content = build_email_html(recipient_name, lang)
+
+    # Method 1: Google Apps Script Webhook (Port 443 HTTPS - Works 100% on Render Free Tier)
+    if GMAIL_WEBHOOK_URL:
+        print(f"[MAILER] Attempting dispatch via Google Apps Script Webhook...")
+        res = send_via_webhook(GMAIL_WEBHOOK_URL, recipient_email, recipient_name, subject, html_content, pdf_path)
+        if res.get("success"):
+            return res
+        print(f"[MAILER] Webhook dispatch unsuccessful; attempting fallback...")
+
+    # Method 2: Brevo REST API (Port 443 HTTPS - Works 100% on Render Free Tier)
+    if BREVO_API_KEY:
+        print(f"[MAILER] Attempting dispatch via Brevo REST API...")
+        res = send_via_brevo(BREVO_API_KEY, recipient_email, recipient_name, subject, html_content, pdf_path)
+        if res.get("success"):
+            return res
+        print(f"[MAILER] Brevo dispatch unsuccessful; attempting SMTP...")
+
+    # Method 3: Standard SMTP (port 587/465 - works on Local PC or Paid Cloud instances)
     if not GMAIL_APP_PASSWORD:
-        # App password not configured yet; log notice and return gracefully
-        print(f"[MAILER NOTICE] GMAIL_APP_PASSWORD not set in environment. Email to {recipient_email} skipped in demo/dev mode.")
         return {
             "success": False,
-            "reason": "GMAIL_APP_PASSWORD not configured. Please set GMAIL_APP_PASSWORD in Render environment variables.",
+            "reason": "Neither GMAIL_WEBHOOK_URL nor GMAIL_APP_PASSWORD configured.",
             "demo_mode": True
         }
 
     try:
-        t = EMAIL_TEMPLATES.get(lang, EMAIL_TEMPLATES["en"])
         msg = MIMEMultipart()
         msg["From"] = f"{SENDER_NAME} <{GMAIL_USER}>"
         msg["To"] = recipient_email
-        msg["Subject"] = t["subject"]
+        msg["Subject"] = subject
 
         # HTML Body
-        html_content = build_email_html(recipient_name, lang)
         msg.attach(MIMEText(html_content, "html", "utf-8"))
 
         # Attach PDF
@@ -183,28 +287,24 @@ def send_report_email(
             pdf_filename = os.path.basename(pdf_path)
             attachment.add_header("Content-Disposition", "attachment", filename=pdf_filename)
             msg.attach(attachment)
-        else:
-            print(f"[MAILER WARNING] PDF path {pdf_path} not found; sending email without attachment.")
 
-        # Connect and send via SMTP with TLS (with SSL port 465 fallback)
+        # Connect via SMTP (with fast timeout so it does not hang if port is blocked)
         server = None
         try:
-            server = smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=25)
+            server = smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=8)
             server.ehlo()
             server.starttls()
             server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
         except Exception as tls_err:
-            print(f"[MAILER TLS NOTICE] {tls_err}; attempting SMTP_SSL on port 465...")
             try:
-                server = smtplib.SMTP_SSL(SMTP_HOST, 465, timeout=25)
+                server = smtplib.SMTP_SSL(SMTP_HOST, 465, timeout=8)
                 server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
             except Exception as ssl_err:
-                print(f"[MAILER SSL ERROR] {ssl_err}")
                 raise ssl_err
 
         server.send_message(msg)
 
-        # Also send an instant consultation notification with PDF to Jigar Thakkar
+        # Also send consultation notification copy to Jigar Thakkar
         if recipient_email.lower().strip() != GMAIL_USER.lower().strip():
             try:
                 notify_msg = MIMEMultipart()
@@ -235,9 +335,8 @@ def send_report_email(
                 print(f"[MAILER NOTIFY WARNING] {notify_err}")
 
         server.quit()
-
-        print(f"[MAILER SUCCESS] Report successfully delivered to {recipient_email}")
-        return {"success": True, "recipient": recipient_email}
+        print(f"[MAILER SUCCESS] Report successfully delivered via SMTP to {recipient_email}")
+        return {"success": True, "method": "smtp", "recipient": recipient_email}
 
     except Exception as e:
         print(f"[MAILER ERROR] Failed to send email to {recipient_email}: {str(e)}")
