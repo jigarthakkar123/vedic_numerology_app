@@ -728,6 +728,16 @@ function renderCrmStats(stats) {
     if (elPending) elPending.textContent = stats.pending_meetings || 0;
 }
 
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
 function renderCrmTable(orders) {
     const tbody = document.getElementById('crm-orders-tbody');
     if (!tbody) return;
