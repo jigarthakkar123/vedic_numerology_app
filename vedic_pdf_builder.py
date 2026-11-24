@@ -699,9 +699,9 @@ body {{
     font-size: 12px;
 }}
 .vedic-cell.natal-cell.active {{
-    background: #172554;
+    background: #d97706;
     color: #ffffff;
-    box-shadow: 0 1px 3px rgba(23,37,84,0.3);
+    box-shadow: 0 1px 3px rgba(217,119,6,0.35);
 }}
 .vedic-cell.natal-cell.empty {{
     background: #f8fafc;
@@ -718,23 +718,28 @@ body {{
     border: 1px dashed #cbd5e1;
 }}
 .chip {{
-    font-size: 9px;
+    font-size: 9.5px;
     font-weight: 800;
-    padding: 1px 3px;
+    padding: 1.5px 4px;
     border-radius: 3px;
     display: inline-block;
     line-height: 1.1;
+    margin: 1px;
 }}
 .chip-natal {{
-    background: #172554;
-    color: #ffffff;
-}}
-.chip-mahadasha {{
     background: #d97706;
     color: #ffffff;
 }}
-.chip-antardasha {{
-    background: #7e22ce;
+.chip-md, .chip-mahadasha {{
+    background: #0284c7;
+    color: #ffffff;
+}}
+.chip-ad, .chip-antardasha {{
+    background: #16a34a;
+    color: #ffffff;
+}}
+.chip-pd, .chip-pratyantar {{
+    background: #7c3aed;
     color: #ffffff;
 }}
 
@@ -1509,10 +1514,10 @@ body {{
 
             <!-- Color Legend Bar -->
             <div class="color-legend-bar">
-                <div class="legend-chip"><span class="legend-dot" style="background: #172554;"></span><span>{ui.get('legend_natal', 'Natal Inborn (Gold)')}</span></div>
-                <div class="legend-chip"><span class="legend-dot" style="background: #d97706;"></span><span>{ui.get('legend_md', 'Mahadasha (Sky Blue)')}</span></div>
-                <div class="legend-chip"><span class="legend-dot" style="background: #7e22ce;"></span><span>{ui.get('legend_ad', 'Antardasha (Emerald Green)')}</span></div>
-                <div class="legend-chip"><span class="legend-dot" style="background: #ffffff; border: 1px dashed #cbd5e1;"></span><span>{ui.get('legend_missing', 'Missing Void')}</span></div>
+                <div class="legend-chip"><span class="legend-dot" style="background: #d97706;"></span><span>{ui.get('legend_natal', 'Natal Inborn (Gold)')}</span></div>
+                <div class="legend-chip"><span class="legend-dot" style="background: #0284c7;"></span><span>{ui.get('legend_md', 'Mahadasha • Multi-Year (Sky Blue)')}</span></div>
+                <div class="legend-chip"><span class="legend-dot" style="background: #16a34a;"></span><span>{ui.get('legend_ad', 'Antardasha • Yearly (Emerald Green)')}</span></div>
+                <div class="legend-chip"><span class="legend-dot" style="background: #ffffff; border: 1.5px dashed #94a3b8;"></span><span>{ui.get('legend_missing', 'Missing Void')}</span></div>
             </div>
 
             <!-- Grid Planes Analysis Cards -->

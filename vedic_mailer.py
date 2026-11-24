@@ -31,43 +31,43 @@ BREVO_API_KEY = os.environ.get("BREVO_API_KEY", "").strip()
 
 EMAIL_TEMPLATES = {
     "en": {
-        "subject": "🕉️ Your Personalized Vedic Numerology Report & Dasha Roadmap - Jigar Thakkar",
+        "subject": "[Vedic Blueprint] Your Personalized Vedic Numerology Report & Dasha Roadmap - Jigar Thakkar",
         "greeting": "Namaste",
         "body_intro": "Thank you for ordering your sacred <strong>Vedic Numerology Blueprint & Dasha Roadmap</strong>. Your personalized 10-page consultation report has been mathematically calculated according to authentic Vedic principles and is attached to this email as a PDF document.",
         "whats_inside_title": "What Is Included in Your 10-Page Blueprint:",
         "items": [
-            "<strong>Page 1:</strong> Lifetime Inborn Natal Matrix, Basic & Destiny Planetary Vibrations, Life Compass & Auspicious Gemstones/Metals.",
-            "<strong>Page 2:</strong> 3-Tier Horizon Predictions (Active Mahadasha, Antardasha & Annual 9-Phase Pratyantar Dasha Roadmap).",
-            "<strong>Page 3:</strong> Auspicious Raj Yogs, Karmic Dosha Remedies & Dynamic Dasha Vibration Polarity Shifts (+ / -).",
-            "<strong>Page 4:</strong> 8 Core Life Dimension Predictions (Finance, Real Estate, Vehicle, Marriage/Divorce, Travel, Litigation, Health) & Vedic Remedies."
+            "<strong>Pages 1-2:</strong> Lifetime Inborn Natal Matrix, Dasha Activation Grid, Planetary Vibrations & Life Compass.",
+            "<strong>Pages 3-4:</strong> 3-Tier Horizon Predictions (Active Mahadasha, Antardasha & Annual 9-Phase Pratyantar Dasha Roadmap).",
+            "<strong>Pages 5-6:</strong> Auspicious Raj Yogas, Karmic Dosha Remedies & Dynamic Dasha Vibration Polarity Shifts (+ / -).",
+            "<strong>Pages 7-10:</strong> 8 Core Life Dimension Predictions (Finance, Career, Relationships, Real Estate, Health) & Authentic Vedic Remedies."
         ],
         "contact_note": "For personalized 1-on-1 consultations, gemstone recommendations, or Vastu guidance, feel free to contact:",
         "copyright": "© 2026 Jigar Thakkar • Certified Vedic Numerologist & Vastu Consultant. All Rights Reserved."
     },
     "hi": {
-        "subject": "🕉️ आपकी व्यक्तिगत वैदिक अंक ज्योतिष रिपोर्ट और दशा रोडमैप - जिगर ठक्कर",
+        "subject": "[वैदिक ब्लूप्रिंट] आपकी व्यक्तिगत वैदिक अंक ज्योतिष रिपोर्ट और दशा रोडमैप - जिगर ठक्कर",
         "greeting": "नमस्ते",
-        "body_intro": "आपकी व्यक्तिगत <strong>वैदिक अंक ज्योतिष ब्लूप्रिंट और दशा रोडमैप</strong> रिपोर्ट सफलतापूर्वक तैयार कर ली गई है। प्रमाणिक वैदिक गणनाओं पर आधारित आपकी 4-पृष्ठीय संपूर्ण परामर्श रिपोर्ट इस ईमेल के साथ पीडीएफ (PDF) के रूप में संलग्न है।",
-        "whats_inside_title": "आपकी 4-पृष्ठीय रिपोर्ट में क्या शामिल है:",
+        "body_intro": "आपकी व्यक्तिगत <strong>वैदिक अंक ज्योतिष ब्लूप्रिंट और दशा रोडमैप</strong> रिपोर्ट सफलतापूर्वक तैयार कर ली गई है। प्रमाणिक वैदिक गणनाओं पर आधारित आपकी 10-पृष्ठीय संपूर्ण परामर्श रिपोर्ट इस ईमेल के साथ पीडीएफ (PDF) के रूप में संलग्न है।",
+        "whats_inside_title": "आपकी 10-पृष्ठीय रिपोर्ट में क्या शामिल है:",
         "items": [
-            "<strong>पृष्ठ 1:</strong> जन्मकालीन वैदिक ग्रिड, मूलांक एवं भाग्यांक ग्रहीय स्पंदन, जीवन दिशा कंपास तथा शुभ रत्न/धातु।",
-            "<strong>पृष्ठ 2:</strong> 3-स्तरीय सटीक भविष्यफल (सक्रिय महादशा, अंतर्दशा एवं 360-दिवसीय 9-चरणीय प्रत्यंतर दशा कैलेंडर)।",
-            "<strong>पृष्ठ 3:</strong> शुभ राजयोग, कार्मिक दोष निवारण उपाय एवं दशा ग्रहीय स्पंदन परिवर्तन (+ / -)।",
-            "<strong>पृष्ठ 4:</strong> जीवन के 8 प्रमुख क्षेत्रों की भविष्यवाणियां (वित्त, संपत्ति, वाहन, वैवाहिक जीवन, विदेश यात्रा, कानूनी मामले, स्वास्थ्य) एवं वैदिक अचूक उपाय।"
+            "<strong>पृष्ठ 1-2:</strong> जन्मकालीन वैदिक ग्रिड, दशा सक्रियण ग्रिड, मूलांक एवं भाग्यांक ग्रहीय स्पंदन तथा दिशा कंपास।",
+            "<strong>पृष्ठ 3-4:</strong> 3-स्तरीय सटीक भविष्यफल (सक्रिय महादशा, अंतर्दशा एवं 360-दिवसीय 9-चरणीय प्रत्यंतर दशा कैलेंडर)।",
+            "<strong>पृष्ठ 5-6:</strong> शुभ राजयोग, कार्मिक दोष निवारण उपाय एवं दशा ग्रहीय स्पंदन परिवर्तन (+ / -)।",
+            "<strong>पृष्ठ 7-10:</strong> जीवन के 8 प्रमुख क्षेत्रों की भविष्यवाणियां (वित्त, करियर, वैवाहिक जीवन, संपत्ति, स्वास्थ्य) एवं अचूक वैदिक उपाय।"
         ],
         "contact_note": "व्यक्तिगत परामर्श, रत्न चयन अथवा वास्तु सलाह के लिए संपर्क करें:",
         "copyright": "© 2026 जिगर ठक्कर • प्रमाणित वैदिक अंकशास्त्री एवं वास्तु सलाहकार। सर्वाधिकार सुरक्षित।"
     },
     "gu": {
-        "subject": "🕉️ તમારો અંગત વૈદિક અંકશાસ્ત્ર અહેવાલ અને દશા રોડમેપ - જીગર ઠક્કર",
+        "subject": "[વૈદિક બ્લૂપ્રિન્ટ] તમારો વ્યક્તિગત વૈદિક અંકશાસ્ત્ર રિપોર્ટ અને દશા રોડમેપ - જીગર ઠક્કર",
         "greeting": "નમસ્તે",
-        "body_intro": "તમારો પવિત્ર <strong>વૈદિક અંકશાસ્ત્ર બ્લુપ્રિન્ટ અને દશા રોડમેપ</strong> સફળતાપૂર્વક તૈયાર કરવામાં આવ્યો છે. અધિકૃત વૈદિક સિદ્ધાંતો મુજબ ગણતરી કરેલ તમારો 4-પેજનો સંપૂર્ણ કન્સલ્ટેશન રિપોર્ટ આ ઈમેલ સાથે પીડીએફ (PDF) તરીકે જોડાયેલ છે.",
-        "whats_inside_title": "તમારા 4-પેજના રિપોર્ટમાં શું સમાવિષ્ટ છે:",
+        "body_intro": "તમારો પવિત્ર <strong>વૈદિક અંકશાસ્ત્ર બ્લુપ્રિન્ટ અને દશા રોડમેપ</strong> સફળતાપૂર્વક તૈયાર કરવામાં આવ્યો છે. અધિકૃત વૈદિક સિદ્ધાંતો મુજબ ગણતરી કરેલ તમારો 10-પેજનો સંપૂર્ણ કન્સલ્ટેશન રિપોર્ટ આ ઈમેલ સાથે પીડીએફ (PDF) તરીકે જોડાયેલ છે.",
+        "whats_inside_title": "તમારા 10-પેજના રિપોર્ટમાં શું સમાવિષ્ટ છે:",
         "items": [
-            "<strong>પેજ 1:</strong> જન્મકાલીન વૈદિક ગ્રીડ, મૂળાંક અને ભાગ્યાંક વાઇબ્રેશન, જીવન દિશા કંપાસ તથા શુભ રત્ન/ધાતુ.",
-            "<strong>પેજ 2:</strong> 3-સ્તરીય ચોક્કસ ભવિષ્યવાણી (મહાદશા, અંતર્દશા અને વાર્ષિક 9-તબક્કા પ્રત્યંતર દશા કેલેન્ડર).",
-            "<strong>પેજ 3:</strong> શુભ રાજયોગ, કર્મિક દોષ નિવારણ ઉપાયો અને સક્રિય દશા વાઇબ્રેશન શિફ્ટ (+ / -).",
-            "<strong>પેજ 4:</strong> જીવનના 8 મુખ્ય ક્ષેત્રોની આગાહીઓ (નાણાકીય સંપત્તિ, વાહન, લગ્નજીવન, વિદેશ પ્રવાસ, કોર્ટ-કચેરી, સ્વાસ્થ્ય) અને વૈદિક ઉપાયો."
+            "<strong>પેજ 1-2:</strong> જન્મકાલીન વૈદિક ગ્રીડ, દશા સક્રિયકરણ ગ્રીડ, મૂળાંક અને ભાગ્યાંક વાઇબ્રેશન તથા કંપાસ.",
+            "<strong>પેજ 3-4:</strong> 3-સ્તરીય ચોક્કસ ભવિષ્યવાણી (મહાદશા, અંતર્દશા અને વાર્ષિક 9-તબક્કા પ્રત્યંતર દશા કેલેન્ડર).",
+            "<strong>પેજ 5-6:</strong> શુભ રાજયોગ, કર્મિક દોષ નિવારણ ઉપાયો અને સક્રિય દશા વાઇબ્રેશન શિફ્ટ (+ / -).",
+            "<strong>પેજ 7-10:</strong> જીવનના 8 મુખ્ય ક્ષેત્રોની આગાહીઓ (નાણાકીય સંપત્તિ, કરિયર, લગ્નજીવન, વાસ્તુ, સ્વાસ્થ્ય) અને વૈદિક ઉપાયો."
         ],
         "contact_note": "અંગત પરામર્શ, રત્ન માર્ગદર્શન અથવા વાસ્તુ સલાહ માટે સંપર્ક કરો:",
         "copyright": "© 2026 જીગર ઠક્કર • સર્ટિફાઇડ વૈદિક ન્યૂમરોલોજિસ્ટ અને વાસ્તુ કન્સલ્ટન્ટ. સર્વાધિકાર સુરક્ષિત."
@@ -180,8 +180,8 @@ def send_via_webhook(
 
         req = urllib.request.Request(
             webhook_url,
-            data=json.dumps(payload).encode("utf-8"),
-            headers={"Content-Type": "application/json"}
+            data=json.dumps(payload, ensure_ascii=True).encode("utf-8"),
+            headers={"Content-Type": "application/json; charset=utf-8"}
         )
         with urllib.request.urlopen(req, timeout=30) as resp:
             resp_text = resp.read().decode("utf-8")
