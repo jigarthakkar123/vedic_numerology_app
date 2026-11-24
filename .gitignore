@@ -18,3 +18,8 @@ reports/*.html
 Thumbs.db
 .vscode/
 .idea/
+
+# SQLite databases
+*.db
+*.sqlite
+*.sqlite3

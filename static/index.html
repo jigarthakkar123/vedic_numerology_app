@@ -199,6 +199,7 @@
                             <button class="tab-btn" data-tab="tab-yogas">⚖️ Yogas & Raj Yog</button>
                             <button class="tab-btn" data-tab="tab-predictions">🔮 Life Predictions</button>
                             <button class="tab-btn" data-tab="tab-remedies">🕉️ Vedic Remedies</button>
+                            <button class="tab-btn" data-tab="tab-crm" id="tab-btn-crm" style="color: #fbbf24; border-color: rgba(212,175,55,0.4); font-weight: 700;">💼 Paid Client Orders & CRM</button>
                         </nav>
                     </div>
 
@@ -516,6 +517,90 @@
                         <h3 class="section-heading">Authentic Vedic Remedial Measures</h3>
                         <div id="remedies-container" class="remedies-display-list">
                             <!-- Dynamic Remedy Cards -->
+                        </div>
+                    </div>
+
+                    <!-- Tab 6: Paid Client Orders & CRM -->
+                    <div id="tab-crm" class="tab-content">
+                        <!-- Top Header with Actions -->
+                        <div class="crm-header-banner">
+                            <div>
+                                <h3 class="section-heading" style="margin-bottom: 3px;">💼 Paid Client Orders Database & CRM</h3>
+                                <p style="font-size: 11.5px; color: var(--text-secondary);">
+                                    Track incoming customer orders, manage 1-on-1 VIP meetings, and export data.
+                                </p>
+                            </div>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button type="button" id="btn-crm-refresh" class="btn btn-secondary btn-touch" style="padding: 7px 12px; font-size: 11.5px;">
+                                    ↻ Refresh Orders
+                                </button>
+                                <a href="/api/studio/export-csv" class="btn btn-gold btn-touch" style="padding: 7px 12px; font-size: 11.5px; text-decoration: none;">
+                                    📊 Export to Excel (CSV)
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Stats KPI Grid -->
+                        <div class="crm-stats-grid">
+                            <div class="crm-stat-card revenue">
+                                <div class="crm-stat-val" id="crm-total-revenue">₹0</div>
+                                <div class="crm-stat-label">Total Revenue</div>
+                            </div>
+                            <div class="crm-stat-card">
+                                <div class="crm-stat-val" id="crm-total-orders">0</div>
+                                <div class="crm-stat-label">Total Paid Clients</div>
+                            </div>
+                            <div class="crm-stat-card">
+                                <div class="crm-stat-val" id="crm-cnt-299" style="color: #93c5fd;">0</div>
+                                <div class="crm-stat-label">Essential (₹299)</div>
+                            </div>
+                            <div class="crm-stat-card">
+                                <div class="crm-stat-val" id="crm-cnt-499" style="color: #fbbf24;">0</div>
+                                <div class="crm-stat-label">Complete (₹499)</div>
+                            </div>
+                            <div class="crm-stat-card vip">
+                                <div class="crm-stat-val" id="crm-cnt-1199">0</div>
+                                <div class="crm-stat-label">VIP 1-on-1 (₹1,199)</div>
+                            </div>
+                            <div class="crm-stat-card" style="border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.05);">
+                                <div class="crm-stat-val" id="crm-pending-meetings" style="color: #f87171;">0</div>
+                                <div class="crm-stat-label">Pending Meetings</div>
+                            </div>
+                        </div>
+
+                        <!-- Filter & Search Controls -->
+                        <div class="crm-controls-row">
+                            <input type="text" id="crm-search-input" class="crm-search-input" placeholder="🔍 Search by client name, email, phone, or order ID...">
+                            <select id="crm-tier-filter" class="crm-filter-select">
+                                <option value="all">All Packages</option>
+                                <option value="essential_299">Essential (₹299)</option>
+                                <option value="complete_499">Complete (₹499)</option>
+                                <option value="vip_1199">👑 VIP 1-on-1 (₹1,199)</option>
+                            </select>
+                        </div>
+
+                        <!-- Orders Table -->
+                        <div class="crm-table-container">
+                            <table class="crm-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date / Order ID</th>
+                                        <th>Client & DOB</th>
+                                        <th>Contact</th>
+                                        <th>Package Tier</th>
+                                        <th>Amount</th>
+                                        <th>VIP Meeting</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="crm-orders-tbody">
+                                    <tr>
+                                        <td colspan="7" style="text-align: center; padding: 24px; color: var(--text-secondary);">
+                                            Loading customer orders...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

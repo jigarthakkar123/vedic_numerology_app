@@ -182,6 +182,62 @@
             font-size: 12px;
         }
 
+        /* VIP Consultation Confirmation Card */
+        .vip-box {
+            background: linear-gradient(135deg, rgba(88, 28, 135, 0.35) 0%, rgba(131, 24, 67, 0.35) 100%);
+            border: 2px solid #c084fc;
+            border-radius: 12px;
+            padding: 18px 14px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(168, 85, 247, 0.35);
+        }
+        .vip-pill {
+            display: inline-block;
+            background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+            color: #ffffff;
+            font-size: 10.5px;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .vip-title {
+            font-family: var(--font-heading);
+            font-size: 18px;
+            color: #fbcfe8;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+        .vip-desc {
+            font-size: 12.5px;
+            color: #f1f5f9;
+            line-height: 1.5;
+            margin-bottom: 14px;
+        }
+        .vip-btn-call {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #22c55e;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 14px;
+            text-decoration: none;
+            padding: 12px 22px;
+            border-radius: 30px;
+            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.5);
+            transition: transform 0.15s ease;
+            width: 100%;
+            max-width: 380px;
+        }
+        .vip-btn-call:hover {
+            transform: scale(1.02);
+        }
+
         .footer {
             text-align: center;
             font-size: 11px;
@@ -228,8 +284,22 @@
                 Thank you for your order. Your personalized 10-page Vedic Numerology Consultation Blueprint has been generated and is ready for instant download.
             </p>
 
+            <!-- VIP 1-on-1 Appointment Scheduler (Shown only for VIP Tier) -->
+            <div id="vip-box" class="vip-box" style="display: none;">
+                <span class="vip-pill">👑 VIP 1-on-1 Consultation Confirmed</span>
+                <h3 class="vip-title">Schedule Your Private Online Meeting</h3>
+                <p class="vip-desc">
+                    Namaste <strong id="vip-name">Client</strong>! Your payment for the VIP Personal Consultation has been received. 
+                    Please tap below to send Jigar Thakkar a direct WhatsApp message to pick your preferred date and time for the 1-on-1 personalized video or voice session.
+                </p>
+                <a id="vip-wa-btn" href="#" target="_blank" class="vip-btn-call">
+                    <span>💬 WhatsApp Jigar Thakkar to Schedule Meeting</span>
+                </a>
+            </div>
+
             <div class="details-box">
                 <div>Client Name: <strong id="out-name">Client</strong></div>
+                <div>Package: <strong id="out-tier">Complete Life Manual + Remedies (₹499)</strong></div>
                 <div>Delivered to Email: <strong id="out-email">your-email@domain.com</strong></div>
                 <div>Report Language: <strong id="out-lang">English</strong></div>
                 <div style="margin-top: 6px; color: #4ade80; font-size: 11.5px;">
@@ -248,11 +318,11 @@
             </div>
 
             <!-- WhatsApp Consultation Connect -->
-            <div class="whatsapp-box">
-                <strong>Need 1-on-1 Personalized Guidance or Vastu Consultation?</strong><br>
+            <div class="whatsapp-box" id="general-whatsapp-box">
+                <strong>Need Additional Guidance or Future Vastu Consultation?</strong><br>
                 Connect directly with certified numerologist Jigar Thakkar on WhatsApp:
                 <br>
-                <a href="https://wa.me/919377614772?text=Hello%20Jigar%20bhai,%20I%20just%20ordered%20my%20Vedic%20Numerology%20Report%20and%20would%20like%20to%20connect%20for%20further%20guidance." target="_blank" class="whatsapp-link">
+                <a id="general-wa-btn" href="https://wa.me/919377614772?text=Hello%20Jigar%20bhai,%20I%20just%20ordered%20my%20Vedic%20Numerology%20Report%20and%20would%20like%20to%20connect%20for%20further%20guidance." target="_blank" class="whatsapp-link">
                     <span>💬 Message on WhatsApp (+91 9377614772)</span>
                 </a>
             </div>
@@ -266,16 +336,54 @@
     <script>
         // Parse URL params or sessionStorage
         const params = new URLSearchParams(window.location.search);
-        const fileName = params.get('file');
+        const fileName = params.get('file') || params.get('pdf');
         const clientName = params.get('name') || 'Client';
         const clientEmail = params.get('email') || 'Your Email';
         const reportLang = params.get('lang') || 'en';
+        const reportTier = (params.get('tier') || 'complete_499').toLowerCase();
+        const clientPhone = params.get('phone') || '';
 
         document.getElementById('out-name').textContent = clientName;
         document.getElementById('out-email').textContent = clientEmail;
         
         const langMap = { en: 'English (🇬🇧)', hi: 'हिन्दी (🇮🇳)', gu: 'ગુજરાતી (🚩)' };
         document.getElementById('out-lang').textContent = langMap[reportLang] || reportLang.toUpperCase();
+
+        const tierMap = {
+            'essential_299': 'Essential Blueprint (₹299)',
+            'complete_499': 'Complete Life Manual + Remedies (₹499)',
+            'vip_1199': '👑 VIP 1-on-1 Personal Consultation (₹1,199)'
+        };
+        document.getElementById('out-tier').textContent = tierMap[reportTier] || `Consultation Package (${reportTier})`;
+
+        // VIP Tier Personal Meeting Scheduler
+        if (reportTier === 'vip_1199') {
+            const vipBox = document.getElementById('vip-box');
+            vipBox.style.display = 'block';
+            document.getElementById('vip-name').textContent = clientName;
+            
+            const waMsg = encodeURIComponent(
+                `Namaste Jigar bhai! I have just completed payment for the VIP 1-on-1 Personal Consultation (₹1,199).\n` +
+                `Name: ${clientName}\n` +
+                `Email: ${clientEmail}\n` +
+                (clientPhone ? `Phone: ${clientPhone}\n` : '') +
+                `Please let me know your available date and time slots for our online video/voice consultation.`
+            );
+            document.getElementById('vip-wa-btn').href = `https://wa.me/919377614772?text=${waMsg}`;
+            
+            // Hide the redundant general box
+            const genBox = document.getElementById('general-whatsapp-box');
+            if (genBox) genBox.style.display = 'none';
+        } else {
+            // Customize general WhatsApp prefill
+            const genBtn = document.getElementById('general-wa-btn');
+            if (genBtn) {
+                const genMsg = encodeURIComponent(
+                    `Hello Jigar bhai, I ordered my Vedic Numerology Blueprint (${tierMap[reportTier] || 'Report'}) for ${clientName}. I would like to connect with you.`
+                );
+                genBtn.href = `https://wa.me/919377614772?text=${genMsg}`;
+            }
+        }
 
         if (fileName) {
             document.getElementById('btn-download').href = `/api/download/${encodeURIComponent(fileName)}`;

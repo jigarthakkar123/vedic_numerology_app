@@ -66,6 +66,9 @@ def build_report_html(data: Dict[str, Any]) -> str:
     remedies = data.get("remedies", {})
     ui = data.get("ui", {})
     lang = client.get("lang", "en")
+    tier = str(data.get("tier", client.get("tier", "complete_499"))).lower().strip()
+    include_remedies = (tier != "essential_299")
+    is_vip = (tier == "vip_1199")
 
     # Fonts definition based on language
     font_family = "'Plus Jakarta Sans', -apple-system, sans-serif"
@@ -227,24 +230,74 @@ def build_report_html(data: Dict[str, Any]) -> str:
     pd_dos_html = "".join([f"<li>✔ {d}</li>" for d in pd_data.get("dos", [])[:4]])
     pd_donts_html = "".join([f"<li>⚠ {d}</li>" for d in pd_data.get("donts", [])[:4]])
 
-    # Remedies Cards HTML (Page 10)
-    remedy_items = [
-        {"num": 1, "icon": "💎", "label": ui.get("gemstone_remedy", "Gemstone"), "text": f"{remedies.get('moolank_gem', '')} (Crystal: {remedies.get('moolank_crystal', '')})"},
-        {"num": 2, "icon": "📿", "label": ui.get("mantra_remedy", "Vedic Mantra"), "text": remedies.get("moolank_mantra", "")},
-        {"num": 3, "icon": "🌾", "label": ui.get("fasting_remedy", "Fasting Discipline"), "text": remedies.get("moolank_fasting", "")},
-        {"num": 4, "icon": "🤝", "label": ui.get("donation_remedy", "Charity & Daan"), "text": remedies.get("moolank_donation", "")},
-        {"num": 5, "icon": "🕊️", "label": ui.get("seva_remedy", "Seva & Karma"), "text": remedies.get("moolank_seva", "")},
-        {"num": 6, "icon": "🎨", "label": ui.get("general_remedies", "General Remedies"), "text": f"<strong>Health:</strong> {remedies.get('general_health', '')} • <strong>Wealth:</strong> {remedies.get('general_wealth', '')}"}
-    ]
+    # Remedies Section HTML (Page 10) - Full in Complete/VIP, Locked in Essential
     remedies_html = ""
-    for r in remedy_items:
-        remedies_html += f"""
-        <div class="remedy-card">
-            <div class="remedy-num">{r['num']}</div>
-            <div class="remedy-content">
-                <div class="remedy-label"><span style="margin-right:4px;">{r['icon']}</span>{r['label']}</div>
-                <div class="remedy-text">{r['text']}</div>
+    if include_remedies:
+        remedy_items = [
+            {"num": 1, "icon": "💎", "label": ui.get("gemstone_remedy", "Gemstone"), "text": f"{remedies.get('moolank_gem', '')} (Crystal: {remedies.get('moolank_crystal', '')})"},
+            {"num": 2, "icon": "📿", "label": ui.get("mantra_remedy", "Vedic Mantra"), "text": remedies.get("moolank_mantra", "")},
+            {"num": 3, "icon": "🌾", "label": ui.get("fasting_remedy", "Fasting Discipline"), "text": remedies.get("moolank_fasting", "")},
+            {"num": 4, "icon": "🤝", "label": ui.get("donation_remedy", "Charity & Daan"), "text": remedies.get("moolank_donation", "")},
+            {"num": 5, "icon": "🕊️", "label": ui.get("seva_remedy", "Seva & Karma"), "text": remedies.get("moolank_seva", "")},
+            {"num": 6, "icon": "🎨", "label": ui.get("general_remedies", "General Remedies"), "text": f"<strong>Health:</strong> {remedies.get('general_health', '')} • <strong>Wealth:</strong> {remedies.get('general_wealth', '')}"}
+        ]
+        remedies_items_html = ""
+        for r in remedy_items:
+            remedies_items_html += f"""
+            <div class="remedy-card">
+                <div class="remedy-num">{r['num']}</div>
+                <div class="remedy-content">
+                    <div class="remedy-label"><span style="margin-right:4px;">{r['icon']}</span>{r['label']}</div>
+                    <div class="remedy-text">{r['text']}</div>
+                </div>
             </div>
+            """
+        remedies_html = f'<div class="remedies-grid">{remedies_items_html}</div>'
+    else:
+        locked_title = {
+            "en": "🔒 Master 6-Pillar Vedic Remedies (Locked in Essential Tier)",
+            "hi": "🔒 ६-सूत्रीय वैदिक महा-उपाय (मूल संस्करण में सुरक्षित / लॉक)",
+            "gu": "🔒 ૬-સ્તંભ વૈદિક મહા-ઉપાયો (મૂળ આવૃત્તિમાં લોક કરેલ છે)"
+        }.get(lang, "🔒 Master 6-Pillar Vedic Remedies (Locked in Essential Tier)")
+        
+        locked_desc = {
+            "en": "Your birth grid indicates specific planetary remedies required to neutralize karmic hurdles and accelerate wealth. The complete prescription—including your customized Primary Gemstone & Crystal frequency, Vedic Beej Mantra Sadhana, Fasting Day, Daan Directive, and Vastu directional keys—is included in the Complete Life Manual & VIP Consultation.",
+            "hi": "आपकी जन्म कुंडली एवं दशा चक्र जीवन में ग्रह संतुलन एवं धन-समृद्धि हेतु विशिष्ट वैदिक उपायों की आवश्यकता दर्शाते हैं। आपका व्यक्तिगत भाग्यशाली रत्न, गुप्त वैदिक बीज मंत्र साधना, व्रत अनुशासन, दान निर्देश एवं वास्तु सुधार 'सम्पूर्ण वैदिक लाइफ मैन्युअल' एवं 'VIP परामर्श' में उपलब्ध हैं।",
+            "gu": "તમારી જન્મ કુંડળી અને દશા ચક્ર ગ્રહ સંતુલન અને ધન પ્રવાહ વધારવા માટે સચોટ વૈદિક ઉપાયો સૂચવે છે. તમારું લકી રત્ન, વૈદિક બીજ મંત્ર સાધના, વ્રત દિવસ, દાન નિર્દેશ અને વાસ્તુ ઊર્જા સુધારણા 'સંપૂર્ણ વૈદિક લાઇફ મેન્યુઅલ' અને 'VIP કન્સલ્ટેશન' માં ઉપલબ્ધ છે."
+        }.get(lang, "Your birth grid indicates specific remedies available in the Complete Life Manual.")
+
+        upgrade_cta = {
+            "en": "✦ To unlock your personalized remedies or upgrade your consultation, message Jigar Thakkar on WhatsApp: +91 9377614772",
+            "hi": "✦ अपने व्यक्तिगत वैदिक उपाय अनलॉक करने हेतु जिगर ठक्कर से सीधे व्हाट्सएप पर संपर्क करें: +91 9377614772",
+            "gu": "✦ તમારા વ્યક્તિગત વૈદિક ઉપાયો અનલોક કરવા માટે જીગર ઠક્કર સાથે સીધા વોટ્સએપ પર સંપર્ક કરો: +91 9377614772"
+        }.get(lang, "Contact Jigar Thakkar on WhatsApp: +91 9377614772")
+
+        remedies_html = f"""
+        <div style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1.5px dashed #d97706; border-radius: 8px; padding: 10px 14px; margin-bottom: 8px; text-align: center;">
+            <div style="font-family: 'Cinzel', serif; font-size: 10px; font-weight: 800; color: #92400e; margin-bottom: 4px;">
+                {locked_title}
+            </div>
+            <div style="font-size: 8px; color: #78350f; line-height: 1.4; max-width: 94%; margin: 0 auto 6px;">
+                {locked_desc}
+            </div>
+            <div style="font-size: 7.8px; font-weight: 700; color: #b45309; background: #ffffff; border: 1px solid #fde68a; border-radius: 5px; padding: 4px 8px; display: inline-block;">
+                {upgrade_cta}
+            </div>
+        </div>
+        """
+
+    vip_badge_html = ""
+    if is_vip:
+        vip_badge_html = f"""
+        <div style="background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%); border: 1.5px solid #d4af37; border-radius: 8px; padding: 7px 12px; margin-bottom: 7px; display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 16px;">👑</span>
+                <div>
+                    <div style="font-family: 'Cinzel', serif; font-size: 9.5px; font-weight: 800; color: #fbbf24;">VIP 1-ON-1 CONSULTATION CONFIRMED</div>
+                    <div style="font-size: 7.6px; color: #cbd5e1;">Your personalized online video/voice consultation with Jigar Thakkar is confirmed. WhatsApp scheduling: +91 9377614772</div>
+                </div>
+            </div>
+            <span style="background: #fbbf24; color: #000; font-size: 7.2px; font-weight: 800; padding: 2px 7px; border-radius: 10px; white-space: nowrap;">MEETING INCLUDED</span>
         </div>
         """
 
@@ -1939,9 +1992,9 @@ body {{
             </div>
 
             <!-- Master 6-Pillar Vedic Remedies -->
-            <div class="remedies-grid">
-                {remedies_html}
-            </div>
+            {remedies_html}
+
+            {vip_badge_html}
 
             {consultant_notes_html}
 

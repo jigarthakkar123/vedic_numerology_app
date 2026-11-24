@@ -11,6 +11,7 @@ let latestAnalysisData = null;
 // Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
     initEventListeners();
+    initCrmListeners();
     updateWeekdayDisplay();
     fetchAnalysis(false);
     refreshHistory();
@@ -646,5 +647,186 @@ function renderVibrations(data, mode = 'period') {
             <div class="vibe-desc">${v.text}</div>
         `;
         vibContainer.appendChild(box);
+    }
+}
+
+/* ==========================================================================
+   Studio CRM & Customer Database Controller
+   ========================================================================== */
+
+let crmSearchTimeout = null;
+
+function initCrmListeners() {
+    const tabCrmBtn = document.getElementById('tab-btn-crm');
+    if (tabCrmBtn) {
+        tabCrmBtn.addEventListener('click', () => {
+            loadCrmOrders();
+        });
+    }
+
+    const refreshBtn = document.getElementById('btn-crm-refresh');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', loadCrmOrders);
+    }
+
+    const searchInput = document.getElementById('crm-search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            clearTimeout(crmSearchTimeout);
+            crmSearchTimeout = setTimeout(loadCrmOrders, 350);
+        });
+    }
+
+    const tierFilter = document.getElementById('crm-tier-filter');
+    if (tierFilter) {
+        tierFilter.addEventListener('change', loadCrmOrders);
+    }
+}
+
+async function loadCrmOrders() {
+    const tbody = document.getElementById('crm-orders-tbody');
+    if (!tbody) return;
+
+    const searchVal = document.getElementById('crm-search-input') ? document.getElementById('crm-search-input').value.trim() : '';
+    const tierVal = document.getElementById('crm-tier-filter') ? document.getElementById('crm-tier-filter').value : 'all';
+
+    try {
+        const query = new URLSearchParams({
+            search: searchVal,
+            tier: tierVal,
+            limit: 100,
+            offset: 0
+        });
+
+        const res = await fetch(`/api/studio/orders?${query.toString()}`);
+        if (!res.ok) throw new Error('Failed to load CRM data');
+
+        const data = await res.json();
+        renderCrmStats(data.stats);
+        renderCrmTable(data.orders);
+    } catch (err) {
+        console.error('[CRM Load Error]', err);
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #f87171; padding: 20px;">Error loading orders: ${err.message}</td></tr>`;
+    }
+}
+
+function renderCrmStats(stats) {
+    if (!stats) return;
+
+    const elRev = document.getElementById('crm-total-revenue');
+    const elOrders = document.getElementById('crm-total-orders');
+    const el299 = document.getElementById('crm-cnt-299');
+    const el499 = document.getElementById('crm-cnt-499');
+    const el1199 = document.getElementById('crm-cnt-1199');
+    const elPending = document.getElementById('crm-pending-meetings');
+
+    if (elRev) elRev.textContent = `₹${(stats.total_revenue || 0).toLocaleString('en-IN')}`;
+    if (elOrders) elOrders.textContent = stats.total_orders || 0;
+    if (el299) el299.textContent = (stats.tier_counts && stats.tier_counts.essential_299) || 0;
+    if (el499) el499.textContent = (stats.tier_counts && stats.tier_counts.complete_499) || 0;
+    if (el1199) el1199.textContent = (stats.tier_counts && stats.tier_counts.vip_1199) || 0;
+    if (elPending) elPending.textContent = stats.pending_meetings || 0;
+}
+
+function renderCrmTable(orders) {
+    const tbody = document.getElementById('crm-orders-tbody');
+    if (!tbody) return;
+
+    if (!orders || orders.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 30px; color: var(--text-secondary);">No customer orders found matching your search.</td></tr>`;
+        return;
+    }
+
+    const tierBadges = {
+        'essential_299': '<span class="tier-tag tier-tag-essential">Essential (₹299)</span>',
+        'complete_499': '<span class="tier-tag tier-tag-complete">Complete (₹499)</span>',
+        'vip_1199': '<span class="tier-tag tier-tag-vip">👑 VIP 1-on-1 (₹1,199)</span>'
+    };
+
+    let html = '';
+    orders.forEach(order => {
+        const dateStr = order.created_at ? order.created_at.replace('T', ' ').substring(0, 16) : 'Recently';
+        const rawPhone = (order.phone || '').replace(/[^0-9]/g, '');
+        const cleanPhone = rawPhone.length === 10 ? `91${rawPhone}` : rawPhone;
+
+        // Pre-composed WhatsApp Client Message
+        let waMsg = '';
+        if (order.tier === 'vip_1199') {
+            waMsg = `Namaste ${order.client_name} ji! This is Jigar Thakkar (Certified Vedic Numerologist). Thank you for booking the VIP 1-on-1 Personal Consultation package. When is a convenient date and time for our personalized online meeting?`;
+        } else {
+            waMsg = `Namaste ${order.client_name} ji! This is Jigar Thakkar (Certified Vedic Numerologist). Thank you for ordering your Vedic Numerology Blueprint. Hope your 10-page report was insightful! Feel free to connect if you need any clarity.`;
+        }
+        const waLink = cleanPhone ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(waMsg)}` : '#';
+
+        // VIP Status Selector
+        let vipCell = '';
+        if (order.tier === 'vip_1199') {
+            vipCell = `
+                <select class="status-select-sm" onchange="updateMeetingStatus('${order.id}', this.value)" style="${order.meeting_status === 'pending' ? 'border-color: #ef4444; color: #fca5a5;' : (order.meeting_status === 'completed' ? 'border-color: #22c55e; color: #86efac;' : '')}">
+                    <option value="pending" ${order.meeting_status === 'pending' ? 'selected' : ''}>⏳ Pending</option>
+                    <option value="scheduled" ${order.meeting_status === 'scheduled' ? 'selected' : ''}>📅 Scheduled</option>
+                    <option value="completed" ${order.meeting_status === 'completed' ? 'selected' : ''}>✔ Completed</option>
+                </select>
+            `;
+        } else {
+            vipCell = `<span style="color: #64748b; font-size: 11px;">N/A</span>`;
+        }
+
+        const pdfFilename = order.pdf_filename || '';
+        const htmlFilename = pdfFilename.replace('.pdf', '.html');
+
+        html += `
+            <tr>
+                <td>
+                    <div style="font-weight: 600; color: #f1f5f9;">${dateStr}</div>
+                    <div style="font-size: 10.5px; color: #64748b; font-family: monospace;">${order.order_id || 'ID: #' + order.id}</div>
+                </td>
+                <td>
+                    <div style="font-weight: 700; color: #fbbf24;">${escapeHtml(order.client_name)}</div>
+                    <div style="font-size: 11px; color: var(--text-secondary);">DOB: ${order.dob} (${order.gender || 'M'}) • ${order.lang ? order.lang.toUpperCase() : 'EN'}</div>
+                </td>
+                <td>
+                    <div><a href="tel:${order.phone}" style="color: #93c5fd; text-decoration: none;">📞 ${order.phone || 'N/A'}</a></div>
+                    <div style="font-size: 11px; color: #64748b;">${order.email || ''}</div>
+                </td>
+                <td>
+                    ${tierBadges[order.tier] || `<span class="tier-tag">${order.tier}</span>`}
+                </td>
+                <td>
+                    <strong style="color: #4ade80; font-size: 13px;">₹${order.amount || 499}</strong>
+                </td>
+                <td>
+                    ${vipCell}
+                </td>
+                <td>
+                    <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+                        ${pdfFilename ? `<a href="/api/download/${encodeURIComponent(pdfFilename)}" class="crm-btn-sm crm-btn-pdf" title="Download 10-Page PDF">📥 PDF</a>` : ''}
+                        ${pdfFilename ? `<a href="/api/view-html/${encodeURIComponent(htmlFilename)}" target="_blank" class="crm-btn-sm crm-btn-view" title="View in Browser">👁️</a>` : ''}
+                        ${cleanPhone ? `<a href="${waLink}" target="_blank" class="crm-btn-sm crm-btn-wa" title="Message Client on WhatsApp">💬 WA</a>` : ''}
+                    </div>
+                </td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = html;
+}
+
+async function updateMeetingStatus(orderId, status) {
+    try {
+        const res = await fetch('/api/studio/update-meeting', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ order_id: orderId, status: status })
+        });
+        if (res.ok) {
+            showStatus('VIP meeting status updated', 'success');
+            loadCrmOrders();
+        } else {
+            alert('Could not update meeting status.');
+        }
+    } catch (e) {
+        console.error(e);
+        alert('Network error updating meeting status.');
     }
 }
