@@ -15,12 +15,14 @@ from typing import Dict, Any, List, Optional, Tuple
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "vedic_orders.db")
 
 TIER_NAMES = {
+    "test_1": "Live Verification Trial (₹1)",
     "essential_299": "Essential Blueprint (No Remedies)",
     "complete_499": "Complete Life Manual (With Remedies)",
     "vip_1199": "VIP 1-on-1 Consultation + Full Report"
 }
 
 TIER_AMOUNTS = {
+    "test_1": 1,
     "essential_299": 299,
     "complete_499": 499,
     "vip_1199": 1199
@@ -163,7 +165,7 @@ def get_order_stats() -> Dict[str, Any]:
             GROUP BY tier
         """)
         tier_breakdown = {}
-        tier_counts = {"essential_299": 0, "complete_499": 0, "vip_1199": 0}
+        tier_counts = {"test_1": 0, "essential_299": 0, "complete_499": 0, "vip_1199": 0}
         for row in cursor.fetchall():
             tier_breakdown[row[0]] = {
                 "count": row[1],

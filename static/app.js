@@ -738,6 +738,7 @@ function renderCrmTable(orders) {
     }
 
     const tierBadges = {
+        'test_1': '<span class="tier-tag" style="background:rgba(34,197,94,0.2);color:#4ade80;border:1px solid rgba(34,197,94,0.4);">🧪 Trial (₹1)</span>',
         'essential_299': '<span class="tier-tag tier-tag-essential">Essential (₹299)</span>',
         'complete_499': '<span class="tier-tag tier-tag-complete">Complete (₹499)</span>',
         'vip_1199': '<span class="tier-tag tier-tag-vip">👑 VIP 1-on-1 (₹1,199)</span>'

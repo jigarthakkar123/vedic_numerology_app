@@ -328,6 +328,7 @@ async def get_funnel_config():
         "is_live": has_keys,
         "key_id": RAZORPAY_KEY_ID if has_keys else "demo_key",
         "tiers": {
+            "test_1": {"name": "Live Verification Trial", "price": 1, "remedies": True, "test": True},
             "essential_299": {"name": "Essential Blueprint", "price": 299, "remedies": False},
             "complete_499": {"name": "Complete Life Manual", "price": 499, "remedies": True, "popular": True},
             "vip_1199": {"name": "VIP 1-on-1 Consultation", "price": 1199, "remedies": True, "consultation": True}
@@ -344,7 +345,7 @@ async def create_funnel_order(req: FunnelOrderRequest):
     or generates a demo order for simulator testing.
     """
     tier_clean = (req.tier or "complete_499").lower().strip()
-    tier_prices = {"essential_299": 299, "complete_499": 499, "vip_1199": 1199}
+    tier_prices = {"test_1": 1, "essential_299": 299, "complete_499": 499, "vip_1199": 1199}
     amount_inr = tier_prices.get(tier_clean, req.amount or 499)
     amount_in_paise = amount_inr * 100
     receipt_id = f"rcpt_{int(time.time())}_{clean_filename(req.name)[:8]}"
@@ -432,7 +433,7 @@ async def verify_funnel_payment(req: FunnelVerifyRequest, background_tasks: Back
             print(f"[SIGNATURE VERIFY WARNING] {e}")
 
     tier_clean = (req.tier or "complete_499").lower().strip()
-    tier_prices = {"essential_299": 299, "complete_499": 499, "vip_1199": 1199}
+    tier_prices = {"test_1": 1, "essential_299": 299, "complete_499": 499, "vip_1199": 1199}
     amount_inr = tier_prices.get(tier_clean, req.amount or 499)
 
     try:
