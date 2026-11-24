@@ -181,6 +181,22 @@ def get_order_by_id(order_row_id) -> Optional[Dict[str, Any]]:
         row = cursor.fetchone()
         return dict(row) if row else None
 
+def get_order_by_pdf(pdf_filename: str) -> Optional[Dict[str, Any]]:
+    """Finds an order matching the given PDF filename."""
+    init_db()
+    clean = os.path.basename(pdf_filename)
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM orders WHERE pdf_filename = ? OR pdf_filename LIKE ? ORDER BY id DESC LIMIT 1", (clean, f"%{clean}%"))
+        row = cursor.fetchone()
+        if row:
+            return dict(row)
+    reg_orders = _load_registry_orders()
+    for o in reversed(reg_orders):
+        if o.get("pdf_filename") == clean or clean in o.get("pdf_filename", ""):
+            return o
+    return None
+
 def get_orders(
     search: Optional[str] = None,
     tier_filter: Optional[str] = None,

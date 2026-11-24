@@ -186,11 +186,22 @@ def send_report_email(
         else:
             print(f"[MAILER WARNING] PDF path {pdf_path} not found; sending email without attachment.")
 
-        # Connect and send via SMTP with TLS
-        server = smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=20)
-        server.ehlo()
-        server.starttls()
-        server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
+        # Connect and send via SMTP with TLS (with SSL port 465 fallback)
+        server = None
+        try:
+            server = smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=25)
+            server.ehlo()
+            server.starttls()
+            server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
+        except Exception as tls_err:
+            print(f"[MAILER TLS NOTICE] {tls_err}; attempting SMTP_SSL on port 465...")
+            try:
+                server = smtplib.SMTP_SSL(SMTP_HOST, 465, timeout=25)
+                server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
+            except Exception as ssl_err:
+                print(f"[MAILER SSL ERROR] {ssl_err}")
+                raise ssl_err
+
         server.send_message(msg)
 
         # Also send an instant consultation notification with PDF to Jigar Thakkar

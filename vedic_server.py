@@ -164,22 +164,65 @@ async def generate_all_pdfs(req: ClientProfileRequest):
 
 @app.get("/api/download/{filename}")
 async def download_report(filename: str):
-    """Direct PDF download endpoint."""
-    file_path = os.path.join(REPORTS_DIR, filename)
+    """Direct PDF download endpoint with on-demand self-healing generation."""
+    clean_name = os.path.basename(filename)
+    file_path = os.path.join(REPORTS_DIR, clean_name)
+    
+    if not os.path.exists(file_path):
+        order = vedic_db.get_order_by_pdf(clean_name)
+        if order:
+            try:
+                prof = compile_full_numerology_profile(
+                    name=order.get("client_name", "Client"),
+                    dob_str=order.get("dob", "1990-01-01"),
+                    gender=order.get("gender", "Male"),
+                    lang=order.get("lang", "en")
+                )
+                prof["tier"] = order.get("tier", "complete_499")
+                html_c = build_report_html(prof)
+                html_fpath = file_path.replace(".pdf", ".html")
+                with open(html_fpath, "w", encoding="utf-8") as f:
+                    f.write(html_c)
+                render_pdf_from_html(html_c, file_path)
+            except Exception as e:
+                print(f"[REGEN PDF ERROR] {e}", flush=True)
+
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="Requested report file not found.")
+
     return FileResponse(
         path=file_path,
         media_type="application/pdf",
-        filename=filename
+        filename=clean_name
     )
 
 @app.get("/api/view-html/{html_filename}")
 async def view_report_html(html_filename: str):
-    """View generated HTML report directly in the browser."""
-    file_path = os.path.join(REPORTS_DIR, html_filename)
+    """View generated HTML report directly in the browser with on-demand self-healing."""
+    clean_name = os.path.basename(html_filename)
+    file_path = os.path.join(REPORTS_DIR, clean_name)
+    pdf_name = clean_name.replace(".html", ".pdf")
+    
+    if not os.path.exists(file_path):
+        order = vedic_db.get_order_by_pdf(pdf_name)
+        if order:
+            try:
+                prof = compile_full_numerology_profile(
+                    name=order.get("client_name", "Client"),
+                    dob_str=order.get("dob", "1990-01-01"),
+                    gender=order.get("gender", "Male"),
+                    lang=order.get("lang", "en")
+                )
+                prof["tier"] = order.get("tier", "complete_499")
+                html_c = build_report_html(prof)
+                with open(file_path, "w", encoding="utf-8") as f:
+                    f.write(html_c)
+            except Exception as e:
+                print(f"[REGEN HTML ERROR] {e}", flush=True)
+
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="Requested HTML report file not found.")
+
     return FileResponse(
         path=file_path,
         media_type="text/html"
@@ -200,6 +243,17 @@ async def list_generated_reports():
             "created": datetime.fromtimestamp(os.path.getmtime(f)).strftime("%d/%m/%Y %H:%M:%S")
         })
     return {"reports": reports}
+
+@app.get("/api/test-email")
+async def test_email_endpoint(email: Optional[str] = "jigar93776@gmail.com"):
+    """Quick diagnostic endpoint to verify live SMTP delivery from Render."""
+    res = send_report_email(
+        recipient_email=email or "jigar93776@gmail.com",
+        recipient_name="Jigar Thakkar",
+        lang="en",
+        pdf_path=None
+    )
+    return res
 
 # ==============================================================================
 # Instagram Automated Sales Funnel Endpoints (₹499 Package)
