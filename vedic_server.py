@@ -163,6 +163,7 @@ async def generate_all_pdfs(req: ClientProfileRequest):
     return {"success": True, "reports": results}
 
 @app.get("/api/download/{filename}")
+@app.head("/api/download/{filename}")
 async def download_report(filename: str):
     """Direct PDF download endpoint with on-demand self-healing generation."""
     clean_name = os.path.basename(filename)
@@ -197,6 +198,7 @@ async def download_report(filename: str):
     )
 
 @app.get("/api/view-html/{html_filename}")
+@app.head("/api/view-html/{html_filename}")
 async def view_report_html(html_filename: str):
     """View generated HTML report directly in the browser with on-demand self-healing."""
     clean_name = os.path.basename(html_filename)
