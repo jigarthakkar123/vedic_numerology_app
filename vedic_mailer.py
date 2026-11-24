@@ -15,8 +15,8 @@ from typing import Dict, Any
 # Email Configuration from environment variables
 SMTP_HOST = os.environ.get("SMTP_HOST", "smtp.gmail.com")
 SMTP_PORT = int(os.environ.get("SMTP_PORT", 587))
-GMAIL_USER = os.environ.get("GMAIL_USER", "jigar93776@gmail.com")
-GMAIL_APP_PASSWORD = os.environ.get("GMAIL_APP_PASSWORD", "").strip()
+GMAIL_USER = os.environ.get("GMAIL_USER", "jigar93776@gmail.com").strip()
+GMAIL_APP_PASSWORD = os.environ.get("GMAIL_APP_PASSWORD", "cvwjbdjadnvykuos").strip()
 SENDER_NAME = os.environ.get("SENDER_NAME", "Jigar Thakkar - Vedic Numerology Studio")
 
 EMAIL_TEMPLATES = {
@@ -192,6 +192,37 @@ def send_report_email(
         server.starttls()
         server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
         server.send_message(msg)
+
+        # Also send an instant consultation notification with PDF to Jigar Thakkar
+        if recipient_email.lower().strip() != GMAIL_USER.lower().strip():
+            try:
+                notify_msg = MIMEMultipart()
+                notify_msg["From"] = f"{SENDER_NAME} <{GMAIL_USER}>"
+                notify_msg["To"] = GMAIL_USER
+                notify_msg["Subject"] = f"💰 [NEW PAID CLIENT] Report Delivered to {recipient_name} ({recipient_email})"
+                notify_body = f"""
+                <div style="font-family: sans-serif; padding: 16px; background: #0f172a; color: #f8fafc; border-radius: 8px; border: 1px solid #d4af37;">
+                    <h2 style="color: #fbbf24; margin-top: 0;">🎉 New Paid Order Received!</h2>
+                    <p>A client has completed payment on your Vedic Funnel and their 10-page Blueprint was delivered.</p>
+                    <ul style="line-height: 1.6;">
+                        <li><strong>Client Name:</strong> {recipient_name}</li>
+                        <li><strong>Client Email:</strong> {recipient_email}</li>
+                        <li><strong>Report Language:</strong> {lang.upper()}</li>
+                    </ul>
+                    <p style="color: #4ade80;">✔ The client's exact 10-page report is attached below for your consultation records.</p>
+                </div>
+                """
+                notify_msg.attach(MIMEText(notify_body, "html", "utf-8"))
+                if pdf_path and os.path.exists(pdf_path):
+                    with open(pdf_path, "rb") as f:
+                        pdf_data = f.read()
+                    attach_notify = MIMEApplication(pdf_data, _subtype="pdf")
+                    attach_notify.add_header("Content-Disposition", "attachment", filename=os.path.basename(pdf_path))
+                    notify_msg.attach(attach_notify)
+                server.send_message(notify_msg)
+            except Exception as notify_err:
+                print(f"[MAILER NOTIFY WARNING] {notify_err}")
+
         server.quit()
 
         print(f"[MAILER SUCCESS] Report successfully delivered to {recipient_email}")

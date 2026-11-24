@@ -9,10 +9,29 @@ import os
 import sqlite3
 import csv
 import io
+import json
 from datetime import datetime
 from typing import Dict, Any, List, Optional, Tuple
 
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "vedic_orders.db")
+REGISTRY_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "orders_registry.json")
+
+def _load_registry_orders() -> List[Dict[str, Any]]:
+    if not os.path.exists(REGISTRY_PATH):
+        return []
+    try:
+        with open(REGISTRY_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"[REGISTRY LOAD ERROR] {e}")
+        return []
+
+def _save_registry_orders(orders: List[Dict[str, Any]]) -> None:
+    try:
+        with open(REGISTRY_PATH, "w", encoding="utf-8") as f:
+            json.dump(orders, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        print(f"[REGISTRY SAVE ERROR] {e}")
 
 TIER_NAMES = {
     "test_1": "Live Verification Trial (₹1)",
@@ -66,6 +85,37 @@ def init_db():
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_orders_created ON orders(created_at)")
         conn.commit()
 
+        # Auto-sync persistent orders from registry JSON if missing in DB
+        reg_orders = _load_registry_orders()
+        for o in reg_orders:
+            cursor.execute("SELECT 1 FROM orders WHERE order_id = ? OR payment_id = ?", (o.get("order_id"), o.get("payment_id")))
+            if not cursor.fetchone():
+                cursor.execute("""
+                    INSERT INTO orders (
+                        client_name, dob, gender, lang, email, phone,
+                        tier, tier_name, amount, currency, order_id, payment_id,
+                        status, pdf_filename, meeting_status, meeting_notes, created_at, updated_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'INR', ?, ?, 'paid', ?, ?, ?, ?, ?)
+                """, (
+                    o.get("client_name", "Client"),
+                    o.get("dob", ""),
+                    o.get("gender", "Male"),
+                    o.get("lang", "en"),
+                    o.get("email", ""),
+                    o.get("phone", ""),
+                    o.get("tier", "complete_499"),
+                    o.get("tier_name", "Complete Life Manual"),
+                    o.get("amount", 499),
+                    o.get("order_id", ""),
+                    o.get("payment_id", ""),
+                    o.get("pdf_filename", ""),
+                    o.get("meeting_status", "none"),
+                    o.get("meeting_notes", ""),
+                    o.get("created_at", datetime.now().strftime("%Y-%m-%d %H:%M:%S")),
+                    o.get("updated_at", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                ))
+        conn.commit()
+
 def save_order(
     client_name: str,
     dob: str,
@@ -101,7 +151,19 @@ def save_order(
         ))
         conn.commit()
         order_row_id = cursor.lastrowid
-        return get_order_by_id(order_row_id)
+        saved_order = get_order_by_id(order_row_id)
+        if saved_order:
+            reg_orders = _load_registry_orders()
+            exists = False
+            for idx, item in enumerate(reg_orders):
+                if item.get("order_id") == order_id or item.get("payment_id") == payment_id:
+                    reg_orders[idx] = dict(saved_order)
+                    exists = True
+                    break
+            if not exists:
+                reg_orders.append(dict(saved_order))
+            _save_registry_orders(reg_orders)
+        return saved_order
 
 def get_order_by_id(order_row_id) -> Optional[Dict[str, Any]]:
     """Retrieves an order by its primary database ID or order_id."""
@@ -205,6 +267,15 @@ def update_meeting_status(order_row_id, status: str, notes: str = "") -> bool:
             WHERE id = ? OR order_id = ?
         """, (status, notes, now_iso, int_id, str(order_row_id)))
         conn.commit()
+        if cursor.rowcount > 0:
+            reg_orders = _load_registry_orders()
+            for item in reg_orders:
+                if str(item.get("id")) == str(order_row_id) or item.get("order_id") == str(order_row_id):
+                    item["meeting_status"] = status
+                    item["meeting_notes"] = notes
+                    item["updated_at"] = now_iso
+                    break
+            _save_registry_orders(reg_orders)
         return cursor.rowcount > 0
 
 def export_orders_csv() -> str:
