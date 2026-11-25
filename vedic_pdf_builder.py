@@ -386,8 +386,8 @@ body {{
     font-family: {font_family};
     color: #1e293b;
     background-color: #ffffff;
-    font-size: 9.6px;
-    line-height: 1.45;
+    font-size: 11px;
+    line-height: 1.5;
 }}
 
 .page {{
@@ -469,16 +469,16 @@ body {{
 .chap-badge-pill {{
     background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
     color: #0f172a;
-    font-size: 8px;
+    font-size: 10px;
     font-weight: 800;
     text-transform: uppercase;
-    padding: 2.5px 8px;
+    padding: 3px 9px;
     border-radius: 12px;
     letter-spacing: 0.5px;
     white-space: nowrap;
 }}
 .chap-banner-sub {{
-    font-size: 8.8px;
+    font-size: 11px;
     font-weight: 600;
     color: #fef08a;
     letter-spacing: 0.3px;
@@ -487,7 +487,7 @@ body {{
     text-overflow: ellipsis;
 }}
 .chap-banner-consultant {{
-    font-size: 7.8px;
+    font-size: 9.5px;
     color: #93c5fd;
     font-weight: 500;
     white-space: nowrap;
@@ -501,7 +501,7 @@ body {{
     margin-bottom: 8px;
 }}
 .om-symbol {{
-    font-size: 15px;
+    font-size: 20px;
     color: #b38728;
     font-weight: 700;
     letter-spacing: 3px;
@@ -509,7 +509,7 @@ body {{
 }}
 .main-title {{
     font-family: 'Cinzel', serif;
-    font-size: 18px;
+    font-size: 23px;
     font-weight: 900;
     color: #0f172a;
     letter-spacing: 1.4px;
@@ -517,7 +517,7 @@ body {{
     margin: 2px 0;
 }}
 .sub-title {{
-    font-size: 9.2px;
+    font-size: 11.5px;
     color: #854d0e;
     letter-spacing: 0.5px;
     font-weight: 600;
@@ -526,10 +526,10 @@ body {{
 /* Section Titles */
 .section-title {{
     font-family: 'Cinzel', serif;
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 700;
     color: #0f172a;
-    border-left: 3.5px solid #b38728;
+    border-left: 4px solid #b38728;
     padding-left: 7px;
     margin-bottom: 6px;
     display: flex;
@@ -563,20 +563,20 @@ body {{
     border-color: #fcd34d;
 }}
 .data-pill .label {{
-    font-size: 7.2px;
+    font-size: 9.5px;
     color: #64748b;
     text-transform: uppercase;
     font-weight: 700;
     letter-spacing: 0.3px;
 }}
 .data-pill .value {{
-    font-size: 10px;
+    font-size: 13px;
     color: #0f172a;
     font-weight: 700;
 }}
 .data-pill.highlight .value {{
     color: #b45309;
-    font-size: 11px;
+    font-size: 14px;
 }}
 
 /* Table of Contents Index (Page 1) */
@@ -593,10 +593,10 @@ body {{
 }}
 .toc-title {{
     font-family: 'Cinzel', serif;
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 800;
     color: #0f172a;
-    border-bottom: 1px solid #d4af37;
+    border-bottom: 1.5px solid #d4af37;
     padding-bottom: 4px;
     margin-bottom: 6px;
     text-align: center;
@@ -619,9 +619,9 @@ body {{
 .toc-page-badge {{
     background: #172554;
     color: #fbbf24;
-    font-size: 8px;
+    font-size: 10px;
     font-weight: 800;
-    padding: 2px 6px;
+    padding: 3px 7px;
     border-radius: 4px;
     white-space: nowrap;
 }}
@@ -630,13 +630,13 @@ body {{
     overflow: hidden;
 }}
 .toc-ch-badge {{
-    font-size: 7px;
+    font-size: 9px;
     font-weight: 700;
     color: #854d0e;
     text-transform: uppercase;
 }}
 .toc-ch-title {{
-    font-size: 8.5px;
+    font-size: 11px;
     font-weight: 600;
     color: #0f172a;
     white-space: nowrap;
@@ -670,7 +670,7 @@ body {{
 }}
 .grid-caption {{
     font-family: 'Cinzel', serif;
-    font-size: 10.5px;
+    font-size: 13px;
     font-weight: 800;
     color: #0f172a;
     margin-bottom: 8px;
@@ -683,7 +683,7 @@ body {{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 5px;
-    max-width: 175px;
+    max-width: 205px;
     margin: 0 auto;
 }}
 .vedic-cell {{
@@ -696,7 +696,7 @@ body {{
     border-radius: 5px;
     font-weight: 800;
     padding: 2px;
-    font-size: 12px;
+    font-size: 15px;
 }}
 .vedic-cell.natal-cell.active {{
     background: #d97706;
@@ -718,9 +718,9 @@ body {{
     border: 1px dashed #cbd5e1;
 }}
 .chip {{
-    font-size: 9.5px;
+    font-size: 12px;
     font-weight: 800;
-    padding: 1.5px 4px;
+    padding: 2.5px 6px;
     border-radius: 3px;
     display: inline-block;
     line-height: 1.1;
@@ -757,13 +757,13 @@ body {{
     display: flex;
     align-items: center;
     gap: 5px;
-    font-size: 8px;
+    font-size: 10px;
     font-weight: 600;
     color: #334155;
 }}
 .legend-dot {{
-    width: 9px;
-    height: 9px;
+    width: 12px;
+    height: 12px;
     border-radius: 2px;
 }}
 
@@ -782,7 +782,7 @@ body {{
 }}
 .plane-header {{
     font-family: 'Cinzel', serif;
-    font-size: 9.5px;
+    font-size: 12.5px;
     font-weight: 800;
     color: #0f172a;
     border-bottom: 1px solid #cbd5e1;
@@ -790,9 +790,9 @@ body {{
     margin-bottom: 4px;
 }}
 .plane-desc {{
-    font-size: 8.5px;
+    font-size: 10.5px;
     color: #475569;
-    line-height: 1.35;
+    line-height: 1.4;
 }}
 
 /* Harmony Compass (Page 3) */
@@ -830,7 +830,7 @@ body {{
 .compass-box.neutral .compass-label {{ color: #475569; }}
 .compass-box.enemy .compass-label {{ color: #b91c1c; }}
 .compass-nums {{
-    font-size: 15px;
+    font-size: 18px;
     font-weight: 900;
     letter-spacing: 1px;
 }}
@@ -838,7 +838,7 @@ body {{
 .compass-box.neutral .compass-nums {{ color: #1e293b; }}
 .compass-box.enemy .compass-nums {{ color: #991b1b; }}
 .compass-sub {{
-    font-size: 8px;
+    font-size: 10.5px;
     color: #64748b;
     margin-top: 4px;
 }}
@@ -857,7 +857,7 @@ body {{
     padding: 7px 10px;
 }}
 .align-header {{
-    font-size: 8.2px;
+    font-size: 10.5px;
     font-weight: 700;
     color: #854d0e;
     text-transform: uppercase;
@@ -890,13 +890,13 @@ body {{
 .name-score-pill {{
     background: #15803d;
     color: #ffffff;
-    font-size: 8px;
+    font-size: 10.5px;
     font-weight: 800;
     padding: 2px 7px;
     border-radius: 10px;
 }}
 .name-body {{
-    font-size: 9px;
+    font-size: 11px;
     color: #334155;
     line-height: 1.45;
 }}
@@ -931,7 +931,7 @@ body {{
     margin: 2px 0;
 }}
 .hero-sub {{
-    font-size: 9px;
+    font-size: 11.5px;
     color: #94a3b8;
     line-height: 1.35;
 }}
@@ -943,7 +943,7 @@ body {{
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: 30px;
     font-weight: 900;
     color: #0f172a;
     box-shadow: 0 2px 8px rgba(245,158,11,0.4);
@@ -967,7 +967,7 @@ body {{
 }}
 .col-title {{
     font-family: 'Cinzel', serif;
-    font-size: 10.5px;
+    font-size: 13.5px;
     font-weight: 800;
     color: #0f172a;
     border-bottom: 1px solid #e2e8f0;
@@ -979,7 +979,7 @@ body {{
 }}
 .quality-item-clean, .precaution-item-clean {{
     list-style: none;
-    font-size: 9px;
+    font-size: 11px;
     margin-bottom: 6px;
     display: flex;
     align-items: flex-start;
@@ -1014,7 +1014,7 @@ body {{
     margin-bottom: 4px;
 }}
 .career-text {{
-    font-size: 9px;
+    font-size: 11px;
     color: #334155;
     line-height: 1.45;
 }}
@@ -1039,7 +1039,7 @@ body {{
     box-shadow: 0 2px 6px rgba(212,175,55,0.15);
 }}
 .tier-badge {{
-    font-size: 7.5px;
+    font-size: 10px;
     font-weight: 800;
     text-transform: uppercase;
     padding: 2px 6px;
@@ -1057,12 +1057,12 @@ body {{
     margin-bottom: 2px;
 }}
 .tier-dates {{
-    font-size: 8.5px;
+    font-size: 11px;
     color: #64748b;
     margin-bottom: 6px;
 }}
 .tier-desc {{
-    font-size: 8.5px;
+    font-size: 11px;
     color: #334155;
     line-height: 1.35;
     text-align: left;
@@ -1097,7 +1097,7 @@ body {{
 .tactical-card.donts .tactical-title {{ color: #b91c1c; }}
 .tactical-list {{
     list-style: none;
-    font-size: 8.8px;
+    font-size: 11px;
     line-height: 1.45;
 }}
 .tactical-card.dos .tactical-list {{ color: #166534; }}
@@ -1115,7 +1115,7 @@ body {{
 .roadmap-table {{
     width: 100%;
     border-collapse: collapse;
-    font-size: 8.8px;
+    font-size: 11px;
 }}
 .roadmap-table th {{
     background: #0f172a;
@@ -1123,7 +1123,7 @@ body {{
     font-weight: 700;
     padding: 6px 8px;
     text-transform: uppercase;
-    font-size: 7.8px;
+    font-size: 10.2px;
     letter-spacing: 0.5px;
 }}
 .roadmap-table td {{
@@ -1139,7 +1139,7 @@ body {{
     border-bottom: 1.5px solid #f59e0b;
 }}
 .status-chip {{
-    font-size: 7.5px;
+    font-size: 10px;
     font-weight: 800;
     padding: 2px 6px;
     border-radius: 10px;
@@ -1182,25 +1182,25 @@ body {{
     color: #0f172a;
 }}
 .yoga-pill {{
-    font-size: 7.5px;
+    font-size: 9.5px;
     font-weight: 800;
-    padding: 2px 6px;
+    padding: 3px 7px;
     border-radius: 8px;
     text-transform: uppercase;
 }}
 .yoga-pill.gold {{ background: #fef3c7; color: #92400e; }}
 .yoga-pill.ruby {{ background: #fee2e2; color: #991b1b; }}
 .yoga-desc {{
-    font-size: 8.5px;
+    font-size: 10.5px;
     color: #475569;
-    line-height: 1.35;
+    line-height: 1.4;
 }}
 .yoga-remedy-strip {{
     margin-top: 4px;
     padding: 4px 7px;
     background: #ffffff;
     border-radius: 4px;
-    font-size: 8px;
+    font-size: 10.5px;
     color: #991b1b;
     border: 1px dashed #fca5a5;
 }}
@@ -1231,17 +1231,17 @@ body {{
     color: #0f172a;
 }}
 .vibe-type-badge {{
-    font-size: 7px;
+    font-size: 9px;
     font-weight: 700;
-    padding: 1px 4px;
+    padding: 2px 5px;
     border-radius: 4px;
 }}
 .vibe-card.badge-pos .vibe-type-badge {{ background: #dcfce7; color: #15803d; }}
 .vibe-card.badge-neg .vibe-type-badge {{ background: #fef3c7; color: #b45309; }}
 .vibe-body {{
-    font-size: 7.8px;
+    font-size: 10.2px;
     color: #475569;
-    line-height: 1.3;
+    line-height: 1.35;
 }}
 
 /* Predictions & Remedies (Page 10) */
@@ -1268,14 +1268,14 @@ body {{
 }}
 .pred-title {{
     font-family: 'Cinzel', serif;
-    font-size: 8.5px;
+    font-size: 11.5px;
     font-weight: 800;
     color: #0f172a;
 }}
 .pred-body {{
-    font-size: 7.8px;
+    font-size: 10.2px;
     color: #334155;
-    line-height: 1.35;
+    line-height: 1.4;
 }}
 
 .remedies-grid {{
@@ -1298,7 +1298,7 @@ body {{
     border-radius: 50%;
     background: #172554;
     color: #fbbf24;
-    font-size: 8.5px;
+    font-size: 11px;
     font-weight: 800;
     display: flex;
     align-items: center;
@@ -1310,13 +1310,13 @@ body {{
 }}
 .remedy-label {{
     font-family: 'Cinzel', serif;
-    font-size: 8.2px;
+    font-size: 11px;
     font-weight: 800;
     color: #854d0e;
     margin-bottom: 1px;
 }}
 .remedy-text {{
-    font-size: 7.8px;
+    font-size: 10.5px;
     color: #334155;
     line-height: 1.3;
 }}
@@ -1334,7 +1334,7 @@ body {{
     margin-bottom: 4px;
 }}
 .seal-symbol {{
-    font-size: 28px;
+    font-size: 34px;
     color: #fbbf24;
     line-height: 1;
 }}
@@ -1343,19 +1343,19 @@ body {{
 }}
 .seal-title {{
     font-family: 'Cinzel', serif;
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 800;
     color: #fbbf24;
     letter-spacing: 0.8px;
     margin-bottom: 2px;
 }}
 .seal-text {{
-    font-size: 8px;
+    font-size: 10.5px;
     color: #cbd5e1;
-    line-height: 1.35;
+    line-height: 1.4;
 }}
 .seal-blessing {{
-    font-size: 8px;
+    font-size: 10.5px;
     color: #fef08a;
     font-weight: 600;
     margin-top: 3px;
@@ -1376,15 +1376,15 @@ body {{
 .curiosity-pill {{
     background: #d97706;
     color: #ffffff;
-    font-size: 7.2px;
+    font-size: 9.5px;
     font-weight: 800;
-    padding: 2px 6px;
+    padding: 3px 7px;
     border-radius: 10px;
     white-space: nowrap;
     text-transform: uppercase;
 }}
 .curiosity-text {{
-    font-size: 8.2px;
+    font-size: 10.5px;
     color: #78350f;
     font-weight: 600;
     line-height: 1.35;
@@ -1394,7 +1394,7 @@ body {{
 .footer {{
     border-top: 1px solid #e2e8f0;
     padding-top: 4px;
-    font-size: 7.5px;
+    font-size: 9.5px;
     color: #64748b;
     display: flex;
     justify-content: space-between;
