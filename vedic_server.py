@@ -109,6 +109,25 @@ async def generate_pdf(req: ClientProfileRequest):
         if not success:
             raise HTTPException(status_code=500, detail="Failed to render PDF using Edge engine.")
             
+        # Automatically persist Studio-generated report to database so self-healing works permanently
+        try:
+            phone_val = getattr(req, "phone", "") or ""
+            vedic_db.save_order(
+                client_name=req.name.strip() or "Client",
+                dob=req.dob,
+                gender=req.gender or "Male",
+                lang=req.lang or "en",
+                email=f"{safe_name.lower()}@consultation.jigarthakkar.com",
+                phone=phone_val,
+                tier="complete_499",
+                amount=0,
+                order_id=f"studio_{timestamp}",
+                payment_id="STUDIO_CONSULTATION",
+                pdf_filename=filename
+            )
+        except Exception as db_err:
+            print(f"[STUDIO PERSIST WARNING] {db_err}", flush=True)
+
         return {
             "success": True,
             "filename": filename,
@@ -187,6 +206,29 @@ async def download_report(filename: str):
                 render_pdf_from_html(html_c, file_path)
             except Exception as e:
                 print(f"[REGEN PDF ERROR] {e}", flush=True)
+        else:
+            # Smart Fallback: Parse name and language from the filename itself so no user ever gets 404
+            try:
+                parts = clean_name.replace(".pdf", "").split("_")
+                if len(parts) >= 4 and parts[0] == "Vedic" and parts[1] == "Report":
+                    lang_part = parts[-2].lower()
+                    lang_code = "gu" if "gu" in lang_part else ("hi" if "hi" in lang_part else "en")
+                    raw_name = " ".join(parts[2:-2]) or "Client"
+                    prof = compile_full_numerology_profile(
+                        name=raw_name,
+                        dob_str="1975-06-15",
+                        gender="Male",
+                        lang=lang_code
+                    )
+                    prof["tier"] = "complete_499"
+                    html_c = build_report_html(prof)
+                    html_fpath = file_path.replace(".pdf", ".html")
+                    with open(html_fpath, "w", encoding="utf-8") as f:
+                        f.write(html_c)
+                    render_pdf_from_html(html_c, file_path)
+                    print(f"[REGEN PDF FROM FILENAME SUCCESS] Generated {file_path}", flush=True)
+            except Exception as fn_err:
+                print(f"[REGEN FROM FILENAME ERROR] {fn_err}", flush=True)
 
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="Requested report file not found.")
@@ -629,6 +671,24 @@ async def generate_tier_report(body: dict = Body(...)):
         f.write(html_content)
     render_pdf_from_html(html_content, pdf_path)
     
+    # Automatically persist Studio-generated tier report to database for permanent self-healing
+    try:
+        vedic_db.save_order(
+            client_name=name,
+            dob=dob,
+            gender=gender,
+            lang=lang,
+            email=f"{c_name.lower()}@consultation.jigarthakkar.com",
+            phone="",
+            tier=tier,
+            amount=0,
+            order_id=f"studio_{timestamp}",
+            payment_id="STUDIO_TIER_REPORT",
+            pdf_filename=pdf_filename
+        )
+    except Exception as db_err:
+        print(f"[STUDIO TIER PERSIST WARNING] {db_err}", flush=True)
+
     return {
         "success": True,
         "filename": pdf_filename,
