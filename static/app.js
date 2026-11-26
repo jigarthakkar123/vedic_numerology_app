@@ -845,7 +845,7 @@ async function updateMeetingStatus(orderId, status) {
 }
 
 // ==========================================
-// Match Making Report (5-Pillar NumberWise)
+// Match Making Report (5-Pillar Vedic Method)
 // ==========================================
 function initMatchMakingListeners() {
     const analyzeBtn = document.getElementById('btn-mm-analyze');
@@ -1034,6 +1034,7 @@ function initNameAndMobileListeners() {
 async function runNameAnalysis() {
     const name = (document.getElementById('nm-name')?.value || '').trim();
     const dob = document.getElementById('nm-dob')?.value || '';
+    const gender = document.getElementById('nm-gender')?.value || 'Male';
     const alpha = (document.getElementById('nm-alpha')?.value || '').trim();
     if (!name || !dob) {
         showStatus('Please enter both Full Name and Date of Birth.', 'error');
@@ -1044,7 +1045,7 @@ async function runNameAnalysis() {
         const res = await fetch('/api/studio/name-suggest', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, dob, alpha })
+            body: JSON.stringify({ name, dob, alpha, gender })
         });
         const json = await res.json();
         if (!res.ok || !json.success) throw new Error(json.detail || 'Name analysis failed');
@@ -1101,7 +1102,7 @@ function renderNameResults(d) {
             </table>
         </div>
 
-        <h4 style="margin:0 0 8px 0;color:#38bdf8;">New Name Suggestions Starting With "${d.alphabet_query}"</h4>
+        <h4 style="margin:0 0 8px 0;color:#38bdf8;">New ${d.gender} Name Suggestions Starting With "${d.alphabet_query}"</h4>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;">
             ${alphaCards}
         </div>
@@ -1110,9 +1111,10 @@ function renderNameResults(d) {
 
 async function runMobileAnalysis() {
     const mobile = (document.getElementById('mob-number')?.value || '').trim();
+    const compare_mobile = (document.getElementById('mob-compare')?.value || '').trim();
     const dob = document.getElementById('mob-dob')?.value || '';
     if (!mobile || !dob) {
-        showStatus('Please enter both Mobile Number and Date of Birth.', 'error');
+        showStatus('Please enter both Existing Mobile Number and Date of Birth.', 'error');
         return;
     }
     showStatus('Checking mobile number vibrations & DOB harmony...', 'loading');
@@ -1120,7 +1122,7 @@ async function runMobileAnalysis() {
         const res = await fetch('/api/studio/mobile-check', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ mobile, dob })
+            body: JSON.stringify({ mobile, dob, compare_mobile })
         });
         const json = await res.json();
         if (!res.ok || !json.success) throw new Error(json.detail || 'Mobile check failed');
@@ -1134,48 +1136,43 @@ async function runMobileAnalysis() {
 function renderMobileResults(d) {
     const el = document.getElementById('mob-results-container');
     if (!el) return;
-    const cur = d.current;
-    const scoreCol = cur.score >= 75 ? '#4ade80' : (cur.score >= 50 ? '#fbbf24' : '#f87171');
 
-    const sugRows = (d.suggestions || []).map(s => `
-        <tr>
-            <td><strong style="font-family:monospace;font-size:13px;">${s.mobile}</strong></td>
-            <td>${s.compound} → <strong style="color:#34d399;">${s.root}</strong></td>
-            <td style="font-size:12px;color:var(--text-secondary);">${s.change_note}</td>
-            <td><strong style="color:#4ade80;">${s.score}/100</strong></td>
-        </tr>`).join('') || '<tr><td colspan="4" style="color:var(--text-secondary);">No adjustments needed — your current number is already optimal!</td></tr>';
-
-    el.innerHTML = `
-        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:14px;margin-bottom:14px;">
+    const renderMobCard = (m, title) => {
+        const scoreCol = m.score >= 75 ? '#4ade80' : (m.score >= 50 ? '#fbbf24' : '#f87171');
+        return `
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:14px;margin-bottom:12px;">
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
                 <div>
-                    <div style="font-size:12px;color:#34d399;">Mobile Number Compatibility</div>
-                    <div style="font-size:20px;font-weight:700;font-family:monospace;">${cur.mobile} <span style="font-size:13px;font-family:inherit;color:var(--text-secondary);">— Sum ${cur.compound} → Root <strong style="color:#fbbf24;">${cur.root}</strong></span></div>
+                    <div style="font-size:12px;color:#34d399;">${title}</div>
+                    <div style="font-size:20px;font-weight:700;font-family:monospace;">${m.mobile} <span style="font-size:13px;font-family:inherit;color:var(--text-secondary);">— Sum ${m.compound} → Root <strong style="color:#fbbf24;">${m.root}</strong></span></div>
                     <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">DOB ${d.dob} · BN <strong>${d.bn}</strong> · DN <strong>${d.dn}</strong> · Best Targets: <strong style="color:#4ade80;">${d.best_targets.join(', ')}</strong></div>
                 </div>
                 <div style="text-align:right;">
-                    <div style="font-size:28px;font-weight:800;color:${scoreCol};line-height:1;">${cur.score}<span style="font-size:13px;opacity:0.8;">/100</span></div>
-                    <div style="font-size:12px;font-weight:700;color:${scoreCol};">${cur.verdict}</div>
+                    <div style="font-size:28px;font-weight:800;color:${scoreCol};line-height:1;">${m.score}<span style="font-size:13px;opacity:0.8;">/100</span></div>
+                    <div style="font-size:12px;font-weight:700;color:${scoreCol};">${m.verdict}</div>
                 </div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;font-size:12px;">
                 <div style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);border-radius:8px;padding:8px;">
-                    <strong>Lucky Pairs:</strong> ${cur.good_pairs.length ? cur.good_pairs.join(', ') : 'None'}<br>
-                    <strong>Fills Missing Grid Numbers:</strong> ${cur.fills_missing.length ? cur.fills_missing.join(', ') : 'None'}
+                    <strong>Lucky Pairs:</strong> ${m.good_pairs.length ? m.good_pairs.join(', ') : 'None'}<br>
+                    <strong>Fills Missing Grid Numbers:</strong> ${m.fills_missing.length ? m.fills_missing.join(', ') : 'None'}
                 </div>
                 <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);border-radius:8px;padding:8px;">
-                    <strong>Harmful Pairs (28/48/49/etc.):</strong> ${cur.bad_pairs.length ? cur.bad_pairs.join(', ') : 'None ✓'}<br>
-                    <strong>Ends on Lucky Digit (1,3,5,6,9):</strong> ${cur.ends_well ? 'Yes ✓' : 'No (avoid ending in 4/8)'}
+                    <strong>Harmful Pairs (28/48/49/etc.):</strong> ${m.bad_pairs.length ? m.bad_pairs.join(', ') : 'None ✓'}<br>
+                    <strong>Ends on Lucky Digit (1,3,5,6,9):</strong> ${m.ends_well ? 'Yes ✓' : 'No (avoid ending in 4/8)'}
                 </div>
             </div>
-        </div>
+        </div>`;
+    };
 
-        <h4 style="margin:0 0 8px 0;color:#34d399;">Minimal-Change Mobile Suggestions (Digit Swaps / Last 1–2 Digits)</h4>
-        <div class="crm-table-container">
-            <table class="crm-table">
-                <thead><tr><th>Suggested Number</th><th>Sum → Root</th><th>Minimal Change</th><th>Score</th></tr></thead>
-                <tbody>${sugRows}</tbody>
-            </table>
-        </div>
-    `;
+    const compareHtml = d.compare
+        ? `${renderMobCard(d.compare, 'Candidate / New Mobile Number')}
+           <div style="background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.35);border-radius:8px;padding:10px 14px;font-size:12.5px;color:#6ee7b7;margin-bottom:10px;">
+               <strong>Comparison Verdict:</strong> ${d.comparison_summary}
+           </div>`
+        : `<div style="background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.2);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--text-secondary);">
+               Want to test another mobile number? Enter it in the <strong>"Another Mobile Number (Optional)"</strong> box above and click <strong>Match Mobile Number(s)</strong> to compare both side-by-side.
+           </div>`;
+
+    el.innerHTML = renderMobCard(d.current, 'Existing Mobile Number') + compareHtml;
 }

@@ -1708,6 +1708,170 @@ def build_matchmaking_html(m: Dict[str, Any]) -> str:
     rec_bd = "#bbf7d0" if level == "good" else ("#fde68a" if level == "moderate" else "#fecaca")
     rec_title = "Good matching" if level == "good" else ("Suggestive matching" if level == "moderate" else "Not recommended")
 
+    boy_full = m.get("boy_full", {})
+    girl_full = m.get("girl_full", {})
+
+    def _year_grids_page(prof: Dict[str, Any], label: str) -> str:
+        nyg = prof.get("dasha", {}).get("nine_year_grids", [])
+        cards = ""
+        for yg in nyg:
+            is_run = yg.get("is_active", False)
+            cls = "yg-card yg-running" if is_run else "yg-card"
+            badge = '<span class="running-badge">Running</span>' if is_run else ""
+            c_html = ""
+            for c in yg["cells"]:
+                p_lbl = GRID_PLANETS_EN.get(c["num"], "")
+                val = f'<span class="mg-nat">{c.get("natal_str", "")}</span><span class="mg-tr">{c.get("transit_str", "")}</span>'
+                c_html += f'<div class="vg-cell"><div class="vg-planet">{p_lbl}</div><div class="vg-num">{val}</div></div>'
+            cards += f"""
+            <div class="{cls}">
+                <div class="yg-year">{yg["year"]} {badge}</div>
+                <div class="yg-dates">{yg["from_str"]} – {yg["to_str"]}</div>
+                <div class="yg-dasha"><span class="md-txt">MD {yg["md"]}</span> <span class="ad-txt">AD {yg["ad"]}</span></div>
+                <div class="vg-grid vg-mini">{c_html}</div>
+            </div>"""
+        return f"""
+        <div class="page-break"></div>
+        <div class="sheet">
+            <div class="kicker">{label}</div>
+            <h2 class="sec-h2">{prof["client"]["name"]} · 9-Year Transit Grids</h2>
+            <p class="sub-muted" style="margin-bottom:10px;">Birth grid with each year's Mahadasha (MD) and Antardasha (AD). Running year is highlighted in the centre.</p>
+            <div class="yg-matrix">{cards}</div>
+        </div>"""
+
+    def _dasha_page(prof: Dict[str, Any], label: str) -> str:
+        d = prof.get("dasha", {})
+        all_md = d.get("all_md_timeline", [])
+        act_md = d.get("active_md", {})
+        act_ad = d.get("active_ad", {})
+        act_pd = d.get("active_pd", {})
+        bar_html = "".join(
+            f'<div class="md-seg" style="width:{(p["duration"]/90.0)*100:.2f}%;background:{NUM_COLORS.get(p["number"], "#6366f1")};">{p["number"]}</div>'
+            for p in all_md[:18]
+        )
+        def _cycle_tbl(sl, cno):
+            trs = ""
+            for p in sl:
+                ac = ' class="row-active"' if p.get("is_active") else ""
+                trs += f'<tr{ac}><td class="bold-col">{p["number"]}</td><td>{p.get("start_dash", _fmt_dash(p["start_str"]))}</td><td>{p.get("end_dash", _fmt_dash(p["end_str"]))}</td><td>{p.get("start_age","")}–{p.get("end_age","")}</td></tr>'
+            return f'<div><div class="cycle-title">Cycle {cno}</div><table class="clean-tbl"><thead><tr><th>MD</th><th>Start</th><th>End</th><th>Age</th></tr></thead><tbody>{trs}</tbody></table></div>'
+
+        return f"""
+        <div class="page-break"></div>
+        <div class="sheet">
+            <div class="kicker">{label}</div>
+            <h2 class="sec-h2">{prof["client"]["name"]} · Mahadasha &amp; Active Periods</h2>
+            <div class="dasha-sum-row">
+                <div class="ds-box"><span>Mahadasha</span><strong>{act_md.get("number","")}</strong><small>{_fmt_dash(act_md.get("start_str",""))} – {_fmt_dash(act_md.get("end_str",""))}</small></div>
+                <div class="ds-box"><span>Antardasha</span><strong>{act_ad.get("ad_number","")}</strong><small>{_fmt_dash(act_ad.get("start_str",""))} – {_fmt_dash(act_ad.get("end_str",""))}</small></div>
+                <div class="ds-box"><span>Pratyantar</span><strong>{act_pd.get("number","")}</strong><small>{_fmt_dash(act_pd.get("start_str",""))} – {_fmt_dash(act_pd.get("end_str",""))}</small></div>
+            </div>
+            <div class="md-bar">{bar_html}</div>
+            <div class="md-bar-labels"><span>Birth</span><span>Age 45</span><span>Age 90</span></div>
+            <div class="cycles-grid">{_cycle_tbl(all_md[:9], 1)}{_cycle_tbl(all_md[9:18], 2)}</div>
+        </div>"""
+
+    def _analysis_yogas_page(prof: Dict[str, Any], label: str) -> str:
+        v_cards = ""
+        for v in prof.get("vibrations", []):
+            is_pos = (v["type"] == "+")
+            cls = "ga-card ga-pos" if is_pos else "ga-card ga-neg"
+            sign = "+" if is_pos else "−"
+            cnt = v.get("count", 1)
+            v_cards += f'<div class="{cls}"><div class="ga-head"><strong>{sign}{v["number"]}</strong> <span class="sub-muted">· {cnt}x</span></div><div class="ga-body">{v.get("text","")}</div></div>'
+        y_cards = ""
+        for y in prof.get("yogas", []):
+            pts = "".join(f"<li>{pt}</li>" for pt in y.get("points", [])[:4])
+            y_cards += f'<div class="yoga-box"><div class="yoga-title">{y["name"]}</div>{f"<ul class=yoga-pts>{pts}</ul>" if pts else ""}</div>'
+        return f"""
+        <div class="page-break"></div>
+        <div class="sheet">
+            <div class="kicker">{label}</div>
+            <h2 class="sec-h2">{prof["client"]["name"]} · Grid Analysis &amp; Yogas</h2>
+            <div class="ga-grid">{v_cards}</div>
+            <h3 class="sec-h3">Active Yogas in Birth Grid</h3>
+            <div class="yoga-grid">{y_cards or "<div class=sub-muted>No major yogas triggered.</div>"}</div>
+        </div>"""
+
+    def _joint_outlook_page() -> str:
+        b_nyg = boy_full.get("dasha", {}).get("nine_year_grids", [])
+        g_nyg = girl_full.get("dasha", {}).get("nine_year_grids", [])
+        g_by_yr = {x["year"]: x for x in g_nyg}
+        rows = ""
+        for bx in b_nyg:
+            yr = bx["year"]
+            gx = g_by_yr.get(yr, {})
+            ac = ' class="row-active"' if bx.get("is_active") else ""
+            rows += f"""
+            <tr{ac}>
+                <td class="bold-col">{yr}</td>
+                <td>MD {bx["md"]} / AD {bx["ad"]}</td>
+                <td>{bx["money"][1]}</td>
+                <td>{bx["disputes"][1]}</td>
+                <td>MD {gx.get("md","–")} / AD {gx.get("ad","–")}</td>
+                <td>{gx.get("money", ("","–"))[1]}</td>
+                <td>{gx.get("disputes", ("","–"))[1]}</td>
+            </tr>"""
+        return f"""
+        <div class="page-break"></div>
+        <div class="sheet">
+            <div class="kicker">Joint Timeline Comparison</div>
+            <h2 class="sec-h2">9-Year Couple Outlook (Year-by-Year)</h2>
+            <p class="sub-muted" style="margin-bottom:10px;">Side-by-side comparison of Mahadasha, Antardasha, financial flow, and dispute/litigation windows for both partners.</p>
+            <table class="clean-tbl">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>{boy["name"]} (MD/AD)</th><th>Money</th><th>Disputes</th>
+                        <th>{girl["name"]} (MD/AD)</th><th>Money</th><th>Disputes</th>
+                    </tr>
+                </thead>
+                <tbody>{rows}</tbody>
+            </table>
+        </div>"""
+
+    def _remedies_page(prof: Dict[str, Any], label: str) -> str:
+        rems = prof.get("remedies_by_number", [])
+        cards = ""
+        for r in rems:
+            cards += f"""
+            <div class="rem-card">
+                <div class="rem-head"><span class="rem-circle">{r["number"]}</span><div><div class="rem-title">Number {r["number"]} · {r["planet"]}</div></div></div>
+                <div class="rem-sec-lbl">Mantras &amp; Practices</div><p class="rem-p">{r["mantra"]}</p>
+                <div class="rem-sec-lbl">Service (Seva)</div><p class="rem-p">{r["seva"]}</p>
+                <div class="rem-sec-lbl">Donations</div><p class="rem-p">{r["donation"]}</p>
+                <div class="rem-sec-lbl">Colours &amp; Fasting</div><p class="rem-p">{r["colors"]} · {r["fasting"]}</p>
+            </div>"""
+        if not cards:
+            cards = '<div class="sub-muted">No severe number afflictions requiring targeted remedies.</div>'
+        return f"""
+        <div class="page-break"></div>
+        <div class="sheet">
+            <div class="kicker">{label}</div>
+            <h2 class="sec-h2">{prof["client"]["name"]} · Personalized Vedic Remedies</h2>
+            <p class="sub-muted" style="margin-bottom:10px;">Targeted balancing remedies for repeated or negative numbers in the natal grid and active dasha period.</p>
+            <div class="rem-grid">{cards}</div>
+        </div>"""
+
+    crystals_html = "".join(
+        f'<div class="crystal-row"><strong>{cn}</strong> — <span class="sub-muted">{cd}</span></div>'
+        for cn, cd in SUPPORTING_CRYSTALS
+    )
+
+    extra_pages_html = ""
+    if boy_full and girl_full:
+        extra_pages_html = (
+            _year_grids_page(boy_full, "Boy · Groom")
+            + _year_grids_page(girl_full, "Girl · Bride")
+            + _dasha_page(boy_full, "Boy · Groom")
+            + _dasha_page(girl_full, "Girl · Bride")
+            + _analysis_yogas_page(boy_full, "Boy · Groom")
+            + _analysis_yogas_page(girl_full, "Girl · Bride")
+            + _joint_outlook_page()
+            + _remedies_page(boy_full, "Boy · Groom")
+            + _remedies_page(girl_full, "Girl · Bride")
+        )
+
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1763,6 +1927,51 @@ body {{ margin: 0; font-family: 'Source Sans 3', sans-serif; color: #1e293b; fon
 .rule-reject {{ background: #b91c1c; }}
 .lit-ok {{ background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 8px 12px; font-size: 10px; color: #166534; margin-top: 8px; }}
 .lit-warn {{ background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 8px 12px; font-size: 10px; color: #991b1b; margin-top: 8px; }}
+.yg-matrix {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }}
+.yg-card {{ border: 1px solid #e2e8f0; border-radius: 10px; padding: 8px 10px; text-align: center; background: #fff; }}
+.yg-card.yg-running {{ border: 2px solid #7c3aed; background: #fdfcff; }}
+.yg-year {{ font-family: 'Libre Baskerville', serif; font-size: 13px; font-weight: 700; color: #0f172a; }}
+.running-badge {{ background: #7c3aed; color: #fff; font-size: 8.5px; font-weight: 700; padding: 1px 6px; border-radius: 999px; margin-left: 4px; }}
+.yg-dates {{ font-size: 8.8px; color: #64748b; margin: 2px 0; }}
+.yg-dasha {{ font-size: 9.5px; font-weight: 700; }}
+.md-txt {{ color: #0f766e; }}
+.ad-txt {{ color: #b45309; margin-left: 4px; }}
+.vg-grid.vg-mini {{ display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 34px); border: 1.5px solid #c9a96e; background: #fff; margin-top: 6px; }}
+.mg-nat {{ color: #0f172a; }}
+.mg-tr {{ color: #d97706; }}
+.dasha-sum-row {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }}
+.ds-box {{ background: #f8f7ff; border: 1px solid #ede9fe; border-radius: 8px; padding: 8px 12px; }}
+.ds-box span {{ display: block; font-size: 9.5px; color: #64748b; }}
+.ds-box strong {{ display: block; font-family: 'Libre Baskerville', serif; font-size: 18px; color: #7c3aed; }}
+.ds-box small {{ font-size: 9.5px; color: #475569; }}
+.md-bar {{ display: flex; height: 18px; border-radius: 999px; overflow: hidden; margin: 8px 0 4px 0; }}
+.md-seg {{ color: #fff; font-size: 8.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; }}
+.md-bar-labels {{ display: flex; justify-content: space-between; font-size: 9.5px; color: #64748b; margin-bottom: 12px; }}
+.cycles-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }}
+.cycle-title {{ font-size: 11px; font-weight: 700; margin-bottom: 4px; }}
+.clean-tbl {{ width: 100%; border-collapse: collapse; font-size: 9.5px; }}
+.clean-tbl th {{ text-align: left; color: #64748b; border-bottom: 1px solid #cbd5e1; padding: 4px; }}
+.clean-tbl td {{ padding: 4px; border-bottom: 1px solid #f1f5f9; }}
+.bold-col {{ font-weight: 700; color: #0f172a; }}
+.row-active td {{ background: #f5f3ff; font-weight: 700; }}
+.ga-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }}
+.ga-card {{ border-radius: 8px; padding: 8px 10px; border-left: 3.5px solid; }}
+.ga-pos {{ background: #f0fdf4; border-left-color: #16a34a; }}
+.ga-neg {{ background: #fef2f2; border-left-color: #b91c1c; }}
+.ga-body {{ font-size: 9.5px; color: #334155; }}
+.yoga-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }}
+.yoga-box {{ border: 1px solid #e5d5a7; background: #fffdf7; border-radius: 8px; padding: 8px 10px; }}
+.yoga-title {{ font-family: 'Libre Baskerville', serif; font-size: 11px; font-weight: 700; margin-bottom: 3px; }}
+.yoga-pts {{ margin: 3px 0 0 14px; padding: 0; font-size: 9.3px; color: #334155; }}
+.rem-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }}
+.rem-card {{ border: 1px solid #e2e8f0; border-radius: 10px; padding: 8px 10px; }}
+.rem-head {{ display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }}
+.rem-circle {{ width: 22px; height: 22px; border-radius: 50%; background: #f5f3ff; color: #7c3aed; font-weight: 700; font-size: 10.5px; display: inline-flex; align-items: center; justify-content: center; }}
+.rem-title {{ font-family: 'Libre Baskerville', serif; font-size: 11.5px; font-weight: 700; }}
+.rem-sec-lbl {{ font-size: 9.5px; font-weight: 700; color: #7c3aed; margin-top: 4px; }}
+.rem-p {{ font-size: 9.3px; color: #334155; margin: 1px 0; }}
+.crystal-row {{ background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px 10px; margin-bottom: 5px; font-size: 10px; }}
+.sec-h3 {{ font-family: 'Libre Baskerville', serif; font-size: 13.5px; font-weight: 700; margin: 12px 0 8px 0; }}
 .rec-box {{ background: {rec_bg}; border: 1px solid {rec_bd}; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }}
 .rec-title {{ font-family: 'Libre Baskerville', serif; font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }}
 .next-box {{ border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; }}
@@ -1779,7 +1988,7 @@ body {{ margin: 0; font-family: 'Source Sans 3', sans-serif; color: #1e293b; fon
     </div>
     <div class="kicker">Prepared for</div>
     <div class="couple-name">{boy["name"]} &amp; {girl["name"]}</div>
-    <div class="sub-muted">Five pillars of 20 points each, from the NumberWise method</div>
+    <div class="sub-muted">Five pillars of 20 points each · Vedic Compatibility Method</div>
 </div>
 
 <div class="score-banner">
@@ -1810,24 +2019,29 @@ body {{ margin: 0; font-family: 'Source Sans 3', sans-serif; color: #1e293b; fon
     {lit_html}
 </div>
 
+{extra_pages_html}
+
+<div class="page-break"></div>
 <div class="sheet">
-    <h2 class="sec-h2">Final recommendation</h2>
+    <h2 class="sec-h2">Final recommendation &amp; Supporting Crystals</h2>
     <div class="rec-box">
         <div class="rec-title">{rec_title}</div>
         <div><strong>{boy["name"]}</strong> and <strong>{girl["name"]}</strong> score <strong>{score} of 100</strong>. Key areas to review: {m["weak_summary"]}.</div>
         <div class="sub-muted" style="margin-top:4px;">This is a reason for a careful, detailed consultation before any decision — not a judgement on either person.</div>
     </div>
-    <div class="next-box">
+    <div class="next-box" style="margin-bottom:12px;">
         <strong>What to do next</strong>
         <ol>
-            <li>Read both grids in full, with each person's current Mahadasha and Antardasha, before advising.</li>
-            <li>Talk openly about the weaker areas ({m["weak_summary"]}) and how the couple will handle them.</li>
-            <li>Consider remedies for any number that appears negative or repeated in either grid.</li>
+            <li>Review both partners' full 9-year transit grids, Mahadasha cycles, and 5-year litigation windows included in this report.</li>
+            <li>Discuss the weaker pillars ({m["weak_summary"]}) openly before finalizing the match.</li>
+            <li>Follow the personalized Vedic remedies for both partners and use the supporting crystals below.</li>
         </ol>
     </div>
+    <h3 class="sec-h3">Supporting Crystals for Couple Harmony</h3>
+    {crystals_html}
     <div class="mm-foot">
         <strong>Disclaimer:</strong> Prepared using Vedic numerology for guidance. Report generated on {m["generated_on"]}.<br>
-        Prepared by {consultant["name"]} · {consultant["phone"]}
+        Prepared by {consultant["name"]} · {consultant["phone"]} · {consultant["email"]}
     </div>
 </div>
 </body>

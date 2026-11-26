@@ -1798,7 +1798,7 @@ def compile_matchmaking_report(
     lang: str = "en",
 ) -> Dict[str, Any]:
     """
-    Computes the 5-pillar NumberWise Vedic Numerology Match Making Report (100 points total)
+    Computes the 5-pillar Vedic Numerology Match Making Report (100 points total)
     for Boy (Groom) and Girl (Bride).
     """
     boy_profile = compile_full_numerology_profile(boy_name, boy_dob, gender="Male", lang=lang)
@@ -1882,7 +1882,7 @@ def compile_matchmaking_report(
         verdict_sub = "Below 50% — the course does not suggest this match."
         verdict_level = "low"
 
-    # Evaluate Rules 1-8 from NumberWise Course Notes
+    # Evaluate Rules 1-8 from Vedic Match Making Rules
     rules_checks = []
     # Rules 1-4: Basic Number Group Matching
     if b_bn == 5 or g_bn == 5:
@@ -2075,37 +2075,39 @@ def compile_matchmaking_report(
         "same_bn_group": same_bn_group,
         "weak_summary": weak_str,
         "generated_on": today.strftime("%d %B %Y"),
+        "boy_full": boy_profile,
+        "girl_full": girl_profile,
     }
 
 
-# Curated meaningful Indian & modern names by starting letter for alphabet-based suggestions
+# Curated meaningful Indian & modern names by starting letter, tagged by gender ("M" or "F")
 CURATED_NAMES_BY_ALPHA = {
-    "A": ["Aarav", "Aarush", "Aaryan", "Aayush", "Advait", "Agastya", "Akash", "Akshay", "Aman", "Amit", "Ananya", "Anika", "Anirudh", "Ansh", "Aravind", "Arjun", "Arohi", "Aryan", "Atharv", "Avani", "Ayush"],
-    "B": ["Bhavin", "Bhavna", "Bhavya", "Bhoomi", "Brijesh"],
-    "C": ["Chaitanya", "Charvi", "Chirag", "Chitra"],
-    "D": ["Darsh", "Darshan", "Dev", "Devansh", "Devesh", "Dhruv", "Disha", "Divya", "Diya"],
-    "E": ["Eesha", "Ekansh", "Eshaan", "Esha"],
-    "F": ["Falgun", "Farhan", "Forum"],
-    "G": ["Gaurav", "Gautam", "Geeta", "Gopal", "Gourav", "Gunjan"],
-    "H": ["Harsh", "Harshad", "Harshil", "Heena", "Hemant", "Hetal", "Hitesh", "Hriday"],
-    "I": ["Ira", "Isha", "Ishaan", "Ishita"],
-    "J": ["Jai", "Jaideep", "Janki", "Jatin", "Jay", "Jayesh", "Jigar", "Jignesh", "Jiya"],
-    "K": ["Kabir", "Kajal", "Kalpesh", "Kamal", "Karan", "Kartik", "Kavita", "Kavya", "Ketan", "Keyur", "Khushi", "Kiran", "Kishan", "Komal", "Krishna", "Kunal", "Kushal"],
-    "L": ["Laksh", "Lakshay", "Lalit", "Lavanya", "Laxmi", "Lokesh"],
-    "M": ["Madhav", "Mahesh", "Mahima", "Manan", "Manav", "Manish", "Mansi", "Mayank", "Meera", "Meet", "Mihir", "Milan", "Mitali", "Mohit", "Moksh"],
-    "N": ["Nakul", "Naman", "Nandini", "Naresh", "Navya", "Neha", "Nidhi", "Nikhil", "Nikita", "Nilesh", "Nirav", "Nisha", "Nitesh", "Nitin", "Nitya"],
-    "O": ["Om", "Omkar", "Ojas"],
-    "P": ["Palak", "Pallavi", "Pankaj", "Paras", "Parth", "Pavan", "Payal", "Pooja", "Prachi", "Pranav", "Prashant", "Pratik", "Prem", "Priya", "Priyanka", "Purvi"],
-    "Q": ["Qasim", "Queen"],
-    "R": ["Rachit", "Radha", "Raghav", "Rahul", "Raj", "Rajesh", "Rakesh", "Ramesh", "Rashi", "Rashmi", "Ravi", "Rency", "Rhea", "Riddhi", "Rishabh", "Rishi", "Ritesh", "Riya", "Rohan", "Rohit", "Roshni", "Rudra", "Rupal"],
-    "S": ["Sagar", "Sahil", "Sakshi", "Saloni", "Samarth", "Sameer", "Sandeep", "Sanjay", "Sanjana", "Sanket", "Sanskar", "Sarthak", "Saurabh", "Seema", "Shaurya", "Shikha", "Shiv", "Shivam", "Shivani", "Shlok", "Shraddha", "Shreya", "Shubham", "Siddharth", "Simran", "Smita", "Sneha", "Soham", "Sonal", "Sonali", "Suhani", "Suman", "Sumit", "Sunil", "Sunny", "Suraj", "Suresh", "Swati"],
-    "T": ["Tanay", "Tanish", "Tanvi", "Tapan", "Tarun", "Tejas", "Tirth", "Trisha", "Tushar"],
-    "U": ["Uday", "Ujjwal", "Uma", "Umang", "Umesh", "Urvi", "Utkarsh"],
-    "V": ["Vaibhav", "Vaishali", "Vansh", "Varun", "Ved", "Vedant", "Veer", "Vibha", "Vidhi", "Vihaan", "Vijay", "Vikas", "Vikram", "Vinay", "Vipul", "Viral", "Vishal", "Vivek", "Vrinda"],
-    "W": ["Wafa", "Wasim"],
-    "X": ["Xavier"],
-    "Y": ["Yash", "Yashvi", "Yogesh", "Yuvraj"],
-    "Z": ["Zara", "Zoya", "Zubin"],
+    "A": [("Aarav", "M"), ("Aarush", "M"), ("Aaryan", "M"), ("Aayush", "M"), ("Advait", "M"), ("Agastya", "M"), ("Akash", "M"), ("Akshay", "M"), ("Aman", "M"), ("Amit", "M"), ("Anirudh", "M"), ("Ansh", "M"), ("Aravind", "M"), ("Arjun", "M"), ("Aryan", "M"), ("Atharv", "M"), ("Ayush", "M"), ("Aadya", "F"), ("Aahana", "F"), ("Aanya", "F"), ("Aditi", "F"), ("Ananya", "F"), ("Anika", "F"), ("Anjali", "F"), ("Arohi", "F"), ("Avani", "F"), ("Avni", "F")],
+    "B": [("Bhavin", "M"), ("Brijesh", "M"), ("Bhavesh", "M"), ("Bhavna", "F"), ("Bhavya", "F"), ("Bhoomi", "F")],
+    "C": [("Chaitanya", "M"), ("Chirag", "M"), ("Chetan", "M"), ("Charvi", "F"), ("Chitra", "F"), ("Chhaya", "F")],
+    "D": [("Darsh", "M"), ("Darshan", "M"), ("Dev", "M"), ("Devansh", "M"), ("Devesh", "M"), ("Dhruv", "M"), ("Dinesh", "M"), ("Disha", "F"), ("Divya", "F"), ("Diya", "F"), ("Drishti", "F")],
+    "E": [("Ekansh", "M"), ("Eshaan", "M"), ("Eesha", "F"), ("Esha", "F"), ("Ekta", "F")],
+    "F": [("Farhan", "M"), ("Falgun", "M"), ("Forum", "F"), ("Falguni", "F")],
+    "G": [("Gaurav", "M"), ("Gautam", "M"), ("Gopal", "M"), ("Gourav", "M"), ("Garima", "F"), ("Geeta", "F"), ("Gauri", "F"), ("Gunjan", "F")],
+    "H": [("Harsh", "M"), ("Harshad", "M"), ("Harshil", "M"), ("Hemant", "M"), ("Hitesh", "M"), ("Hriday", "M"), ("Heena", "F"), ("Hetal", "F"), ("Himani", "F")],
+    "I": [("Ishaan", "M"), ("Ishan", "M"), ("Indrajit", "M"), ("Ira", "F"), ("Isha", "F"), ("Ishita", "F")],
+    "J": [("Jai", "M"), ("Jaideep", "M"), ("Jatin", "M"), ("Jay", "M"), ("Jayesh", "M"), ("Jigar", "M"), ("Jignesh", "M"), ("Janki", "F"), ("Jiya", "F"), ("Juhi", "F"), ("Jyoti", "F")],
+    "K": [("Kabir", "M"), ("Kalpesh", "M"), ("Kamal", "M"), ("Karan", "M"), ("Kartik", "M"), ("Ketan", "M"), ("Keyur", "M"), ("Kishan", "M"), ("Krishna", "M"), ("Kunal", "M"), ("Kushal", "M"), ("Kajal", "F"), ("Kavita", "F"), ("Kavya", "F"), ("Khushi", "F"), ("Kiran", "F"), ("Komal", "F"), ("Krupa", "F")],
+    "L": [("Laksh", "M"), ("Lakshay", "M"), ("Lalit", "M"), ("Lokesh", "M"), ("Lavanya", "F"), ("Laxmi", "F"), ("Leena", "F")],
+    "M": [("Madhav", "M"), ("Mahesh", "M"), ("Manan", "M"), ("Manav", "M"), ("Manish", "M"), ("Mayank", "M"), ("Meet", "M"), ("Mihir", "M"), ("Milan", "M"), ("Mohit", "M"), ("Moksh", "M"), ("Mahima", "F"), ("Mansi", "F"), ("Meera", "F"), ("Mitali", "F"), ("Muskan", "F")],
+    "N": [("Nakul", "M"), ("Naman", "M"), ("Naresh", "M"), ("Nikhil", "M"), ("Nilesh", "M"), ("Nirav", "M"), ("Nitesh", "M"), ("Nitin", "M"), ("Nandini", "F"), ("Navya", "F"), ("Neha", "F"), ("Nidhi", "F"), ("Nikita", "F"), ("Nisha", "F"), ("Nitya", "F")],
+    "O": [("Om", "M"), ("Omkar", "M"), ("Ojas", "M"), ("Ojasvi", "F"), ("Oorja", "F")],
+    "P": [("Pankaj", "M"), ("Paras", "M"), ("Parth", "M"), ("Pavan", "M"), ("Pranav", "M"), ("Prashant", "M"), ("Pratik", "M"), ("Prem", "M"), ("Palak", "F"), ("Pallavi", "F"), ("Payal", "F"), ("Pooja", "F"), ("Prachi", "F"), ("Priya", "F"), ("Priyanka", "F"), ("Purvi", "F")],
+    "Q": [("Qasim", "M"), ("Qamar", "F")],
+    "R": [("Rachit", "M"), ("Raghav", "M"), ("Rahul", "M"), ("Raj", "M"), ("Rajesh", "M"), ("Rakesh", "M"), ("Ramesh", "M"), ("Ravi", "M"), ("Rishabh", "M"), ("Rishi", "M"), ("Ritesh", "M"), ("Rohan", "M"), ("Rohit", "M"), ("Rudra", "M"), ("Radha", "F"), ("Rashi", "F"), ("Rashmi", "F"), ("Rency", "F"), ("Rhea", "F"), ("Riddhi", "F"), ("Riya", "F"), ("Roshni", "F"), ("Rupal", "F")],
+    "S": [("Sagar", "M"), ("Sahil", "M"), ("Samarth", "M"), ("Sameer", "M"), ("Sandeep", "M"), ("Sanjay", "M"), ("Sanket", "M"), ("Sanskar", "M"), ("Sarthak", "M"), ("Saurabh", "M"), ("Shaurya", "M"), ("Shiv", "M"), ("Shivam", "M"), ("Shlok", "M"), ("Shubham", "M"), ("Siddharth", "M"), ("Soham", "M"), ("Sumit", "M"), ("Sunil", "M"), ("Sunny", "M"), ("Suraj", "M"), ("Suresh", "M"), ("Sakshi", "F"), ("Saloni", "F"), ("Sanjana", "F"), ("Seema", "F"), ("Shikha", "F"), ("Shivani", "F"), ("Shraddha", "F"), ("Shreya", "F"), ("Simran", "F"), ("Smita", "F"), ("Sneha", "F"), ("Sonal", "F"), ("Sonali", "F"), ("Suhani", "F"), ("Suman", "F"), ("Swati", "F")],
+    "T": [("Tanay", "M"), ("Tanish", "M"), ("Tapan", "M"), ("Tarun", "M"), ("Tejas", "M"), ("Tirth", "M"), ("Tushar", "M"), ("Tanvi", "F"), ("Trisha", "F"), ("Tulsi", "F")],
+    "U": [("Uday", "M"), ("Ujjwal", "M"), ("Umang", "M"), ("Umesh", "M"), ("Utkarsh", "M"), ("Uma", "F"), ("Urvi", "F"), ("Urvashi", "F")],
+    "V": [("Vaibhav", "M"), ("Vansh", "M"), ("Varun", "M"), ("Ved", "M"), ("Vedant", "M"), ("Veer", "M"), ("Vihaan", "M"), ("Vijay", "M"), ("Vikas", "M"), ("Vikram", "M"), ("Vinay", "M"), ("Vipul", "M"), ("Viral", "M"), ("Vishal", "M"), ("Vivek", "M"), ("Vaishali", "F"), ("Vibha", "F"), ("Vidhi", "F"), ("Vrinda", "F")],
+    "W": [("Wasim", "M"), ("Wafa", "F")],
+    "X": [("Xavier", "M"), ("Xenia", "F")],
+    "Y": [("Yash", "M"), ("Yogesh", "M"), ("Yuvraj", "M"), ("Yashvi", "F"), ("Yamini", "F")],
+    "Z": [("Zubin", "M"), ("Zoya", "F"), ("Zara", "F")],
 }
 
 
@@ -2124,16 +2126,17 @@ def _target_friendly_numbers(bn: int, dn: int) -> Tuple[List[int], List[int]]:
     return best, sorted(bn_f | {bn})
 
 
-def analyze_and_suggest_names(name: str, dob_str: str, preferred_alpha: str = "") -> Dict[str, Any]:
+def analyze_and_suggest_names(name: str, dob_str: str, preferred_alpha: str = "", gender: str = "Male") -> Dict[str, Any]:
     """
     Analyzes existing name Chaldean vibrations against DOB (BN & DN),
     suggests minimal phonetic spelling corrections without changing meaning,
-    and suggests new names for given starting alphabet(s).
+    and suggests gender-matched new names for given starting alphabet(s).
     """
-    profile = compile_full_numerology_profile(name, dob_str)
+    profile = compile_full_numerology_profile(name, dob_str, gender=gender)
     bn = profile["core_numbers"]["bn"]
     dn = profile["core_numbers"]["dn"]
     best_targets, friendly_bn = _target_friendly_numbers(bn, dn)
+    target_g = "F" if str(gender).strip().lower().startswith("f") else "M"
 
     def _chaldean_stats(nm: str) -> Dict[str, Any]:
         cleaned = "".join(c for c in nm if c.isalpha() or c == " ")
@@ -2209,15 +2212,18 @@ def analyze_and_suggest_names(name: str, dob_str: str, preferred_alpha: str = ""
     alpha_suggestions = []
     for al in alpha_letters[:3]:
         pool = CURATED_NAMES_BY_ALPHA.get(al, [])
-        for nm in pool:
+        for nm, nm_gender in pool:
+            if nm_gender != target_g:
+                continue
             full_nm = f"{nm} {rest}".strip() if rest else nm
             st = _chaldean_stats(full_nm)
             if st["namank"] in best_targets:
-                alpha_suggestions.append({**st, "starts_with": al, "is_best": st["namank"] == best_targets[0]})
+                alpha_suggestions.append({**st, "starts_with": al, "gender": gender, "is_best": st["namank"] == best_targets[0]})
     alpha_suggestions.sort(key=lambda x: (0 if x["is_best"] else 1, best_targets.index(x["namank"])))
 
     return {
         "dob": profile["client"]["dob"].replace("/", "-"),
+        "gender": "Female" if target_g == "F" else "Male",
         "bn": bn,
         "dn": dn,
         "bn_planet": profile["core_numbers"]["bn_planet"],
@@ -2230,11 +2236,11 @@ def analyze_and_suggest_names(name: str, dob_str: str, preferred_alpha: str = ""
     }
 
 
-def analyze_and_suggest_mobile(mobile: str, dob_str: str) -> Dict[str, Any]:
+def analyze_and_suggest_mobile(mobile: str, dob_str: str, compare_mobile: str = "") -> Dict[str, Any]:
     """
-    Analyzes a 10-digit mobile number against DOB (BN, DN, Natal Grid),
-    flags harmful digit pairs, and suggests minimal-change corrections
-    (adjusting last 1-2 digits or swapping digits) plus lucky number patterns.
+    Analyzes an existing mobile number against DOB (BN, DN, Natal Grid),
+    flags harmful digit pairs, and optionally compares a second mobile number
+    entered by the user side-by-side without modifying the existing number.
     """
     profile = compile_full_numerology_profile("Client", dob_str)
     bn = profile["core_numbers"]["bn"]
@@ -2242,9 +2248,13 @@ def analyze_and_suggest_mobile(mobile: str, dob_str: str) -> Dict[str, Any]:
     natal_counts = profile["natal_grid"]["counts"]
     best_targets, _ = _target_friendly_numbers(bn, dn)
 
-    digits_only = "".join(c for c in (mobile or "") if c.isdigit())
-    if len(digits_only) > 10 and digits_only.startswith("91"):
-        digits_only = digits_only[2:]
+    def _clean_mob(raw: str) -> str:
+        d = "".join(c for c in (raw or "") if c.isdigit())
+        if len(d) > 10 and d.startswith("91"):
+            d = d[2:]
+        return d
+
+    digits_only = _clean_mob(mobile)
     if len(digits_only) < 6:
         raise ValueError("Please enter a valid mobile number (at least 6–10 digits).")
 
@@ -2294,47 +2304,19 @@ def analyze_and_suggest_mobile(mobile: str, dob_str: str) -> Dict[str, Any]:
         }
 
     current = _eval_num(digits_only)
-
-    # Generate minimal-change mobile suggestions:
-    # 1. Swap two adjacent digits (keeps exact same digits!)
-    # 2. Change last 1 digit
-    # 3. Change last 2 digits
-    suggestions = []
-    seen = {digits_only}
-
-    # Swaps (zero new digits needed if buying/choosing similar digits)
-    for i in range(len(digits_only) - 1):
-        if digits_only[i] != digits_only[i + 1]:
-            swapped = digits_only[:i] + digits_only[i + 1] + digits_only[i] + digits_only[i + 2:]
-            if swapped not in seen:
-                seen.add(swapped)
-                ev = _eval_num(swapped)
-                if ev["score"] >= 75 and ev["root"] in best_targets:
-                    suggestions.append({**ev, "change_note": f"Swap digits at pos {i+1}-{i+2}"})
-
-    # Adjust last 1 digit
-    prefix1 = digits_only[:-1]
-    for d in ("1", "3", "5", "6", "9", "2", "7"):
-        cand = prefix1 + d
-        if cand not in seen:
-            seen.add(cand)
-            ev = _eval_num(cand)
-            if ev["root"] in best_targets and len(ev["bad_pairs"]) <= len(current["bad_pairs"]):
-                suggestions.append({**ev, "change_note": f"Change last digit '{digits_only[-1]}' → '{d}'"})
-
-    # Adjust last 2 digits
-    if len(digits_only) >= 4:
-        prefix2 = digits_only[:-2]
-        for d1 in ("1", "3", "5", "6", "9"):
-            for d2 in ("1", "3", "5", "6", "9"):
-                cand = prefix2 + d1 + d2
-                if cand not in seen:
-                    seen.add(cand)
-                    ev = _eval_num(cand)
-                    if ev["root"] in best_targets and not ev["bad_pairs"]:
-                        suggestions.append({**ev, "change_note": f"Change last 2 digits '{digits_only[-2:]}' → '{d1}{d2}'"})
-
-    suggestions.sort(key=lambda x: (-x["score"], len(x["bad_pairs"]), best_targets.index(x["root"]) if x["root"] in best_targets else 9))
+    candidate = None
+    comparison_summary = ""
+    comp_digits = _clean_mob(compare_mobile)
+    if comp_digits:
+        if len(comp_digits) < 6:
+            raise ValueError("Please enter a valid second mobile number (at least 6–10 digits).")
+        candidate = _eval_num(comp_digits)
+        if candidate["score"] > current["score"]:
+            comparison_summary = f"New number {candidate['mobile']} ({candidate['score']}/100) is stronger for your DOB than existing {current['mobile']} ({current['score']}/100)."
+        elif candidate["score"] < current["score"]:
+            comparison_summary = f"Existing number {current['mobile']} ({current['score']}/100) is stronger for your DOB than {candidate['mobile']} ({candidate['score']}/100)."
+        else:
+            comparison_summary = f"Both numbers score {current['score']}/100 for your DOB."
 
     return {
         "dob": profile["client"]["dob"].replace("/", "-"),
@@ -2344,5 +2326,6 @@ def analyze_and_suggest_mobile(mobile: str, dob_str: str) -> Dict[str, Any]:
         "dn_planet": profile["core_numbers"]["dn_planet"],
         "best_targets": best_targets,
         "current": current,
-        "suggestions": suggestions[:12],
+        "compare": candidate,
+        "comparison_summary": comparison_summary,
     }

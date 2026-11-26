@@ -704,7 +704,7 @@ async def generate_tier_report(body: dict = Body(...)):
 
 @app.post("/api/matchmaking/analyze")
 async def analyze_matchmaking(body: dict = Body(...)):
-    """Computes the 5-pillar NumberWise Match Making analysis for Boy and Girl."""
+    """Computes the 5-pillar Vedic Numerology Match Making analysis for Boy and Girl."""
     try:
         boy_name = (body.get("boy_name") or "").strip()
         boy_dob = (body.get("boy_dob") or "").strip()
@@ -759,14 +759,15 @@ async def generate_matchmaking_pdf(body: dict = Body(...)):
 
 @app.post("/api/studio/name-suggest")
 async def studio_name_suggest(body: dict = Body(...)):
-    """Analyzes name vibrations and suggests spelling corrections & alphabet-based names."""
+    """Analyzes name vibrations and suggests spelling corrections & gender-matched alphabet names."""
     try:
         name = (body.get("name") or "").strip()
         dob = (body.get("dob") or "").strip()
         alpha = (body.get("alpha") or "").strip()
+        gender = (body.get("gender") or "Male").strip()
         if not name or not dob:
             raise HTTPException(status_code=400, detail="Name and Date of Birth are required.")
-        return {"success": True, "data": analyze_and_suggest_names(name, dob, alpha)}
+        return {"success": True, "data": analyze_and_suggest_names(name, dob, alpha, gender)}
     except HTTPException:
         raise
     except Exception as e:
@@ -775,13 +776,14 @@ async def studio_name_suggest(body: dict = Body(...)):
 
 @app.post("/api/studio/mobile-check")
 async def studio_mobile_check(body: dict = Body(...)):
-    """Analyzes mobile number compatibility with DOB and suggests minimal-change corrections."""
+    """Analyzes mobile number compatibility with DOB and optionally compares a second mobile number."""
     try:
         mobile = (body.get("mobile") or "").strip()
         dob = (body.get("dob") or "").strip()
+        compare_mobile = (body.get("compare_mobile") or "").strip()
         if not mobile or not dob:
             raise HTTPException(status_code=400, detail="Mobile number and Date of Birth are required.")
-        return {"success": True, "data": analyze_and_suggest_mobile(mobile, dob)}
+        return {"success": True, "data": analyze_and_suggest_mobile(mobile, dob, compare_mobile)}
     except HTTPException:
         raise
     except Exception as e:

@@ -607,10 +607,10 @@
                         </div>
                     </div>
 
-                    <!-- Tab 7: Match Making Report (5-Pillar NumberWise Method) -->
+                    <!-- Tab 7: Match Making Report (5-Pillar Vedic Method) -->
                     <div id="tab-matchmaking" class="tab-content">
                         <div class="compass-dashboard-banner" style="margin-bottom: 16px;">
-                            <div class="compass-dash-header">💑 Match Making Report (5-Pillar NumberWise Method)</div>
+                            <div class="compass-dash-header">💑 Match Making Report (5-Pillar Vedic Method)</div>
                             <p style="font-size: 12.5px; color: var(--text-secondary); margin: 4px 0 0 0;">
                                 Compare Boy (Groom) &amp; Girl (Bride) across 5 pillars of 20 points each (100 points total) and export a clean client-ready PDF.
                             </p>
@@ -658,7 +658,7 @@
                             </p>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1.3fr 1fr 0.9fr; gap: 12px; margin-bottom: 14px;">
+                        <div style="display: grid; grid-template-columns: 1.2fr 0.9fr 0.7fr 0.7fr; gap: 12px; margin-bottom: 14px;">
                             <div class="form-group">
                                 <label for="nm-name">Existing Full Name</label>
                                 <input type="text" id="nm-name" placeholder="e.g. Jigar Thakkar" value="Jigar Thakkar" style="width:100%;">
@@ -668,7 +668,14 @@
                                 <input type="date" id="nm-dob" value="1982-12-19" style="width:100%;">
                             </div>
                             <div class="form-group">
-                                <label for="nm-alpha">Preferred Alphabet(s)</label>
+                                <label for="nm-gender">Gender</label>
+                                <select id="nm-gender" style="width:100%;">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="nm-alpha">Alphabet(s)</label>
                                 <input type="text" id="nm-alpha" placeholder="e.g. A, K, R" value="J" maxlength="5" style="width:100%;">
                             </div>
                         </div>
@@ -682,14 +689,18 @@
                         <div class="compass-dashboard-banner" style="margin-bottom: 16px;">
                             <div class="compass-dash-header">📱 Mobile Number &amp; Birthdate Matching</div>
                             <p style="font-size: 12.5px; color: var(--text-secondary); margin: 4px 0 0 0;">
-                                Check mobile compound total, digit-pair vibrations, and natal grid synergy — with minimal-change digit swap &amp; ending suggestions.
+                                Check your existing mobile number against your DOB, or enter another mobile number you are considering to compare both side-by-side.
                             </p>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 12px; margin-bottom: 14px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 14px;">
                             <div class="form-group">
-                                <label for="mob-number">Mobile Number (10 digits)</label>
+                                <label for="mob-number">Existing Mobile Number</label>
                                 <input type="text" id="mob-number" placeholder="e.g. 9377614772" value="9377614772" style="width:100%;">
+                            </div>
+                            <div class="form-group">
+                                <label for="mob-compare">Another Mobile Number (Optional)</label>
+                                <input type="text" id="mob-compare" placeholder="Enter another number to match" style="width:100%;">
                             </div>
                             <div class="form-group">
                                 <label for="mob-dob">Date of Birth</label>
@@ -697,7 +708,7 @@
                             </div>
                         </div>
 
-                        <button type="button" id="btn-mob-analyze" class="btn-primary" style="width: 100%; margin-bottom: 16px;">📱 Check Mobile &amp; Suggest Lucky Corrections</button>
+                        <button type="button" id="btn-mob-analyze" class="btn-primary" style="width: 100%; margin-bottom: 16px;">📱 Match Mobile Number(s) with Birthdate</button>
                         <div id="mob-results-container"></div>
                     </div>
                 </div>

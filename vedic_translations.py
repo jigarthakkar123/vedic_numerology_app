@@ -2,7 +2,7 @@
 """
 Vedic Numerology Knowledge Base & Trilingual Dictionaries
 Languages: English (en), Hindi (hi), Gujarati (gu)
-Derived strictly from NumberWise Vedic Numerology Course Levels 1 & 2 and Vedic Remedies.
+Derived strictly from authentic Vedic Numerology Levels 1 & 2 and Vedic Remedies.
 """
 
 # Consultant & Legal Copyright Information
