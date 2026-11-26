@@ -837,11 +837,11 @@ def build_report_html(data: Dict[str, Any]) -> str:
     # ---------------- PAGES 11 & 12: Remedies & Crystals ----------------
     remedies_section_html = ""
     if include_remedies:
-        rem_cards_html = ""
+        rem_cards_list = []
         for r in remedies_by_num:
             nc = r.get("natal_count", 0)
             sub_line = L["appears_grid"].format(n=nc) if nc >= 2 else L["active_period_neg"]
-            rem_cards_html += f"""
+            rem_cards_list.append(f"""
             <div class="rem-card">
                 <div class="rem-head">
                     <span class="rem-circle">{r["number"]}</span>
@@ -860,7 +860,7 @@ def build_report_html(data: Dict[str, Any]) -> str:
                 <p class="rem-p">{r["colors"]}</p>
                 <div class="rem-sec-lbl">{L["fasting"]}</div>
                 <p class="rem-p">{r["fasting"]}</p>
-            </div>"""
+            </div>""")
 
         crystals_list = SUPPORTING_CRYSTALS_BY_LANG.get(lang, SUPPORTING_CRYSTALS)
         crystals_html = "".join(
@@ -868,16 +868,33 @@ def build_report_html(data: Dict[str, Any]) -> str:
             for cname, cdesc in crystals_list
         )
 
-        remedies_section_html = f"""
+        # Paginate remedies cleanly (max 4 cards per page; crystals on separate page if > 2 remedies)
+        remedies_section_html = ""
+        for idx in range(0, len(rem_cards_list), 4):
+            chunk = "".join(rem_cards_list[idx:idx + 4])
+            intro_p = f'<p class="lead-note">{L["remedies_intro"]}</p>' if idx == 0 else ""
+            crystals_inline = (
+                f'<h3 class="sec-h3">{L["supporting_crystals"]}</h3><div class="crystal-list">{crystals_html}</div>'
+                if (idx == 0 and len(rem_cards_list) <= 2) else ""
+            )
+            remedies_section_html += f"""
         <div class="page-break"></div>
         <div class="sheet">
             <div class="kicker">{L["prof_report"]}</div>
             <h2 class="sec-h2">{L["remedies"]}</h2>
-            <p class="lead-note">{L["remedies_intro"]}</p>
+            {intro_p}
             <div class="rem-grid">
-                {rem_cards_html}
+                {chunk}
             </div>
-            <h3 class="sec-h3">{L["supporting_crystals"]}</h3>
+            {crystals_inline}
+        </div>"""
+
+        if len(rem_cards_list) > 2:
+            remedies_section_html += f"""
+        <div class="page-break"></div>
+        <div class="sheet">
+            <div class="kicker">{L["prof_report"]}</div>
+            <h2 class="sec-h2">{L["supporting_crystals"]}</h2>
             <div class="crystal-list">
                 {crystals_html}
             </div>
@@ -1439,6 +1456,8 @@ body {{
     gap: 12px;
     padding: 6px 0;
     border-bottom: 1px solid #f1f5f9;
+    break-inside: avoid;
+    page-break-inside: avoid;
 }}
 .pred-lbl {{
     width: 80px;
@@ -1706,7 +1725,7 @@ body {{
     </div>
 </div>
 
-<!-- PAGE 10: PREDICTIONS & NINE-YEAR OUTLOOK -->
+<!-- PAGE 10: PREDICTIONS -->
 <div class="page-break"></div>
 <div class="sheet">
     <div class="kicker">{L["prof_report"]}</div>
@@ -1716,8 +1735,13 @@ body {{
 
     <h3 class="sec-h3">{L["this_year"]} · {L["md"]} {md_num} · {L["ad"]} {ad_num} · {_fmt_dash(active_ad.get("start_str", ""))} – {_fmt_dash(active_ad.get("end_str", ""))}</h3>
     {render_pred_rows(pred_rows_year)}
+</div>
 
-    <h3 class="sec-h3">{L["nine_year_outlook"]}</h3>
+<!-- PAGE 11: NINE-YEAR OUTLOOK -->
+<div class="page-break"></div>
+<div class="sheet">
+    <div class="kicker">{L["prof_report"]}</div>
+    <h2 class="sec-h2">{L["nine_year_outlook"]}</h2>
     <table class="clean-tbl">
         <thead>
             <tr>
