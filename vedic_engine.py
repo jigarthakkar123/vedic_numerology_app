@@ -1688,9 +1688,13 @@ def attach_domain_timing_windows(
         prefix = f"[{lbls['lit_note']}] " if key == "litigation" else (f"[{lbls['hlth_note']}] " if key == "health" else "")
         pdata["timing"] = f"{prefix}{lbls['pd']}: {pd_str} | {lbls['ad']}: {ad_str} | {lbls['md']}: {md_str}"
         pdata["timing_windows"] = {
-            "pratyantar": pd_hits[:3],
-            "antardasha_years": ad_hits[:3],
-            "mahadasha": md_hits[:2],
+            "note": lbls["lit_note"] if key == "litigation" else (lbls["hlth_note"] if key == "health" else ""),
+            "pd_label": lbls["pd"],
+            "ad_label": lbls["ad"],
+            "md_label": lbls["md"],
+            "pratyantar": pd_hits[:3] if pd_hits else [lbls["none_pd"]],
+            "antardasha_years": ad_hits[:3] if ad_hits else [lbls["none_ad"]],
+            "mahadasha": md_hits[:2] if md_hits else ([md_str] if md_str else []),
         }
 
 

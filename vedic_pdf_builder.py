@@ -809,9 +809,22 @@ def build_report_html(data: Dict[str, Any]) -> str:
         for lbl, txt in rows:
             timing_html = ""
             if isinstance(txt, dict):
-                t_str = txt.get("timing", "")
-                if t_str:
-                    timing_html = f'<div style="margin-top:4px;padding:4px 8px;background:#fefce8;border-left:3px solid #eab308;font-size:9.3px;color:#713f12;"><strong>📅</strong> {t_str}</div>'
+                tw = txt.get("timing_windows")
+                if tw:
+                    def _pills(items):
+                        return "".join(
+                            f'<span style="display:inline-block;background:#fff;border:1px solid #fde68a;border-radius:4px;padding:1px 6px;margin:1px 4px 1px 0;font-size:8.6px;color:#0f172a;">{it}</span>'
+                            for it in items
+                        )
+                    note_badge = f' <span style="color:#b91c1c;font-weight:700;">({tw["note"]})</span>' if tw.get("note") else ""
+                    timing_html = f"""
+                    <div style="margin-top:5px;padding:6px 9px;background:#fefce8;border-left:3px solid #eab308;border-radius:0 6px 6px 0;font-size:8.8px;line-height:1.45;">
+                        <div style="margin-bottom:2px;"><strong style="color:#854d0e;">{tw["pd_label"]}{note_badge}:</strong> {_pills(tw.get("pratyantar", []))}</div>
+                        <div style="margin-bottom:2px;"><strong style="color:#854d0e;">{tw["ad_label"]}:</strong> {_pills(tw.get("antardasha_years", []))}</div>
+                        <div><strong style="color:#854d0e;">{tw["md_label"]}:</strong> {_pills(tw.get("mahadasha", []))}</div>
+                    </div>"""
+                elif txt.get("timing"):
+                    timing_html = f'<div style="margin-top:4px;padding:4px 8px;background:#fefce8;border-left:3px solid #eab308;font-size:9px;color:#713f12;">{txt.get("timing")}</div>'
                 txt = txt.get("desc", "")
             if txt:
                 out += f'<div class="pred-row"><div class="pred-lbl">{lbl}</div><div class="pred-txt">{txt}{timing_html}</div></div>'
@@ -1730,14 +1743,20 @@ body {{
     </div>
 </div>
 
-<!-- PAGE 10: PREDICTIONS -->
+<!-- PAGE 10A: PREDICTIONS (BIRTH GRID) -->
 <div class="page-break"></div>
 <div class="sheet">
     <div class="kicker">{L["prof_report"]}</div>
     <h2 class="sec-h2">{L["predictions"]}</h2>
     <h3 class="sec-h3">{L["from_birth_grid"]}</h3>
     {render_pred_rows(pred_rows_natal)}
+</div>
 
+<!-- PAGE 10B: PREDICTIONS (THIS YEAR & UPCOMING) -->
+<div class="page-break"></div>
+<div class="sheet">
+    <div class="kicker">{L["prof_report"]}</div>
+    <h2 class="sec-h2">{L["predictions"]}</h2>
     <h3 class="sec-h3">{L["this_year"]} · {L["md"]} {md_num} · {L["ad"]} {ad_num} · {_fmt_dash(active_ad.get("start_str", ""))} – {_fmt_dash(active_ad.get("end_str", ""))}</h3>
     {render_pred_rows(pred_rows_year)}
 </div>

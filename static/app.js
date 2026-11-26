@@ -442,13 +442,28 @@ function renderDashboard(data) {
         const p = data.predictions[key];
         const pCard = document.createElement('div');
         pCard.className = 'pred-display-card';
+        const tw = p.timing_windows;
+        let timingBlock = '';
+        if (tw) {
+            const chip = (txt) => `<span style="display:inline-block;padding:2px 8px;margin:2px 4px 2px 0;border-radius:5px;background:rgba(255,255,255,0.06);border:1px solid rgba(234,179,8,0.28);font-size:11px;color:#f1f5f9;">${escapeHtml(txt)}</span>`;
+            const noteTag = tw.note ? `<span style="font-size:10.5px;font-weight:700;color:#fca5a5;margin-left:6px;">(${escapeHtml(tw.note)})</span>` : '';
+            timingBlock = `
+            <div style="margin-top:10px;padding:10px 12px;border-radius:8px;background:rgba(15,23,42,0.65);border:1px solid rgba(234,179,8,0.22);font-size:11.5px;">
+                <div style="font-weight:700;color:#fde68a;margin-bottom:6px;">📅 Activation Timing Windows ${noteTag}</div>
+                <div style="margin-bottom:5px;"><span style="color:#94a3b8;font-weight:600;display:block;font-size:10.5px;margin-bottom:2px;">${escapeHtml(tw.pd_label)}:</span>${(tw.pratyantar || []).map(chip).join('')}</div>
+                <div style="margin-bottom:5px;"><span style="color:#94a3b8;font-weight:600;display:block;font-size:10.5px;margin-bottom:2px;">${escapeHtml(tw.ad_label)}:</span>${(tw.antardasha_years || []).map(chip).join('')}</div>
+                <div><span style="color:#94a3b8;font-weight:600;display:block;font-size:10.5px;margin-bottom:2px;">${escapeHtml(tw.md_label)}:</span>${(tw.mahadasha || []).map(chip).join('')}</div>
+            </div>`;
+        } else if (p.timing) {
+            timingBlock = `<div style="margin-top:8px;padding:7px 10px;border-radius:6px;background:rgba(234,179,8,0.09);border:1px solid rgba(234,179,8,0.28);font-size:11.5px;color:#fde68a;line-height:1.4;">${escapeHtml(p.timing)}</div>`;
+        }
         pCard.innerHTML = `
             <div class="c-header">
                 <span class="c-title">${p.title}</span>
                 <span class="c-tag">Forecast</span>
             </div>
             <div class="c-desc">${p.desc}</div>
-            ${p.timing ? `<div style="margin-top:8px;padding:7px 10px;border-radius:6px;background:rgba(234,179,8,0.09);border:1px solid rgba(234,179,8,0.28);font-size:11.5px;color:#fde68a;line-height:1.4;"><strong>📅 Exact Timing (MD / AD / Pratyantar):</strong> ${escapeHtml(p.timing)}</div>` : ''}
+            ${timingBlock}
         `;
         predsContainer.appendChild(pCard);
     }
