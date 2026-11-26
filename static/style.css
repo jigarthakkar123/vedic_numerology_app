@@ -5,19 +5,19 @@
    ========================================================================== */
 
 :root {
-    --bg-main: #090e1a;
-    --bg-card: #0f172a;
-    --bg-card-subtle: #1e293b;
-    --bg-input: #131d33;
-    --border-gold: #d4af37;
-    --border-gold-subtle: #856928;
-    --border-dark: #334155;
-    --text-primary: #f8fafc;
+    --bg-main: #0b0c0e;
+    --bg-card: #12151c;
+    --bg-card-subtle: #191e28;
+    --bg-input: #141923;
+    --border-gold: #e5a93c;
+    --border-gold-subtle: rgba(229, 169, 60, 0.32);
+    --border-dark: #262e3d;
+    --text-primary: #f4f5f6;
     --text-secondary: #94a3b8;
     --text-gold: #fbbf24;
-    --gold-glow: rgba(212, 175, 55, 0.25);
-    --gold-gradient: linear-gradient(135deg, #d4af37 0%, #f59e0b 100%);
-    --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5), 0 0 1px 1px rgba(212, 175, 55, 0.15);
+    --gold-glow: rgba(229, 169, 60, 0.16);
+    --gold-gradient: linear-gradient(135deg, #e5a93c 0%, #f59e0b 100%);
+    --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
     --font-heading: 'Cinzel', serif;
     --font-body: 'Plus Jakarta Sans', -apple-system, sans-serif;
     --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -657,54 +657,49 @@ textarea:focus {
 }
 
 .tabs-scroll-wrapper {
-    background: #0b1222;
-    border-bottom: 1px solid var(--border-gold-subtle);
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border-gold-subtle) transparent;
+    background: #0e1117;
+    border-bottom: 1px solid var(--border-dark);
+    padding: 10px 12px;
     width: 100%;
     max-width: 100%;
     min-width: 0;
     display: block;
-}
-
-.tabs-scroll-wrapper::-webkit-scrollbar {
-    height: 4px;
-}
-.tabs-scroll-wrapper::-webkit-scrollbar-thumb {
-    background: var(--border-gold-subtle);
-    border-radius: 4px;
+    overflow: visible;
 }
 
 .dashboard-tabs {
-    display: flex;
-    width: max-content;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(138px, 1fr));
+    gap: 6px;
+    width: 100%;
     min-width: 0;
 }
 
 .tab-btn {
-    background: transparent;
-    border: none;
-    border-bottom: 3px solid transparent;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid var(--border-dark);
+    border-radius: 6px;
     color: var(--text-secondary);
-    padding: 13px 18px;
-    font-size: 12.5px;
+    padding: 9px 10px;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s ease;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.25;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
 .tab-btn:hover {
     color: var(--text-primary);
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--border-gold-subtle);
 }
 
 .tab-btn.active {
-    color: var(--text-gold);
-    border-bottom-color: var(--border-gold);
-    background: rgba(212, 175, 55, 0.08);
+    color: #0b0c0e;
+    background: var(--border-gold);
+    border-color: var(--border-gold);
     font-weight: 700;
 }
 

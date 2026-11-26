@@ -1830,26 +1830,71 @@ def build_matchmaking_html(m: Dict[str, Any]) -> str:
             </table>
         </div>"""
 
-    def _remedies_page(prof: Dict[str, Any], label: str) -> str:
-        rems = prof.get("remedies_by_number", [])
+    def _marriage_saving_remedies_page() -> str:
+        from vedic_translations import NUMBER_REMEDIES, PLANET_INFO
+
+        ms_roles = {
+            3: "Communication Harmony, Wisdom &amp; Family Peace",
+            7: "Spiritual Bonding, Trust &amp; Emotional Depth",
+            8: "Discipline, Patience &amp; Long-Term Commitment",
+        }
+        b_vibs = {f'{v["type"]}{v["number"]}' for v in boy.get("vibrations", [])}
+        g_vibs = {f'{v["type"]}{v["number"]}' for v in girl.get("vibrations", [])}
+
+        def _status_for(vibs: set, num: int) -> str:
+            if f"-{num}" in vibs:
+                return f"Negative (-{num})"
+            if f"+{num}" not in vibs:
+                return f"Missing ({num})"
+            return ""
+
         cards = ""
-        for r in rems:
+        for num in (3, 7, 8):
+            b_issue = _status_for(b_vibs, num)
+            g_issue = _status_for(g_vibs, num)
+            if not b_issue and not g_issue:
+                continue
+            reasons = []
+            if b_issue:
+                reasons.append(f"{boy['name']}: {b_issue}")
+            if g_issue:
+                reasons.append(f"{girl['name']}: {g_issue}")
+            reason_str = " · ".join(reasons)
+
+            rem = NUMBER_REMEDIES.get(num, {})
+            pinfo = PLANET_INFO.get(num, {}).get("en", {})
+            planet_name = pinfo.get("planet", f"Planet {num}")
+            colors = pinfo.get("colors", "")
+            mantra = rem.get("mantra", {}).get("en", "")
+            seva = rem.get("seva", {}).get("en", "")
+            donation = rem.get("donation", {}).get("en", "")
+            fasting = rem.get("fasting", {}).get("en", "")
+            crystal = rem.get("crystal", {}).get("en", "")
+
             cards += f"""
             <div class="rem-card">
-                <div class="rem-head"><span class="rem-circle">{r["number"]}</span><div><div class="rem-title">Number {r["number"]} · {r["planet"]}</div></div></div>
-                <div class="rem-sec-lbl">Mantras &amp; Practices</div><p class="rem-p">{r["mantra"]}</p>
-                <div class="rem-sec-lbl">Service (Seva)</div><p class="rem-p">{r["seva"]}</p>
-                <div class="rem-sec-lbl">Donations</div><p class="rem-p">{r["donation"]}</p>
-                <div class="rem-sec-lbl">Colours &amp; Fasting</div><p class="rem-p">{r["colors"]} · {r["fasting"]}</p>
+                <div class="rem-head">
+                    <span class="rem-circle">{num}</span>
+                    <div>
+                        <div class="rem-title">Number {num} · {planet_name} <span style="font-weight:400;color:#64748b;">({ms_roles[num]})</span></div>
+                        <div class="sub-muted" style="color:#991b1b;font-weight:600;">Triggered by: {reason_str}</div>
+                    </div>
+                </div>
+                <div class="rem-sec-lbl">Mantras &amp; Practices</div><p class="rem-p">{mantra}</p>
+                <div class="rem-sec-lbl">Service (Seva)</div><p class="rem-p">{seva}</p>
+                <div class="rem-sec-lbl">Donations</div><p class="rem-p">{donation}</p>
+                <div class="rem-sec-lbl">Colours, Fasting &amp; Crystal</div><p class="rem-p">{colors} · {fasting} · Crystal: {crystal}</p>
             </div>"""
+
         if not cards:
-            cards = '<div class="sub-muted">No severe number afflictions requiring targeted remedies.</div>'
+            cards = '<div class="sub-muted">All marriage-saving numbers (3, 7, 8) are positively balanced in both natal grids — no targeted marriage-saving remedies are required.</div>'
+
         return f"""
         <div class="page-break"></div>
         <div class="sheet">
-            <div class="kicker">{label}</div>
-            <h2 class="sec-h2">{prof["client"]["name"]} · Personalized Vedic Remedies</h2>
-            <p class="sub-muted" style="margin-bottom:10px;">Targeted balancing remedies for repeated or negative numbers in the natal grid and active dasha period.</p>
+            <div class="kicker">Marriage-Saving Number Remedies (3 · 7 · 8)</div>
+            <h2 class="sec-h2">{boy["name"]} &amp; {girl["name"]} · Focused Marriage-Saving Remedies</h2>
+            <p class="sub-muted" style="margin-bottom:10px;">In match making, remedies are focused strictly on missing or afflicted <strong>marriage-saving numbers (3, 7, and 8)</strong> in either partner's natal grid. General individual number remedies belong in each person's standalone birthdate report.</p>
             <div class="rem-grid">{cards}</div>
         </div>"""
 
@@ -1868,8 +1913,7 @@ def build_matchmaking_html(m: Dict[str, Any]) -> str:
             + _analysis_yogas_page(boy_full, "Boy · Groom")
             + _analysis_yogas_page(girl_full, "Girl · Bride")
             + _joint_outlook_page()
-            + _remedies_page(boy_full, "Boy · Groom")
-            + _remedies_page(girl_full, "Girl · Bride")
+            + _marriage_saving_remedies_page()
         )
 
     return f"""<!DOCTYPE html>
