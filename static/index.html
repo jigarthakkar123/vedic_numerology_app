@@ -202,6 +202,7 @@
                             <button class="tab-btn" data-tab="tab-name" id="tab-btn-name">Name Correction</button>
                             <button class="tab-btn" data-tab="tab-mobile" id="tab-btn-mobile">Mobile &amp; DOB</button>
                             <button class="tab-btn" data-tab="tab-matchmaking" id="tab-btn-matchmaking">Match Making</button>
+                            <button class="tab-btn" data-tab="tab-business" id="tab-btn-business">Business Partnership</button>
                             <button class="tab-btn" data-tab="tab-crm" id="tab-btn-crm">Client Orders &amp; CRM</button>
                         </nav>
                     </div>
@@ -654,6 +655,40 @@
                         </div>
 
                         <div id="mm-results-container"></div>
+                    </div>
+
+                    <!-- Tab 7B: Business Partnership Match Making (1, 2, 3, or N Partners) -->
+                    <div id="tab-business" class="tab-content">
+                        <div class="compass-dashboard-banner" style="margin-bottom: 16px;">
+                            <div class="compass-dash-header">🤝 Business Partnership Match Making (1, 2, 3 or More Partners)</div>
+                            <p style="font-size: 12.5px; color: var(--text-secondary); margin-top: 6px;">Evaluate 1 to N partners using Dates of Birth, Grids, Yogas, and Active Dashas. Identifies the strongest Anchor Partner, common businesses together, best Firm Namank, and generates EN / HI / GU PDF reports.</p>
+                        </div>
+
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-dark); border-radius: 10px; padding: 14px; margin-bottom: 14px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
+                                <strong style="color:#fde68a; font-size:13px;">Partners List (Add 1, 2, 3 or more partners)</strong>
+                                <button type="button" id="btn-biz-add-partner" class="btn-secondary" style="padding:6px 12px; font-size:12px;">+ Add Partner</button>
+                            </div>
+                            <div id="biz-partners-list"></div>
+                            <div class="form-group" style="margin-top:10px;">
+                                <label for="biz-firm-name">Proposed Business / Firm Name (Optional — for Chaldean Namank Audit)</label>
+                                <input type="text" id="biz-firm-name" placeholder="e.g. Apex Ventures" style="width:100%;">
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 18px;">
+                            <button type="button" id="btn-biz-analyze" class="btn-primary" style="flex: 1 1 210px;">🤝 Analyze Business Partnership</button>
+                            <select id="biz-lang" style="width: auto; min-width: 125px; padding: 10px 12px; border-radius: 8px; background: var(--bg-input); color: var(--text-primary); border: 1px solid var(--border-dark); font-weight: 600;">
+                                <option value="en" selected>Preview: EN</option>
+                                <option value="hi">Preview: HI</option>
+                                <option value="gu">Preview: GU</option>
+                            </select>
+                            <button type="button" class="btn-secondary biz-pdf-btn" data-lang="en" style="padding: 10px 14px; white-space: nowrap;">📄 English PDF</button>
+                            <button type="button" class="btn-secondary biz-pdf-btn" data-lang="hi" style="padding: 10px 14px; white-space: nowrap;">📄 हिन्दी PDF</button>
+                            <button type="button" class="btn-secondary biz-pdf-btn" data-lang="gu" style="padding: 10px 14px; white-space: nowrap;">📄 ગુજરાતી PDF</button>
+                        </div>
+
+                        <div id="biz-results-container"></div>
                     </div>
 
                     <!-- Tab 8: Name Suggestion & Spelling Correction -->

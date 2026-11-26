@@ -2659,6 +2659,374 @@ body {{ margin: 0; font-family: {body_font}; color: #1e293b; font-size: 11px; li
 </html>"""
 
 
+def build_business_partnership_html(b: Dict[str, Any]) -> str:
+    """
+    Constructs a clean, white, editorial-grade Business Partnership Numerology Report
+    for 1, 2, 3, or N partners in English, Hindi, or Gujarati.
+    """
+    lang = b.get("lang", "en")
+    if lang not in ("en", "hi", "gu"):
+        lang = "en"
+
+    BL = {
+        "en": {
+            "kicker_top": "Vedic Business Numerology",
+            "report_sub": "Business Partnership Report",
+            "prepared_by": "Prepared by",
+            "prepared_for": "Prepared for",
+            "partners_lbl": "Partners Evaluated:",
+            "anchor_title": "Strongest Anchor Partner & Business Leadership Recommendation",
+            "team_cov": "Collective Team Grid Coverage",
+            "covered": "Present Positive Numbers:",
+            "missing": "Shared Missing Numbers (Blind Spots):",
+            "none": "None",
+            "partner_cards": "Partner Charts, Dashas & Assigned Business Roles",
+            "born": "Born",
+            "basic": "Basic",
+            "destiny": "Destiny",
+            "strength": "Business Strength",
+            "role": "Recommended Role:",
+            "dasha": "Active Dasha:",
+            "yogas": "Active Yogas:",
+            "pairwise_title": "Pairwise Partner Compatibility Matrix",
+            "pair_strong": "Strong Synergy",
+            "pair_mod": "Balanced / Role Split",
+            "pair_fric": "Requires Structure",
+            "biz_title": "Common Recommended Businesses & Professions Together",
+            "biz_sub": "Industries where your combined planetary strengths, Yogas, and active Dashas generate the highest growth together.",
+            "backed_by": "Supported by:",
+            "namank_title": "Best Business Name Numbers (Namank) & Firm Audit",
+            "best_namank": "Most Auspicious Business Name Numbers:",
+            "firm_audit": "Evaluated Business Name:",
+            "ausp": "Auspicious for Team",
+            "adj": "Consider Spelling Adjustment",
+            "outlook_title": "5-Year Joint Business & Dasha Outlook (Current to +4 Years)",
+            "year": "Year",
+            "running": "Running",
+            "rem_title": "Focused Business Growth Remedies (For Shared Blind Spots)",
+            "rem_none": "Your combined team covers all core business numbers (1, 3, 5, 6, 8) — no shared business-number remedies needed.",
+            "crystals": "Supporting Crystals for Business Prosperity",
+            "disclaimer": "Disclaimer: Prepared using Vedic numerology for business guidance. Report generated on",
+        },
+        "hi": {
+            "kicker_top": "वैदिक व्यापार अंकशास्त्र",
+            "report_sub": "बिजनेस पार्टनरशिप रिपोर्ट",
+            "prepared_by": "द्वारा तैयार:",
+            "prepared_for": "के लिए तैयार",
+            "partners_lbl": "कुल साझेदार:",
+            "anchor_title": "सबसे मजबूत एंकर पार्टनर एवं नेतृत्व अनुशंसा",
+            "team_cov": "सामूहिक टीम ग्रिड विश्लेषण",
+            "covered": "टीम में सकारात्मक अंक:",
+            "missing": "साझा अनुपस्थित अंक (कमजोरियाँ):",
+            "none": "कोई नहीं",
+            "partner_cards": "साझेदारों के चार्ट, दशा और व्यापारिक भूमिकाएँ",
+            "born": "जन्म",
+            "basic": "मूलांक",
+            "destiny": "भाग्यांक",
+            "strength": "व्यापारिक शक्ति",
+            "role": "उपयुक्त भूमिका:",
+            "dasha": "सक्रिय दशा:",
+            "yogas": "सक्रिय योग:",
+            "pairwise_title": "परस्पर साझेदार अनुकूलता मैट्रिक्स",
+            "pair_strong": "मजबूत तालमेल",
+            "pair_mod": "संतुलित / स्पष्ट भूमिका",
+            "pair_fric": "सावधानी एवं अनुबंध",
+            "biz_title": "एक साथ करने योग्य सर्वोत्तम व्यवसाय एवं उद्योग",
+            "biz_sub": "वे क्षेत्र जहाँ आपकी संयुक्त ग्रह शक्ति, योग और सक्रिय दशाएँ सर्वाधिक लाभ देती हैं।",
+            "backed_by": "सहायक साझेदार:",
+            "namank_title": "सर्वोत्तम व्यवसाय नामांक (Namank) एवं फर्म जांच",
+            "best_namank": "शुभ व्यवसाय नामांक:",
+            "firm_audit": "प्रस्तावित फर्म नाम:",
+            "ausp": "टीम के लिए शुभ",
+            "adj": "स्पेलिंग सुधार पर विचार करें",
+            "outlook_title": "आगामी 5-वर्षीय संयुक्त व्यापारिक दृष्टिकोण",
+            "year": "वर्ष",
+            "running": "वर्तमान",
+            "rem_title": "व्यापारिक वृद्धि उपाय (साझा अनुपस्थित अंकों के लिए)",
+            "rem_none": "आपकी टीम में सभी प्रमुख व्यापारिक अंक (1, 3, 5, 6, 8) मौजूद हैं — अतिरिक्त उपाय की आवश्यकता नहीं।",
+            "crystals": "व्यापारिक समृद्धि के लिए सहायक क्रिस्टल",
+            "disclaimer": "अस्वीकरण: वैदिक अंकशास्त्र व्यापारिक मार्गदर्शन के लिए है। रिपोर्ट तिथि:",
+        },
+        "gu": {
+            "kicker_top": "વૈદિક વ્યાપાર અંકશાસ્ત્ર",
+            "report_sub": "બિઝનેસ પાર્ટનરશિપ રિપોર્ટ",
+            "prepared_by": "દ્વારા તૈયાર:",
+            "prepared_for": "માટે તૈયાર",
+            "partners_lbl": "કુલ ભાગીદારો:",
+            "anchor_title": "સૌથી મજબૂત એન્કર પાર્ટનર અને નેતૃત્વ ભલામણ",
+            "team_cov": "સામૂહિક ટીમ ગ્રીડ વિશ્લેષણ",
+            "covered": "ટીમમાં સકારાત્મક અંકો:",
+            "missing": "સામૂહિક ખૂટતા અંકો (નબળાઈ):",
+            "none": "કોઈ નહીં",
+            "partner_cards": "ભાગીદારોના ચાર્ટ, દશા અને વ્યાપારિક ભૂમિકા",
+            "born": "જન્મ",
+            "basic": "મૂળાંક",
+            "destiny": "ભાગ્યાંક",
+            "strength": "વ્યાપારિક શક્તિ",
+            "role": "યોગ્ય ભૂમિકા:",
+            "dasha": "સક્રિય દશા:",
+            "yogas": "સક્રિય યોગ:",
+            "pairwise_title": "પરસ્પર ભાગીદાર સુસંગતતા મેટ્રિક્સ",
+            "pair_strong": "મજબૂત તાલમેલ",
+            "pair_mod": "સંતુલિત / સ્પષ્ટ ભૂમિકા",
+            "pair_fric": "સાવચેતી અને કરાર જરૂરી",
+            "biz_title": "સાથે મળીને કરવા યોગ્ય શ્રેષ્ઠ વ્યવસાયો અને ઉદ્યોગો",
+            "biz_sub": "એવા ક્ષેત્રો જ્યાં તમારી સંયુક્ત ગ્રહ શક્તિ, યોગ અને સક્રિય દશાઓ સૌથી વધુ પ્રગતિ આપે છે.",
+            "backed_by": "સહાયક ભાગીદારો:",
+            "namank_title": "શ્રેષ્ઠ બિઝનેસ નામાંક (Namank) અને ફર્મ તપાસ",
+            "best_namank": "શુભ બિઝનેસ નામાંક:",
+            "firm_audit": "તપાસેલ ફર્મનું નામ:",
+            "ausp": "ટીમ માટે શુભ",
+            "adj": "સ્પેલિંગ સુધારવા વિચારવું",
+            "outlook_title": "આગામી 5-વર્ષીય સંયુક્ત વ્યાપારિક દૃષ્ટિકોણ",
+            "year": "વર્ષ",
+            "running": "ચાલુ",
+            "rem_title": "વ્યાપારિક વૃદ્ધિ ઉપાયો (સામૂહિક ખૂટતા અંકો માટે)",
+            "rem_none": "તમારી ટીમમાં તમામ મુખ્ય વ્યાપારિક અંકો (1, 3, 5, 6, 8) હાજર છે — વધારાના ઉપાયની જરૂર નથી.",
+            "crystals": "વ્યાપારિક સમૃદ્ધિ માટે સહાયક ક્રિસ્ટલ્સ",
+            "disclaimer": "અસ્વીકરણ: વૈદિક અંકશાસ્ત્ર વ્યાપારિક માર્ગદર્શન માટે છે. રિપોર્ટ તારીખ:",
+        },
+    }[lang]
+
+    google_fonts = "https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@400;600;700&display=swap"
+    if lang == "hi":
+        google_fonts += "&family=Noto+Sans+Devanagari:wght@400;600;700"
+        body_font = "'Noto Sans Devanagari', 'Source Sans 3', sans-serif"
+        serif_font = "'Noto Sans Devanagari', 'Libre Baskerville', serif"
+    elif lang == "gu":
+        google_fonts += "&family=Noto+Sans+Gujarati:wght@400;600;700"
+        body_font = "'Noto Sans Gujarati', 'Source Sans 3', sans-serif"
+        serif_font = "'Noto Sans Gujarati', 'Libre Baskerville', serif"
+    else:
+        body_font = "'Source Sans 3', sans-serif"
+        serif_font = "'Libre Baskerville', serif"
+
+    consultant = b["consultant"]
+    partners = b["partners"]
+    strongest = b["strongest_partner"]
+    level = b["verdict_level"]
+    banner_bg = (
+        "linear-gradient(90deg, #059669, #10b981)" if level == "good"
+        else ("linear-gradient(90deg, #d97706, #f59e0b)" if level == "moderate"
+              else "linear-gradient(90deg, #991b1b, #db2777)")
+    )
+    partner_names_title = " · ".join(p["name"] for p in partners)
+
+    partner_cards_html = ""
+    for p in partners:
+        cells_html = ""
+        for c in p["grid"]["cells"]:
+            val = c["str"] if c.get("count", 0) > 0 else ""
+            cells_html += f'<div class="vg-cell"><div class="vg-planet">{GRID_PLANETS_EN.get(c["num"], "")}</div><div class="vg-num">{val}</div></div>'
+        y_names = ", ".join(y["name"].split("(")[0].strip() for y in p.get("yogas", [])[:3]) or BL["none"]
+        is_anc = (p["name"] == strongest["name"])
+        anc_cls = "pcard pcard-anchor" if is_anc else "pcard"
+        partner_cards_html += f"""
+        <div class="{anc_cls}">
+            <div class="pcard-hdr">
+                <div>
+                    <div class="pname">{p["name"]} {'★' if is_anc else ''}</div>
+                    <div class="sub-muted">{BL["born"]} {p["dob"]}</div>
+                </div>
+                <div class="p-score">{p["strength_score"]}/100</div>
+            </div>
+            <div class="pcard-body">
+                <div class="vg-grid vg-sm">{cells_html}</div>
+                <div class="pstats">
+                    <div><strong>{BL["basic"]} {p["bn"]}</strong> · {p["bn_planet"].split("(")[0].strip()}</div>
+                    <div><strong>{BL["destiny"]} {p["dn"]}</strong> · {p["dn_planet"].split("(")[0].strip()}</div>
+                    <div style="margin-top:4px;"><strong>{BL["dasha"]}</strong> MD {p["active_md"]} / AD {p["active_ad"]}</div>
+                    <div><strong>{BL["role"]}</strong> {p["role"]}</div>
+                </div>
+            </div>
+            <div class="pyogas"><strong>{BL["yogas"]}</strong> {y_names}</div>
+        </div>"""
+
+    pairwise_html = ""
+    if b.get("pairwise_matrix"):
+        prows = ""
+        for pm in b["pairwise_matrix"]:
+            st = pm["status"]
+            st_lbl = BL["pair_strong"] if st == "strong" else (BL["pair_mod"] if st == "moderate" else BL["pair_fric"])
+            st_cls = "pill-pos" if st == "strong" else ("pill-warn" if st == "moderate" else "pill-neg")
+            prows += f"""
+            <div class="pair-row">
+                <div class="pair-top">
+                    <strong>{pm["partner_a"]} × {pm["partner_b"]}</strong>
+                    <span><span class="vpill {st_cls}">{st_lbl}</span> <strong>{pm["score"]}/100</strong></span>
+                </div>
+                <div class="sub-muted">{pm["note"]}</div>
+            </div>"""
+        pairwise_html = f'<div class="sheet"><h2 class="sec-h2">{BL["pairwise_title"]}</h2>{prows}</div>'
+
+    biz_cards = ""
+    for rb in b["recommended_businesses"]:
+        biz_cards += f"""
+        <div class="biz-card">
+            <div class="biz-top"><strong>Number {rb["number"]} · {rb["planet"]} — {rb["title"]}</strong></div>
+            <div class="biz-sec">{rb["sectors"]}</div>
+            <div class="sub-muted">{BL["backed_by"]} {", ".join(rb["supporters"])}</div>
+        </div>"""
+
+    firm_eval_html = ""
+    if b.get("business_name_eval"):
+        fe = b["business_name_eval"]
+        is_ausp = fe.get("is_auspicious", False)
+        f_pill = f'<span class="vpill {"pill-pos" if is_ausp else "pill-warn"}">{BL["ausp"] if is_ausp else BL["adj"]}</span>'
+        firm_eval_html = f'<div style="margin-top:6px;"><strong>{BL["firm_audit"]}</strong> {fe["name"]} (Compound {fe["compound"]} → Namank {fe["namank"]}) {f_pill}</div>'
+
+    outlook_rows = ""
+    for yr_row in b["joint_5yr"]:
+        run_tag = f' <span class="run-pill">{BL["running"]}</span>' if yr_row.get("is_active") else ""
+        p_cells = "".join(
+            f'<div><strong>{pr["name"]}:</strong> MD {pr["md"]}/AD {pr["ad"]} · {pr["money"]} · {pr["disputes"]}</div>'
+            for pr in yr_row["partners"]
+        )
+        outlook_rows += f'<tr><td class="bold-col">{yr_row["year"]}{run_tag}</td><td>{p_cells}</td></tr>'
+
+    from vedic_translations import NUMBER_REMEDIES, PLANET_INFO
+    rem_cards = ""
+    for num in b.get("key_biz_missing", []):
+        rem = NUMBER_REMEDIES.get(num, {})
+        pinfo = PLANET_INFO.get(num, {}).get(lang, PLANET_INFO.get(num, {}).get("en", {}))
+        rem_cards += f"""
+        <div class="rem-card">
+            <div class="rem-title">Number {num} · {pinfo.get("planet", num)}</div>
+            <div class="rem-p"><strong>Mantra:</strong> {rem.get("mantra", {}).get(lang, rem.get("mantra", {}).get("en", ""))}</div>
+            <div class="rem-p"><strong>Seva/Donation:</strong> {rem.get("seva", {}).get(lang, "")} · {rem.get("donation", {}).get(lang, "")}</div>
+        </div>"""
+    if not rem_cards:
+        rem_cards = f'<div class="sub-muted">{BL["rem_none"]}</div>'
+
+    crystals_list = SUPPORTING_CRYSTALS_BY_LANG.get(lang, SUPPORTING_CRYSTALS)
+    crystals_html = "".join(f'<div class="crystal-row"><strong>{cn}</strong> — <span class="sub-muted">{cd}</span></div>' for cn, cd in crystals_list)
+
+    return f"""<!DOCTYPE html>
+<html lang="{lang}">
+<head>
+<meta charset="UTF-8">
+<title>{consultant["name"]} - {BL["report_sub"]} - {partner_names_title}</title>
+<link href="{google_fonts}" rel="stylesheet">
+<style>
+@page {{ size: A4 portrait; margin: 12mm; }}
+* {{ box-sizing: border-box; }}
+body {{ margin: 0; font-family: {body_font}; color: #1e293b; font-size: 11px; line-height: 1.45; -webkit-print-color-adjust: exact; print-color-adjust: exact; }}
+.sheet {{ border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px 18px; margin-bottom: 12px; background: #fff; }}
+.page-break {{ page-break-before: always; break-before: page; }}
+.mm-head {{ display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 2px solid; border-image: linear-gradient(90deg, #7c3aed, #f59e0b) 1; margin-bottom: 10px; }}
+.mm-brand {{ font-family: {serif_font}; font-size: 15px; font-weight: 700; color: #0f172a; }}
+.mm-rtitle {{ text-align: right; font-size: 10px; color: #64748b; }}
+.mm-rtitle strong {{ display: block; font-family: {serif_font}; font-size: 13px; color: #0f172a; }}
+.kicker {{ font-family: {serif_font}; font-style: italic; font-size: 10.5px; color: #7c3aed; }}
+.couple-name {{ font-family: {serif_font}; font-size: 19px; font-weight: 700; color: #0f172a; margin: 2px 0; }}
+.sub-muted {{ font-size: 10px; color: #64748b; }}
+.score-banner {{ background: {banner_bg}; color: #fff; border-radius: 12px; padding: 13px 16px; display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }}
+.score-big {{ font-family: {serif_font}; font-size: 26px; font-weight: 700; line-height: 1; }}
+.score-big span {{ font-size: 13px; opacity: 0.85; }}
+.score-verdict {{ font-family: {serif_font}; font-size: 15px; font-weight: 700; }}
+.anchor-box {{ background: #fefce8; border: 1.5px solid #eab308; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }}
+.anchor-title {{ font-family: {serif_font}; font-size: 13px; font-weight: 700; color: #854d0e; margin-bottom: 4px; }}
+.sec-h2 {{ font-family: {serif_font}; font-size: 15px; font-weight: 700; color: #0f172a; margin: 0 0 10px 0; }}
+.pgrid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }}
+.pcard {{ border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; background: #fff; break-inside: avoid; }}
+.pcard-anchor {{ border: 1.5px solid #eab308; background: #fffdf5; }}
+.pcard-hdr {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }}
+.pname {{ font-family: {serif_font}; font-size: 14px; font-weight: 700; color: #0f172a; }}
+.p-score {{ font-weight: 700; font-size: 12px; color: #15803d; background: #dcfce7; padding: 2px 8px; border-radius: 999px; }}
+.pcard-body {{ display: flex; gap: 10px; align-items: flex-start; }}
+.vg-grid.vg-sm {{ display: grid; grid-template-columns: repeat(3, 40px); grid-template-rows: repeat(3, 32px); border: 1.5px solid #c9a96e; background: #fff; flex-shrink: 0; }}
+.vg-cell {{ border: 0.5px solid #e2d1a8; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 1px; }}
+.vg-planet {{ font-size: 6px; color: #b48a3e; }}
+.vg-num {{ font-family: {serif_font}; font-size: 10px; font-weight: 700; color: #0f172a; }}
+.pstats {{ font-size: 9.5px; color: #1e293b; flex: 1; }}
+.pyogas {{ font-size: 9px; color: #475569; margin-top: 6px; }}
+.pair-row {{ border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 10px; margin-bottom: 6px; break-inside: avoid; }}
+.pair-top {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }}
+.vpill {{ display: inline-block; font-size: 8.5px; font-weight: 700; padding: 1px 6px; border-radius: 999px; }}
+.pill-pos {{ background: #dcfce7; color: #166534; }}
+.pill-warn {{ background: #fef3c7; color: #92400e; }}
+.pill-neg {{ background: #fee2e2; color: #991b1b; }}
+.biz-card {{ border: 1px solid #ede9fe; background: #f8f7ff; border-radius: 8px; padding: 9px 12px; margin-bottom: 7px; break-inside: avoid; }}
+.biz-top {{ font-size: 11.5px; color: #0f172a; margin-bottom: 2px; }}
+.biz-sec {{ font-size: 10px; color: #334155; margin-bottom: 2px; }}
+.clean-tbl {{ width: 100%; border-collapse: collapse; font-size: 9.5px; }}
+.clean-tbl td, .clean-tbl th {{ padding: 6px; border-bottom: 1px solid #f1f5f9; text-align: left; vertical-align: top; }}
+.bold-col {{ font-weight: 700; color: #0f172a; width: 90px; }}
+.run-pill {{ background: #7c3aed; color: #fff; font-size: 8px; padding: 1px 5px; border-radius: 999px; }}
+.rem-card {{ border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 10px; margin-bottom: 6px; break-inside: avoid; }}
+.rem-title {{ font-weight: 700; font-size: 11px; margin-bottom: 3px; }}
+.rem-p {{ font-size: 9.5px; color: #334155; }}
+.crystal-row {{ background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 5px 10px; margin-bottom: 4px; font-size: 9.5px; }}
+.mm-foot {{ text-align: center; font-size: 9px; color: #64748b; margin-top: 10px; }}
+</style>
+</head>
+<body>
+<div class="sheet">
+    <div class="mm-head">
+        <div>
+            <div class="mm-brand">{BL["prepared_by"]} {consultant["name"]}</div>
+            <div class="sub-muted">{consultant.get("title", "")} · {consultant["phone"]} · {consultant["email"]}</div>
+        </div>
+        <div class="mm-rtitle">{BL["kicker_top"]} <strong>{BL["report_sub"]}</strong></div>
+    </div>
+    <div class="kicker">{BL["prepared_for"]}</div>
+    <div class="couple-name">{partner_names_title}</div>
+    <div class="sub-muted">{BL["partners_lbl"]} {b["partner_count"]}</div>
+</div>
+
+<div class="score-banner">
+    <div class="score-big">{b["overall_score"]}<span>/100</span></div>
+    <div>
+        <div class="score-verdict">{b["verdict"]}</div>
+    </div>
+</div>
+
+<div class="anchor-box">
+    <div class="anchor-title">★ {BL["anchor_title"]}: {strongest["name"]} ({strongest["score"]}/100)</div>
+    <div style="font-size:10.3px;color:#422006;">{strongest["reason"]}</div>
+</div>
+
+<div class="sheet">
+    <h2 class="sec-h2">{BL["team_cov"]}</h2>
+    <div><strong>{BL["covered"]}</strong> {", ".join(str(x) for x in b["team_covered"]) or BL["none"]}</div>
+    <div style="margin-top:4px;"><strong>{BL["missing"]}</strong> {", ".join(str(x) for x in b["team_missing"]) or BL["none"]}</div>
+</div>
+
+<div class="page-break"></div>
+<div class="sheet">
+    <h2 class="sec-h2">{BL["partner_cards"]}</h2>
+    <div class="pgrid">{partner_cards_html}</div>
+</div>
+
+{pairwise_html}
+
+<div class="page-break"></div>
+<div class="sheet">
+    <h2 class="sec-h2">{BL["biz_title"]}</h2>
+    <p class="sub-muted" style="margin-bottom:8px;">{BL["biz_sub"]}</p>
+    {biz_cards}
+    <h3 style="margin:12px 0 6px 0;font-size:13px;">{BL["namank_title"]}</h3>
+    <div><strong>{BL["best_namank"]}</strong> {", ".join(str(x) for x in b["best_biz_namank"])}</div>
+    {firm_eval_html}
+</div>
+
+<div class="page-break"></div>
+<div class="sheet">
+    <h2 class="sec-h2">{BL["outlook_title"]}</h2>
+    <table class="clean-tbl"><tbody>{outlook_rows}</tbody></table>
+    <h3 style="margin:12px 0 6px 0;font-size:13px;">{BL["rem_title"]}</h3>
+    {rem_cards}
+    <h3 style="margin:12px 0 6px 0;font-size:13px;">{BL["crystals"]}</h3>
+    {crystals_html}
+    <div class="mm-foot">
+        <div>{BL["disclaimer"]} {b["generated_on"]}.</div>
+        <div style="margin-top:3px;">{BL["prepared_by"]} {consultant["name"]} · {consultant["phone"]} · {consultant["email"]}</div>
+    </div>
+</div>
+</body>
+</html>"""
+
+
 def render_pdf_from_html(html_content_or_path: str, output_pdf_path: str) -> bool:
     """
     Renders an HTML string or file to PDF using headless Chrome/Edge.

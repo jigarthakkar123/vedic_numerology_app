@@ -30,10 +30,11 @@ if BASE_DIR not in sys.path:
 from vedic_engine import (
     compile_full_numerology_profile,
     compile_matchmaking_report,
+    compile_business_partnership_report,
     analyze_and_suggest_names,
     analyze_and_suggest_mobile,
 )
-from vedic_pdf_builder import build_report_html, build_matchmaking_html, render_pdf_from_html
+from vedic_pdf_builder import build_report_html, build_matchmaking_html, build_business_partnership_html, render_pdf_from_html
 from vedic_mailer import send_report_email
 import vedic_db
 
@@ -737,6 +738,55 @@ async def generate_matchmaking_pdf(body: dict = Body(...)):
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         pdf_filename = f"MatchMaking_{b_clean}_{g_clean}_{timestamp}.pdf"
         html_filename = f"MatchMaking_{b_clean}_{g_clean}_{timestamp}.html"
+        pdf_path = os.path.join(REPORTS_DIR, pdf_filename)
+        html_path = os.path.join(REPORTS_DIR, html_filename)
+        with open(html_path, "w", encoding="utf-8") as f:
+            f.write(html_content)
+        ok = render_pdf_from_html(html_content, pdf_path)
+        if not ok:
+            raise HTTPException(status_code=500, detail="PDF rendering failed.")
+        return {
+            "success": True,
+            "filename": pdf_filename,
+            "download_url": f"/api/download/{pdf_filename}",
+            "html_url": f"/api/view-html/{html_filename}",
+            "data": result,
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/business-partnership/analyze")
+async def analyze_business_partnership(body: dict = Body(...)):
+    """Computes Business Partnership Match Making for 1, 2, 3, or N partners."""
+    try:
+        partners = body.get("partners") or []
+        business_name = (body.get("business_name") or "").strip()
+        lang = (body.get("lang") or "en").strip()
+        result = compile_business_partnership_report(partners, business_name=business_name, lang=lang)
+        return {"success": True, "data": result}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/business-partnership/generate-pdf")
+async def generate_business_partnership_pdf(body: dict = Body(...)):
+    """Generates a printable Business Partnership PDF & HTML report in EN, HI, or GU."""
+    try:
+        partners = body.get("partners") or []
+        business_name = (body.get("business_name") or "").strip()
+        lang = (body.get("lang") or "en").strip()
+        result = compile_business_partnership_report(partners, business_name=business_name, lang=lang)
+        html_content = build_business_partnership_html(result)
+        lead_clean = clean_filename(result["strongest_partner"]["name"])
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        lang_tag = lang.upper()
+        pdf_filename = f"BusinessPartnership_{lead_clean}_{result['partner_count']}P_{lang_tag}_{timestamp}.pdf"
+        html_filename = f"BusinessPartnership_{lead_clean}_{result['partner_count']}P_{lang_tag}_{timestamp}.html"
         pdf_path = os.path.join(REPORTS_DIR, pdf_filename)
         html_path = os.path.join(REPORTS_DIR, html_filename)
         with open(html_path, "w", encoding="utf-8") as f:

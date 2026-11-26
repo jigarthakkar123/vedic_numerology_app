@@ -2538,3 +2538,294 @@ def analyze_and_suggest_mobile(mobile: str, dob_str: str, compare_mobile: str = 
         "compare": candidate,
         "comparison_summary": comparison_summary,
     }
+
+
+def compile_business_partnership_report(
+    partners: List[Dict[str, str]],
+    business_name: str = "",
+    lang: str = "en",
+) -> Dict[str, Any]:
+    """
+    Computes a comprehensive Business Partnership Numerology Report for 1, 2, 3, or N partners
+    using their dates of birth, Lo Shu/Vedic Grids, Yogas, and active Dashas.
+    Supports English ('en'), Hindi ('hi'), and Gujarati ('gu').
+    """
+    from vedic_translations import PLANET_INFO
+
+    lang = lang if lang in ("en", "hi", "gu") else "en"
+    clean_partners = [
+        {"name": (p.get("name") or "").strip(), "dob": (p.get("dob") or "").strip()}
+        for p in (partners or [])
+        if (p.get("name") or "").strip() and (p.get("dob") or "").strip()
+    ]
+    if not clean_partners:
+        raise ValueError("At least one partner with Name and Date of Birth is required.")
+
+    ROLE_BY_BN = {
+        1: {"en": "Visionary Leader & Managing Director", "hi": "मुख्य नेतृत्वकर्ता एवं प्रबंध निदेशक (MD)", "gu": "મુખ્ય નેતૃત્વકર્તા અને મેનેજિંગ ડિરેક્ટર (MD)"},
+        2: {"en": "Client Relations, Diplomacy & Creative Lead", "hi": "क्लाइंट संबंध, कूटनीति एवं रचनात्मक प्रमुख", "gu": "ક્લાયન્ટ સંબંધો, કૂટનીતિ અને ક્રિએટિવ વડા"},
+        3: {"en": "Strategy, Expansion, Advisory & PR", "hi": "रणनीति, विस्तार, सलाह एवं जनसंपर्क (PR)", "gu": "વ્યૂહરચના, વિસ્તરણ, સલાહ અને જનસંપર્ક (PR)"},
+        4: {"en": "Systems, Tech Architecture & Execution", "hi": "सिस्टम, तकनीकी संरचना एवं निष्पादन", "gu": "સિસ્ટમ, ટેકનિકલ માળખું અને અમલીકરણ"},
+        5: {"en": "Commerce, Sales, Marketing & Cash Flow", "hi": "व्यापार, बिक्री, मार्केटिंग एवं नकदी प्रवाह", "gu": "વ્યાપાર, વેચાણ, માર્કેટિંગ અને રોકડ પ્રવાહ"},
+        6: {"en": "Brand Luxury, Finance & Customer Experience", "hi": "ब्रांड प्रतिष्ठा, वित्त एवं ग्राहक अनुभव", "gu": "બ્રાન્ડ પ્રતિષ્ઠા, નાણાં અને ગ્રાહક અનુભવ"},
+        7: {"en": "Research, Analytics, Risk & Quality Audit", "hi": "शोध, विश्लेषण, जोखिम एवं गुणवत्ता जांच", "gu": "સંશોધન, વિશ્લેષણ, જોખમ અને ગુણવત્તા તપાસ"},
+        8: {"en": "Operations, Legal Compliance & Asset Scaling", "hi": "संचालन, कानूनी अनुपालन एवं संपत्ति निर्माण", "gu": "સંચાલન, કાયદાકીય વ્યવસ્થા અને મિલકત નિર્માણ"},
+        9: {"en": "High-Energy Execution, Territory & Crisis Lead", "hi": "ऊर्जावान निष्पादन, विस्तार एवं संकट प्रबंधन", "gu": "ઊર્જાવાન અમલીકરણ, વિસ્તરણ અને કટોકટી વ્યવસ્થાપન"},
+    }
+
+    BUSINESS_SECTORS_BY_NUM = {
+        1: {
+            "en": ("Leadership, Government & Venture Building", "Startups, Corporate Consulting, Administration, Solar/Energy, Executive Coaching"),
+            "hi": ("नेतृत्व, प्रशासन एवं नया उद्यम", "स्टार्टअप, कॉर्पोरेट कंसल्टिंग, प्रशासन, ऊर्जा/सोलर, लीडरशिप कोचिंग"),
+            "gu": ("નેતૃત્વ, વહીવટ અને નવું સાહસ", "સ્ટાર્ટઅપ, કોર્પોરેટ કન્સલ્ટિંગ, વહીવટ, ઊર્જા/સોલાર, લીડરશિપ કોચિંગ"),
+        },
+        2: {
+            "en": ("Hospitality, Wellness & Creative Media", "Healthcare, Dairy/Beverages, Hospitality, Counseling, Content & Design"),
+            "hi": ("आतिथ्य, स्वास्थ्य एवं रचनात्मक मीडिया", "स्वास्थ्य सेवा, डेयरी/पेय, हॉस्पिटैलिटी, परामर्श, कंटेंट एवं डिजाइन"),
+            "gu": ("હોસ્પિટાલિટી, આરોગ્ય અને ક્રિએટિવ મીડિયા", "આરોગ્ય સેવા, ડેરી/પીણાં, હોસ્પિટાલિટી, કાઉન્સેલિંગ, કન્ટેન્ટ અને ડિઝાઇન"),
+        },
+        3: {
+            "en": ("Education, Advisory & Knowledge Brands", "EdTech, Training Academies, Legal/Tax/Financial Advisory, Publishing, Spiritual & Astro Consulting"),
+            "hi": ("शिक्षा, सलाहकार एवं ज्ञान आधारित व्यवसाय", "एडटेक, प्रशिक्षण संस्थान, कानूनी/कर/वित्तीय सलाह, प्रकाशन, आध्यात्मिक परामर्श"),
+            "gu": ("શિક્ષણ, સલાહકાર અને જ્ઞાન આધારિત વ્યવસાય", "એડટેક, તાલીમ સંસ્થા, કાનૂની/ટેક્સ/નાણાકીય સલાહ, પ્રકાશન, જ્યોતિષ/વાસ્તુ સલાહ"),
+        },
+        4: {
+            "en": ("Technology, Engineering & Logistics", "Software/IT, AI & Automation, Civil/Structural Engineering, Supply Chain, Manufacturing"),
+            "hi": ("तकनीक, इंजीनियरिंग एवं लॉजिस्टिक्स", "सॉफ्टवेयर/IT, AI, सिविल/मैकेनिकल इंजीनियरिंग, सप्लाई चेन, विनिर्माण"),
+            "gu": ("ટેકનોલોજી, એન્જિનિયરિંગ અને લોજિસ્ટિક્સ", "સોફ્ટવેર/IT, AI, સિવિલ/મિકેનિકલ એન્જિનિયરિંગ, સપ્લાય ચેઇન, ઉત્પાદન"),
+        },
+        5: {
+            "en": ("Trading, E-Commerce, Marketing & FinTech", "Import-Export, Wholesale/Retail Trading, Digital Marketing, E-Commerce, Stock/Broking"),
+            "hi": ("व्यापार, ई-कॉमर्स, मार्केटिंग एवं फिनटेक", "आयात-निर्यात, थोक/खुदरा व्यापार, डिजिटल मार्केटिंग, ई-कॉमर्स, शेयर/ब्रोकिंग"),
+            "gu": ("વ્યાપાર, ઈ-કોમર્સ, માર્કેટિંગ અને ફિનટેક", "આયાત-નિકાસ, હોલસેલ/રિટેલ વ્યાપાર, ડિજિટલ માર્કેટિંગ, ઈ-કોમર્સ, શેર/બ્રોકિંગ"),
+        },
+        6: {
+            "en": ("Luxury, Fashion, Real Estate Interiors & FMCG", "Jewellery/Apparel, Interior Design, Boutiques, Fine Dining, Cosmetics & Lifestyle Brands"),
+            "hi": ("लक्जरी, फैशन, इंटीरियर एवं लाइफस्टाइल", "ज्वैलरी/फैशन, इंटीरियर डिजाइन, बुटीक, रेस्टोरेंट, कॉस्मेटिक्स एवं लाइफस्टाइल ब्रांड"),
+            "gu": ("લક્ઝરી, ફેશન, ઇન્ટિરિયર અને લાઇફસ્ટાઇલ", "જ્વેલરી/ફેશન, ઇન્ટિરિયર ડિઝાઇન, બુટિક, રેસ્ટોરન્ટ, કોસ્મેટિક્સ અને લાઇફસ્ટાઇલ બ્રાન્ડ"),
+        },
+        7: {
+            "en": ("Research, Data Science, Niche Consulting & Healing", "AI/ML R&D, Cybersecurity, Deep Analytics, Holistic Healing, Spiritual Retreats"),
+            "hi": ("शोध, डेटा एनालिटिक्स एवं विशिष्ट परामर्श", "AI/ML शोध, साइबर सुरक्षा, डेटा विश्लेषण, हीलिंग, आध्यात्मिक केंद्र"),
+            "gu": ("સંશોધન, ડેટા એનાલિટિક્સ અને વિશિષ્ટ સલાહ", "AI/ML સંશોધન, સાયબર સુરક્ષા, ડેટા વિશ્લેષણ, હીલિંગ, આધ્યાत्मिक કેન્દ્ર"),
+        },
+        8: {
+            "en": ("Real Estate, Infrastructure, Finance & Heavy Industry", "Property Development, Banking/NBFC, CA/Tax Firm, Construction, Metals & Energy"),
+            "hi": ("रियल एस्टेट, इन्फ्रास्ट्रक्चर, वित्त एवं उद्योग", "प्रॉपर्टी डेवलपमेंट, बैंकिंग/फाइनेंस, CA/टैक्स फर्म, निर्माण, मेटल एवं ऊर्जा"),
+            "gu": ("રિયલ એસ્ટેટ, ઇન્ફ્રાસ્ટ્રક્ચર, ફાઇનાન્સ અને ઉદ્યોગ", "પ્રોપર્ટી ડેવલપમેન્ટ, બેંકિંગ/ફાઇનાન્સ, CA/ટેક્સ ફર્મ, બાંધકામ, મેટલ અને ઊર્જા"),
+        },
+        9: {
+            "en": ("Defence, Medical/Pharma, Sports & Land", "Healthcare/Clinics, Pharma, Gym/Sports, Security Services, Agricultural/Land Ventures"),
+            "hi": ("चिकित्सा, फार्मा, खेल एवं भूमि संबंधित व्यवसाय", "हेल्थकेयर/क्लिनिक, फार्मा, फिटनेस/स्पोर्ट्स, सुरक्षा सेवा, भूमि/कृषि उद्यम"),
+            "gu": ("તબીબી, ફાર્મા, રમતગમત અને જમીન સંબંધિત વ્યવસાય", "હેલ્થકેર/ક્લિનિક, ફાર્મા, ફિટનેસ/સ્પોર્ટ્સ, સુરક્ષા સેવા, જમીન/ખેતી સાહસ"),
+        },
+    }
+
+    partner_profiles = []
+    collective_pos_counts = {n: 0 for n in range(1, 10)}
+    collective_raw_counts = {n: 0 for n in range(1, 10)}
+
+    for p in clean_partners:
+        prof = compile_full_numerology_profile(p["name"], p["dob"], gender="Male", lang=lang)
+        bn = prof["core_numbers"]["bn"]
+        dn = prof["core_numbers"]["dn"]
+        pos_nums = sorted({v["number"] for v in prof["natal_vibrations"] if v["type"] == "+"})
+        neg_nums = sorted({v["number"] for v in prof["natal_vibrations"] if v["type"] == "-"})
+        for n in pos_nums:
+            collective_pos_counts[n] += 1
+        for n, cnt in prof["natal_grid"]["counts"].items():
+            collective_raw_counts[int(n)] += cnt
+
+        fwd_grids = calculate_nine_year_grids_and_outlook(
+            prof["natal_grid"]["counts"], bn, dn, prof["dasha"]["lifetime_ad"], lang, forward_only=True
+        )
+        # Score partner's business strength (Grid + Yogas + Active Dasha + Next 3 yrs)
+        biz_nums_hit = sum(1 for n in (1, 3, 5, 6, 8) if n in pos_nums)
+        ausp_yogas = [y for y in prof["yogas"] if y.get("category") == "auspicious"]
+        next3 = fwd_grids[:3]
+        up_yrs = sum(1 for g in next3 if g["money"][0] == "up")
+        fric_yrs = sum(1 for g in next3 if g["disputes"][0] == "friction")
+
+        strength_score = min(100, 35 + biz_nums_hit * 8 + min(3, len(ausp_yogas)) * 7 + up_yrs * 6 - fric_yrs * 5)
+        strength_score = max(30, strength_score)
+
+        act_md = prof["dasha"]["active_md"]
+        act_ad = prof["dasha"]["active_ad"]
+        partner_profiles.append({
+            "name": p["name"],
+            "dob": prof["client"]["dob"].replace("/", "-"),
+            "bn": bn,
+            "dn": dn,
+            "bn_planet": prof["core_numbers"]["bn_planet"],
+            "dn_planet": prof["core_numbers"]["dn_planet"],
+            "grid": prof["natal_grid"],
+            "pos_nums": pos_nums,
+            "neg_nums": neg_nums,
+            "yogas": prof["yogas"],
+            "auspicious_yogas_count": len(ausp_yogas),
+            "active_md": act_md.get("number"),
+            "active_ad": act_ad.get("ad_number"),
+            "active_md_range": f"{act_md.get('start_str', '').replace('/', '-')} – {act_md.get('end_str', '').replace('/', '-')}",
+            "active_ad_range": f"{act_ad.get('start_str', '').replace('/', '-')} – {act_ad.get('end_str', '').replace('/', '-')}",
+            "role": ROLE_BY_BN.get(bn, ROLE_BY_BN[1])[lang],
+            "strength_score": strength_score,
+            "up_money_years_next3": up_yrs,
+            "forward_grids": fwd_grids[:5],
+            "full_profile": prof,
+        })
+
+    # Identify Strongest Anchor Partner
+    sorted_by_strength = sorted(partner_profiles, key=lambda x: (x["strength_score"], x["auspicious_yogas_count"], x["up_money_years_next3"]), reverse=True)
+    strongest = sorted_by_strength[0]
+    strongest_reason = {
+        "en": f"{strongest['name']} holds the strongest business chart ({strongest['strength_score']}/100) with Basic {strongest['bn']}, Destiny {strongest['dn']}, {strongest['auspicious_yogas_count']} auspicious Yoga(s), and {strongest['up_money_years_next3']}/3 upcoming high-growth financial years (Active MD {strongest['active_md']} / AD {strongest['active_ad']}). Recommended as Managing Partner / Primary Signing Authority & Firm Registration Anchor.",
+        "hi": f"{strongest['name']} का व्यापारिक चार्ट सबसे मजबूत ({strongest['strength_score']}/100) है — मूलांक {strongest['bn']}, भाग्यांक {strongest['dn']}, {strongest['auspicious_yogas_count']} शुभ योग और आगामी 3 में से {strongest['up_money_years_next3']} उत्तम धन वर्ष (सक्रिय MD {strongest['active_md']} / AD {strongest['active_ad']})। इन्हें मुख्य प्रबंध साझेदार (Managing Partner) और फर्म पंजीकरण/हस्ताक्षर प्रमुख बनाना सर्वाधिक लाभदायक रहेगा।",
+        "gu": f"{strongest['name']} નો વ્યાપારિક ચાર્ટ સૌથી મજબૂત ({strongest['strength_score']}/100) છે — મૂળાંક {strongest['bn']}, ભાગ્યાંક {strongest['dn']}, {strongest['auspicious_yogas_count']} શુભ યોગ અને આગામી 3 માંથી {strongest['up_money_years_next3']} ઉત્તમ ધન વર્ષ (સક્રિય MD {strongest['active_md']} / AD {strongest['active_ad']}). તેમને મુખ્ય મેનેજિંગ પાર્ટનર અને ફર્મ રજીસ્ટ્રેશન/સહીના મુખ્ય અધિકારી રાખવા શ્રેષ્ઠ રહેશે.",
+    }[lang]
+
+    # Pairwise Compatibility Matrix (when 2+ partners)
+    pairwise_matrix = []
+    if len(partner_profiles) >= 2:
+        for i in range(len(partner_profiles)):
+            for j in range(i + 1, len(partner_profiles)):
+                p1, p2 = partner_profiles[i], partner_profiles[j]
+                # Bhagyank alignment (50% weight) + Moolank harmony (30%) + Complementary grid coverage (20%)
+                en_dn1 = [int(x.strip()) for x in PLANET_INFO[p1["dn"]]["en"]["enemy_nums"].split(",") if x.strip().isdigit()]
+                fr_dn1 = [int(x.strip()) for x in PLANET_INFO[p1["dn"]]["en"]["friendly_nums"].split(",") if x.strip().isdigit()]
+                dn_pts = 50 if (p2["dn"] in fr_dn1 or p1["dn"] == p2["dn"]) else (15 if p2["dn"] in en_dn1 else 35)
+
+                en_bn1 = [int(x.strip()) for x in PLANET_INFO[p1["bn"]]["en"]["enemy_nums"].split(",") if x.strip().isdigit()]
+                fr_bn1 = [int(x.strip()) for x in PLANET_INFO[p1["bn"]]["en"]["friendly_nums"].split(",") if x.strip().isdigit()]
+                bn_pts = 30 if (p2["bn"] in fr_bn1 or p1["bn"] == p2["bn"]) else (10 if p2["bn"] in en_bn1 else 22)
+
+                comp_set = set(p1["pos_nums"]) ^ set(p2["pos_nums"])
+                comp_pts = min(20, len(comp_set) * 5)
+                pair_score = dn_pts + bn_pts + comp_pts
+                pair_status = "strong" if pair_score >= 75 else ("moderate" if pair_score >= 55 else "friction")
+                pair_note = {
+                    "en": f"Destiny {p1['dn']} & {p2['dn']} alignment ({dn_pts}/50), Basic {p1['bn']} & {p2['bn']} rhythm ({bn_pts}/30), Complementary grid boost ({comp_pts}/20).",
+                    "hi": f"भाग्यांक {p1['dn']} व {p2['dn']} तालमेल ({dn_pts}/50), मूलांक {p1['bn']} व {p2['bn']} सामंजस्य ({bn_pts}/30), पूरक ग्रिड सहयोग ({comp_pts}/20)।",
+                    "gu": f"ભાગ્યાંક {p1['dn']} અને {p2['dn']} તાલમેલ ({dn_pts}/50), મૂળાંક {p1['bn']} અને {p2['bn']} સુમેળ ({bn_pts}/30), પૂરક ગ્રીડ સહયોગ ({comp_pts}/20).",
+                }[lang]
+                pairwise_matrix.append({
+                    "partner_a": p1["name"],
+                    "partner_b": p2["name"],
+                    "score": pair_score,
+                    "status": pair_status,
+                    "note": pair_note,
+                })
+
+    # Collective Team Strengths & Missing Business Blind Spots
+    team_covered = sorted([n for n, cnt in collective_pos_counts.items() if cnt > 0])
+    team_missing = sorted([n for n, cnt in collective_pos_counts.items() if cnt == 0])
+    key_biz_missing = [n for n in (1, 3, 5, 6, 8) if n in team_missing]
+
+    # Overall Partnership Synergy Score
+    avg_strength = sum(p["strength_score"] for p in partner_profiles) / len(partner_profiles)
+    avg_pair = (sum(x["score"] for x in pairwise_matrix) / len(pairwise_matrix)) if pairwise_matrix else avg_strength
+    coverage_bonus = len(team_covered) * 2.5
+    overall_score = int(round(min(98, max(35, avg_pair * 0.55 + avg_strength * 0.35 + coverage_bonus * 0.4))))
+
+    if overall_score >= 75:
+        verdict = {"en": "High-Synergy Power Partnership", "hi": "अत्यंत शुभ एवं शक्तिशाली साझेदारी", "gu": "અત્યંત શુભ અને શક્તિશાળી ભાગીદારી"}[lang]
+        verdict_level = "good"
+    elif overall_score >= 55:
+        verdict = {"en": "Workable Partnership with Clear Role Split", "hi": "स्पष्ट कार्य विभाजन के साथ अनुकूल साझेदारी", "gu": "સ્પષ્ટ કાર્ય વિભાજન સાથે અનુકૂળ ભાગીદારી"}[lang]
+        verdict_level = "moderate"
+    else:
+        verdict = {"en": "High-Friction Partnership — Needs Remedies & Structure", "hi": "चुनौतीपूर्ण साझेदारी — उपाय एवं अनुबंध आवश्यक", "gu": "પડકારજનક ભાગીદારી — ઉપાયો અને સ્પષ્ટ કરાર જરૂરી"}[lang]
+        verdict_level = "low"
+
+    # Common Recommended Businesses Together (prioritize team's strongest positive numbers + Anchor's BN/DN)
+    ranked_biz_nums = sorted(
+        range(1, 10),
+        key=lambda n: (collective_pos_counts[n] * 3 + (2 if n in (strongest["bn"], strongest["dn"]) else 0) + (1 if n in (5, 6, 3, 8, 1) else 0)),
+        reverse=True,
+    )
+    recommended_businesses = []
+    for n in ranked_biz_nums[:4]:
+        title, sectors = BUSINESS_SECTORS_BY_NUM[n][lang]
+        supporters = [p["name"] for p in partner_profiles if (n in p["pos_nums"] or p["bn"] == n or p["dn"] == n)]
+        recommended_businesses.append({
+            "number": n,
+            "planet": PLANET_INFO[n][lang]["planet"],
+            "title": title,
+            "sectors": sectors,
+            "supporters": supporters or [strongest["name"]],
+        })
+
+    # Best Business Name Numbers (friendly to Anchor + majority of partners)
+    anchor_friendly = [int(x.strip()) for x in PLANET_INFO[strongest["bn"]]["en"]["friendly_nums"].split(",") if x.strip().isdigit()]
+    best_biz_namank = [n for n in (5, 6, 3, 1, 9) if n in anchor_friendly or n == strongest["bn"]][:3]
+    if not best_biz_namank:
+        best_biz_namank = [5, 6, 3]
+
+    biz_name_eval = None
+    if (business_name or "").strip():
+        chaldean_map = {"A":1,"I":1,"J":1,"Q":1,"Y":1,"B":2,"K":2,"R":2,"C":3,"G":3,"L":3,"S":3,"D":4,"M":4,"T":4,"E":5,"H":5,"N":5,"X":5,"U":6,"V":6,"W":6,"O":7,"Z":7,"F":8,"P":8}
+        tot = sum(chaldean_map.get(ch, 0) for ch in business_name.upper() if ch.isalpha())
+        red = tot
+        while red > 9:
+            red = sum(int(d) for d in str(red))
+        biz_name_eval = {
+            "name": business_name.strip(),
+            "compound": tot,
+            "namank": red,
+            "is_auspicious": red in best_biz_namank or red in (1, 3, 5, 6),
+        }
+
+    # 5-Year Joint Forward Business Outlook (from Anchor partner's 5-year window + all partners' MD/AD)
+    joint_5yr = []
+    for idx in range(min(5, len(strongest["forward_grids"]))):
+        yr = strongest["forward_grids"][idx]["year"]
+        row_partners = []
+        up_cnt = 0
+        fric_cnt = 0
+        for p in partner_profiles:
+            fg = p["forward_grids"][idx] if idx < len(p["forward_grids"]) else None
+            if fg:
+                if fg["money"][0] == "up":
+                    up_cnt += 1
+                if fg["disputes"][0] == "friction":
+                    fric_cnt += 1
+                row_partners.append({
+                    "name": p["name"],
+                    "md": fg["md"],
+                    "ad": fg["ad"],
+                    "money": fg["money"][1],
+                    "disputes": fg["disputes"][1],
+                })
+        joint_5yr.append({
+            "year": yr,
+            "is_active": strongest["forward_grids"][idx].get("is_active", False),
+            "partners": row_partners,
+            "up_count": up_cnt,
+            "friction_count": fric_cnt,
+        })
+
+    return {
+        "lang": lang,
+        "consultant": partner_profiles[0]["full_profile"]["consultant"],
+        "partner_count": len(partner_profiles),
+        "partners": partner_profiles,
+        "strongest_partner": {
+            "name": strongest["name"],
+            "score": strongest["strength_score"],
+            "bn": strongest["bn"],
+            "dn": strongest["dn"],
+            "role": strongest["role"],
+            "reason": strongest_reason,
+        },
+        "overall_score": overall_score,
+        "verdict": verdict,
+        "verdict_level": verdict_level,
+        "pairwise_matrix": pairwise_matrix,
+        "team_covered": team_covered,
+        "team_missing": team_missing,
+        "key_biz_missing": key_biz_missing,
+        "recommended_businesses": recommended_businesses,
+        "best_biz_namank": best_biz_namank,
+        "business_name_eval": biz_name_eval,
+        "joint_5yr": joint_5yr,
+        "generated_on": date.today().strftime("%d %B %Y"),
+    }

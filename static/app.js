@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initEventListeners();
     initCrmListeners();
     initMatchMakingListeners();
+    initBusinessPartnershipListeners();
     initNameAndMobileListeners();
     updateWeekdayDisplay();
     fetchAnalysis(false);
@@ -1206,4 +1207,192 @@ function renderMobileResults(d) {
            </div>`;
 
     el.innerHTML = renderMobCard(d.current, 'Existing Mobile Number') + compareHtml;
+}
+
+// ==========================================
+// Business Partnership Match Making (1, 2, 3, N Partners)
+// ==========================================
+function initBusinessPartnershipListeners() {
+    const listEl = document.getElementById('biz-partners-list');
+    if (listEl && listEl.children.length === 0) {
+        addBizPartnerRow('Partner 1', '1990-05-14');
+        addBizPartnerRow('Partner 2', '1992-11-23');
+    }
+    const addBtn = document.getElementById('btn-biz-add-partner');
+    if (addBtn) {
+        addBtn.addEventListener('click', () => addBizPartnerRow('', ''));
+    }
+    const analyzeBtn = document.getElementById('btn-biz-analyze');
+    if (analyzeBtn) {
+        analyzeBtn.addEventListener('click', runBusinessPartnershipAnalysis);
+    }
+    document.querySelectorAll('.biz-pdf-btn').forEach(btn => {
+        btn.addEventListener('click', () => downloadBusinessPartnershipPdf(btn.dataset.lang || 'en'));
+    });
+    const langSel = document.getElementById('biz-lang');
+    if (langSel) {
+        langSel.addEventListener('change', () => {
+            if (document.getElementById('biz-results-container')?.innerHTML) {
+                runBusinessPartnershipAnalysis();
+            }
+        });
+    }
+}
+
+function addBizPartnerRow(defaultName = '', defaultDob = '') {
+    const listEl = document.getElementById('biz-partners-list');
+    if (!listEl) return;
+    const idx = listEl.children.length + 1;
+    const row = document.createElement('div');
+    row.className = 'biz-partner-row';
+    row.style.cssText = 'display:grid; grid-template-columns: 1fr 180px auto; gap:8px; align-items:center; margin-bottom:8px;';
+    row.innerHTML = `
+        <input type="text" class="biz-p-name" placeholder="Partner ${idx} Full Name" value="${escapeHtml(defaultName)}" style="width:100%;">
+        <input type="date" class="biz-p-dob" value="${escapeHtml(defaultDob)}" style="width:100%;">
+        <button type="button" class="btn-secondary biz-p-remove" style="padding:8px 10px; font-size:12px;" title="Remove Partner">✕</button>
+    `;
+    row.querySelector('.biz-p-remove').addEventListener('click', () => {
+        if (listEl.children.length > 1) {
+            row.remove();
+        } else {
+            showStatus('At least 1 partner is required.', 'error');
+        }
+    });
+    listEl.appendChild(row);
+}
+
+function getBusinessPartnershipPayload(overrideLang) {
+    const rows = document.querySelectorAll('#biz-partners-list .biz-partner-row');
+    const partners = [];
+    rows.forEach(r => {
+        const name = (r.querySelector('.biz-p-name')?.value || '').trim();
+        const dob = r.querySelector('.biz-p-dob')?.value || '';
+        if (name && dob) partners.push({ name, dob });
+    });
+    return {
+        partners,
+        business_name: (document.getElementById('biz-firm-name')?.value || '').trim(),
+        lang: overrideLang || document.getElementById('biz-lang')?.value || 'en'
+    };
+}
+
+async function runBusinessPartnershipAnalysis() {
+    const payload = getBusinessPartnershipPayload();
+    if (!payload.partners.length) {
+        showStatus('Please enter at least 1 partner Name and Date of Birth.', 'error');
+        return;
+    }
+    showStatus('Analyzing Business Partnership Grids, Yogas & Dashas...', 'loading');
+    try {
+        const res = await fetch('/api/business-partnership/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) {
+            throw new Error(json.detail || 'Business partnership analysis failed');
+        }
+        renderBusinessPartnershipResults(json.data);
+        hideStatus();
+    } catch (err) {
+        showStatus(`Business Partnership error: ${err.message}`, 'error');
+    }
+}
+
+async function downloadBusinessPartnershipPdf(langOverride) {
+    const payload = getBusinessPartnershipPayload(langOverride);
+    if (!payload.partners.length) {
+        showStatus('Please enter at least 1 partner Name and Date of Birth first.', 'error');
+        return;
+    }
+    const langLabel = payload.lang === 'hi' ? 'Hindi' : (payload.lang === 'gu' ? 'Gujarati' : 'English');
+    showStatus(`Generating ${langLabel} Business Partnership PDF...`, 'loading');
+    try {
+        const res = await fetch('/api/business-partnership/generate-pdf', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) {
+            throw new Error(json.detail || 'PDF generation failed');
+        }
+        if (json.data) renderBusinessPartnershipResults(json.data);
+        showStatus(`Business Partnership PDF ready! <a href="${json.download_url}" target="_blank" style="color:#fbbf24;text-decoration:underline;margin-left:8px;">Download PDF ↗</a>`, 'success');
+        window.open(json.download_url, '_blank');
+    } catch (err) {
+        showStatus(`Business Partnership PDF error: ${err.message}`, 'error');
+    }
+}
+
+function renderBusinessPartnershipResults(b) {
+    const el = document.getElementById('biz-results-container');
+    if (!el) return;
+
+    const bannerGrad = b.verdict_level === 'good'
+        ? 'linear-gradient(90deg, #059669, #10b981)'
+        : (b.verdict_level === 'moderate' ? 'linear-gradient(90deg, #d97706, #f59e0b)' : 'linear-gradient(90deg, #991b1b, #db2777)');
+
+    const st = b.strongest_partner;
+    const partnerCards = (b.partners || []).map(p => {
+        const isAnc = p.name === st.name;
+        const cellsHtml = (p.grid?.cells || []).map(c =>
+            `<div style="border:1px solid rgba(212,175,55,0.35);padding:3px;text-align:center;min-height:28px;">
+                <div style="font-size:8.5px;color:#94a3b8;">${c.num}</div>
+                <div style="font-size:12px;font-weight:700;color:#fde68a;">${c.count > 0 ? c.str : ''}</div>
+            </div>`
+        ).join('');
+        return `
+        <div style="background:rgba(255,255,255,0.03);border:1px solid ${isAnc ? '#eab308' : 'rgba(255,255,255,0.1)'};border-radius:10px;padding:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <strong style="font-size:14px;">${escapeHtml(p.name)} ${isAnc ? '★ Anchor' : ''}</strong>
+                <span style="font-size:12px;font-weight:700;color:#4ade80;">${p.strength_score}/100</span>
+            </div>
+            <div style="font-size:11.5px;color:var(--text-secondary);margin-bottom:8px;">DOB: ${p.dob} · BN <strong>${p.bn}</strong> · DN <strong>${p.dn}</strong> · MD ${p.active_md}/AD ${p.active_ad}</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);border:1px solid rgba(212,175,55,0.5);margin-bottom:8px;">${cellsHtml}</div>
+            <div style="font-size:12px;"><strong>Role:</strong> ${escapeHtml(p.role)}</div>
+        </div>`;
+    }).join('');
+
+    const pairHtml = (b.pairwise_matrix || []).length ? `
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;margin-top:12px;">
+            <h4 style="margin:0 0 8px 0;color:#fde68a;">Pairwise Partner Compatibility</h4>
+            ${b.pairwise_matrix.map(pm => `
+                <div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:12px;">
+                    <div style="display:flex;justify-content:space-between;">
+                        <strong>${escapeHtml(pm.partner_a)} × ${escapeHtml(pm.partner_b)}</strong>
+                        <strong style="color:${pm.score >= 75 ? '#4ade80' : (pm.score >= 55 ? '#fbbf24' : '#f87171')};">${pm.score}/100</strong>
+                    </div>
+                    <div style="color:var(--text-secondary);font-size:11.5px;">${escapeHtml(pm.note)}</div>
+                </div>
+            `).join('')}
+        </div>` : '';
+
+    const bizListHtml = (b.recommended_businesses || []).map(rb => `
+        <div style="background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.28);border-radius:8px;padding:10px 12px;margin-bottom:8px;">
+            <strong style="font-size:13px;color:#ddd6fe;">Number ${rb.number} (${escapeHtml(rb.planet)}) — ${escapeHtml(rb.title)}</strong>
+            <div style="font-size:12px;margin-top:2px;">${escapeHtml(rb.sectors)}</div>
+            <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">Supported by: ${rb.supporters.map(escapeHtml).join(', ')}</div>
+        </div>`).join('');
+
+    el.innerHTML = `
+        <div style="background:${bannerGrad};color:#fff;border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:18px;margin-bottom:12px;">
+            <div style="font-size:32px;font-weight:800;line-height:1;">${b.overall_score}<span style="font-size:15px;opacity:0.85;">/100</span></div>
+            <div>
+                <div style="font-size:17px;font-weight:700;">${escapeHtml(b.verdict)}</div>
+                <div style="font-size:12px;opacity:0.9;">Partners Evaluated: ${b.partner_count} · Best Business Namank: ${b.best_biz_namank.join(', ')}</div>
+            </div>
+        </div>
+        <div style="background:rgba(234,179,8,0.12);border:1px solid rgba(234,179,8,0.45);border-radius:10px;padding:12px 14px;margin-bottom:14px;">
+            <strong style="color:#fde68a;font-size:13.5px;">★ Strongest Anchor Partner: ${escapeHtml(st.name)} (${st.score}/100)</strong>
+            <div style="font-size:12px;color:#fef3c7;margin-top:4px;">${escapeHtml(st.reason)}</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:12px;">${partnerCards}</div>
+        ${pairHtml}
+        <div style="margin-top:14px;">
+            <h4 style="margin:0 0 8px 0;color:#fde68a;">Common Recommended Businesses Together</h4>
+            ${bizListHtml}
+        </div>
+    `;
 }
