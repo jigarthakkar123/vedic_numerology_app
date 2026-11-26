@@ -1841,25 +1841,26 @@ def compile_matchmaking_report(
     # Pillar 4: Root & Destiny Matching (Basic 10 pts + Destiny 10 pts)
     grp_a = {1, 2, 4, 7}
     grp_b = {3, 6, 9}
-    def _group_compat(n1: int, n2: int) -> tuple:
-        if (n1 in grp_a and n2 in grp_a) or (n1 in grp_b and n2 in grp_b) or n1 == n2:
-            return 10, "are in the same compatibility group (10/10)"
+    def _pair_compat(n1: int, n2: int) -> tuple:
+        if n1 == 8 and n2 in (8, 4) or (n2 == 8 and n1 in (8, 4)):
+            return 0, "should avoid pairing (Rule 3: 8 with 8/4) (0/10)"
+        if n1 == 5 and n2 == 5:
+            return 10, "both are 5 — ideal match (10/10)"
         if 5 in (n1, n2):
-            return 5, "are neutral/bridging (5/10)"
-        if (n1 in grp_a and n2 in grp_b) or (n1 in grp_b and n2 in grp_a):
-            # Check PLANET_INFO neutral vs enemy
-            from vedic_translations import PLANET_INFO
-            en_str = PLANET_INFO[n1]["en"]["enemy_nums"]
-            enemies = [int(x.strip()) for x in en_str.split(",") if x.strip().isdigit()]
-            if n2 in enemies:
-                return 0, "are in opposing groups (0/10)"
-            return 5, "are neutral (5/10)"
+            return 5, "5 with non-5 — neutral/moderate (5/10)"
+        if (n1 in grp_a and n2 in grp_a) or (n1 in grp_b and n2 in grp_b):
+            return 10, "are in the same compatibility group (10/10)"
+        from vedic_translations import PLANET_INFO
+        en_str = PLANET_INFO[n1]["en"]["enemy_nums"]
+        enemies = [int(x.strip()) for x in en_str.split(",") if x.strip().isdigit()]
+        if n2 in enemies:
+            return 0, "are in opposing groups (0/10)"
         return 5, "are neutral (5/10)"
 
     b_bn, g_bn = boy_profile["core_numbers"]["bn"], girl_profile["core_numbers"]["bn"]
     b_dn, g_dn = boy_profile["core_numbers"]["dn"], girl_profile["core_numbers"]["dn"]
-    bn_pts, bn_desc = _group_compat(b_bn, g_bn)
-    dn_pts, dn_desc = _group_compat(b_dn, g_dn)
+    bn_pts, bn_desc = _pair_compat(b_bn, g_bn)
+    dn_pts, dn_desc = _pair_compat(b_dn, g_dn)
     p4_score = bn_pts + dn_pts
 
     # Pillar 5: Marriage-saving numbers (+3, +7, +8 in either grid)
@@ -1868,18 +1869,128 @@ def compile_matchmaking_report(
 
     total_score = p1_score + p2_score + p3_score + p4_score + p5_score
 
-    if total_score >= 75:
-        verdict = "Recommended"
-        verdict_sub = "75 or above — strong overall alignment across the five pillars."
+    if total_score > 70:
+        verdict = "Good matching"
+        verdict_sub = "Above 70% — strong overall alignment across the five pillars."
         verdict_level = "good"
     elif total_score >= 50:
-        verdict = "Moderate match"
-        verdict_sub = "50–74 — workable alignment with conscious communication and remedies."
+        verdict = "Suggestive matching"
+        verdict_sub = "50–70% — workable alignment with conscious communication and remedies."
         verdict_level = "moderate"
     else:
         verdict = "Not suggested"
-        verdict_sub = "Below 50 — the course does not suggest this match."
+        verdict_sub = "Below 50% — the course does not suggest this match."
         verdict_level = "low"
+
+    # Evaluate Rules 1-8 from NumberWise Course Notes
+    rules_checks = []
+    # Rules 1-4: Basic Number Group Matching
+    if b_bn == 5 or g_bn == 5:
+        r14_ok = (b_bn == 5 and g_bn == 5)
+        rules_checks.append({
+            "rule": "Rule 4",
+            "status": "ok" if r14_ok else "warn",
+            "title": "Basic Number 5 should marry only Basic 5",
+            "detail": f"Boy is {b_bn} and Girl is {g_bn}."
+        })
+    elif b_bn == 8 or g_bn == 8:
+        r3_bad = (b_bn == 8 and g_bn in (8, 4)) or (g_bn == 8 and b_bn in (8, 4))
+        rules_checks.append({
+            "rule": "Rule 3",
+            "status": "reject" if r3_bad else "ok",
+            "title": "Basic Number 8 should avoid marrying 8 or 4",
+            "detail": f"Boy is {b_bn} and Girl is {g_bn}."
+        })
+    else:
+        same_grp = ((b_bn in grp_a and g_bn in grp_a) or (b_bn in grp_b and g_bn in grp_b))
+        rules_checks.append({
+            "rule": "Rules 1 · 2",
+            "status": "ok" if same_grp else "warn",
+            "title": "Basic Numbers 1,2,4,7 marry within group; 3,6,9 within group",
+            "detail": f"Here {b_bn} and {g_bn} are {'in the same group' if same_grp else 'in different groups'}."
+        })
+
+    # Rule 5: Reject grids with D5 or D1 if 2, 6, 8 are ALL missing
+    def _check_r5(prof, label):
+        cnts = prof["natal_grid"]["counts"]
+        d = prof["core_numbers"]["dn"]
+        if d in (1, 5) and all(cnts.get(x, 0) == 0 for x in (2, 6, 8)):
+            return f"{label} (D{d} with 2, 6, 8 all missing)"
+        return None
+    r5_hits = [x for x in [_check_r5(boy_profile, boy_name), _check_r5(girl_profile, girl_name)] if x]
+    rules_checks.append({
+        "rule": "Rule 5",
+        "status": "reject" if r5_hits else "ok",
+        "title": "Reject grids with D5 or D1 if 2, 6, and 8 are missing",
+        "detail": ", ".join(r5_hits) if r5_hits else "Neither grid has D1/D5 missing 2, 6, and 8."
+    })
+
+    # Rule 6: Reject grids containing 222, 333, 444, or 777
+    def _check_r6(prof, label):
+        cnts = prof["natal_grid"]["counts"]
+        bad = [str(n) * cnts[n] for n in (2, 3, 4, 7) if cnts.get(n, 0) >= 3]
+        return f"{label} ({', '.join(bad)})" if bad else None
+    r6_hits = [x for x in [_check_r6(boy_profile, boy_name), _check_r6(girl_profile, girl_name)] if x]
+    rules_checks.append({
+        "rule": "Rule 6",
+        "status": "reject" if r6_hits else "ok",
+        "title": "Reject grids containing extreme repetitions (222, 333, 444, 777)",
+        "detail": ", ".join(r6_hits) if r6_hits else "No extreme repetitions (222/333/444/777) in either grid."
+    })
+
+    # Rule 7: D4 or D8 should marry after age 30
+    r7_hits = []
+    if b_dn in (4, 8) and boy_age < 30:
+        r7_hits.append(f"{boy_name} (D{b_dn}, age {boy_age} < 30)")
+    if g_dn in (4, 8) and girl_age < 30:
+        r7_hits.append(f"{girl_name} (D{g_dn}, age {girl_age} < 30)")
+    rules_checks.append({
+        "rule": "Rule 7",
+        "status": "warn" if r7_hits else "ok",
+        "title": "People with D4 or D8 should marry after age 30",
+        "detail": ", ".join(r7_hits) if r7_hits else "Age/Destiny maturity check passed."
+    })
+
+    # Rule 8: D6 requires strong support (positive 2, 4, 8, or 9)
+    r8_hits = []
+    if b_dn == 6 and not any(n in boy_pos for n in (2, 4, 8, 9)):
+        r8_hits.append(f"{boy_name} (D6 lacks positive 2/4/8/9 support)")
+    if g_dn == 6 and not any(n in girl_pos for n in (2, 4, 8, 9)):
+        r8_hits.append(f"{girl_name} (D6 lacks positive 2/4/8/9 support)")
+    rules_checks.append({
+        "rule": "Rule 8",
+        "status": "warn" if r8_hits else "ok",
+        "title": "D6 requires strong support in the grid (good 2, 4, 8, or 9)",
+        "detail": ", ".join(r8_hits) if r8_hits else "D6 support check passed."
+    })
+
+    # 5-Year Litigation Check (Page 47 & 87: 9&4, 5&4, or -6 active for 2+ years in next 5 years)
+    def _litigation_5yr(prof, label):
+        ad_rows = prof["dasha"].get("lifetime_ad", [])
+        act_idx = next((i for i, r in enumerate(ad_rows) if r.get("is_active")), 0)
+        next5 = ad_rows[act_idx : act_idx + 5]
+        nat_counts = prof["natal_grid"]["counts"]
+        lit_years = []
+        for yr_row in next5:
+            comb = dict(nat_counts)
+            comb[yr_row["md"]] = comb.get(yr_row["md"], 0) + 1
+            comb[yr_row["ad"]] = comb.get(yr_row["ad"], 0) + 1
+            v = evaluate_vibrations(comb, prof["core_numbers"]["dn"])
+            has_94 = comb.get(9, 0) > 0 and comb.get(4, 0) > 0
+            has_54 = comb.get(5, 0) > 0 and comb.get(4, 0) > 0
+            has_neg6 = v.get(6) == "-"
+            if has_94 or has_54 or has_neg6:
+                lit_years.append(str(yr_row["year"]))
+        return {
+            "name": label,
+            "risk": len(lit_years) >= 2,
+            "years": lit_years,
+        }
+
+    litigation_check = {
+        "boy": _litigation_5yr(boy_profile, boy_name),
+        "girl": _litigation_5yr(girl_profile, girl_name),
+    }
 
     same_bn_group = ((b_bn in grp_a and g_bn in grp_a) or (b_bn in grp_b and g_bn in grp_b))
 
@@ -1959,6 +2070,8 @@ def compile_matchmaking_report(
         "verdict_sub": verdict_sub,
         "verdict_level": verdict_level,
         "pillars": pillars,
+        "rules_checks": rules_checks,
+        "litigation_check": litigation_check,
         "same_bn_group": same_bn_group,
         "weak_summary": weak_str,
         "generated_on": today.strftime("%d %B %Y"),

@@ -1676,17 +1676,37 @@ def build_matchmaking_html(m: Dict[str, Any]) -> str:
             <div class="pillar-desc">{p["desc"]}</div>
         </div>"""
 
-    rule_icon = "✓" if m["same_bn_group"] else "!"
-    rule_cls = "rule-ok" if m["same_bn_group"] else "rule-warn"
-    rule_txt = (
-        f"Here {boy['bn']} and {girl['bn']} are in the same group."
-        if m["same_bn_group"]
-        else f"Here {boy['bn']} and {girl['bn']} belong to different compatibility groups."
+    rules_html = ""
+    for rc in m.get("rules_checks", []):
+        st = rc["status"]
+        icon = "✓" if st == "ok" else ("✕" if st == "reject" else "!")
+        cls = "rule-ok" if st == "ok" else ("rule-reject" if st == "reject" else "rule-warn")
+        rules_html += f"""
+        <div class="rule-row" style="margin-bottom:7px;">
+            <div class="rule-badge {cls}">{icon}</div>
+            <div>
+                <strong>{rc["rule"]} · {rc["title"]}</strong><br>
+                <span class="sub-muted">{rc["detail"]}</span>
+            </div>
+        </div>"""
+
+    lit = m.get("litigation_check", {})
+    b_lit = lit.get("boy", {})
+    g_lit = lit.get("girl", {})
+    lit_items = []
+    if b_lit.get("risk"):
+        lit_items.append(f"{b_lit['name']}: litigation trigger active in {', '.join(b_lit['years'])}")
+    if g_lit.get("risk"):
+        lit_items.append(f"{g_lit['name']}: litigation trigger active in {', '.join(g_lit['years'])}")
+    lit_html = (
+        f'<div class="lit-warn"><strong>5-Year Litigation Check:</strong> {"; ".join(lit_items)}. Consult carefully before proceeding.</div>'
+        if lit_items else
+        '<div class="lit-ok"><strong>5-Year Litigation Check:</strong> No 2+ year litigation activation detected in the next 5 years for either grid.</div>'
     )
 
     rec_bg = "#f0fdf4" if level == "good" else ("#fffbeb" if level == "moderate" else "#fef2f2")
     rec_bd = "#bbf7d0" if level == "good" else ("#fde68a" if level == "moderate" else "#fecaca")
-    rec_title = "Recommended" if level == "good" else ("Proceed with guidance" if level == "moderate" else "Not recommended")
+    rec_title = "Good matching" if level == "good" else ("Suggestive matching" if level == "moderate" else "Not recommended")
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -1740,6 +1760,9 @@ body {{ margin: 0; font-family: 'Source Sans 3', sans-serif; color: #1e293b; fon
 .rule-badge {{ width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; color: #fff; flex-shrink: 0; }}
 .rule-ok {{ background: #15803d; }}
 .rule-warn {{ background: #d97706; }}
+.rule-reject {{ background: #b91c1c; }}
+.lit-ok {{ background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 8px 12px; font-size: 10px; color: #166534; margin-top: 8px; }}
+.lit-warn {{ background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 8px 12px; font-size: 10px; color: #991b1b; margin-top: 8px; }}
 .rec-box {{ background: {rec_bg}; border: 1px solid {rec_bd}; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }}
 .rec-title {{ font-family: 'Libre Baskerville', serif; font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }}
 .next-box {{ border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; }}
@@ -1782,14 +1805,9 @@ body {{ margin: 0; font-family: 'Source Sans 3', sans-serif; color: #1e293b; fon
 </div>
 
 <div class="sheet">
-    <h2 class="sec-h2">Basic matching rules</h2>
-    <div class="rule-row">
-        <div class="rule-badge {rule_cls}">{rule_icon}</div>
-        <div>
-            <strong>Rule 1 · 2</strong><br>
-            <span class="sub-muted">Basic Numbers 1, 2, 4, 7 marry within their group; 3, 6, 9 within theirs. {rule_txt}</span>
-        </div>
-    </div>
+    <h2 class="sec-h2">Basic matching &amp; rejection rules</h2>
+    {rules_html}
+    {lit_html}
 </div>
 
 <div class="sheet">

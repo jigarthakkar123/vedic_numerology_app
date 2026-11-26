@@ -975,6 +975,27 @@ function renderMatchMakingResults(m) {
         </div>`;
     }).join('');
 
+    const rulesHtml = (m.rules_checks || []).map(rc => {
+        const bg = rc.status === 'ok' ? '#15803d' : (rc.status === 'reject' ? '#b91c1c' : '#d97706');
+        const icon = rc.status === 'ok' ? '✓' : (rc.status === 'reject' ? '✕' : '!');
+        return `
+        <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;">
+            <span style="width:20px;height:20px;border-radius:50%;background:${bg};color:#fff;font-weight:700;font-size:11px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">${icon}</span>
+            <div style="font-size:12px;">
+                <strong>${rc.rule} · ${rc.title}</strong>
+                <div style="color:var(--text-secondary);font-size:11.5px;">${rc.detail}</div>
+            </div>
+        </div>`;
+    }).join('');
+
+    const lit = m.litigation_check || {};
+    const litWarns = [];
+    if (lit.boy && lit.boy.risk) litWarns.push(`${lit.boy.name}: ${lit.boy.years.join(', ')}`);
+    if (lit.girl && lit.girl.risk) litWarns.push(`${lit.girl.name}: ${lit.girl.years.join(', ')}`);
+    const litHtml = litWarns.length
+        ? `<div style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);border-radius:8px;padding:8px 12px;font-size:12px;color:#fca5a5;margin-top:8px;"><strong>⚠️ 5-Year Litigation Check:</strong> Litigation triggers active for 2+ years (${litWarns.join(' | ')}).</div>`
+        : `<div style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);border-radius:8px;padding:8px 12px;font-size:12px;color:#86efac;margin-top:8px;"><strong>✓ 5-Year Litigation Check:</strong> No 2+ year litigation activation detected in the next 5 years.</div>`;
+
     container.innerHTML = `
         <div style="background:${bannerGrad};color:#fff;border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:18px;margin-bottom:14px;">
             <div style="font-size:32px;font-weight:800;line-height:1;">${m.total_score}<span style="font-size:15px;opacity:0.85;">/100</span></div>
@@ -992,9 +1013,9 @@ function renderMatchMakingResults(m) {
             ${pillarsHtml}
         </div>
         <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;">
-            <strong>Basic Matching Rule 1 · 2:</strong>
-            <span style="font-size:12px;color:var(--text-secondary);">Basic Numbers 1, 2, 4, 7 marry within their group; 3, 6, 9 within theirs.
-            ${m.same_bn_group ? `Here ${m.boy.bn} and ${m.girl.bn} are in the same group.` : `Here ${m.boy.bn} and ${m.girl.bn} are in different groups.`}</span>
+            <h4 style="margin:0 0 8px 0;color:#fbbf24;">Basic Matching &amp; Rejection Rules</h4>
+            ${rulesHtml}
+            ${litHtml}
         </div>
     `;
 }
