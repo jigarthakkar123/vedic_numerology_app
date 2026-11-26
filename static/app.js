@@ -985,11 +985,20 @@ function renderMatchMakingResults(m) {
     }).join('');
 
     const renderRuleCard = (rc) => {
-        const bg = rc.status === 'ok' ? '#15803d' : (rc.status === 'reject' ? '#b91c1c' : '#d97706');
-        const boxBorder = rc.status === 'ok' ? 'rgba(34,197,94,0.35)' : (rc.status === 'reject' ? 'rgba(239,68,68,0.45)' : 'rgba(245,158,11,0.4)');
-        const boxBg = rc.status === 'ok' ? 'rgba(34,197,94,0.08)' : (rc.status === 'reject' ? 'rgba(239,68,68,0.10)' : 'rgba(245,158,11,0.08)');
+        const isRejSec = rc.category === 'rejection';
+        const bg = isRejSec
+            ? (rc.status === 'reject' ? '#b91c1c' : '#991b1b')
+            : (rc.status === 'ok' ? '#15803d' : (rc.status === 'reject' ? '#b91c1c' : '#d97706'));
+        const boxBorder = isRejSec
+            ? (rc.status === 'reject' ? 'rgba(239,68,68,0.65)' : 'rgba(239,68,68,0.35)')
+            : (rc.status === 'ok' ? 'rgba(34,197,94,0.35)' : (rc.status === 'reject' ? 'rgba(239,68,68,0.45)' : 'rgba(245,158,11,0.4)'));
+        const boxBg = isRejSec
+            ? (rc.status === 'reject' ? 'rgba(239,68,68,0.16)' : 'rgba(239,68,68,0.06)')
+            : (rc.status === 'ok' ? 'rgba(34,197,94,0.08)' : (rc.status === 'reject' ? 'rgba(239,68,68,0.10)' : 'rgba(245,158,11,0.08)'));
         const icon = rc.status === 'ok' ? '✓' : (rc.status === 'reject' ? '✕' : '!');
-        const stLbl = rc.status === 'ok' ? 'Matched' : (rc.status === 'reject' ? 'Rejected' : 'Caution');
+        const stLbl = isRejSec
+            ? (rc.status === 'reject' ? 'Rejected' : 'Clear (No Rejection)')
+            : (rc.status === 'ok' ? 'Matched' : (rc.status === 'reject' ? 'Rejected' : 'Caution'));
         return `
         <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;padding:10px 12px;border-radius:8px;border:1px solid ${boxBorder};background:${boxBg};">
             <span style="width:20px;height:20px;border-radius:50%;background:${bg};color:#fff;font-weight:700;font-size:11px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">${icon}</span>

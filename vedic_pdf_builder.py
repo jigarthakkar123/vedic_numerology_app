@@ -2094,10 +2094,15 @@ def build_matchmaking_html(m: Dict[str, Any]) -> str:
     for rc in m.get("rules_checks", []):
         st = rc["status"]
         cat = rc.get("category", "matching")
+        is_rej = (cat == "rejection")
         icon = "✓" if st == "ok" else ("✕" if st == "reject" else "!")
-        cls = "rule-ok" if st == "ok" else ("rule-reject" if st == "reject" else "rule-warn")
-        box_cls = "rule-box-ok" if st == "ok" else ("rule-box-reject" if st == "reject" else "rule-box-warn")
-        st_lbl = ML["status_ok"] if st == "ok" else (ML["status_reject"] if st == "reject" else ML["status_warn"])
+        cls = ("rule-reject" if is_rej else ("rule-ok" if st == "ok" else ("rule-reject" if st == "reject" else "rule-warn")))
+        box_cls = ("rule-box-reject" if is_rej else ("rule-box-ok" if st == "ok" else ("rule-box-reject" if st == "reject" else "rule-box-warn")))
+        st_lbl = (
+            (ML["status_reject"] if st == "reject" else ML["status_ok"])
+            if is_rej else
+            (ML["status_ok"] if st == "ok" else (ML["status_reject"] if st == "reject" else ML["status_warn"]))
+        )
         why_html = f'<div style="font-size:9.6px;color:#334155;margin-top:4px;"><strong>{ML["why_important_lbl"]}</strong> {rc["why_important"]}</div>' if rc.get("why_important") else ""
         eff_html = f'<div style="font-size:9.6px;color:#0f172a;margin-top:2px;"><strong>{ML["couple_effect_lbl"]}</strong> {rc["couple_effect"]}</div>' if rc.get("couple_effect") else ""
         card_html = f"""

@@ -1973,9 +1973,9 @@ def compile_matchmaking_report(
                 "gu": "મૂળાંક 1,2,4,7 પોતાના જૂથમાં અને 3,6,9 પોતાના જૂથમાં લગ્ન કરે",
             }[lang],
             "detail": {
-                "en": f"Here Basic {b_bn} and Basic {g_bn} are {'in the same compatibility group' if same_grp else 'in different groups'}.",
-                "hi": f"यहाँ मूलांक {b_bn} और {g_bn} {'एक ही अनुकूल समूह में हैं' if same_grp else 'अलग-अलग समूहों में हैं'}।",
-                "gu": f"અહીં મૂળાંક {b_bn} અને {g_bn} {'એક જ અનુકૂળ જૂથમાં છે' if same_grp else 'અલગ-અલગ જૂથમાં છે'}.",
+                "en": f"{boy_name} (Basic {b_bn}) & {girl_name} (Basic {g_bn}) are {'in the same compatibility group' if same_grp else 'in different groups'}.",
+                "hi": f"{boy_name} (मूलांक {b_bn}) और {girl_name} (मूलांक {g_bn}) {'एक ही अनुकूल समूह में हैं' if same_grp else 'अलग-अलग समूहों में हैं'}।",
+                "gu": f"{boy_name} (મૂળાંક {b_bn}) અને {girl_name} (મૂળાંક {g_bn}) {'એક જ અનુકૂળ જૂથમાં છે' if same_grp else 'અલગ-અલગ જૂથમાં છે'}.",
             }[lang],
             "why_important": {
                 "en": "Basic Number governs daily temperament, habits, and lifestyle rhythm. Same-group numbers share natural understanding.",
@@ -1993,10 +1993,28 @@ def compile_matchmaking_report(
     def _check_r5(prof, label):
         cnts = prof["natal_grid"]["counts"]
         d = prof["core_numbers"]["dn"]
-        if d in (1, 5) and all(cnts.get(x, 0) == 0 for x in (2, 6, 8)):
-            return f"{label} (D{d} with 2, 6, 8 all missing)"
-        return None
-    r5_hits = [x for x in [_check_r5(boy_profile, boy_name), _check_r5(girl_profile, girl_name)] if x]
+        present_268 = [str(x) for x in (2, 6, 8) if cnts.get(x, 0) > 0]
+        if d in (1, 5) and not present_268:
+            return True, {
+                "en": f"{label} (D{d}): REJECTED — 2, 6, and 8 are all missing",
+                "hi": f"{label} (D{d}): अस्वीकृत — 2, 6, 8 तीनों अनुपस्थित",
+                "gu": f"{label} (D{d}): અસ્વીકૃત — 2, 6, 8 ત્રણેય ખૂટે છે",
+            }[lang]
+        if d in (1, 5):
+            return False, {
+                "en": f"{label} (D{d}): Safe (has {', '.join(present_268)})",
+                "hi": f"{label} (D{d}): सुरक्षित ({', '.join(present_268)} मौजूद)",
+                "gu": f"{label} (D{d}): સુરક્ષિત ({', '.join(present_268)} હાજર)",
+            }[lang]
+        return False, {
+            "en": f"{label} (D{d}): Not D1/D5",
+            "hi": f"{label} (D{d}): D1/D5 नहीं",
+            "gu": f"{label} (D{d}): D1/D5 નથી",
+        }[lang]
+
+    b_r5_bad, b_r5_txt = _check_r5(boy_profile, boy_name)
+    g_r5_bad, g_r5_txt = _check_r5(girl_profile, girl_name)
+    r5_hits = b_r5_bad or g_r5_bad
     rules_checks.append({
         "rule": "Rule 5",
         "category": "rejection",
@@ -2006,11 +2024,7 @@ def compile_matchmaking_report(
             "hi": "भाग्यांक 5 या 1 में यदि 2, 6, और 8 अनुपस्थित हों तो कुंडली अस्वीकार करें",
             "gu": "ભાગ્યાંક 5 કે 1 માં જો 2, 6 અને 8 ત્રણેય ખૂટતા હોય તો કુંડળી અસ્વીકાર્ય",
         }[lang],
-        "detail": (", ".join(r5_hits) if r5_hits else {
-            "en": "Neither grid has D1/D5 missing all of 2, 6, and 8.",
-            "hi": "किसी भी कुंडली में D1/D5 के साथ 2, 6, 8 तीनों अनुपस्थित नहीं हैं।",
-            "gu": "બંનેમાંથી કોઈ કુંડળીમાં D1/D5 સાથે 2, 6, 8 ત્રણેય ખૂટતા નથી.",
-        }[lang]),
+        "detail": f"{b_r5_txt} · {g_r5_txt}",
         "why_important": {
             "en": "Numbers 2 (Moon/emotion), 6 (Venus/marriage), and 8 (Saturn/stability) anchor family life for high-drive D1/D5 natives.",
             "hi": "अंक 2 (भावना), 6 (दांपत्य/शुक्र) और 8 (स्थिरता/शनि) भाग्यांक 1 व 5 वाले जातकों के गृहस्थ जीवन को संभालते हैं।",
@@ -2027,8 +2041,21 @@ def compile_matchmaking_report(
     def _check_r6(prof, label):
         cnts = prof["natal_grid"]["counts"]
         bad = [str(n) * cnts[n] for n in (2, 3, 4, 7) if cnts.get(n, 0) >= 3]
-        return f"{label} ({', '.join(bad)})" if bad else None
-    r6_hits = [x for x in [_check_r6(boy_profile, boy_name), _check_r6(girl_profile, girl_name)] if x]
+        if bad:
+            return True, {
+                "en": f"{label}: REJECTED ({', '.join(bad)})",
+                "hi": f"{label}: अस्वीकृत ({', '.join(bad)})",
+                "gu": f"{label}: અસ્વીકૃત ({', '.join(bad)})",
+            }[lang]
+        return False, {
+            "en": f"{label}: Safe (no 3x 2/3/4/7)",
+            "hi": f"{label}: सुरक्षित (कोई 3x पुनरावृत्ति नहीं)",
+            "gu": f"{label}: સુરક્ષિત (કોઈ 3x પુનરાવર્તન નથી)",
+        }[lang]
+
+    b_r6_bad, b_r6_txt = _check_r6(boy_profile, boy_name)
+    g_r6_bad, g_r6_txt = _check_r6(girl_profile, girl_name)
+    r6_hits = b_r6_bad or g_r6_bad
     rules_checks.append({
         "rule": "Rule 6",
         "category": "rejection",
@@ -2038,11 +2065,7 @@ def compile_matchmaking_report(
             "hi": "अत्यधिक पुनरावृत्ति (222, 333, 444, 777) वाली कुंडली अस्वीकार करें",
             "gu": "અતિશય પુનરાવર્તન (222, 333, 444, 777) ધરાવતી કુંડળી અસ્વીકાર્ય",
         }[lang],
-        "detail": (", ".join(r6_hits) if r6_hits else {
-            "en": "No extreme repetitions (222/333/444/777) in either grid.",
-            "hi": "किसी भी कुंडली में 222/333/444/777 जैसी अत्यधिक पुनरावृत्ति नहीं है।",
-            "gu": "બંનેમાંથી કોઈ કુંડળીમાં 222/333/444/777 જેવું અતિશય પુનરાવર્તન નથી.",
-        }[lang]),
+        "detail": f"{b_r6_txt} · {g_r6_txt}",
         "why_important": {
             "en": "Triple repetitions amplify planetary imbalance: 222 (extreme anxiety), 333 (dogma/ego), 444 (sudden upheavals), 777 (detachment).",
             "hi": "तीन बार पुनरावृत्ति ग्रह दोष बढ़ाती है: 222 (अति चिंता), 333 (हठ), 444 (अचानक उतार-चढ़ाव), 777 (वैराग्य/अलगाव)।",
@@ -2061,6 +2084,10 @@ def compile_matchmaking_report(
         r7_hits.append(f"{boy_name} (D{b_dn}, age {boy_age} < 30)")
     if g_dn in (4, 8) and girl_age < 30:
         r7_hits.append(f"{girl_name} (D{g_dn}, age {girl_age} < 30)")
+    r7_detail = (
+        ", ".join(r7_hits) if r7_hits else
+        f"{boy_name} (D{b_dn}, age {boy_age}) · {girl_name} (D{g_dn}, age {girl_age})"
+    )
     rules_checks.append({
         "rule": "Rule 7",
         "category": "matching",
@@ -2070,11 +2097,7 @@ def compile_matchmaking_report(
             "hi": "भाग्यांक 4 या 8 वाले जातकों को 30 वर्ष की आयु के बाद विवाह करना चाहिए",
             "gu": "ભાગ્યાંક 4 કે 8 ધરાવતી વ્યક્તિએ 30 વર્ષની ઉંમર પછી લગ્ન કરવા જોઈએ",
         }[lang],
-        "detail": (", ".join(r7_hits) if r7_hits else {
-            "en": "Age/Destiny maturity check passed.",
-            "hi": "आयु एवं भाग्यांक परिपक्वता जांच अनुकूल है।",
-            "gu": "ઉંમર અને ભાગ્યાંક પરિપક્વતા તપાસ અનુકૂળ છે.",
-        }[lang]),
+        "detail": r7_detail,
         "why_important": {
             "en": "Destiny 4 (Rahu) and Destiny 8 (Saturn) mature slowly through life tests and career building before age 30.",
             "hi": "भाग्यांक 4 (राहु) और 8 (शनि) 30 वर्ष की आयु तक जीवन के अनुभवों और करियर संघर्ष के बाद परिपक्व होते हैं।",
@@ -2083,7 +2106,7 @@ def compile_matchmaking_report(
         "couple_effect": {
             "en": "CAUTION: Early marriage before 30 for D4/D8 can bring career distractions and impatience; conscious maturity is advised." if r7_hits else "Safe: Both partners meet the Vedic age-maturity guideline for their Destiny Numbers.",
             "hi": "सावधानी: 30 से पहले विवाह करने पर करियर और धैर्य की परीक्षा हो सकती है; परिपक्व संवाद आवश्यक है।" if r7_hits else "सुरक्षित: दोनों साथी अपने भाग्यांक की आयु-परिपक्वता के अनुकूल हैं।",
-            "gu": "સાવચેતી: 30 પહેલા લગ્ન કરવાથી કારકિર્દી અને ધીરજની કસોટી થઈ શકે છે; પરિપક્વ સમજણ જરૂરી છે." if r7_hits else "સુરક્ષિત: બંને સાથી પોતાના ભાગ્યાંકની ઉંમર-પરિપક્વતાને અનુરૂપ છે.",
+            "gu": "સાવચેતી: 30 પહેલા લગ્ન કરવાથી કારકિર્દી અને ધીરજની કસોટી થઈ શકે છે; પરિપક્વ સમજણ જરૂરી છે." if r7_hits else "સુરક્ષિત: બંને સાથી પોતાના ભાગ્યાંકની ઉંમર-પરિपક્વતાને અનુરૂપ છે.",
         }[lang],
     })
 
@@ -2093,6 +2116,10 @@ def compile_matchmaking_report(
         r8_hits.append(f"{boy_name} (D6 lacks positive 2/4/8/9 support)")
     if g_dn == 6 and not any(n in girl_pos for n in (2, 4, 8, 9)):
         r8_hits.append(f"{girl_name} (D6 lacks positive 2/4/8/9 support)")
+    r8_detail = (
+        ", ".join(r8_hits) if r8_hits else
+        f"{boy_name} (D{b_dn}) · {girl_name} (D{g_dn})"
+    )
     rules_checks.append({
         "rule": "Rule 8",
         "category": "matching",
@@ -2102,11 +2129,7 @@ def compile_matchmaking_report(
             "hi": "भाग्यांक 6 को कुंडली में शुभ 2, 4, 8, या 9 का मजबूत सहयोग आवश्यक है",
             "gu": "ભાગ્યાંક 6 ને કુંડળીમાં શુભ 2, 4, 8 અથવા 9 નો મજબૂત ટેકો જરૂરી છે",
         }[lang],
-        "detail": (", ".join(r8_hits) if r8_hits else {
-            "en": "D6 support check passed.",
-            "hi": "भाग्यांक 6 सहयोग जांच अनुकूल है।",
-            "gu": "ભાગ્યાંક 6 સહયોગ તપાસ અનુકૂળ છે.",
-        }[lang]),
+        "detail": r8_detail,
         "why_important": {
             "en": "Destiny 6 (Venus) governs luxury, romance, and family comfort, which requires grounding from 2, 4, 8, or 9 to stay balanced.",
             "hi": "भाग्यांक 6 (शुक्र) सुख-सुविधा और दांपत्य का कारक है, जिसे संतुलित रखने हेतु 2, 4, 8 या 9 का आधार जरूरी है।",
