@@ -448,6 +448,7 @@ function renderDashboard(data) {
                 <span class="c-tag">Forecast</span>
             </div>
             <div class="c-desc">${p.desc}</div>
+            ${p.timing ? `<div style="margin-top:8px;padding:7px 10px;border-radius:6px;background:rgba(234,179,8,0.09);border:1px solid rgba(234,179,8,0.28);font-size:11.5px;color:#fde68a;line-height:1.4;"><strong>📅 Exact Timing (MD / AD / Pratyantar):</strong> ${escapeHtml(p.timing)}</div>` : ''}
         `;
         predsContainer.appendChild(pCard);
     }

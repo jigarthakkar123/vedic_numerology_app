@@ -1577,6 +1577,123 @@ def generate_three_tier_predictions(
         "pd_roadmap": pd_roadmap
     }
 
+def attach_domain_timing_windows(
+    preds: Dict[str, Dict[str, Any]],
+    natal_counts: Dict[int, int],
+    dn: int,
+    lifetime_ad: List[Dict[str, Any]],
+    pd_info: Dict[str, Any],
+    md_info: Dict[str, Any],
+    lang: str,
+) -> None:
+    """
+    Enriches all 8 domain predictions with exact upcoming Mahadasha, Antardasha (year/date),
+    and Pratyantar Dasha (month/date) activation windows based on the native's Birth Grid.
+    """
+    domain_triggers = {
+        "finance": {3, 5, 6, 8, 1},
+        "property": {1, 4, 6, 8},
+        "vehicle": {4, 6},
+        "education": {1, 3, 5, 7},
+        "travel": {4, 5, 7},
+        "litigation": {4, 8, 9},
+        "relationship": {2, 3, 6, 7},
+        "health": {2, 4, 8, 9},
+    }
+
+    lbls = {
+        "en": {
+            "pd": "This Year (Pratyantar Months)",
+            "ad": "Upcoming Years (MD/AD)",
+            "md": "Mahadasha Cycle",
+            "none_pd": "Steady baseline (no sharp spike this year)",
+            "none_ad": "Neutral baseline across next 10 years",
+            "lit_note": "Caution windows",
+            "hlth_note": "Watch-out / care windows",
+        },
+        "hi": {
+            "pd": "इस वर्ष के महीने (प्रत्यंतर दशा)",
+            "ad": "आगामी वर्ष (महादशा / अंतर्दशा)",
+            "md": "महादशा चक्र",
+            "none_pd": "इस वर्ष सामान्य स्थिति",
+            "none_ad": "आगामी 10 वर्षों में सामान्य गति",
+            "lit_note": "सावधानी की अवधि",
+            "hlth_note": "स्वास्थ्य सतर्कता अवधि",
+        },
+        "gu": {
+            "pd": "આ વર્ષના મહિનાઓ (પ્રત્યંતર દશા)",
+            "ad": "આગામી વર્ષો (મહાદશા / અંતર્દશા)",
+            "md": "મહાદશા ચક્ર",
+            "none_pd": "આ વર્ષે સામાન્ય સ્થિતિ",
+            "none_ad": "આગામી 10 વર્ષમાં સામાન્ય ગતિ",
+            "lit_note": "સાવચેતીનો સમયગાળો",
+            "hlth_note": "સ્વાસ્થ્ય કાળજી સમયગાળો",
+        },
+    }.get(lang, {
+        "pd": "This Year (Pratyantar Months)",
+        "ad": "Upcoming Years (MD/AD)",
+        "md": "Mahadasha Cycle",
+        "none_pd": "Steady baseline",
+        "none_ad": "Neutral baseline",
+        "lit_note": "Caution windows",
+        "hlth_note": "Watch-out windows",
+    })
+
+    act_idx = next((i for i, r in enumerate(lifetime_ad) if r.get("is_active")), 0)
+    upcoming_ads = lifetime_ad[act_idx : act_idx + 10]
+    all_pds = pd_info.get("periods", [])
+    all_mds = md_info.get("all_periods", [])
+    act_md_idx = next((i for i, p in enumerate(all_mds) if p.get("is_active")), 0)
+    upcoming_mds = all_mds[act_md_idx : act_md_idx + 4]
+
+    for key, pdata in preds.items():
+        trigs = domain_triggers.get(key, {1, 3, 5, 6})
+
+        pd_hits = []
+        for pd in all_pds:
+            if pd.get("number") in trigs:
+                s_d = pd.get("start_str", "").replace("/", "-")
+                e_d = pd.get("end_str", "").replace("/", "-")
+                pd_hits.append(f"PD {pd['number']} ({s_d} – {e_d})")
+        pd_str = ", ".join(pd_hits[:3]) if pd_hits else lbls["none_pd"]
+
+        ad_hits = []
+        for row in upcoming_ads:
+            md_n, ad_n = row["md"], row["ad"]
+            if key == "litigation":
+                comb = dict(natal_counts)
+                comb[md_n] = comb.get(md_n, 0) + 1
+                comb[ad_n] = comb.get(ad_n, 0) + 1
+                v = evaluate_vibrations(comb, dn)
+                hit = (comb.get(9, 0) > 0 and comb.get(4, 0) > 0) or (comb.get(5, 0) > 0 and comb.get(4, 0) > 0) or (v.get(6) == "-")
+            else:
+                hit = (ad_n in trigs) or (md_n in trigs and ad_n in (1, 3, 5, 6, 8, 9))
+            if hit:
+                s_ad = row.get("from_str", row.get("start_str", ""))
+                e_ad = row.get("to_str", row.get("end_str", ""))
+                ad_hits.append(f"{row['year']} [MD {md_n}/AD {ad_n}: {s_ad} – {e_ad}]")
+        ad_str = "; ".join(ad_hits[:3]) if ad_hits else lbls["none_ad"]
+
+        md_hits = []
+        for mp in upcoming_mds:
+            if mp.get("number") in trigs:
+                s_d = mp.get("start_str", "").replace("/", "-")
+                e_d = mp.get("end_str", "").replace("/", "-")
+                md_hits.append(f"MD {mp['number']} ({s_d} – {e_d})")
+        md_str = ", ".join(md_hits[:2]) if md_hits else (
+            f"MD {upcoming_mds[0]['number']} ({upcoming_mds[0]['start_str'].replace('/', '-')} – {upcoming_mds[0]['end_str'].replace('/', '-')})"
+            if upcoming_mds else ""
+        )
+
+        prefix = f"[{lbls['lit_note']}] " if key == "litigation" else (f"[{lbls['hlth_note']}] " if key == "health" else "")
+        pdata["timing"] = f"{prefix}{lbls['pd']}: {pd_str} | {lbls['ad']}: {ad_str} | {lbls['md']}: {md_str}"
+        pdata["timing_windows"] = {
+            "pratyantar": pd_hits[:3],
+            "antardasha_years": ad_hits[:3],
+            "mahadasha": md_hits[:2],
+        }
+
+
 def compile_full_numerology_profile(
     name: str, dob_str: str, gender: str = "Male",
     target_date_str: str = None, lang: str = "en",
@@ -1648,6 +1765,9 @@ def compile_full_numerology_profile(
     predictions = generate_life_predictions(
         bn, dn, grid_info["counts"], vibrations, active_yogas,
         md_info["active_md"]["number"], ad_info["ad_number"], lang
+    )
+    attach_domain_timing_windows(
+        predictions, grid_info["counts"], dn, lifetime_ad, pd_info, md_info, lang
     )
     
     # Remedies Assembly

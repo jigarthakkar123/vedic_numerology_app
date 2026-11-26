@@ -797,6 +797,7 @@ def build_report_html(data: Dict[str, Any]) -> str:
         (ui.get("pred_health", L["health"]), preds.get("health", "")),
     ]
     pred_rows_year = [
+        (ui.get("pred_vehicle", "Vehicles"), preds.get("vehicle", "")),
         (ui.get("pred_education", "Growth"), preds.get("education", "")),
         (ui.get("pred_travel", L["travel"]), preds.get("travel", "")),
         (ui.get("pred_litigation", L["disputes"]), preds.get("litigation", "")),
@@ -806,10 +807,14 @@ def build_report_html(data: Dict[str, Any]) -> str:
     def render_pred_rows(rows: list) -> str:
         out = ""
         for lbl, txt in rows:
+            timing_html = ""
             if isinstance(txt, dict):
+                t_str = txt.get("timing", "")
+                if t_str:
+                    timing_html = f'<div style="margin-top:4px;padding:4px 8px;background:#fefce8;border-left:3px solid #eab308;font-size:9.3px;color:#713f12;"><strong>📅</strong> {t_str}</div>'
                 txt = txt.get("desc", "")
             if txt:
-                out += f'<div class="pred-row"><div class="pred-lbl">{lbl}</div><div class="pred-txt">{txt}</div></div>'
+                out += f'<div class="pred-row"><div class="pred-lbl">{lbl}</div><div class="pred-txt">{txt}{timing_html}</div></div>'
         return out
 
     outlook_rows_html = ""
