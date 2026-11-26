@@ -1768,8 +1768,236 @@ body {{
 def build_matchmaking_html(m: Dict[str, Any]) -> str:
     """
     Constructs the clean, white, editorial-grade 5-Pillar Match Making Report HTML
-    for Boy (Groom) and Girl (Bride), ready for Chromium PDF export.
+    for Boy (Groom) and Girl (Bride) in English, Hindi, or Gujarati, ready for Chromium PDF export.
     """
+    lang = m.get("lang", "en")
+    if lang not in ("en", "hi", "gu"):
+        lang = "en"
+
+    MM_STRINGS = {
+        "en": {
+            "report_sub": "Match Making Report",
+            "kicker_top": "Vedic Numerology",
+            "prepared_by": "Prepared by",
+            "prepared_for": "Prepared for",
+            "sub_pillars": "Five pillars of 20 points each · Vedic Compatibility Method",
+            "the_two_grids": "The two grids",
+            "boy_role": "Boy · Groom",
+            "girl_role": "Girl · Bride",
+            "born": "Born",
+            "age": "age",
+            "basic": "Basic",
+            "destiny": "Destiny",
+            "yogas_lbl": "Yogas:",
+            "none": "None",
+            "five_pillars": "The five pillars",
+            "rules_title": "Basic matching & rejection rules",
+            "status_ok": "Matched",
+            "status_warn": "Caution",
+            "status_reject": "Rejected",
+            "lit_title": "5-Year Litigation Check:",
+            "lit_ok": "No 2+ year litigation activation detected in the next 5 years for either grid.",
+            "lit_warn_pre": "Litigation trigger active — ",
+            "lit_warn_post": ". Consult carefully before proceeding.",
+            "running": "Running",
+            "grids_title": "9-Year Forward Transit Grids (Current to Next 8 Years)",
+            "grids_sub": "Birth grid overlaid with each upcoming year's Mahadasha (MD) and Antardasha (AD), starting from the current running year.",
+            "dasha_title": "Mahadasha & Active Periods",
+            "cycle": "Cycle",
+            "birth": "Birth",
+            "age45": "Age 45",
+            "age90": "Age 90",
+            "analysis_title": "Grid Analysis & Yogas",
+            "active_yogas": "Active Yogas in Birth Grid (Positive / Negative & Impact)",
+            "yoga_pos": "Positive · Auspicious",
+            "yoga_neg": "Negative · Challenging",
+            "yoga_mix": "Mixed Energy",
+            "no_yogas": "No major yogas triggered.",
+            "outlook_kicker": "Joint Timeline Comparison (Current to Next 8 Years)",
+            "outlook_title": "9-Year Couple Outlook (Year-by-Year)",
+            "outlook_sub": "Side-by-side comparison of Mahadasha, Antardasha, financial flow, and dispute/litigation windows for both partners.",
+            "outlook_detail_title": "Detailed Year-by-Year Couple Guidance",
+            "outlook_detail_sub": "Clear plain-language guidance for finance, relationship harmony, and health for each upcoming year.",
+            "year": "Year",
+            "money": "Money",
+            "disputes": "Disputes",
+            "rem_kicker": "Marriage-Saving Number Remedies (3 · 7 · 8)",
+            "rem_title": "Focused Marriage-Saving Remedies",
+            "rem_intro": "In match making, remedies focus strictly on missing or afflicted marriage-saving numbers (3, 7, and 8). General individual number remedies belong in each person's standalone birthdate report.",
+            "who_do": "Who Should Perform This Remedy:",
+            "both_partners": "Both {boy} & {girl}",
+            "only_partner": "{name} Only",
+            "reason_lbl": "Reason:",
+            "neg_lbl": "Negative (-{n})",
+            "miss_lbl": "Missing ({n})",
+            "rem_none": "All marriage-saving numbers (3, 7, 8) are positively balanced in both natal grids — no targeted marriage-saving remedies are required.",
+            "mantras": "Mantras & Practices",
+            "seva": "Service (Seva)",
+            "donations": "Donations",
+            "colours_fasting": "Colours, Fasting & Crystal",
+            "final_title": "Final recommendation & Supporting Crystals",
+            "what_next": "What to do next",
+            "next_1": "Review both partners' forward 9-year transit grids, Mahadasha cycles, and detailed couple outlook included in this report.",
+            "next_2": "Discuss any weaker pillars or red/amber matching rules openly before finalizing the match.",
+            "next_3": "Follow the assigned marriage-saving remedies (3, 7, 8) clearly marked for each partner and use the supporting crystals below.",
+            "crystals_title": "Supporting Crystals for Couple Harmony",
+            "disclaimer": "Disclaimer: Prepared using Vedic numerology for guidance. Report generated on",
+        },
+        "hi": {
+            "report_sub": "विवाह मिलान रिपोर्ट (Match Making)",
+            "kicker_top": "वैदिक अंकशास्त्र",
+            "prepared_by": "द्वारा तैयार:",
+            "prepared_for": "के लिए तैयार",
+            "sub_pillars": "प्रत्येक 20 अंकों के पांच स्तंभ · वैदिक मिलान पद्धति",
+            "the_two_grids": "दोनों जन्म कुंडली (Grids)",
+            "boy_role": "वर · Boy",
+            "girl_role": "वधू · Girl",
+            "born": "जन्म",
+            "age": "आयु",
+            "basic": "मूलांक",
+            "destiny": "भाग्यांक",
+            "yogas_lbl": "योग:",
+            "none": "कोई नहीं",
+            "five_pillars": "पांच मुख्य स्तंभ (Five Pillars)",
+            "rules_title": "मुख्य मिलान एवं अस्वीकृति नियम (Rules 1–8)",
+            "status_ok": "अनुकूल / पास",
+            "status_warn": "सावधानी",
+            "status_reject": "अस्वीकृत / प्रतिकूल",
+            "lit_title": "5-वर्षीय विवाद/मुकदमा जांच:",
+            "lit_ok": "आगामी 5 वर्षों में किसी भी कुंडली में 2+ वर्ष का कानूनी विवाद योग सक्रिय नहीं है।",
+            "lit_warn_pre": "विवाद योग सक्रिय — ",
+            "lit_warn_post": "। निर्णय लेने से पहले सावधानीपूर्वक परामर्श करें।",
+            "running": "वर्तमान",
+            "grids_title": "आगामी 9-वर्षीय गोचर ग्रिड (वर्तमान से अगले 8 वर्ष)",
+            "grids_sub": "वर्तमान वर्ष से शुरू होकर आगामी 9 वर्षों की महादशा (MD) और अंतर्दशा (AD) के साथ जन्म ग्रिड।",
+            "dasha_title": "महादशा एवं सक्रिय अवधि",
+            "cycle": "चक्र",
+            "birth": "जन्म",
+            "age45": "आयु 45",
+            "age90": "आयु 90",
+            "analysis_title": "ग्रिड विश्लेषण एवं योग",
+            "active_yogas": "जन्म ग्रिड में सक्रिय योग (सकारात्मक / नकारात्मक और प्रभाव)",
+            "yoga_pos": "सकारात्मक · शुभ",
+            "yoga_neg": "नकारात्मक · चुनौतीपूर्ण",
+            "yoga_mix": "मिश्रित ऊर्जा",
+            "no_yogas": "कोई प्रमुख योग सक्रिय नहीं है।",
+            "outlook_kicker": "संयुक्त समय तुलना (वर्तमान से अगले 8 वर्ष)",
+            "outlook_title": "9-वर्षीय युगल भविष्यफल (वर्ष-वार)",
+            "outlook_sub": "दोनों जीवनसाथी की महादशा, अंतर्दशा, आर्थिक स्थिति और विवाद की संभावनाओं की वर्ष-वार तुलना।",
+            "outlook_detail_title": "विस्तृत वर्ष-वार युगल मार्गदर्शन",
+            "outlook_detail_sub": "प्रत्येक आगामी वर्ष के लिए धन, दांपत्य सामंजस्य और स्वास्थ्य का स्पष्ट मार्गदर्शन।",
+            "year": "वर्ष",
+            "money": "धन",
+            "disputes": "विवाद",
+            "rem_kicker": "विवाह-रक्षक अंक उपाय (3 · 7 · 8)",
+            "rem_title": "लक्षित विवाह-रक्षक उपाय",
+            "rem_intro": "विवाह मिलान में केवल अनुपस्थित या पीड़ित विवाह-रक्षक अंकों (3, 7, 8) के उपाय दिए जाते हैं। अन्य व्यक्तिगत अंकों के उपाय व्यक्ति की अलग जन्मतिथि रिपोर्ट में होते हैं।",
+            "who_do": "यह उपाय किसे करना है:",
+            "both_partners": "{boy} और {girl} दोनों को",
+            "only_partner": "केवल {name} को",
+            "reason_lbl": "कारण:",
+            "neg_lbl": "नकारात्मक (-{n})",
+            "miss_lbl": "अनुपस्थित ({n})",
+            "rem_none": "दोनों कुंडलियों में विवाह-रक्षक अंक (3, 7, 8) सकारात्मक रूप से संतुलित हैं — किसी विशेष उपाय की आवश्यकता नहीं है।",
+            "mantras": "मंत्र एवं साधना",
+            "seva": "सेवा",
+            "donations": "दान",
+            "colours_fasting": "रंग, उपवास एवं क्रिस्टल",
+            "final_title": "अंतिम अनुशंसा एवं सहायक क्रिस्टल",
+            "what_next": "आगे क्या करें",
+            "next_1": "इस रिपोर्ट में दिए गए आगामी 9-वर्षीय गोचर ग्रिड, महादशा चक्र और विस्तृत युगल भविष्यफल की समीक्षा करें।",
+            "next_2": "विवाह तय करने से पहले कमजोर स्तंभों या लाल/पीले नियमों पर खुलकर चर्चा करें।",
+            "next_3": "प्रत्येक साथी के लिए स्पष्ट रूप से बताए गए विवाह-रक्षक उपाय (3, 7, 8) और सहायक क्रिस्टल अपनाएं।",
+            "crystals_title": "दांपत्य सामंजस्य के लिए सहायक क्रिस्टल",
+            "disclaimer": "अस्वीकरण: वैदिक अंकशास्त्र मार्गदर्शन के लिए है। रिपोर्ट तिथि:",
+        },
+        "gu": {
+            "report_sub": "લગ્ન મિલાન રિપોર્ટ (Match Making)",
+            "kicker_top": "વૈદિક અંકશાસ્ત્ર",
+            "prepared_by": "દ્વારા તૈયાર:",
+            "prepared_for": "માટે તૈયાર",
+            "sub_pillars": "દરેક 20 ગુણના પાંચ સ્તંભ · વૈદિક મિલાન પદ્ધતિ",
+            "the_two_grids": "બંને જન્મ કુંડળી (Grids)",
+            "boy_role": "વર · Boy",
+            "girl_role": "કન્યા · Girl",
+            "born": "જન્મ",
+            "age": "ઉંમર",
+            "basic": "મૂળાંક",
+            "destiny": "ભાગ્યાંક",
+            "yogas_lbl": "યોગ:",
+            "none": "કોઈ નહીં",
+            "five_pillars": "પાંચ મુખ્ય સ્તંભ (Five Pillars)",
+            "rules_title": "મુખ્ય મિલાન અને અસ્વીકૃતિ નિયમો (Rules 1–8)",
+            "status_ok": "અનુકૂળ / પાસ",
+            "status_warn": "સાવચેતી",
+            "status_reject": "અસ્વીકૃત / પ્રતિકૂળ",
+            "lit_title": "5-વર્ષીય વિવાદ/કોર્ટ-કચેરી તપાસ:",
+            "lit_ok": "આગામી 5 વર્ષમાં બંનેમાંથી કોઈની કુંડળીમાં 2+ વર્ષનો કાનૂની વિવાદ યોગ સક્રિય નથી.",
+            "lit_warn_pre": "વિવાદ યોગ સક્રિય — ",
+            "lit_warn_post": ". નિર્ણય લેતા પહેલા સાવચેતીપૂર્વક સલાહ લો.",
+            "running": "ચાલુ",
+            "grids_title": "આગામી 9-વર્ષીય ગોચર ગ્રીડ (વર્તમાનથી આવતા 8 વર્ષ)",
+            "grids_sub": "ચાલુ વર્ષથી શરૂ થઈને આગામી 9 વર્ષની મહાદશા (MD) અને અંતર્દશા (AD) સાથે જન્મ ગ્રીડ.",
+            "dasha_title": "મહાદશા અને સક્રિય સમયગાળો",
+            "cycle": "ચક્ર",
+            "birth": "જન્મ",
+            "age45": "ઉંમર 45",
+            "age90": "ઉંમર 90",
+            "analysis_title": "ગ્રીડ વિશ્લેષણ અને યોગ",
+            "active_yogas": "જન્મ ગ્રીડમાં સક્રિય યોગ (સકારાત્મક / નકારાત્મક અને અસર)",
+            "yoga_pos": "સકારાત્મક · શુભ",
+            "yoga_neg": "નકારાત્મક · પડકારજનક",
+            "yoga_mix": "મિશ્ર ઊર્જા",
+            "no_yogas": "કોઈ મુખ્ય યોગ સક્રિય નથી.",
+            "outlook_kicker": "સંયુક્ત સમય તુલના (વર્તમાનથી આવતા 8 વર્ષ)",
+            "outlook_title": "9-વર્ષીય યુગલ ભવિષ્યફળ (વર્ષ મુજબ)",
+            "outlook_sub": "બંને જીવનસાથીની મહાદશા, અંતર્દશા, નાણાકીય પ્રવાહ અને વિવાદની શક્યતાઓની વર્ષ-વાર તુલના.",
+            "outlook_detail_title": "વિગતવાર વર્ષ-વાર યુગલ માર્ગદર્શન",
+            "outlook_detail_sub": "દરેક આગામી વર્ષ માટે ધન, દાંપત્ય સુમેળ અને સ્વાસ્થ્યનું સ્પષ્ટ માર્ગદર્શન.",
+            "year": "વર્ષ",
+            "money": "ધન",
+            "disputes": "વિવાદ",
+            "rem_kicker": "લગ્ન-રક્ષક અંક ઉપાયો (3 · 7 · 8)",
+            "rem_title": "લક્ષિત લગ્ન-રક્ષક ઉપાયો",
+            "rem_intro": "લગ્ન મિલાનમાં માત્ર ખૂટતા કે પીડિત લગ્ન-રક્ષક અંકો (3, 7, 8) ના જ ઉપાયો આપવામાં આવે છે. અન્ય વ્યક્તિગત અંકોના ઉપાયો દરેકની અલગ જન્મતારીખ રિપોર્ટમાં હોય છે.",
+            "who_do": "આ ઉપાય કોણે કરવાનો છે:",
+            "both_partners": "{boy} અને {girl} બંનેએ",
+            "only_partner": "માત્ર {name} એ",
+            "reason_lbl": "કારણ:",
+            "neg_lbl": "નકારાત્મક (-{n})",
+            "miss_lbl": "ખૂટતો ({n})",
+            "rem_none": "બંને કુંડળીમાં લગ્ન-રક્ષક અંકો (3, 7, 8) સકારાત્મક રીતે સંતુલિત છે — કોઈ ખાસ ઉપાયની જરૂર નથી.",
+            "mantras": "મંત્ર અને સાધના",
+            "seva": "સેવા",
+            "donations": "દાન",
+            "colours_fasting": "રંગો, ઉપવાસ અને ક્રિસ્ટલ",
+            "final_title": "અંતિમ ભલામણ અને સહાયક ક્રિસ્ટલ્સ",
+            "what_next": "આગળ શું કરવું",
+            "next_1": "આ રિપોર્ટમાં આપેલ આગામી 9-વર્ષીય ગોચર ગ્રીડ, મહાદશા ચક્ર અને વિગતવાર યુગલ ભવિષ્યફળ તપાસો.",
+            "next_2": "લગ્ન નક્કી કરતા પહેલા નબળા સ્તંભો કે લાલ/પીળા નિયમો વિશે ખુલ્લી ચર્ચા કરો.",
+            "next_3": "દરેક જીવનસાથી માટે સ્પષ્ટ દર્શાવેલા લગ્ન-રક્ષક ઉપાયો (3, 7, 8) અને સહાયક ક્રિસ્ટલ્સ અપનાવો.",
+            "crystals_title": "દાંપત્ય સુમેળ માટે સહાયક ક્રિસ્ટલ્સ",
+            "disclaimer": "અસ્વીકરણ: વૈદિક અંકશાસ્ત્ર માર્ગદર્શન માટે છે. રિપોર્ટ તારીખ:",
+        },
+    }
+    ML = MM_STRINGS[lang]
+
+    google_fonts = "https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@400;600;700&display=swap"
+    if lang == "hi":
+        google_fonts += "&family=Noto+Sans+Devanagari:wght@400;600;700"
+        body_font = "'Noto Sans Devanagari', 'Source Sans 3', sans-serif"
+        serif_font = "'Noto Sans Devanagari', 'Libre Baskerville', serif"
+    elif lang == "gu":
+        google_fonts += "&family=Noto+Sans+Gujarati:wght@400;600;700"
+        body_font = "'Noto Sans Gujarati', 'Source Sans 3', sans-serif"
+        serif_font = "'Noto Sans Gujarati', 'Libre Baskerville', serif"
+    else:
+        body_font = "'Source Sans 3', sans-serif"
+        serif_font = "'Libre Baskerville', serif"
+
+    arch_map = ARCHETYPES_BY_LANG.get(lang, ARCHETYPES_EN)
+    crystals_list = SUPPORTING_CRYSTALS_BY_LANG.get(lang, SUPPORTING_CRYSTALS)
+
     consultant = m["consultant"]
     boy = m["boy"]
     girl = m["girl"]
@@ -1777,6 +2005,21 @@ def build_matchmaking_html(m: Dict[str, Any]) -> str:
     verdict = m["verdict"]
     verdict_sub = m["verdict_sub"]
     level = m["verdict_level"]
+
+    if lang == "hi":
+        verdict = {"good": "उत्तम मिलान", "moderate": "विचारणीय मिलान", "low": "अनुशंसित नहीं"}.get(level, verdict)
+        verdict_sub = {
+            "good": "70% से अधिक — पांचों स्तंभों में मजबूत और शुभ सामंजस्य।",
+            "moderate": "50–70% — संवाद और उपायों के साथ संतुलित एवं कार्यशील मिलान।",
+            "low": "50% से कम — अंकशास्त्र के अनुसार यह मिलान उपयुक्त नहीं है।",
+        }.get(level, verdict_sub)
+    elif lang == "gu":
+        verdict = {"good": "ઉત્તમ મિલાન", "moderate": "વિચારણીય મિલાન", "low": "ભલામણ કરેલ નથી"}.get(level, verdict)
+        verdict_sub = {
+            "good": "70% થી વધુ — પાંચેય સ્તંભોમાં મજબૂત અને શુભ સુમેળ.",
+            "moderate": "50–70% — સભાન સંવાદ અને ઉપાયો સાથે ચાલી શકે તેવું મિલાન.",
+            "low": "50% થી ઓછું — અંકશાસ્ત્ર મુજબ આ મિલાન યોગ્ય નથી.",
+        }.get(level, verdict_sub)
 
     banner_bg = (
         "linear-gradient(90deg, #059669, #10b981)" if level == "good"
@@ -1794,35 +2037,40 @@ def build_matchmaking_html(m: Dict[str, Any]) -> str:
             sign = "+" if v["type"] == "+" else "−"
             cls = "pill-pos" if v["type"] == "+" else "pill-neg"
             pills += f'<span class="vpill {cls}">{sign}{v["number"]}</span>'
-        y_names = ", ".join(y["name"].split("(")[0].strip() for y in p.get("yogas", [])[:3]) or "None"
-        bn_arch = ARCHETYPES_EN.get(p["bn"], ARCHETYPES_EN[1])[0]
-        dn_arch = ARCHETYPES_EN.get(p["dn"], ARCHETYPES_EN[1])[0]
+        y_names = ", ".join(y["name"].split("(")[0].strip() for y in p.get("yogas", [])[:3]) or ML["none"]
+        bn_arch = arch_map.get(p["bn"], arch_map[1])[0]
+        dn_arch = arch_map.get(p["dn"], arch_map[1])[0]
         return f"""
         <div class="mm-person">
             <div class="kicker">{role_lbl}</div>
             <div class="mm-pname">{p["name"]}</div>
-            <div class="mm-pdob">Born {p["dob"]} · age {p["age"]}</div>
+            <div class="mm-pdob">{ML["born"]} {p["dob"]} · {ML["age"]} {p["age"]}</div>
             <div class="mm-grid-row">
                 <div class="vg-grid vg-sm">{cells_html}</div>
                 <div class="mm-stats">
-                    <div><strong>Basic {p["bn"]}</strong> · {p["bn_planet"].split("(")[0].strip()}</div>
+                    <div><strong>{ML["basic"]} {p["bn"]}</strong> · {p["bn_planet"].split("(")[0].strip()}</div>
                     <div class="mm-arch">{bn_arch}</div>
-                    <div style="margin-top:6px;"><strong>Destiny {p["dn"]}</strong> · {p["dn_planet"].split("(")[0].strip()}</div>
+                    <div style="margin-top:6px;"><strong>{ML["destiny"]} {p["dn"]}</strong> · {p["dn_planet"].split("(")[0].strip()}</div>
                     <div class="mm-arch">{dn_arch}</div>
                     <div style="margin-top:6px;">{pills}</div>
                 </div>
             </div>
-            <div class="mm-yogas"><strong>Yogas:</strong> {y_names}</div>
+            <div class="mm-yogas"><strong>{ML["yogas_lbl"]}</strong> {y_names}</div>
         </div>"""
 
     pillars_html = ""
+    pillar_title_tr = {
+        "hi": {"emotional": "भावनात्मक सामंजस्य (Emotional Quotient)", "practical": "व्यावहारिक तालमेल (Practical Quotient)", "money": "आर्थिक अनुकूलता (Money Compatibility)", "root_destiny": "मूलांक एवं भाग्यांक मिलान", "marriage_saving": "विवाह-रक्षक अंक (+3, +7, +8)"},
+        "gu": {"emotional": "ભાવનાત્મક સુમેળ (Emotional Quotient)", "practical": "વ્યવહારિક તાલમેલ (Practical Quotient)", "money": "આર્થિક સુસંગતતા (Money Compatibility)", "root_destiny": "મૂળાંક અને ભાગ્યાંક મિલાન", "marriage_saving": "લગ્ન-રક્ષક અંકો (+3, +7, +8)"},
+    }
     for p in m["pillars"]:
         pct = int((p["score"] / p["max"]) * 100)
-        bar_col = "#15803d" if p["score"] >= 15 else ("#d97706" if p["score"] >= 10 else "#e2e8f0")
+        bar_col = "#15803d" if p["score"] >= 15 else ("#d97706" if p["score"] >= 10 else "#cbd5e1")
+        p_title = pillar_title_tr.get(lang, {}).get(p.get("key", ""), p["title"])
         pillars_html += f"""
         <div class="pillar-card">
             <div class="pillar-top">
-                <div class="pillar-title">{p["title"]}</div>
+                <div class="pillar-title">{p_title}</div>
                 <div class="pillar-score">{p["score"]}<span class="pillar-max">/{p["max"]}</span></div>
             </div>
             <div class="pillar-bar-bg"><div class="pillar-bar-fill" style="width:{pct}%;background:{bar_col};"></div></div>
@@ -1834,12 +2082,17 @@ def build_matchmaking_html(m: Dict[str, Any]) -> str:
         st = rc["status"]
         icon = "✓" if st == "ok" else ("✕" if st == "reject" else "!")
         cls = "rule-ok" if st == "ok" else ("rule-reject" if st == "reject" else "rule-warn")
+        box_cls = "rule-box-ok" if st == "ok" else ("rule-box-reject" if st == "reject" else "rule-box-warn")
+        st_lbl = ML["status_ok"] if st == "ok" else (ML["status_reject"] if st == "reject" else ML["status_warn"])
         rules_html += f"""
-        <div class="rule-row" style="margin-bottom:7px;">
+        <div class="rule-row {box_cls}">
             <div class="rule-badge {cls}">{icon}</div>
-            <div>
-                <strong>{rc["rule"]} · {rc["title"]}</strong><br>
-                <span class="sub-muted">{rc["detail"]}</span>
+            <div style="flex:1;">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+                    <strong>{rc["rule"]} · {rc["title"]}</strong>
+                    <span class="rule-pill {box_cls}-pill">{st_lbl}</span>
+                </div>
+                <div class="sub-muted" style="margin-top:2px;">{rc["detail"]}</div>
             </div>
         </div>"""
 
@@ -1848,29 +2101,30 @@ def build_matchmaking_html(m: Dict[str, Any]) -> str:
     g_lit = lit.get("girl", {})
     lit_items = []
     if b_lit.get("risk"):
-        lit_items.append(f"{b_lit['name']}: litigation trigger active in {', '.join(b_lit['years'])}")
+        lit_items.append(f"{b_lit['name']}: {', '.join(b_lit['years'])}")
     if g_lit.get("risk"):
-        lit_items.append(f"{g_lit['name']}: litigation trigger active in {', '.join(g_lit['years'])}")
+        lit_items.append(f"{g_lit['name']}: {', '.join(g_lit['years'])}")
     lit_html = (
-        f'<div class="lit-warn"><strong>5-Year Litigation Check:</strong> {"; ".join(lit_items)}. Consult carefully before proceeding.</div>'
+        f'<div class="lit-warn"><strong>{ML["lit_title"]}</strong> {ML["lit_warn_pre"]}{"; ".join(lit_items)}{ML["lit_warn_post"]}</div>'
         if lit_items else
-        '<div class="lit-ok"><strong>5-Year Litigation Check:</strong> No 2+ year litigation activation detected in the next 5 years for either grid.</div>'
+        f'<div class="lit-ok"><strong>{ML["lit_title"]}</strong> {ML["lit_ok"]}</div>'
     )
 
     rec_bg = "#f0fdf4" if level == "good" else ("#fffbeb" if level == "moderate" else "#fef2f2")
     rec_bd = "#bbf7d0" if level == "good" else ("#fde68a" if level == "moderate" else "#fecaca")
-    rec_title = "Good matching" if level == "good" else ("Suggestive matching" if level == "moderate" else "Not recommended")
+    rec_title = verdict
 
     boy_full = m.get("boy_full", {})
     girl_full = m.get("girl_full", {})
+    boy_fwd = m.get("boy_forward_grids") or boy_full.get("dasha", {}).get("nine_year_grids", [])
+    girl_fwd = m.get("girl_forward_grids") or girl_full.get("dasha", {}).get("nine_year_grids", [])
 
-    def _year_grids_page(prof: Dict[str, Any], label: str) -> str:
-        nyg = prof.get("dasha", {}).get("nine_year_grids", [])
+    def _year_grids_page(prof: Dict[str, Any], nyg: List[Dict[str, Any]], label: str) -> str:
         cards = ""
         for yg in nyg:
             is_run = yg.get("is_active", False)
             cls = "yg-card yg-running" if is_run else "yg-card"
-            badge = '<span class="running-badge">Running</span>' if is_run else ""
+            badge = f'<span class="running-badge">{ML["running"]}</span>' if is_run else ""
             c_html = ""
             for c in yg["cells"]:
                 p_lbl = GRID_PLANETS_EN.get(c["num"], "")
@@ -1887,8 +2141,8 @@ def build_matchmaking_html(m: Dict[str, Any]) -> str:
         <div class="page-break"></div>
         <div class="sheet">
             <div class="kicker">{label}</div>
-            <h2 class="sec-h2">{prof["client"]["name"]} · 9-Year Transit Grids</h2>
-            <p class="sub-muted" style="margin-bottom:10px;">Birth grid with each year's Mahadasha (MD) and Antardasha (AD). Running year is highlighted in the centre.</p>
+            <h2 class="sec-h2">{prof["client"]["name"]} · {ML["grids_title"]}</h2>
+            <p class="sub-muted" style="margin-bottom:10px;">{ML["grids_sub"]}</p>
             <div class="yg-matrix">{cards}</div>
         </div>"""
 
@@ -1907,20 +2161,20 @@ def build_matchmaking_html(m: Dict[str, Any]) -> str:
             for p in sl:
                 ac = ' class="row-active"' if p.get("is_active") else ""
                 trs += f'<tr{ac}><td class="bold-col">{p["number"]}</td><td>{p.get("start_dash", _fmt_dash(p["start_str"]))}</td><td>{p.get("end_dash", _fmt_dash(p["end_str"]))}</td><td>{p.get("start_age","")}–{p.get("end_age","")}</td></tr>'
-            return f'<div><div class="cycle-title">Cycle {cno}</div><table class="clean-tbl"><thead><tr><th>MD</th><th>Start</th><th>End</th><th>Age</th></tr></thead><tbody>{trs}</tbody></table></div>'
+            return f'<div><div class="cycle-title">{ML["cycle"]} {cno}</div><table class="clean-tbl"><thead><tr><th>MD</th><th>Start</th><th>End</th><th>Age</th></tr></thead><tbody>{trs}</tbody></table></div>'
 
         return f"""
         <div class="page-break"></div>
         <div class="sheet">
             <div class="kicker">{label}</div>
-            <h2 class="sec-h2">{prof["client"]["name"]} · Mahadasha &amp; Active Periods</h2>
+            <h2 class="sec-h2">{prof["client"]["name"]} · {ML["dasha_title"]}</h2>
             <div class="dasha-sum-row">
                 <div class="ds-box"><span>Mahadasha</span><strong>{act_md.get("number","")}</strong><small>{_fmt_dash(act_md.get("start_str",""))} – {_fmt_dash(act_md.get("end_str",""))}</small></div>
                 <div class="ds-box"><span>Antardasha</span><strong>{act_ad.get("ad_number","")}</strong><small>{_fmt_dash(act_ad.get("start_str",""))} – {_fmt_dash(act_ad.get("end_str",""))}</small></div>
                 <div class="ds-box"><span>Pratyantar</span><strong>{act_pd.get("number","")}</strong><small>{_fmt_dash(act_pd.get("start_str",""))} – {_fmt_dash(act_pd.get("end_str",""))}</small></div>
             </div>
             <div class="md-bar">{bar_html}</div>
-            <div class="md-bar-labels"><span>Birth</span><span>Age 45</span><span>Age 90</span></div>
+            <div class="md-bar-labels"><span>{ML["birth"]}</span><span>{ML["age45"]}</span><span>{ML["age90"]}</span></div>
             <div class="cycles-grid">{_cycle_tbl(all_md[:9], 1)}{_cycle_tbl(all_md[9:18], 2)}</div>
         </div>"""
 
@@ -1934,71 +2188,164 @@ def build_matchmaking_html(m: Dict[str, Any]) -> str:
             v_cards += f'<div class="{cls}"><div class="ga-head"><strong>{sign}{v["number"]}</strong> <span class="sub-muted">· {cnt}x</span></div><div class="ga-body">{v.get("text","")}</div></div>'
         y_cards = ""
         for y in prof.get("yogas", []):
+            cat = y.get("category", "auspicious")
+            if cat == "challenging":
+                y_cls = "yoga-box yoga-neg"
+                y_pill = f'<span class="ypill ypill-neg">{ML["yoga_neg"]}</span>'
+            elif cat in ("mixed", "neutral"):
+                y_cls = "yoga-box yoga-mix"
+                y_pill = f'<span class="ypill ypill-mix">{ML["yoga_mix"]}</span>'
+            else:
+                y_cls = "yoga-box yoga-pos"
+                y_pill = f'<span class="ypill ypill-pos">{ML["yoga_pos"]}</span>'
+            desc_txt = f'<div class="yoga-desc">{y["desc"]}</div>' if y.get("desc") else ""
             pts = "".join(f"<li>{pt}</li>" for pt in y.get("points", [])[:4])
-            y_cards += f'<div class="yoga-box"><div class="yoga-title">{y["name"]}</div>{f"<ul class=yoga-pts>{pts}</ul>" if pts else ""}</div>'
+            y_cards += f'<div class="{y_cls}"><div class="yoga-hdr"><span class="yoga-title">{y["name"]}</span>{y_pill}</div>{desc_txt}{f"<ul class=yoga-pts>{pts}</ul>" if pts else ""}</div>'
         return f"""
         <div class="page-break"></div>
         <div class="sheet">
             <div class="kicker">{label}</div>
-            <h2 class="sec-h2">{prof["client"]["name"]} · Grid Analysis &amp; Yogas</h2>
+            <h2 class="sec-h2">{prof["client"]["name"]} · {ML["analysis_title"]}</h2>
             <div class="ga-grid">{v_cards}</div>
-            <h3 class="sec-h3">Active Yogas in Birth Grid</h3>
-            <div class="yoga-grid">{y_cards or "<div class=sub-muted>No major yogas triggered.</div>"}</div>
+            <h3 class="sec-h3">{ML["active_yogas"]}</h3>
+            <div class="yoga-grid">{y_cards or f"<div class=sub-muted>{ML['no_yogas']}</div>"}</div>
         </div>"""
 
-    def _joint_outlook_page() -> str:
-        b_nyg = boy_full.get("dasha", {}).get("nine_year_grids", [])
-        g_nyg = girl_full.get("dasha", {}).get("nine_year_grids", [])
-        g_by_yr = {x["year"]: x for x in g_nyg}
+    def _joint_outlook_pages() -> str:
+        g_by_yr = {x["year"]: x for x in girl_fwd}
         rows = ""
-        for bx in b_nyg:
+        detail_cards = []
+        for bx in boy_fwd:
             yr = bx["year"]
             gx = g_by_yr.get(yr, {})
-            ac = ' class="row-active"' if bx.get("is_active") else ""
+            is_act = bx.get("is_active", False)
+            ac = ' class="row-active"' if is_act else ""
+            b_m_k, b_m_v = bx["money"]
+            b_d_k, b_d_v = bx["disputes"]
+            b_h_k, b_h_v = bx["health"]
+            g_m_k, g_m_v = gx.get("money", ("", "–"))
+            g_d_k, g_d_v = gx.get("disputes", ("", "–"))
+            g_h_k, g_h_v = gx.get("health", ("", "–"))
             rows += f"""
             <tr{ac}>
                 <td class="bold-col">{yr}</td>
                 <td>MD {bx["md"]} / AD {bx["ad"]}</td>
-                <td>{bx["money"][1]}</td>
-                <td>{bx["disputes"][1]}</td>
+                <td>{b_m_v}</td>
+                <td>{b_d_v}</td>
                 <td>MD {gx.get("md","–")} / AD {gx.get("ad","–")}</td>
-                <td>{gx.get("money", ("","–"))[1]}</td>
-                <td>{gx.get("disputes", ("","–"))[1]}</td>
+                <td>{g_m_v}</td>
+                <td>{g_d_v}</td>
             </tr>"""
+
+            if lang == "hi":
+                fin_note = (
+                    "दोनों के लिए आर्थिक उन्नति और बचत का उत्तम वर्ष — बड़े निवेश व संयुक्त लक्ष्यों के लिए अनुकूल।"
+                    if (b_m_k == "up" and g_m_k == "up") else
+                    ("खर्च और बजट पर नियंत्रण रखें; जोखिम भरे निवेश से बचें।" if ("tight" in (b_m_k, g_m_k)) else "संतुलित आर्थिक वर्ष — नियमित बचत बनाए रखें।")
+                )
+                disp_note = (
+                    "संवाद में धैर्य और पारदर्शिता रखें; अहंकार या कानूनी विवाद से बचें।"
+                    if (b_d_k == "friction" or g_d_k == "friction") else
+                    "रिश्ते में सहज सामंजस्य और शांतिपूर्ण तालमेल रहेगा।"
+                )
+                hlth_note = f"{boy['name']}: {b_h_v if b_h_v != '–' else 'सामान्य'} · {girl['name']}: {g_h_v if g_h_v != '–' else 'सामान्य'}"
+                fin_lbl, rel_lbl, hlth_lbl = "आर्थिक स्थिति:", "दांपत्य एवं संवाद:", "स्वास्थ्य एवं ध्यान:"
+            elif lang == "gu":
+                fin_note = (
+                    "બંને માટે આર્થિક પ્રગતિ અને બચતનું ઉત્તમ વર્ષ — મોટા રોકાણ અને સંયુક્ત લક્ષ્યો માટે શુભ."
+                    if (b_m_k == "up" and g_m_k == "up") else
+                    ("ખર્ચ અને બજેટ પર કાબૂ રાખવો; જોખમી રોકાણ ટાળવું." if ("tight" in (b_m_k, g_m_k)) else "સંતુલિત આર્થિક વર્ષ — નિયમિત બચત જાળવી રાખવી.")
+                )
+                disp_note = (
+                    "સંવાદમાં ધીરજ અને પારદર્શિતા રાખવી; અહંકાર કે કાનૂની મતભેદથી દૂર રહેવું."
+                    if (b_d_k == "friction" or g_d_k == "friction") else
+                    "સંબંધમાં સહજ સુમેળ અને શાંતિપૂર્ણ તાલમેલ જળવાશે."
+                )
+                hlth_note = f"{boy['name']}: {b_h_v if b_h_v != '–' else 'સામાન્ય'} · {girl['name']}: {g_h_v if g_h_v != '–' else 'સામાન્ય'}"
+                fin_lbl, rel_lbl, hlth_lbl = "આર્થિક સ્થિતિ:", "દાંપત્ય અને સંવાદ:", "સ્વાસ્થ્ય અને કાળજી:"
+            else:
+                fin_note = (
+                    "Strong joint financial growth year — favourable for savings, career expansion, and shared investments."
+                    if (b_m_k == "up" and g_m_k == "up") else
+                    ("Keep a disciplined budget and avoid speculative or high-risk investments this year." if ("tight" in (b_m_k, g_m_k)) else "Steady, balanced financial year — maintain consistent savings.")
+                )
+                disp_note = (
+                    "Practice extra patience and transparent communication; avoid ego clashes or unclear commitments."
+                    if (b_d_k == "friction" or g_d_k == "friction") else
+                    "Smooth relational harmony with low risk of disputes or friction."
+                )
+                hlth_note = f"{boy['name']}: {b_h_v if b_h_v != '–' else 'Stable'} · {girl['name']}: {g_h_v if g_h_v != '–' else 'Stable'}"
+                fin_lbl, rel_lbl, hlth_lbl = "Finance & Growth:", "Relationship & Harmony:", "Health & Care:"
+
+            run_pill = f' <span class="running-badge">{ML["running"]}</span>' if is_act else ""
+            detail_cards.append(f"""
+            <div class="outlook-card {'outlook-act' if is_act else ''}">
+                <div class="oc-hdr">
+                    <strong>{yr}{run_pill}</strong>
+                    <span class="sub-muted">{boy["name"]}: MD {bx["md"]}/AD {bx["ad"]} · {girl["name"]}: MD {gx.get("md","–")}/AD {gx.get("ad","–")}</span>
+                </div>
+                <div class="oc-line"><strong>{fin_lbl}</strong> {fin_note}</div>
+                <div class="oc-line"><strong>{rel_lbl}</strong> {disp_note}</div>
+                <div class="oc-line"><strong>{hlth_lbl}</strong> {hlth_note}</div>
+            </div>""")
+
+        p1_cards = "".join(detail_cards[:3])
+        p2_cards = "".join(detail_cards[3:])
         return f"""
         <div class="page-break"></div>
         <div class="sheet">
-            <div class="kicker">Joint Timeline Comparison</div>
-            <h2 class="sec-h2">9-Year Couple Outlook (Year-by-Year)</h2>
-            <p class="sub-muted" style="margin-bottom:10px;">Side-by-side comparison of Mahadasha, Antardasha, financial flow, and dispute/litigation windows for both partners.</p>
+            <div class="kicker">{ML["outlook_kicker"]}</div>
+            <h2 class="sec-h2">{ML["outlook_title"]}</h2>
+            <p class="sub-muted" style="margin-bottom:8px;">{ML["outlook_sub"]}</p>
             <table class="clean-tbl">
                 <thead>
                     <tr>
-                        <th>Year</th>
-                        <th>{boy["name"]} (MD/AD)</th><th>Money</th><th>Disputes</th>
-                        <th>{girl["name"]} (MD/AD)</th><th>Money</th><th>Disputes</th>
+                        <th>{ML["year"]}</th>
+                        <th>{boy["name"]} (MD/AD)</th><th>{ML["money"]}</th><th>{ML["disputes"]}</th>
+                        <th>{girl["name"]} (MD/AD)</th><th>{ML["money"]}</th><th>{ML["disputes"]}</th>
                     </tr>
                 </thead>
                 <tbody>{rows}</tbody>
             </table>
+            <h3 class="sec-h3" style="margin-top:12px;">{ML["outlook_detail_title"]}</h3>
+            <p class="sub-muted" style="margin-bottom:8px;">{ML["outlook_detail_sub"]}</p>
+            {p1_cards}
+        </div>
+        <div class="page-break"></div>
+        <div class="sheet">
+            <div class="kicker">{ML["outlook_kicker"]}</div>
+            <h2 class="sec-h2">{ML["outlook_detail_title"]} (cont.)</h2>
+            {p2_cards}
         </div>"""
 
     def _marriage_saving_remedies_page() -> str:
         from vedic_translations import NUMBER_REMEDIES, PLANET_INFO
 
         ms_roles = {
-            3: "Communication Harmony, Wisdom &amp; Family Peace",
-            7: "Spiritual Bonding, Trust &amp; Emotional Depth",
-            8: "Discipline, Patience &amp; Long-Term Commitment",
-        }
+            "en": {
+                3: "Communication Harmony, Wisdom & Family Peace",
+                7: "Spiritual Bonding, Trust & Emotional Depth",
+                8: "Discipline, Patience & Long-Term Commitment",
+            },
+            "hi": {
+                3: "संवाद सामंजस्य, ज्ञान एवं पारिवारिक शांति",
+                7: "आध्यात्मिक जुड़ाव, विश्वास एवं भावनात्मक गहराई",
+                8: "अनुशासन, धैर्य एवं दीर्घकालिक समर्पण",
+            },
+            "gu": {
+                3: "સંવાદ સુમેળ, જ્ઞાન અને પારિવારિક શાંતિ",
+                7: "આધ્યાત્મિક જોડાણ, વિશ્વાસ અને ભાવનાત્મક ઊંડાણ",
+                8: "શિસ્ત, ધીરજ અને લાંબા ગાળાનું સમર્પણ",
+            },
+        }[lang]
         b_vibs = {f'{v["type"]}{v["number"]}' for v in boy.get("vibrations", [])}
         g_vibs = {f'{v["type"]}{v["number"]}' for v in girl.get("vibrations", [])}
 
         def _status_for(vibs: set, num: int) -> str:
             if f"-{num}" in vibs:
-                return f"Negative (-{num})"
+                return ML["neg_lbl"].format(n=num)
             if f"+{num}" not in vibs:
-                return f"Missing ({num})"
+                return ML["miss_lbl"].format(n=num)
             return ""
 
         cards = ""
@@ -2007,6 +2354,14 @@ def build_matchmaking_html(m: Dict[str, Any]) -> str:
             g_issue = _status_for(g_vibs, num)
             if not b_issue and not g_issue:
                 continue
+
+            if b_issue and g_issue:
+                who_str = ML["both_partners"].format(boy=boy["name"], girl=girl["name"])
+            elif b_issue:
+                who_str = ML["only_partner"].format(name=boy["name"])
+            else:
+                who_str = ML["only_partner"].format(name=girl["name"])
+
             reasons = []
             if b_issue:
                 reasons.append(f"{boy['name']}: {b_issue}")
@@ -2015,14 +2370,14 @@ def build_matchmaking_html(m: Dict[str, Any]) -> str:
             reason_str = " · ".join(reasons)
 
             rem = NUMBER_REMEDIES.get(num, {})
-            pinfo = PLANET_INFO.get(num, {}).get("en", {})
+            pinfo = PLANET_INFO.get(num, {}).get(lang, PLANET_INFO.get(num, {}).get("en", {}))
             planet_name = pinfo.get("planet", f"Planet {num}")
             colors = pinfo.get("colors", "")
-            mantra = rem.get("mantra", {}).get("en", "")
-            seva = rem.get("seva", {}).get("en", "")
-            donation = rem.get("donation", {}).get("en", "")
-            fasting = rem.get("fasting", {}).get("en", "")
-            crystal = rem.get("crystal", {}).get("en", "")
+            mantra = rem.get("mantra", {}).get(lang, rem.get("mantra", {}).get("en", ""))
+            seva = rem.get("seva", {}).get(lang, rem.get("seva", {}).get("en", ""))
+            donation = rem.get("donation", {}).get(lang, rem.get("donation", {}).get("en", ""))
+            fasting = rem.get("fasting", {}).get(lang, rem.get("fasting", {}).get("en", ""))
+            crystal = rem.get("crystal", {}).get(lang, rem.get("crystal", {}).get("en", ""))
 
             cards += f"""
             <div class="rem-card">
@@ -2030,79 +2385,82 @@ def build_matchmaking_html(m: Dict[str, Any]) -> str:
                     <span class="rem-circle">{num}</span>
                     <div>
                         <div class="rem-title">Number {num} · {planet_name} <span style="font-weight:400;color:#64748b;">({ms_roles[num]})</span></div>
-                        <div class="sub-muted" style="color:#991b1b;font-weight:600;">Triggered by: {reason_str}</div>
                     </div>
                 </div>
-                <div class="rem-sec-lbl">Mantras &amp; Practices</div><p class="rem-p">{mantra}</p>
-                <div class="rem-sec-lbl">Service (Seva)</div><p class="rem-p">{seva}</p>
-                <div class="rem-sec-lbl">Donations</div><p class="rem-p">{donation}</p>
-                <div class="rem-sec-lbl">Colours, Fasting &amp; Crystal</div><p class="rem-p">{colors} · {fasting} · Crystal: {crystal}</p>
+                <div class="who-box">
+                    <strong>{ML["who_do"]} {who_str}</strong><br>
+                    <span class="sub-muted">{ML["reason_lbl"]} {reason_str}</span>
+                </div>
+                <div class="rem-sec-lbl">{ML["mantras"]}</div><p class="rem-p">{mantra}</p>
+                <div class="rem-sec-lbl">{ML["seva"]}</div><p class="rem-p">{seva}</p>
+                <div class="rem-sec-lbl">{ML["donations"]}</div><p class="rem-p">{donation}</p>
+                <div class="rem-sec-lbl">{ML["colours_fasting"]}</div><p class="rem-p">{colors} · {fasting} · Crystal: {crystal}</p>
             </div>"""
 
         if not cards:
-            cards = '<div class="sub-muted">All marriage-saving numbers (3, 7, 8) are positively balanced in both natal grids — no targeted marriage-saving remedies are required.</div>'
+            cards = f'<div class="sub-muted">{ML["rem_none"]}</div>'
 
         return f"""
         <div class="page-break"></div>
         <div class="sheet">
-            <div class="kicker">Marriage-Saving Number Remedies (3 · 7 · 8)</div>
-            <h2 class="sec-h2">{boy["name"]} &amp; {girl["name"]} · Focused Marriage-Saving Remedies</h2>
-            <p class="sub-muted" style="margin-bottom:10px;">In match making, remedies are focused strictly on missing or afflicted <strong>marriage-saving numbers (3, 7, and 8)</strong> in either partner's natal grid. General individual number remedies belong in each person's standalone birthdate report.</p>
+            <div class="kicker">{ML["rem_kicker"]}</div>
+            <h2 class="sec-h2">{boy["name"]} &amp; {girl["name"]} · {ML["rem_title"]}</h2>
+            <p class="sub-muted" style="margin-bottom:10px;">{ML["rem_intro"]}</p>
             <div class="rem-grid">{cards}</div>
         </div>"""
 
     crystals_html = "".join(
         f'<div class="crystal-row"><strong>{cn}</strong> — <span class="sub-muted">{cd}</span></div>'
-        for cn, cd in SUPPORTING_CRYSTALS
+        for cn, cd in crystals_list
     )
 
     extra_pages_html = ""
     if boy_full and girl_full:
         extra_pages_html = (
-            _year_grids_page(boy_full, "Boy · Groom")
-            + _year_grids_page(girl_full, "Girl · Bride")
-            + _dasha_page(boy_full, "Boy · Groom")
-            + _dasha_page(girl_full, "Girl · Bride")
-            + _analysis_yogas_page(boy_full, "Boy · Groom")
-            + _analysis_yogas_page(girl_full, "Girl · Bride")
-            + _joint_outlook_page()
+            _year_grids_page(boy_full, boy_fwd, ML["boy_role"])
+            + _year_grids_page(girl_full, girl_fwd, ML["girl_role"])
+            + _dasha_page(boy_full, ML["boy_role"])
+            + _dasha_page(girl_full, ML["girl_role"])
+            + _analysis_yogas_page(boy_full, ML["boy_role"])
+            + _analysis_yogas_page(girl_full, ML["girl_role"])
+            + _joint_outlook_pages()
             + _marriage_saving_remedies_page()
         )
 
     return f"""<!DOCTYPE html>
-<html lang="en">
+<html lang="{lang}">
 <head>
 <meta charset="UTF-8">
-<title>{consultant["name"]} - Match Making Report - {boy["name"]} &amp; {girl["name"]}</title>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<title>{consultant["name"]} - {ML["report_sub"]} - {boy["name"]} &amp; {girl["name"]}</title>
+<link href="{google_fonts}" rel="stylesheet">
 <style>
 @page {{ size: A4 portrait; margin: 12mm; }}
 * {{ box-sizing: border-box; }}
-body {{ margin: 0; font-family: 'Source Sans 3', sans-serif; color: #1e293b; font-size: 11px; line-height: 1.45; -webkit-print-color-adjust: exact; print-color-adjust: exact; }}
-.sheet {{ border: 1px solid #e2e8f0; border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; background: #fff; break-inside: avoid; }}
+body {{ margin: 0; font-family: {body_font}; color: #1e293b; font-size: 11px; line-height: 1.45; -webkit-print-color-adjust: exact; print-color-adjust: exact; }}
+.sheet {{ border: 1px solid #e2e8f0; border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; background: #fff; }}
 .page-break {{ page-break-before: always; break-before: page; }}
 .mm-head {{ display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 2px solid; border-image: linear-gradient(90deg, #7c3aed, #f59e0b) 1; margin-bottom: 12px; }}
-.mm-brand {{ font-family: 'Libre Baskerville', serif; font-size: 15px; font-weight: 700; color: #0f172a; }}
+.mm-brand {{ font-family: {serif_font}; font-size: 15px; font-weight: 700; color: #0f172a; }}
 .mm-rtitle {{ text-align: right; font-size: 10px; color: #64748b; }}
-.mm-rtitle strong {{ display: block; font-family: 'Libre Baskerville', serif; font-size: 13px; color: #0f172a; }}
-.kicker {{ font-family: 'Libre Baskerville', serif; font-style: italic; font-size: 10.5px; color: #7c3aed; }}
-.couple-name {{ font-family: 'Libre Baskerville', serif; font-size: 22px; font-weight: 700; color: #0f172a; margin: 2px 0; }}
+.mm-rtitle strong {{ display: block; font-family: {serif_font}; font-size: 13px; color: #0f172a; }}
+.kicker {{ font-family: {serif_font}; font-style: italic; font-size: 10.5px; color: #7c3aed; }}
+.couple-name {{ font-family: {serif_font}; font-size: 22px; font-weight: 700; color: #0f172a; margin: 2px 0; }}
 .sub-muted {{ font-size: 10.5px; color: #64748b; }}
 .score-banner {{ background: {banner_bg}; color: #fff; border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; gap: 18px; margin-bottom: 12px; }}
-.score-big {{ font-family: 'Libre Baskerville', serif; font-size: 28px; font-weight: 700; line-height: 1; }}
+.score-big {{ font-family: {serif_font}; font-size: 28px; font-weight: 700; line-height: 1; }}
 .score-big span {{ font-size: 14px; opacity: 0.85; }}
-.score-verdict {{ font-family: 'Libre Baskerville', serif; font-size: 16px; font-weight: 700; }}
+.score-verdict {{ font-family: {serif_font}; font-size: 16px; font-weight: 700; }}
 .score-sub {{ font-size: 10.5px; opacity: 0.92; }}
-.sec-h2 {{ font-family: 'Libre Baskerville', serif; font-size: 16px; font-weight: 700; color: #0f172a; margin: 0 0 10px 0; }}
+.sec-h2 {{ font-family: {serif_font}; font-size: 16px; font-weight: 700; color: #0f172a; margin: 0 0 10px 0; }}
 .mm-two {{ display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }}
 .mm-person {{ background: #f8f7ff; border: 1px solid #ede9fe; border-radius: 10px; padding: 12px; }}
-.mm-pname {{ font-family: 'Libre Baskerville', serif; font-size: 15px; font-weight: 700; color: #0f172a; }}
+.mm-pname {{ font-family: {serif_font}; font-size: 15px; font-weight: 700; color: #0f172a; }}
 .mm-pdob {{ font-size: 10px; color: #64748b; margin-bottom: 8px; }}
 .mm-grid-row {{ display: flex; gap: 10px; align-items: flex-start; }}
 .vg-grid.vg-sm {{ display: grid; grid-template-columns: repeat(3, 44px); grid-template-rows: repeat(3, 36px); border: 1.5px solid #c9a96e; background: #fff; flex-shrink: 0; }}
 .vg-cell {{ border: 0.5px solid #e2d1a8; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 1px; }}
 .vg-planet {{ font-size: 6.5px; color: #b48a3e; }}
-.vg-num {{ font-family: 'Libre Baskerville', serif; font-size: 11px; font-weight: 700; color: #0f172a; }}
+.vg-num {{ font-family: {serif_font}; font-size: 11px; font-weight: 700; color: #0f172a; }}
 .mm-stats {{ font-size: 10px; color: #1e293b; flex: 1; }}
 .mm-arch {{ font-size: 9.5px; color: #64748b; }}
 .mm-yogas {{ font-size: 9.5px; color: #334155; margin-top: 8px; }}
@@ -2111,13 +2469,20 @@ body {{ margin: 0; font-family: 'Source Sans 3', sans-serif; color: #1e293b; fon
 .pill-neg {{ background: #fee2e2; color: #991b1b; }}
 .pillar-card {{ border: 1px solid #e2e8f0; border-radius: 8px; padding: 9px 12px; margin-bottom: 8px; }}
 .pillar-top {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }}
-.pillar-title {{ font-family: 'Libre Baskerville', serif; font-size: 12px; font-weight: 700; color: #0f172a; }}
-.pillar-score {{ font-family: 'Libre Baskerville', serif; font-size: 13px; font-weight: 700; color: #15803d; }}
+.pillar-title {{ font-family: {serif_font}; font-size: 12px; font-weight: 700; color: #0f172a; }}
+.pillar-score {{ font-family: {serif_font}; font-size: 13px; font-weight: 700; color: #15803d; }}
 .pillar-max {{ font-size: 10px; color: #64748b; }}
 .pillar-bar-bg {{ height: 5px; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin-bottom: 5px; }}
 .pillar-bar-fill {{ height: 100%; border-radius: 999px; }}
 .pillar-desc {{ font-size: 10px; color: #475569; }}
-.rule-row {{ display: flex; gap: 10px; align-items: center; }}
+.rule-row {{ display: flex; gap: 10px; align-items: center; padding: 7px 10px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 6px; }}
+.rule-box-ok {{ background: #f0fdf4; border-color: #bbf7d0; }}
+.rule-box-warn {{ background: #fffbeb; border-color: #fde68a; }}
+.rule-box-reject {{ background: #fef2f2; border-color: #fecaca; }}
+.rule-pill {{ font-size: 8.5px; font-weight: 700; padding: 1px 7px; border-radius: 999px; flex-shrink: 0; }}
+.rule-box-ok-pill {{ background: #dcfce7; color: #166534; }}
+.rule-box-warn-pill {{ background: #fef3c7; color: #92400e; }}
+.rule-box-reject-pill {{ background: #fee2e2; color: #991b1b; }}
 .rule-badge {{ width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; color: #fff; flex-shrink: 0; }}
 .rule-ok {{ background: #15803d; }}
 .rule-warn {{ background: #d97706; }}
@@ -2127,7 +2492,7 @@ body {{ margin: 0; font-family: 'Source Sans 3', sans-serif; color: #1e293b; fon
 .yg-matrix {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }}
 .yg-card {{ border: 1px solid #e2e8f0; border-radius: 10px; padding: 8px 10px; text-align: center; background: #fff; }}
 .yg-card.yg-running {{ border: 2px solid #7c3aed; background: #fdfcff; }}
-.yg-year {{ font-family: 'Libre Baskerville', serif; font-size: 13px; font-weight: 700; color: #0f172a; }}
+.yg-year {{ font-family: {serif_font}; font-size: 13px; font-weight: 700; color: #0f172a; }}
 .running-badge {{ background: #7c3aed; color: #fff; font-size: 8.5px; font-weight: 700; padding: 1px 6px; border-radius: 999px; margin-left: 4px; }}
 .yg-dates {{ font-size: 8.8px; color: #64748b; margin: 2px 0; }}
 .yg-dasha {{ font-size: 9.5px; font-weight: 700; }}
@@ -2139,7 +2504,7 @@ body {{ margin: 0; font-family: 'Source Sans 3', sans-serif; color: #1e293b; fon
 .dasha-sum-row {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }}
 .ds-box {{ background: #f8f7ff; border: 1px solid #ede9fe; border-radius: 8px; padding: 8px 12px; }}
 .ds-box span {{ display: block; font-size: 9.5px; color: #64748b; }}
-.ds-box strong {{ display: block; font-family: 'Libre Baskerville', serif; font-size: 18px; color: #7c3aed; }}
+.ds-box strong {{ display: block; font-family: {serif_font}; font-size: 18px; color: #7c3aed; }}
 .ds-box small {{ font-size: 9.5px; color: #475569; }}
 .md-bar {{ display: flex; height: 18px; border-radius: 999px; overflow: hidden; margin: 8px 0 4px 0; }}
 .md-seg {{ color: #fff; font-size: 8.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; }}
@@ -2157,20 +2522,34 @@ body {{ margin: 0; font-family: 'Source Sans 3', sans-serif; color: #1e293b; fon
 .ga-neg {{ background: #fef2f2; border-left-color: #b91c1c; }}
 .ga-body {{ font-size: 9.5px; color: #334155; }}
 .yoga-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }}
-.yoga-box {{ border: 1px solid #e5d5a7; background: #fffdf7; border-radius: 8px; padding: 8px 10px; }}
-.yoga-title {{ font-family: 'Libre Baskerville', serif; font-size: 11px; font-weight: 700; margin-bottom: 3px; }}
-.yoga-pts {{ margin: 3px 0 0 14px; padding: 0; font-size: 9.3px; color: #334155; }}
+.yoga-box {{ border: 1px solid #e5d5a7; background: #fffdf7; border-radius: 8px; padding: 8px 10px; break-inside: avoid; }}
+.yoga-box.yoga-pos {{ border-color: #86efac; background: #f0fdf4; }}
+.yoga-box.yoga-neg {{ border-color: #fca5a5; background: #fef2f2; }}
+.yoga-box.yoga-mix {{ border-color: #fcd34d; background: #fffbeb; }}
+.yoga-hdr {{ display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 4px; }}
+.yoga-title {{ font-family: {serif_font}; font-size: 10.8px; font-weight: 700; color: #0f172a; }}
+.ypill {{ font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; }}
+.ypill-pos {{ background: #dcfce7; color: #166534; }}
+.ypill-neg {{ background: #fee2e2; color: #991b1b; }}
+.ypill-mix {{ background: #fef3c7; color: #92400e; }}
+.yoga-desc {{ font-size: 9.3px; color: #334155; line-height: 1.38; margin-bottom: 3px; }}
+.yoga-pts {{ margin: 3px 0 0 14px; padding: 0; font-size: 9.1px; color: #334155; }}
+.outlook-card {{ border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 11px; margin-bottom: 7px; background: #fff; break-inside: avoid; }}
+.outlook-card.outlook-act {{ border: 1.5px solid #7c3aed; background: #faf8ff; }}
+.oc-hdr {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-size: 11px; }}
+.oc-line {{ font-size: 9.8px; color: #334155; margin-bottom: 2px; line-height: 1.38; }}
 .rem-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }}
-.rem-card {{ border: 1px solid #e2e8f0; border-radius: 10px; padding: 8px 10px; }}
-.rem-head {{ display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }}
-.rem-circle {{ width: 22px; height: 22px; border-radius: 50%; background: #f5f3ff; color: #7c3aed; font-weight: 700; font-size: 10.5px; display: inline-flex; align-items: center; justify-content: center; }}
-.rem-title {{ font-family: 'Libre Baskerville', serif; font-size: 11.5px; font-weight: 700; }}
+.rem-card {{ border: 1px solid #e2e8f0; border-radius: 10px; padding: 9px 11px; break-inside: avoid; }}
+.rem-head {{ display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }}
+.rem-circle {{ width: 22px; height: 22px; border-radius: 50%; background: #f5f3ff; color: #7c3aed; font-weight: 700; font-size: 10.5px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }}
+.rem-title {{ font-family: {serif_font}; font-size: 11.2px; font-weight: 700; }}
+.who-box {{ background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; padding: 5px 8px; margin-bottom: 6px; font-size: 9.8px; color: #991b1b; }}
 .rem-sec-lbl {{ font-size: 9.5px; font-weight: 700; color: #7c3aed; margin-top: 4px; }}
 .rem-p {{ font-size: 9.3px; color: #334155; margin: 1px 0; }}
 .crystal-row {{ background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px 10px; margin-bottom: 5px; font-size: 10px; }}
-.sec-h3 {{ font-family: 'Libre Baskerville', serif; font-size: 13.5px; font-weight: 700; margin: 12px 0 8px 0; }}
+.sec-h3 {{ font-family: {serif_font}; font-size: 13.5px; font-weight: 700; margin: 12px 0 8px 0; }}
 .rec-box {{ background: {rec_bg}; border: 1px solid {rec_bd}; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }}
-.rec-title {{ font-family: 'Libre Baskerville', serif; font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }}
+.rec-title {{ font-family: {serif_font}; font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }}
 .next-box {{ border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; }}
 .next-box ol {{ margin: 6px 0 0 16px; padding: 0; font-size: 10.5px; color: #334155; }}
 .next-box li {{ margin-bottom: 3px; }}
@@ -2181,14 +2560,14 @@ body {{ margin: 0; font-family: 'Source Sans 3', sans-serif; color: #1e293b; fon
 <div class="sheet">
     <div class="mm-head">
         <div>
-            <div class="mm-brand">Prepared by {consultant["name"]}</div>
+            <div class="mm-brand">{ML["prepared_by"]} {consultant["name"]}</div>
             <div class="sub-muted">{consultant.get("title", "")} · {consultant["phone"]} · {consultant["email"]}</div>
         </div>
-        <div class="mm-rtitle">Vedic Numerology <strong>Match Making Report</strong></div>
+        <div class="mm-rtitle">{ML["kicker_top"]} <strong>{ML["report_sub"]}</strong></div>
     </div>
-    <div class="kicker">Prepared for</div>
+    <div class="kicker">{ML["prepared_for"]}</div>
     <div class="couple-name">{boy["name"]} &amp; {girl["name"]}</div>
-    <div class="sub-muted">Five pillars of 20 points each · Vedic Compatibility Method</div>
+    <div class="sub-muted">{ML["sub_pillars"]}</div>
 </div>
 
 <div class="score-banner">
@@ -2200,21 +2579,21 @@ body {{ margin: 0; font-family: 'Source Sans 3', sans-serif; color: #1e293b; fon
 </div>
 
 <div class="sheet">
-    <h2 class="sec-h2">The two grids</h2>
+    <h2 class="sec-h2">{ML["the_two_grids"]}</h2>
     <div class="mm-two">
-        {_person_card(boy, "Boy · Groom")}
-        {_person_card(girl, "Girl · Bride")}
+        {_person_card(boy, ML["boy_role"])}
+        {_person_card(girl, ML["girl_role"])}
     </div>
 </div>
 
 <div class="page-break"></div>
 <div class="sheet">
-    <h2 class="sec-h2">The five pillars</h2>
+    <h2 class="sec-h2">{ML["five_pillars"]}</h2>
     {pillars_html}
 </div>
 
 <div class="sheet">
-    <h2 class="sec-h2">Basic matching &amp; rejection rules</h2>
+    <h2 class="sec-h2">{ML["rules_title"]}</h2>
     {rules_html}
     {lit_html}
 </div>
@@ -2223,25 +2602,24 @@ body {{ margin: 0; font-family: 'Source Sans 3', sans-serif; color: #1e293b; fon
 
 <div class="page-break"></div>
 <div class="sheet">
-    <h2 class="sec-h2">Final recommendation &amp; Supporting Crystals</h2>
+    <h2 class="sec-h2">{ML["final_title"]}</h2>
     <div class="rec-box">
         <div class="rec-title">{rec_title}</div>
-        <div><strong>{boy["name"]}</strong> and <strong>{girl["name"]}</strong> score <strong>{score} of 100</strong>. Key areas to review: {m["weak_summary"]}.</div>
-        <div class="sub-muted" style="margin-top:4px;">This is a reason for a careful, detailed consultation before any decision — not a judgement on either person.</div>
+        <div><strong>{boy["name"]}</strong> &amp; <strong>{girl["name"]}</strong> — <strong>{score}/100</strong>.</div>
     </div>
-    <div class="next-box" style="margin-bottom:12px;">
-        <strong>What to do next</strong>
+    <div class="next-box">
+        <strong>{ML["what_next"]}</strong>
         <ol>
-            <li>Review both partners' full 9-year transit grids, Mahadasha cycles, and 5-year litigation windows included in this report.</li>
-            <li>Discuss the weaker pillars ({m["weak_summary"]}) openly before finalizing the match.</li>
-            <li>Follow the personalized Vedic remedies for both partners and use the supporting crystals below.</li>
+            <li>{ML["next_1"]}</li>
+            <li>{ML["next_2"]}</li>
+            <li>{ML["next_3"]}</li>
         </ol>
     </div>
-    <h3 class="sec-h3">Supporting Crystals for Couple Harmony</h3>
+    <h3 class="sec-h3">{ML["crystals_title"]}</h3>
     {crystals_html}
     <div class="mm-foot">
-        <strong>Disclaimer:</strong> Prepared using Vedic numerology for guidance. Report generated on {m["generated_on"]}.<br>
-        Prepared by {consultant["name"]} · {consultant["phone"]} · {consultant["email"]}
+        <div>{ML["disclaimer"]} {m["generated_on"]}.</div>
+        <div style="margin-top:3px;">{ML["prepared_by"]} {consultant["name"]} · {consultant["phone"]} · {consultant["email"]}</div>
     </div>
 </div>
 </body>

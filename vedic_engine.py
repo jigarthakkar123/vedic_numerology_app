@@ -555,14 +555,18 @@ def calculate_lifetime_antardasha(dob: date, target_date: date, md_all_periods: 
 
 
 def calculate_nine_year_grids_and_outlook(
-    natal_counts: Dict[int, int], bn: int, dn: int, lifetime_ad: list, lang: str
+    natal_counts: Dict[int, int], bn: int, dn: int, lifetime_ad: list, lang: str, forward_only: bool = False
 ) -> list:
     """
-    Builds 9-year window centered on the running Antardasha year, with overlaid 3x3 Vedic grids
+    Builds 9-year window centered on the running Antardasha year (or starting from
+    the running year when forward_only=True), with overlaid 3x3 Vedic grids
     and outlook tags (Money, Assets, Travel, Disputes, Health).
     """
     active_idx = next((i for i, r in enumerate(lifetime_ad) if r["is_active"]), 0)
-    start_idx = max(0, min(len(lifetime_ad) - 9, active_idx - 4))
+    if forward_only:
+        start_idx = max(0, min(len(lifetime_ad) - 9, active_idx))
+    else:
+        start_idx = max(0, min(len(lifetime_ad) - 9, active_idx - 4))
     window = lifetime_ad[start_idx : start_idx + 9]
 
     grid_order = [3, 1, 9, 6, 7, 5, 2, 8, 4]
@@ -1801,8 +1805,26 @@ def compile_matchmaking_report(
     Computes the 5-pillar Vedic Numerology Match Making Report (100 points total)
     for Boy (Groom) and Girl (Bride).
     """
+    lang = lang if lang in ("en", "hi", "gu") else "en"
     boy_profile = compile_full_numerology_profile(boy_name, boy_dob, gender="Male", lang=lang)
     girl_profile = compile_full_numerology_profile(girl_name, girl_dob, gender="Female", lang=lang)
+
+    boy_forward_grids = calculate_nine_year_grids_and_outlook(
+        boy_profile["natal_grid"]["counts"],
+        boy_profile["core_numbers"]["bn"],
+        boy_profile["core_numbers"]["dn"],
+        boy_profile["dasha"]["lifetime_ad"],
+        lang,
+        forward_only=True,
+    )
+    girl_forward_grids = calculate_nine_year_grids_and_outlook(
+        girl_profile["natal_grid"]["counts"],
+        girl_profile["core_numbers"]["bn"],
+        girl_profile["core_numbers"]["dn"],
+        girl_profile["dasha"]["lifetime_ad"],
+        lang,
+        forward_only=True,
+    )
 
     today = date.today()
     def _age_from_iso(iso_str: str) -> int:
@@ -2040,6 +2062,7 @@ def compile_matchmaking_report(
     weak_str = " and ".join(weak_pillars[:2]) if weak_pillars else "none"
 
     return {
+        "lang": lang,
         "consultant": boy_profile["consultant"],
         "boy": {
             "name": boy_name,
@@ -2077,6 +2100,8 @@ def compile_matchmaking_report(
         "generated_on": today.strftime("%d %B %Y"),
         "boy_full": boy_profile,
         "girl_full": girl_profile,
+        "boy_forward_grids": boy_forward_grids,
+        "girl_forward_grids": girl_forward_grids,
     }
 
 

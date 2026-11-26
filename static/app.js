@@ -864,7 +864,7 @@ function getMatchMakingPayload() {
         boy_dob: document.getElementById('mm-boy-dob')?.value || '',
         girl_name: (document.getElementById('mm-girl-name')?.value || '').trim(),
         girl_dob: document.getElementById('mm-girl-dob')?.value || '',
-        lang: 'en'
+        lang: document.getElementById('mm-lang')?.value || 'en'
     };
 }
 
