@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Vedic Numerology PDF Report Generator - Luxury 10-Chapter Master Life Manual Edition
-Authored & Certified by: Jigar Thakkar, Certified Numerologist & Vastu Consultant (+91 9377614772 | jigar93776@gmail.com)
-Generates user-friendly, progressive 10-page PDF reports in English, Hindi, and Gujarati.
-Structured in 10 distinct, dedicated chapters (1 topic per page) with high curiosity hooks,
-clean visual breathing room, luxury gold-trimmed styling, and complete responsive rendering.
+Vedic Numerology PDF Report Generator - Editorial Professional Edition
+Authored & Certified by: Jigar Thakkar, Certified Numerologist & Vastu Consultant
+Generates clean, white, editorial-grade multi-page PDF reports in English, Hindi, and Gujarati.
 Cross-platform: Supports Microsoft Edge on Windows and Chromium/Chrome on Linux cloud deployments.
 """
 
 import os
 import subprocess
 import shutil
-from typing import Dict, Any
+from typing import Dict, Any, List
+
 
 def get_browser_binary() -> str:
     """Auto-detects browser binary across Windows and Linux cloud environments."""
@@ -38,11 +37,364 @@ def get_browser_binary() -> str:
                 return c
         return shutil.which("chromium") or shutil.which("google-chrome") or "chromium"
 
+
+# Planet color palette for badges & timeline bars (numbers 1-9)
+NUM_COLORS = {
+    1: "#f59e0b",  # Sun - Amber
+    2: "#06b6d4",  # Moon - Cyan
+    3: "#ca8a04",  # Jupiter - Gold
+    4: "#15803d",  # Rahu - Forest
+    5: "#10b981",  # Mercury - Emerald
+    6: "#ec4899",  # Venus - Pink
+    7: "#8b5cf6",  # Ketu - Violet
+    8: "#312e81",  # Saturn - Indigo
+    9: "#dc2626",  # Mars - Crimson
+}
+
+# Localized labels for the editorial report layout
+REPORT_LABELS = {
+    "en": {
+        "report_kicker": "Vedic Numerology",
+        "report_title": "Numerology Report",
+        "caution_banner": "This report should be read in consultation with an experienced numerologist.",
+        "prepared_for": "Prepared for",
+        "born": "Born",
+        "as_on": "As on",
+        "basic_number": "Basic Number",
+        "destiny_number": "Destiny Number",
+        "mahadasha": "Mahadasha",
+        "antardasha": "Antardasha",
+        "pratyantar": "Pratyantar",
+        "pratyantar_dasha": "Pratyantar Dasha",
+        "birth_grid": "Birth grid",
+        "nums_in_grid": "Numbers in the grid:",
+        "missing_nums": "Missing numbers:",
+        "pos_and_neg": "Positive and negative:",
+        "personality": "Personality",
+        "year_grids": "Year grids",
+        "year_grids_sub": "Birth grid with each year's Mahadasha and Antardasha. The running year is in the centre.",
+        "running": "Running",
+        "birth": "Birth",
+        "age": "Age",
+        "age_lower": "age",
+        "cycle": "Cycle",
+        "md": "MD",
+        "ad": "AD",
+        "pd": "PD",
+        "start": "Start",
+        "end": "End",
+        "from": "From",
+        "to": "To",
+        "planet": "Planet",
+        "days": "Days",
+        "now": "now",
+        "adjustment": "adjustment",
+        "ad_formula": "From each birthday: day + month + last two digits of the year + the day's planet number.",
+        "pd_formula": "Within Antardasha {ad}, {start} to {end}. Each period lasts its number × 8 days.",
+        "pd_adj_note": "The last period is shorter: it adjusts to the end of the Antardasha year.",
+        "prof_report": "Professional report",
+        "life_path": "Life Path",
+        "basic_pct": "Basic 30%",
+        "destiny_pct": "Destiny 40%",
+        "other_pct": "Other numbers 30%",
+        "life_path_dn": "Life Path · Destiny Number · Bhagyank",
+        "personality_bn": "Personality · Basic Number · Moolank",
+        "friendly": "Friendly",
+        "neutral": "Neutral",
+        "enemy": "Enemy",
+        "compat_friendly": "Personality and life path reinforce each other naturally, creating smooth momentum and confidence.",
+        "compat_neutral": "Personality and life path neither help nor hinder each other. Progress follows effort and awareness.",
+        "compat_enemy": "Personality and life path pull in different directions, creating inner tension that rewards conscious balance.",
+        "other_together": "Other numbers together (30%):",
+        "lucky_dates": "Lucky dates",
+        "fav_days": "Favourable days",
+        "lucky_colors": "Lucky colours",
+        "gemstone": "Gemstone",
+        "professions_title": "Professions suited to Basic Number {bn}",
+        "grid_analysis": "Grid analysis",
+        "once": "once",
+        "times": "times",
+        "yogas_title": "Yogas in the birth grid",
+        "predictions": "Predictions",
+        "from_birth_grid": "From the birth grid",
+        "this_year": "This year",
+        "nine_year_outlook": "Nine-year outlook",
+        "year": "Year",
+        "money": "Money",
+        "assets": "Assets",
+        "travel": "Travel",
+        "disputes": "Disputes",
+        "health": "Health",
+        "remedies": "Remedies",
+        "remedies_intro": "A number that appears two or more times is in affliction — its energy is too strong. Remedies balance it, reduce its negative expression and strengthen its positive side.",
+        "appears_grid": "appears {n} times in the birth grid",
+        "active_period_neg": "active in affliction during current period",
+        "mantras_practices": "Mantras and practices",
+        "service_seva": "Service (seva)",
+        "donations": "Donations",
+        "colours": "Colours",
+        "fasting": "Fasting",
+        "supporting_crystals": "Supporting crystals",
+        "prepared_by": "Prepared by",
+        "disclaimer": "Numerology offers guidance and reflection, not certainty. It is not medical, legal or financial advice.",
+    },
+    "hi": {
+        "report_kicker": "वैदिक अंकशास्त्र",
+        "report_title": "अंकशास्त्र रिपोर्ट",
+        "caution_banner": "यह रिपोर्ट किसी अनुभवी अंकशास्त्री के परामर्श के साथ पढ़ी जानी चाहिए।",
+        "prepared_for": "के लिए तैयार",
+        "born": "जन्म",
+        "as_on": "दिनांक",
+        "basic_number": "मूलांक (Basic Number)",
+        "destiny_number": "भाग्यांक (Destiny Number)",
+        "mahadasha": "महादशा",
+        "antardasha": "अंतर्दशा",
+        "pratyantar": "प्रत्यंतर दशा",
+        "pratyantar_dasha": "प्रत्यंतर दशा",
+        "birth_grid": "जन्म कुंडली (Birth Grid)",
+        "nums_in_grid": "ग्रिड में अंक:",
+        "missing_nums": "अनुपस्थित अंक:",
+        "pos_and_neg": "सकारात्मक और नकारात्मक:",
+        "personality": "व्यक्तित्व",
+        "year_grids": "वार्षिक ग्रिड (Year Grids)",
+        "year_grids_sub": "प्रत्येक वर्ष की महादशा और अंतर्दशा के साथ जन्म ग्रिड। वर्तमान वर्ष केंद्र में है।",
+        "running": "वर्तमान",
+        "birth": "जन्म",
+        "age": "आयु",
+        "age_lower": "आयु",
+        "cycle": "चक्र",
+        "md": "महादशा",
+        "ad": "अंतर्दशा",
+        "pd": "प्रत्यंतर",
+        "start": "प्रारंभ",
+        "end": "समाप्त",
+        "from": "से",
+        "to": "तक",
+        "planet": "ग्रह",
+        "days": "दिन",
+        "now": "वर्तमान",
+        "adjustment": "समायोजन",
+        "ad_formula": "प्रत्येक जन्मदिन से: दिन + माह + वर्ष के अंतिम दो अंक + उस दिन का ग्रह अंक।",
+        "pd_formula": "अंतर्दशा {ad} के अंतर्गत, {start} से {end}। प्रत्येक अवधि अपने अंक × 8 दिन की होती है।",
+        "pd_adj_note": "अंतिम अवधि छोटी होती है: यह अंतर्दशा वर्ष के अंत तक समायोजित होती है।",
+        "prof_report": "व्यावसायिक रिपोर्ट",
+        "life_path": "जीवन पथ (Life Path)",
+        "basic_pct": "मूलांक 30%",
+        "destiny_pct": "भाग्यांक 40%",
+        "other_pct": "अन्य अंक 30%",
+        "life_path_dn": "जीवन पथ · भाग्यांक (Destiny Number)",
+        "personality_bn": "व्यक्तित्व · मूलांक (Basic Number)",
+        "friendly": "मित्रवत",
+        "neutral": "तटस्थ",
+        "enemy": "शत्रुवत",
+        "compat_friendly": "व्यक्तित्व और जीवन पथ स्वाभाविक रूप से एक-दूसरे का समर्थन करते हैं, जिससे सहज गति और आत्मविश्वास मिलता है।",
+        "compat_neutral": "व्यक्तित्व और जीवन पथ न तो सहायता करते हैं और न ही बाधा डालते हैं। प्रगति प्रयास और जागरूकता से होती है।",
+        "compat_enemy": "व्यक्तित्व और जीवन पथ अलग दिशाओं में खींचते हैं, जिसे सचेत संतुलन द्वारा साधा जा सकता है।",
+        "other_together": "अन्य अंक एक साथ (30%):",
+        "lucky_dates": "शुभ तिथियाँ",
+        "fav_days": "अनुकूल दिन",
+        "lucky_colors": "शुभ रंग",
+        "gemstone": "रत्न",
+        "professions_title": "मूलांक {bn} के लिए उपयुक्त व्यवसाय",
+        "grid_analysis": "ग्रिड विश्लेषण",
+        "once": "एक बार",
+        "times": "बार",
+        "yogas_title": "जन्म ग्रिड में योग",
+        "predictions": "भविष्यफल",
+        "from_birth_grid": "जन्म ग्रिड से",
+        "this_year": "इस वर्ष",
+        "nine_year_outlook": "नौ वर्षीय दृष्टिकोण",
+        "year": "वर्ष",
+        "money": "धन",
+        "assets": "संपत्ति",
+        "travel": "यात्रा",
+        "disputes": "विवाद",
+        "health": "स्वास्थ्य",
+        "remedies": "उपाय",
+        "remedies_intro": "जो अंक दो या अधिक बार आता है वह पीड़ा में होता है — उसकी ऊर्जा बहुत प्रबल होती है। उपाय उसे संतुलित करते हैं और सकारात्मक पक्ष को बढ़ाते हैं।",
+        "appears_grid": "जन्म ग्रिड में {n} बार आया है",
+        "active_period_neg": "वर्तमान अवधि में नकारात्मक प्रभाव में सक्रिय",
+        "mantras_practices": "मंत्र और साधना",
+        "service_seva": "सेवा",
+        "donations": "दान",
+        "colours": "रंग",
+        "fasting": "व्रत",
+        "supporting_crystals": "सहायक क्रिस्टल",
+        "prepared_by": "द्वारा तैयार",
+        "disclaimer": "अंकशास्त्र मार्गदर्शन और चिंतन प्रदान करता है, निश्चितता नहीं। यह चिकित्सा, कानूनी या वित्तीय सलाह नहीं है।",
+    },
+    "gu": {
+        "report_kicker": "વૈદિક અંકશાસ્ત્ર",
+        "report_title": "અંકશાસ્ત્ર રિપોર્ટ",
+        "caution_banner": "આ રિપોર્ટ અનુભવી અંકશાસ્ત્રીના માર્ગદર્શન સાથે વાંચવો જોઈએ.",
+        "prepared_for": "માટે તૈયાર",
+        "born": "જન્મ",
+        "as_on": "તારીખ",
+        "basic_number": "મૂળાંક (Basic Number)",
+        "destiny_number": "ભાગ્યાંક (Destiny Number)",
+        "mahadasha": "મહાદશા",
+        "antardasha": "અંતર્દશા",
+        "pratyantar": "પ્રત્યંતર દશા",
+        "pratyantar_dasha": "પ્રત્યંતર દશા",
+        "birth_grid": "જન્મ કુંડળી (Birth Grid)",
+        "nums_in_grid": "ગ્રીડમાં અંકો:",
+        "missing_nums": "ખૂટતા અંકો:",
+        "pos_and_neg": "સકારાત્મક અને નકારાત્મક:",
+        "personality": "વ્યક્તિત્વ",
+        "year_grids": "વાર્ષિક ગ્રીડ (Year Grids)",
+        "year_grids_sub": "દરેક વર્ષની મહાદશા અને અંતર્દશા સાથે જન્મ ગ્રીડ. ચાલુ વર્ષ કેન્દ્રમાં છે.",
+        "running": "ચાલુ",
+        "birth": "જન્મ",
+        "age": "ઉંમર",
+        "age_lower": "ઉંમર",
+        "cycle": "ચક્ર",
+        "md": "મહાદશા",
+        "ad": "અંતર્દશા",
+        "pd": "પ્રત્યંતર",
+        "start": "શરૂઆત",
+        "end": "અંત",
+        "from": "થી",
+        "to": "સુધી",
+        "planet": "ગ્રહ",
+        "days": "દિવસ",
+        "now": "હાલ",
+        "adjustment": "સમાયોજન",
+        "ad_formula": "દરેક જન્મદિવસથી: દિવસ + મહિનો + વર્ષના છેલ્લા બે અંક + તે દિવસનો ગ્રહ અંક.",
+        "pd_formula": "અંતર્દશા {ad} હેઠળ, {start} થી {end}. દરેક સમયગાળો તેના અંક × 8 દિવસનો હોય છે.",
+        "pd_adj_note": "છેલ્લો સમયગાળો ટૂંકો હોય છે: તે અંતર્દશા વર્ષના અંત સુધી સમાયોજિત થાય છે.",
+        "prof_report": "વ્યાવસાયિક રિપોર્ટ",
+        "life_path": "જીવન પથ (Life Path)",
+        "basic_pct": "મૂળાંક 30%",
+        "destiny_pct": "ભાગ્યાંક 40%",
+        "other_pct": "અન્ય અંકો 30%",
+        "life_path_dn": "જીવન પથ · ભાગ્યાંક (Destiny Number)",
+        "personality_bn": "વ્યક્તિત્વ · મૂળાંક (Basic Number)",
+        "friendly": "મિત્ર",
+        "neutral": "તટસ્થ",
+        "enemy": "શત્રુ",
+        "compat_friendly": "વ્યક્તિત્વ અને જીવન પથ કુદરતી રીતે એકબીજાને ટેકો આપે છે, જેનાથી સરળ પ્રગતિ અને આત્મવિશ્વાસ મળે છે.",
+        "compat_neutral": "વ્યક્તિત્વ અને જીવન પથ ન તો મદદ કરે છે કે ન તો અવરોધે છે. પ્રગતિ પ્રયત્ન અને જાગૃતિથી થાય છે.",
+        "compat_enemy": "વ્યક્તિત્વ અને જીવન પથ અલગ દિશામાં ખેંચે છે, જેને સભાન સંતુલનથી સાધી શકાય છે.",
+        "other_together": "અન્ય અંકો સાથે (30%):",
+        "lucky_dates": "શુભ તારીખો",
+        "fav_days": "અનુકૂળ દિવસો",
+        "lucky_colors": "શુભ રંગો",
+        "gemstone": "રત્ન",
+        "professions_title": "મૂળાંક {bn} માટે યોગ્ય વ્યવસાયો",
+        "grid_analysis": "ગ્રીડ વિશ્લેષણ",
+        "once": "એક વાર",
+        "times": "વાર",
+        "yogas_title": "જન્મ ગ્રીડમાં યોગ",
+        "predictions": "ભવિષ્યફળ",
+        "from_birth_grid": "જન્મ ગ્રીડ પરથી",
+        "this_year": "આ વર્ષ",
+        "nine_year_outlook": "નવ વર્ષીય દૃષ્ટિકોણ",
+        "year": "વર્ષ",
+        "money": "ધન",
+        "assets": "સંપત્તિ",
+        "travel": "પ્રવાસ",
+        "disputes": "વિવાદ",
+        "health": "સ્વાસ્થ્ય",
+        "remedies": "ઉપાયો",
+        "remedies_intro": "જે અંક બે કે તેથી વધુ વખત આવે છે તે પીડામાં હોય છે — તેની ઊર્જા ખૂબ પ્રબળ હોય છે. ઉપાયો તેને સંતુલિત કરે છે અને સકારાત્મક પાસાંને મજબૂત બનાવે છે.",
+        "appears_grid": "જન્મ ગ્રીડમાં {n} વખત આવે છે",
+        "active_period_neg": "ચાલુ સમયગાળામાં નકારાત્મક અસરમાં સક્રિય",
+        "mantras_practices": "મંત્ર અને સાધના",
+        "service_seva": "સેવા",
+        "donations": "દાન",
+        "colours": "રંગો",
+        "fasting": "ઉપવાસ",
+        "supporting_crystals": "સહાયક ક્રિસ્ટલ્સ",
+        "prepared_by": "દ્વારા તૈયાર",
+        "disclaimer": "અંકશાસ્ત્ર માર્ગદર્શન અને ચિંતન આપે છે, નિશ્ચિતતા નહીં. તે તબીબી, કાનૂની કે નાણાકીય સલાહ નથી.",
+    }
+}
+
+ARCHETYPES_EN = {
+    1: ("The Radiant Leader", ["Leadership", "Drive", "Clarity"], "Number 1 is the energy of self. It carries leadership, confidence and a clear sense of identity. These are the people who take initiative, step forward when everyone else hesitates, and pull others along through sheer drive and clarity."),
+    2: ("The Intuitive Harmoniser", ["Intuition", "Empathy", "Diplomacy"], "Number 2 is the energy of sensitivity and partnership. Ruled by the Moon, it brings emotional depth, imagination, diplomacy and a natural gift for reading people and building harmony."),
+    3: ("The Wise Communicator", ["Wisdom", "Creativity", "Expression"], "Number 3 is the energy of expansion and expression. Ruled by Jupiter, it carries optimism, teaching ability, creative intelligence and a natural flair for inspiring others."),
+    4: ("The Grounded Architect", ["Discipline", "Structure", "Innovation"], "Number 4 is the energy of practical execution. Ruled by Rahu, it brings unconventional thinking, relentless work ethic, system-building and resilience under pressure."),
+    5: ("The Dynamic Strategist", ["Adaptability", "Wit", "Commerce"], "Number 5 is the energy of movement and intellect. Ruled by Mercury, it confers sharp communication, commercial instinct, versatility and magnetic social energy."),
+    6: ("The Nurturing Art Lover", ["Love", "Beauty", "Harmony"], "Number 6 is the energy of beauty. Ruled by Venus, it carries care, creativity, harmony and responsibility. These people are magnetic without effort — they draw others in and elevate every space they occupy."),
+    7: ("The Mystic Seeker", ["Insight", "Research", "Spirituality"], "Number 7 is the energy of depth and introspection. Ruled by Ketu, it brings analytical brilliance, spiritual curiosity, keen observation and a search for deeper truth."),
+    8: ("The Karma Builder", ["Ambition", "Endurance", "Justice"], "Number 8 is the energy of material mastery and justice. Ruled by Saturn, it brings patience, organizational power, resilience through tests and enduring long-term success."),
+    9: ("The Courageous Humanitarian", ["Courage", "Passion", "Service"], "Number 9 is the energy of completion and valor. Ruled by Mars, it carries fierce determination, protective strength, idealism and a desire to champion meaningful causes."),
+}
+
+PROFESSIONS_BY_BN = {
+    1: [("Leadership", "Founder, CEO, Startup Leader, Project Lead, Creative Director, Command-level Officer"),
+        ("Power", "IAS / IPS, Senior Corporate Executive, Real Estate Developer, Hospital Administrator, Media Head"),
+        ("Individuality", "Solopreneur, Independent Consultant, Signature-Style Artist, Author, Innovator"),
+        ("Authority", "Judge, Senior Lawyer, Police / Defence Officer, Aviation or Ship Captain, Sports Coach"),
+        ("Ambition", "Investment Banker, Private Equity, High-Growth Tech, Sales Leadership, Politics")],
+    2: [("Counsel", "Psychologist, Life Coach, HR Director, Mediator, Relationship Counsellor"),
+        ("Creative", "Writer, Poet, Musician, Interior Designer, Film & Storytelling"),
+        ("Care", "Healthcare, Nursing, Hospitality, Wellness Retreat Founder, Nutrition"),
+        ("Diplomacy", "Public Relations, Client Success, International Relations, Brand Communications")],
+    3: [("Knowledge", "Professor, Educator, Mentor, Corporate Trainer, Educational Entrepreneur"),
+        ("Advisory", "Management Consultant, Legal Advisor, Financial Planner, Astrologer / Numerologist"),
+        ("Media", "Public Speaker, Journalist, Podcaster, Publishing, Content Strategist"),
+        ("Leadership", "Institution Builder, Non-Profit Director, Cultural & Event Producer")],
+    4: [("Engineering", "Software Architect, Systems Engineer, Civil / Structural Engineer, Data Scientist"),
+        ("Operations", "Supply Chain Head, Manufacturing Director, Quality & Compliance Lead, Project Manager"),
+        ("Research", "Forensic Analyst, Cybersecurity, Investigative Journalism, Technical Auditor"),
+        ("Enterprise", "Logistics, Infrastructure, Precision Trades, Contrarian Investing")],
+    5: [("Commerce", "Entrepreneur, Trader, E-Commerce Founder, Business Development, Venture Partner"),
+        ("Communication", "Marketing Director, Sales Strategist, Copywriter, PR & Media Anchor"),
+        ("Travel & Tech", "Aviation, Tourism, SaaS Product Manager, Digital Growth Lead"),
+        ("Finance", "Stock Market Analyst, Wealth Advisor, FinTech, Brokerage")],
+    6: [("Design", "Fashion Designer, Luxury Brand Founder, Interior Architect, UI/UX Director"),
+        ("Hospitality", "Fine Dining, Boutique Hotelier, Event Curation, Lifestyle Concierge"),
+        ("Arts & Media", "Actor, Film Producer, Musician, Beauty & Cosmetics, Art Curator"),
+        ("Harmony", "Family Business Leadership, Real Estate Staging, Wellness & Aesthetics")],
+    7: [("Research", "Scientist, AI / ML Researcher, Philosopher, Think-Tank Analyst, Historian"),
+        ("Healing", "Spiritual Guide, Holistic Healer, Psychotherapist, Yoga & Meditation Teacher"),
+        ("Strategy", "Intelligence Analyst, Risk Strategist, Patent Specialist, Niche Consultant"),
+        ("Writing", "Investigative Author, Scriptwriter, Technical Writer, Documentary Maker")],
+    8: [("Industry", "Industrialist, Real Estate Baron, Infrastructure, Mining & Energy, Manufacturing"),
+        ("Finance", "CFO, Banking Executive, Private Equity, Chartered Accountant, Tax Strategist"),
+        ("Law & Governance", "Judiciary, Corporate Law, Regulatory Affairs, Public Administration"),
+        ("Scale", "Operations Executive, Turnaround Specialist, Institutional Asset Management")],
+    9: [("Action", "Defence Services, Fire & Rescue, Athletics, Martial Arts, Adventure Leadership"),
+        ("Impact", "Social Entrepreneur, NGO Founder, Humanitarian Aid, Public Policy"),
+        ("Medicine", "Surgeon, Emergency Medicine, Sports Physiotherapy, Trauma Care"),
+        ("Command", "Operations Commander, Security Director, Crisis Management, Politics")],
+}
+
+SUPPORTING_CRYSTALS = [
+    ("Clear Quartz", "Stone of Power — amplifies energy and intention; cleanses and aligns all chakras"),
+    ("Citrine", "Attracts wealth, status and knowledge; motivation and confidence"),
+    ("Pyrite", "Protection; attracts wealth and financial stability; strengthens willpower"),
+    ("Amethyst", "Calm and intuition — relieves stress, irritability, anger, fear and anxiety"),
+    ("Aventurine", "Balances the nervous system; reduces stress and irritation"),
+    ("Tiger's Eye", "Courage and action — releases fear, strengthens willpower and decision-making"),
+]
+
+GRID_PLANETS_EN = {
+    3: "Jupiter", 1: "Sun", 9: "Mars",
+    6: "Venus", 7: "Ketu", 5: "Mercury",
+    2: "Moon", 8: "Saturn", 4: "Rahu",
+}
+
+
+def _fmt_dash(date_str: str) -> str:
+    return str(date_str or "").replace("/", "-")
+
+
+def _lucky_dates(bn: int) -> str:
+    dates = [bn]
+    d = bn + 9
+    while d <= 31:
+        dates.append(d)
+        d += 9
+    return " · ".join(str(x) for x in dates)
+
+
 def build_report_html(data: Dict[str, Any]) -> str:
     """
-    Constructs a complete HTML document for the luxury 10-page Vedic Numerology Report.
-    Features progressive 10-chapter narrative flow (1 topic per page), curiosity hooks,
-    and crisp luxury typography.
+    Constructs the clean, white, editorial-grade Vedic Numerology HTML report
+    matching the 12-page professional layout across English, Hindi, and Gujarati.
     """
     client = data["client"]
     consultant = data.get("consultant", {
@@ -50,1983 +402,1419 @@ def build_report_html(data: Dict[str, Any]) -> str:
         "phone": "+91 9377614772",
         "email": "jigar93776@gmail.com",
         "title": "Certified Vedic Numerologist & Vastu Consultant",
-        "copyright": "© 2026 Jigar Thakkar. All Rights Reserved."
+        "copyright": "© 2026 Jigar Thakkar. All Rights Reserved.",
     })
     core = data["core_numbers"]
     compass = data.get("compass", {})
-    grid = data["grid"]
+    natal_grid = data.get("natal_grid", data["grid"])
+    dasha = data.get("dasha", {})
     vibrations = data.get("vibrations", [])
     m_qualities = data.get("moolank_qualities", [])
-    m_precautions = data.get("moolank_precautions", [])
     b_qualities = data.get("bhagyank_qualities", [])
-    b_precautions = data.get("bhagyank_precautions", [])
-    dasha = data.get("dasha", {})
     yogas = data.get("yogas", [])
     preds = data.get("predictions", {})
-    remedies = data.get("remedies", {})
+    remedies_by_num = data.get("remedies_by_number", [])
     ui = data.get("ui", {})
+
     lang = client.get("lang", "en")
+    if lang not in REPORT_LABELS:
+        lang = "en"
+    L = REPORT_LABELS[lang]
+
     tier = str(data.get("tier", client.get("tier", "complete_499"))).lower().strip()
     include_remedies = (tier != "essential_299")
-    is_vip = (tier == "vip_1199")
 
-    # Fonts definition based on language
-    font_family = "'Plus Jakarta Sans', -apple-system, sans-serif"
+    bn = int(core["bn"])
+    dn = int(core["dn"])
+    bn_planet = core["bn_planet"]
+    dn_planet = core["dn_planet"]
+
+    # Fonts
     if lang == "hi":
-        font_family = "'Plus Jakarta Sans', 'Noto Sans Devanagari', 'Mangal', -apple-system, sans-serif"
+        body_font = "'Source Sans 3', 'Noto Sans Devanagari', 'Mangal', sans-serif"
+        serif_font = "'Libre Baskerville', 'Noto Serif Devanagari', 'Noto Sans Devanagari', serif"
+        google_fonts = "https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Devanagari:wght@400;600;700&family=Source+Sans+3:wght@400;600;700&display=swap"
     elif lang == "gu":
-        font_family = "'Plus Jakarta Sans', 'Shruti', 'Noto Sans Gujarati', -apple-system, sans-serif"
-
-    # Dual Vedic Grids HTML
-    natal_grid = data.get("natal_grid", grid)
-    dasha_grid = data.get("dasha_grid", {})
-    three_tier = data.get("three_tier_forecast", {})
-
-    # Natal Grid Cells HTML (3x3)
-    natal_grid_html = ""
-    for cell in natal_grid["cells"]:
-        if cell["count"] > 0:
-            natal_grid_html += f'<div class="vedic-cell natal-cell active">{cell["str"]}</div>\n'
-        else:
-            natal_grid_html += f'<div class="vedic-cell natal-cell empty">-</div>\n'
-
-    # Dasha Grid Cells HTML (3x3) with multi-color chips
-    dasha_grid_html = ""
-    for cell in dasha_grid.get("cells", natal_grid["cells"]):
-        items = cell.get("items", [])
-        if items:
-            chips_html = "".join([f'<span class="chip chip-{it["source"]}">{it["val"]}</span>' for it in items])
-            dasha_grid_html += f'<div class="vedic-cell dasha-cell active">{chips_html}</div>\n'
-        else:
-            dasha_grid_html += f'<div class="vedic-cell dasha-cell empty">-</div>\n'
-
-    # Moolank Qualities List HTML (expanded for dedicated page)
-    m_qual_html = "".join([f'<li class="quality-item-clean"><span class="bullet-icon">✦</span><span>{q}</span></li>\n' for q in m_qualities[:6]])
-
-    # Moolank Precautions Grid HTML
-    m_prec_html = "".join([f'<li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>{p}</span></li>\n' for p in m_precautions[:6]])
-
-    # Bhagyank Qualities List HTML (expanded for dedicated page)
-    b_qual_html = "".join([f'<li class="quality-item-clean"><span class="bullet-icon">✦</span><span>{q}</span></li>\n' for q in b_qualities[:6]])
-
-    # Bhagyank Precautions Grid HTML
-    b_prec_html = "".join([f'<li class="precaution-item-clean"><span class="precaution-icon">⚠</span><span>{p}</span></li>\n' for p in b_precautions[:6]])
-
-    # 3-Tier Forecast HTML
-    md_data = three_tier.get("mahadasha", {})
-    ad_data = three_tier.get("antardasha", {})
-    pd_data = three_tier.get("pratyantar_dasha", {})
-    roadmap_data = three_tier.get("pd_roadmap", [])
-
-    # Roadmap table rows (Full 9-Phase for dedicated roadmap page)
-    roadmap_rows_html = ""
-    for r in roadmap_data:
-        active_cls = "active-phase" if r.get("is_active") else ""
-        badge_txt = "★ ACTIVE" if r.get("is_active") else r.get("tone", "")
-        roadmap_rows_html += f"""
-        <tr class="{active_cls}">
-            <td style="font-weight:700; text-align:center;">Phase {r['phase']}</td>
-            <td><strong>{r['planet']}</strong></td>
-            <td style="text-align:center;"><strong>No. {r['number']}</strong></td>
-            <td style="text-align:center;">{r['duration_days']} Days</td>
-            <td style="text-align:center;">{r['start_str']}</td>
-            <td style="text-align:center;">{r['end_str']}</td>
-            <td style="text-align:center;"><span class="status-chip {'active' if r.get('is_active') else ''}">{badge_txt}</span></td>
-        </tr>
-        """
-
-    # Yogas Cards HTML (Page 9) - Auspicious & Inauspicious Doshas
-    auspicious_list = data.get("auspicious_yogas", [])
-    if not auspicious_list:
-        auspicious_list = [y for y in yogas if y.get("category") != "inauspicious"]
-    inauspicious_list = data.get("inauspicious_yogas", [])
-    if not inauspicious_list:
-        inauspicious_list = [y for y in yogas if y.get("category") == "inauspicious"]
-
-    # Auspicious HTML (Top 3-4)
-    auspicious_yogas_html = ""
-    for y in auspicious_list[:4]:
-        auspicious_yogas_html += f"""
-        <div class="yoga-card-clean auspicious">
-            <div class="yoga-card-header">
-                <div class="yoga-title">{y['name']}</div>
-                <span class="yoga-pill gold">{y['tag']}</span>
-            </div>
-            <div class="yoga-desc">{y['desc']}</div>
-        </div>
-        """
-
-    # Inauspicious Doshas HTML
-    inauspicious_doshas_html = ""
-    if inauspicious_list:
-        for y in inauspicious_list[:3]:
-            remedy_text = y.get('remedy', '')
-            remedy_html = f'<div class="yoga-remedy-strip"><strong>{ui.get("mitigation_remedy", "Remedial Mitigation Key:")}</strong> {remedy_text}</div>' if remedy_text else ''
-            inauspicious_doshas_html += f"""
-            <div class="yoga-card-clean inauspicious">
-                <div class="yoga-card-header">
-                    <div class="yoga-title" style="color: #991b1b;">{y['name']}</div>
-                    <span class="yoga-pill ruby">{y['tag']}</span>
-                </div>
-                <div class="yoga-desc">{y['desc']}</div>
-                {remedy_html}
-            </div>
-            """
+        body_font = "'Source Sans 3', 'Noto Sans Gujarati', 'Shruti', sans-serif"
+        serif_font = "'Libre Baskerville', 'Noto Serif Gujarati', 'Noto Sans Gujarati', serif"
+        google_fonts = "https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Gujarati:wght@400;600;700&family=Source+Sans+3:wght@400;600;700&display=swap"
     else:
-        no_dosha_text = {
-            "en": "No Adverse Karmic Doshas Active in Chart • The planetary frequencies remain protected by divine harmony.",
-            "hi": "जन्म चक्र में कोई प्रतिकूल ग्रहीय दोष सक्रिय नहीं है • ग्रह ऊर्जा पूर्णतः शांत एवं अनुकूल बनी हुई है।",
-            "gu": "જન્મ કુંડળીમાં કોઈ પ્રતિકૂળ ગ્રહીય દોષ સક્રિય નથી • ગ્રહ ઉર્જા પૂર્ણપણે શાંત અને અનુકૂળ રહે છે."
-        }.get(lang, "No Adverse Karmic Doshas Active in Chart")
-        inauspicious_doshas_html = f'<div style="font-size: 9.5px; color: #15803d; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 10px 14px; font-weight: 600;">✔ {no_dosha_text}</div>'
+        body_font = "'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif"
+        serif_font = "'Libre Baskerville', Georgia, serif"
+        google_fonts = "https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@400;600;700&display=swap"
 
-    # Vibration badges for Page 9 (All 9 planets spectrum)
-    vibe_badges_html = ""
-    for v in vibrations[:9]:
-        badge_cls = "badge-pos" if v["type"] == "+" else "badge-neg"
-        shift_tag = ""
-        if v.get("shifted") and v.get("shift_label"):
-            shift_color = "#15803d" if v["type"] == "+" else "#b45309"
-            shift_tag = f'<div class="vibe-shift-tag" style="color: {shift_color}; font-size: 7.8px; font-weight: 700;">★ {v["shift_label"]}</div>'
-        count_str = f" ({v.get('count', 1)}x)" if v.get("count") else ""
-        vibe_badges_html += f"""
-        <div class="vibe-card {badge_cls}">
-            <div class="vibe-header">
-                <span class="vibe-num">No. {v['number']}{count_str}</span>
-                <span class="vibe-type-badge">{v['type_label']}</span>
+    # Active dashas
+    active_md = dasha.get("active_md", {})
+    active_ad = dasha.get("active_ad", {})
+    active_pd = dasha.get("active_pd", {})
+    md_num = int(active_md.get("number", bn))
+    ad_num = int(active_ad.get("ad_number", bn))
+    pd_num = int(active_pd.get("number", ad_num))
+
+    all_md = dasha.get("all_md_timeline", dasha.get("md_timeline", []))
+    lifetime_ad = dasha.get("lifetime_ad", [])
+    nine_year_grids = dasha.get("nine_year_grids", [])
+    pratyantar_full = dasha.get("pratyantar_full", [])
+
+    # Active age
+    active_ad_row = next((r for r in lifetime_ad if r.get("is_active")), None)
+    current_age = active_ad_row["age"] if active_ad_row else ""
+
+    # Planet names lookup helper
+    def planet_name(n: int) -> str:
+        from vedic_translations import PLANET_INFO
+        return PLANET_INFO.get(int(n), PLANET_INFO[1])[lang]["planet"]
+
+    # Natal grid numbers & missing numbers
+    grid_digits_str = ", ".join(str(d) for d in natal_grid.get("digits", []))
+    counts = natal_grid.get("counts", {})
+    missing_nums = [str(n) for n in range(1, 10) if counts.get(n, 0) == 0]
+    missing_str = ", ".join(missing_nums) if missing_nums else "–"
+
+    # Positive & Negative pills from natal vibrations
+    natal_vibs = data.get("natal_vibrations", vibrations)
+    pos_neg_pills = ""
+    for v in natal_vibs:
+        sign = "+" if v["type"] == "+" else "−"
+        cls = "pill-pos" if v["type"] == "+" else "pill-neg"
+        pos_neg_pills += f'<span class="vpill {cls}">{sign}{v["number"]}</span>'
+
+    # Archetypes
+    bn_arch_title, bn_arch_tags, bn_arch_desc = ARCHETYPES_EN.get(bn, ARCHETYPES_EN[1])
+    dn_arch_title, dn_arch_tags, dn_arch_desc = ARCHETYPES_EN.get(dn, ARCHETYPES_EN[1])
+
+    # Compatibility between BN and DN
+    def _parse_num_list(val) -> List[int]:
+        if isinstance(val, list):
+            return [int(x) for x in val if str(x).strip().isdigit()]
+        if isinstance(val, str):
+            return [int(x.strip()) for x in val.replace("·", ",").split(",") if x.strip().isdigit()]
+        return []
+
+    friendly_nums = _parse_num_list(compass.get("friendly_nums", []))
+    enemy_nums = _parse_num_list(compass.get("enemy_nums", []))
+    if dn in friendly_nums or dn == bn:
+        compat_label = L["friendly"]
+        compat_desc = L["compat_friendly"]
+    elif dn in enemy_nums:
+        compat_label = L["enemy"]
+        compat_desc = L["compat_enemy"]
+    else:
+        compat_label = L["neutral"]
+        compat_desc = L["compat_neutral"]
+
+    # Other numbers in natal grid besides BN and DN
+    other_nums = sorted({int(n) for n, c in counts.items() if c > 0 and int(n) not in (bn, dn)})
+    other_parts = []
+    for onum in other_nums:
+        _, otags, _ = ARCHETYPES_EN.get(onum, ARCHETYPES_EN[1])
+        other_parts.append(f"<strong>{onum}</strong> — {', '.join(t.lower() for t in otags)}")
+    other_summary_html = " · ".join(other_parts) if other_parts else "–"
+
+    # Helper to render 3x3 Birth Grid
+    def render_birth_grid_html(cells: List[Dict[str, Any]], mini: bool = False) -> str:
+        html_cells = ""
+        for c in cells:
+            num = c["num"]
+            p_lbl = GRID_PLANETS_EN.get(num, "")
+            if mini:
+                nat_s = c.get("natal_str", "")
+                tr_s = c.get("transit_str", "")
+                val_html = f'<span class="mg-nat">{nat_s}</span><span class="mg-tr">{tr_s}</span>'
+            else:
+                val_html = f'<span class="bg-val">{c["str"]}</span>' if c.get("count", 0) > 0 else ""
+            html_cells += (
+                f'<div class="vg-cell">'
+                f'<div class="vg-planet">{p_lbl}</div>'
+                f'<div class="vg-num">{val_html}</div>'
+                f'</div>'
+            )
+        cls = "vg-grid vg-mini" if mini else "vg-grid"
+        return f'<div class="{cls}">{html_cells}</div>'
+
+    # Lotus SVG emblem
+    lotus_svg = """<svg class="brand-logo" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="32" cy="32" r="28" stroke="#a855f7" stroke-width="1.5" stroke-opacity="0.35"/>
+      <path d="M32 10C37 18 39 26 32 34C25 26 27 18 32 10Z" stroke="#9333ea" stroke-width="1.6" fill="#f3e8ff"/>
+      <path d="M18 18C26 21 31 27 32 36C22 33 17 27 18 18Z" stroke="#a855f7" stroke-width="1.5" fill="#faf5ff"/>
+      <path d="M46 18C38 21 33 27 32 36C42 33 47 27 46 18Z" stroke="#a855f7" stroke-width="1.5" fill="#faf5ff"/>
+      <path d="M12 32C20 30 27 33 32 41C22 42 15 39 12 32Z" stroke="#c084fc" stroke-width="1.4" fill="#faf5ff"/>
+      <path d="M52 32C44 30 37 33 32 41C42 42 49 39 52 32Z" stroke="#c084fc" stroke-width="1.4" fill="#faf5ff"/>
+      <circle cx="32" cy="35" r="7" fill="#ffffff" stroke="#9333ea" stroke-width="1.6"/>
+      <text x="32" y="38.5" text-anchor="middle" font-family="Georgia, serif" font-size="10" font-weight="700" fill="#7e22ce">ॐ</text>
+    </svg>"""
+
+    # ---------------- PAGE 2: Year Grids ----------------
+    year_grids_html = ""
+    for yg in nine_year_grids:
+        is_run = yg.get("is_active", False)
+        card_cls = "yg-card yg-running" if is_run else "yg-card"
+        badge_html = f'<span class="running-badge">{L["running"]}</span>' if is_run else ""
+        grid_inner = render_birth_grid_html(yg["cells"], mini=True)
+        year_grids_html += f"""
+        <div class="{card_cls}">
+            <div class="yg-year">{yg["year"]} {badge_html}</div>
+            <div class="yg-dates">{yg["from_str"]} – {yg["to_str"]}</div>
+            <div class="yg-dasha"><span class="md-txt">{L["md"]} {yg["md"]}</span> <span class="ad-txt">{L["ad"]} {yg["ad"]}</span></div>
+            {grid_inner}
+        </div>"""
+
+    # ---------------- PAGE 3: Mahadasha 90-Year Bar & 2 Cycles ----------------
+    md_bar_html = ""
+    for p in all_md[:18]:
+        pct = (p["duration"] / 90.0) * 100.0
+        col = NUM_COLORS.get(p["number"], "#6366f1")
+        md_bar_html += f'<div class="md-seg" style="width:{pct:.2f}%;background:{col};">{p["number"]}</div>'
+
+    def render_md_cycle_table(periods_slice: List[Dict[str, Any]], cycle_num: int) -> str:
+        rows = ""
+        for p in periods_slice:
+            act_cls = ' class="row-active"' if p.get("is_active") else ""
+            s_str = p.get("start_dash", _fmt_dash(p["start_str"]))
+            e_str = p.get("end_dash", _fmt_dash(p["end_str"]))
+            age_str = f'{p.get("start_age", "")}–{p.get("end_age", "")}'
+            p_name = planet_name(p["number"])
+            rows += f'<tr{act_cls}><td class="num-col">{p["number"]}</td><td>{p_name}</td><td>{s_str}</td><td>{e_str}</td><td>{age_str}</td></tr>'
+        return f"""
+        <div class="cycle-col">
+            <div class="cycle-title">{L["cycle"]} {cycle_num}</div>
+            <table class="clean-tbl">
+                <thead><tr><th>{L["md"]}</th><th></th><th>{L["start"]}</th><th>{L["end"]}</th><th>{L["age"]}</th></tr></thead>
+                <tbody>{rows}</tbody>
+            </table>
+        </div>"""
+
+    md_cycle1_html = render_md_cycle_table(all_md[:9], 1)
+    md_cycle2_html = render_md_cycle_table(all_md[9:18], 2)
+
+    # ---------------- PAGE 4: Antardasha 90-Year 3-Column Table ----------------
+    def render_ad_col(rows_slice: List[Dict[str, Any]]) -> str:
+        trs = ""
+        for r in rows_slice:
+            act_cls = ' class="row-active"' if r.get("is_active") else ""
+            trs += f'<tr{act_cls}><td>{r["age"]}</td><td>{r["from_str"]}</td><td>{r["to_str"]}</td><td class="bold-col">{r["md"]}</td><td class="bold-col">{r["ad"]}</td></tr>'
+        return f"""
+        <div class="ad-col">
+            <table class="clean-tbl compact-tbl">
+                <thead><tr><th>{L["age"]}</th><th>{L["from"]}</th><th>{L["to"]}</th><th>{L["md"]}</th><th>{L["ad"]}</th></tr></thead>
+                <tbody>{trs}</tbody>
+            </table>
+        </div>"""
+
+    ad_col1 = render_ad_col(lifetime_ad[0:30])
+    ad_col2 = render_ad_col(lifetime_ad[30:60])
+    ad_col3 = render_ad_col(lifetime_ad[60:90])
+
+    # ---------------- PAGE 5: Pratyantar Dasha Table ----------------
+    pd_rows_html = ""
+    for p in pratyantar_full:
+        act_cls = ' class="row-active-pd"' if p.get("is_active") else ""
+        now_badge = f' <span class="now-pill">{L["now"]}</span>' if p.get("is_active") else ""
+        days_lbl = f'{p["duration_days"]} ({L["adjustment"]})' if p.get("is_adjustment") else f'{p["duration_days"]}'
+        s_str = p.get("start_dash", _fmt_dash(p["start_str"]))
+        e_str = p.get("end_dash", _fmt_dash(p["end_str"]))
+        p_name = planet_name(p["number"])
+        pd_rows_html += f"""
+        <tr{act_cls}>
+            <td class="pd-num-col">{p["number"]}</td>
+            <td>{p_name}</td>
+            <td>{days_lbl}</td>
+            <td>{s_str}</td>
+            <td>{e_str}{now_badge}</td>
+        </tr>"""
+
+    # ---------------- PAGES 6 & 7: Life Path & Professions ----------------
+    bn_qual_lis = "".join(f"<li>{q}</li>" for q in m_qualities)
+    dn_tag_pills = "".join(f'<span class="kw-pill">{t}</span>' for t in dn_arch_tags)
+    prof_rows_html = ""
+    for cat_title, cat_items in PROFESSIONS_BY_BN.get(bn, PROFESSIONS_BY_BN[1]):
+        prof_rows_html += f"""
+        <div class="prof-row">
+            <div class="prof-cat">{cat_title}</div>
+            <div class="prof-items">{cat_items}</div>
+        </div>"""
+
+    # ---------------- PAGES 8 & 9: Grid Analysis & Yogas ----------------
+    vibe_cards_html = ""
+    for v in vibrations:
+        is_pos = (v["type"] == "+")
+        card_cls = "ga-card ga-pos" if is_pos else "ga-card ga-neg"
+        sign = "+" if is_pos else "−"
+        cnt = v.get("count", 1)
+        cnt_lbl = L["once"] if cnt == 1 else f'{cnt} {L["times"]}'
+        v_planet = planet_name(v["number"])
+        vibe_cards_html += f"""
+        <div class="{card_cls}">
+            <div class="ga-head">
+                <span class="ga-num">{sign}{v["number"]}</span>
+                <span class="ga-meta">{v_planet} · {cnt_lbl}</span>
             </div>
-            {shift_tag}
-            <div class="vibe-body">{v['text']}</div>
-        </div>
-        """
+            <div class="ga-body">{v.get("text", "")}</div>
+        </div>"""
 
-    # Predictions Cards HTML (Page 10) - 8 Pillars
-    pred_categories = ["finance", "property", "vehicle", "education", "travel", "litigation", "relationship", "health"]
-    pred_icons = {
-        "finance": "💰",
-        "property": "🏠",
-        "vehicle": "🚗",
-        "education": "📚",
-        "travel": "✈️",
-        "litigation": "⚖️",
-        "relationship": "❤️",
-        "health": "🌿"
-    }
-    preds_html = ""
-    for cat in pred_categories:
-        if cat in preds:
-            p_data = preds[cat]
-            icon = pred_icons.get(cat, "✦")
-            preds_html += f"""
-            <div class="pred-card">
-                <div class="pred-header">
-                    <span class="pred-icon">{icon}</span>
-                    <span class="pred-title">{p_data['title']}</span>
-                </div>
-                <div class="pred-body">{p_data['desc']}</div>
-            </div>
-            """
+    yogas_cards_html = ""
+    for y in yogas:
+        pts_html = "".join(f"<li>{pt}</li>" for pt in y.get("points", []))
+        y_tag = y.get("tag", "")
+        yogas_cards_html += f"""
+        <div class="yoga-box">
+            <div class="yoga-title">{y["name"]} <span class="yoga-tag">{y_tag}</span></div>
+            {f'<ul class="yoga-pts">{pts_html}</ul>' if pts_html else ''}
+        </div>"""
 
-    pd_dos_html = "".join([f"<li>✔ {d}</li>" for d in pd_data.get("dos", [])[:4]])
-    pd_donts_html = "".join([f"<li>⚠ {d}</li>" for d in pd_data.get("donts", [])[:4]])
+    # ---------------- PAGE 10: Predictions & Nine-Year Outlook ----------------
+    pred_rows_natal = [
+        (ui.get("pred_finance", L["money"]), preds.get("finance", "")),
+        (ui.get("pred_property", L["assets"]), preds.get("property", "")),
+        (ui.get("pred_health", L["health"]), preds.get("health", "")),
+    ]
+    pred_rows_year = [
+        (ui.get("pred_education", "Growth"), preds.get("education", "")),
+        (ui.get("pred_travel", L["travel"]), preds.get("travel", "")),
+        (ui.get("pred_litigation", L["disputes"]), preds.get("litigation", "")),
+        (ui.get("pred_relationship", "Relations"), preds.get("relationship", "")),
+    ]
 
-    # Remedies Section HTML (Page 10) - Full in Complete/VIP, Locked in Essential
-    remedies_html = ""
+    def render_pred_rows(rows: list) -> str:
+        out = ""
+        for lbl, txt in rows:
+            if isinstance(txt, dict):
+                txt = txt.get("desc", "")
+            if txt:
+                out += f'<div class="pred-row"><div class="pred-lbl">{lbl}</div><div class="pred-txt">{txt}</div></div>'
+        return out
+
+    outlook_rows_html = ""
+    for yg in nine_year_grids:
+        act_cls = ' class="row-active-pd"' if yg.get("is_active") else ""
+        def pill(tup):
+            code, txt = tup
+            if code == "none":
+                return f'<span class="ol-dash">{txt}</span>'
+            return f'<span class="ol-pill ol-{code}">{txt}</span>'
+
+        outlook_rows_html += f"""
+        <tr{act_cls}>
+            <td class="bold-col">{yg["year"]}</td>
+            <td>{yg["age"]}</td>
+            <td>{yg["md"]}</td>
+            <td>{yg["ad"]}</td>
+            <td>{pill(yg["money"])}</td>
+            <td>{pill(yg["assets"])}</td>
+            <td>{pill(yg["travel"])}</td>
+            <td>{pill(yg["disputes"])}</td>
+            <td>{pill(yg["health"])}</td>
+        </tr>"""
+
+    # ---------------- PAGES 11 & 12: Remedies & Crystals ----------------
+    remedies_section_html = ""
     if include_remedies:
-        remedy_items = [
-            {"num": 1, "icon": "💎", "label": ui.get("gemstone_remedy", "Gemstone"), "text": f"{remedies.get('moolank_gem', '')} (Crystal: {remedies.get('moolank_crystal', '')})"},
-            {"num": 2, "icon": "📿", "label": ui.get("mantra_remedy", "Vedic Mantra"), "text": remedies.get("moolank_mantra", "")},
-            {"num": 3, "icon": "🌾", "label": ui.get("fasting_remedy", "Fasting Discipline"), "text": remedies.get("moolank_fasting", "")},
-            {"num": 4, "icon": "🤝", "label": ui.get("donation_remedy", "Charity & Daan"), "text": remedies.get("moolank_donation", "")},
-            {"num": 5, "icon": "🕊️", "label": ui.get("seva_remedy", "Seva & Karma"), "text": remedies.get("moolank_seva", "")},
-            {"num": 6, "icon": "🎨", "label": ui.get("general_remedies", "General Remedies"), "text": f"<strong>Health:</strong> {remedies.get('general_health', '')} • <strong>Wealth:</strong> {remedies.get('general_wealth', '')}"}
-        ]
-        remedies_items_html = ""
-        for r in remedy_items:
-            remedies_items_html += f"""
-            <div class="remedy-card">
-                <div class="remedy-num">{r['num']}</div>
-                <div class="remedy-content">
-                    <div class="remedy-label"><span style="margin-right:4px;">{r['icon']}</span>{r['label']}</div>
-                    <div class="remedy-text">{r['text']}</div>
+        rem_cards_html = ""
+        for r in remedies_by_num:
+            nc = r.get("natal_count", 0)
+            sub_line = L["appears_grid"].format(n=nc) if nc >= 2 else L["active_period_neg"]
+            rem_cards_html += f"""
+            <div class="rem-card">
+                <div class="rem-head">
+                    <span class="rem-circle">{r["number"]}</span>
+                    <div>
+                        <div class="rem-title">Number {r["number"]} · {r["planet"]}</div>
+                        <div class="rem-sub">{sub_line}</div>
+                    </div>
                 </div>
+                <div class="rem-sec-lbl">{L["mantras_practices"]}</div>
+                <p class="rem-p">{r["mantra"]}</p>
+                <div class="rem-sec-lbl">{L["service_seva"]}</div>
+                <p class="rem-p">{r["seva"]}</p>
+                <div class="rem-sec-lbl">{L["donations"]}</div>
+                <p class="rem-p">{r["donation"]}</p>
+                <div class="rem-sec-lbl">{L["colours"]}</div>
+                <p class="rem-p">{r["colors"]}</p>
+                <div class="rem-sec-lbl">{L["fasting"]}</div>
+                <p class="rem-p">{r["fasting"]}</p>
+            </div>"""
+
+        crystals_html = "".join(
+            f'<div class="crystal-row"><div class="crystal-name">{cname}</div><div class="crystal-desc">{cdesc}</div></div>'
+            for cname, cdesc in SUPPORTING_CRYSTALS
+        )
+
+        remedies_section_html = f"""
+        <div class="page-break"></div>
+        <div class="sheet">
+            <div class="kicker">{L["prof_report"]}</div>
+            <h2 class="sec-h2">{L["remedies"]}</h2>
+            <p class="lead-note">{L["remedies_intro"]}</p>
+            <div class="rem-grid">
+                {rem_cards_html}
             </div>
-            """
-        remedies_html = f'<div class="remedies-grid">{remedies_items_html}</div>'
-    else:
-        locked_title = {
-            "en": "🔒 Master 6-Pillar Vedic Remedies (Locked in Essential Tier)",
-            "hi": "🔒 ६-सूत्रीय वैदिक महा-उपाय (मूल संस्करण में सुरक्षित / लॉक)",
-            "gu": "🔒 ૬-સ્તંભ વૈદિક મહા-ઉપાયો (મૂળ આવૃત્તિમાં લોક કરેલ છે)"
-        }.get(lang, "🔒 Master 6-Pillar Vedic Remedies (Locked in Essential Tier)")
-        
-        locked_desc = {
-            "en": "Your birth grid indicates specific planetary remedies required to neutralize karmic hurdles and accelerate wealth. The complete prescription—including your customized Primary Gemstone & Crystal frequency, Vedic Beej Mantra Sadhana, Fasting Day, Daan Directive, and Vastu directional keys—is included in the Complete Life Manual & VIP Consultation.",
-            "hi": "आपकी जन्म कुंडली एवं दशा चक्र जीवन में ग्रह संतुलन एवं धन-समृद्धि हेतु विशिष्ट वैदिक उपायों की आवश्यकता दर्शाते हैं। आपका व्यक्तिगत भाग्यशाली रत्न, गुप्त वैदिक बीज मंत्र साधना, व्रत अनुशासन, दान निर्देश एवं वास्तु सुधार 'सम्पूर्ण वैदिक लाइफ मैन्युअल' एवं 'VIP परामर्श' में उपलब्ध हैं।",
-            "gu": "તમારી જન્મ કુંડળી અને દશા ચક્ર ગ્રહ સંતુલન અને ધન પ્રવાહ વધારવા માટે સચોટ વૈદિક ઉપાયો સૂચવે છે. તમારું લકી રત્ન, વૈદિક બીજ મંત્ર સાધના, વ્રત દિવસ, દાન નિર્દેશ અને વાસ્તુ ઊર્જા સુધારણા 'સંપૂર્ણ વૈદિક લાઇફ મેન્યુઅલ' અને 'VIP કન્સલ્ટેશન' માં ઉપલબ્ધ છે."
-        }.get(lang, "Your birth grid indicates specific remedies available in the Complete Life Manual.")
-
-        upgrade_cta = {
-            "en": "✦ To unlock your personalized remedies or upgrade your consultation, message Jigar Thakkar on WhatsApp: +91 9377614772",
-            "hi": "✦ अपने व्यक्तिगत वैदिक उपाय अनलॉक करने हेतु जिगर ठक्कर से सीधे व्हाट्सएप पर संपर्क करें: +91 9377614772",
-            "gu": "✦ તમારા વ્યક્તિગત વૈદિક ઉપાયો અનલોક કરવા માટે જીગર ઠક્કર સાથે સીધા વોટ્સએપ પર સંપર્ક કરો: +91 9377614772"
-        }.get(lang, "Contact Jigar Thakkar on WhatsApp: +91 9377614772")
-
-        remedies_html = f"""
-        <div style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1.5px dashed #d97706; border-radius: 8px; padding: 10px 14px; margin-bottom: 8px; text-align: center;">
-            <div style="font-family: 'Cinzel', serif; font-size: 10px; font-weight: 800; color: #92400e; margin-bottom: 4px;">
-                {locked_title}
+            <h3 class="sec-h3">{L["supporting_crystals"]}</h3>
+            <div class="crystal-list">
+                {crystals_html}
             </div>
-            <div style="font-size: 8px; color: #78350f; line-height: 1.4; max-width: 94%; margin: 0 auto 6px;">
-                {locked_desc}
-            </div>
-            <div style="font-size: 7.8px; font-weight: 700; color: #b45309; background: #ffffff; border: 1px solid #fde68a; border-radius: 5px; padding: 4px 8px; display: inline-block;">
-                {upgrade_cta}
-            </div>
-        </div>
-        """
+        </div>"""
 
-    vip_badge_html = ""
-    if is_vip:
-        vip_badge_html = f"""
-        <div style="background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%); border: 1.5px solid #d4af37; border-radius: 8px; padding: 7px 12px; margin-bottom: 7px; display: flex; align-items: center; justify-content: space-between;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <span style="font-size: 16px;">👑</span>
-                <div>
-                    <div style="font-family: 'Cinzel', serif; font-size: 9.5px; font-weight: 800; color: #fbbf24;">VIP 1-ON-1 CONSULTATION CONFIRMED</div>
-                    <div style="font-size: 7.6px; color: #cbd5e1;">Your personalized online video/voice consultation with Jigar Thakkar is confirmed. WhatsApp scheduling: +91 9377614772</div>
-                </div>
-            </div>
-            <span style="background: #fbbf24; color: #000; font-size: 7.2px; font-weight: 800; padding: 2px 7px; border-radius: 10px; white-space: nowrap;">MEETING INCLUDED</span>
-        </div>
-        """
-
-    # Consultant Notes Block HTML
-    consultant_notes_html = ""
-    if client.get("consultant_notes"):
-        consultant_notes_html = f"""
-        <div class="consultant-notes-box">
-            <div class="consultant-notes-header">✍ {ui.get('consultant_notes', 'Consultant Notes')}</div>
-            <div class="consultant-notes-body">{client['consultant_notes']}</div>
-        </div>
-        """
-
-    name_harmony_text = client.get("name_harmony", {}).get("text", "")
-
-    # Master Table of Contents Items (Index for Page 1)
-    toc_html = ""
-    for ch_idx in range(1, 10):
-        badge = ui.get(f"chap_{ch_idx}_badge", f"CHAPTER {ch_idx}")
-        title = ui.get(f"chap_{ch_idx}_title", f"Life Chapter {ch_idx}")
-        page_num = ch_idx + 1
-        toc_html += f"""
-        <div class="toc-item">
-            <div class="toc-page-badge">Pg {page_num}</div>
-            <div class="toc-text">
-                <div class="toc-ch-badge">{badge}</div>
-                <div class="toc-ch-title">{title}</div>
-            </div>
-            <div class="toc-check">✔</div>
-        </div>
-        """
-
-    def render_curiosity_box(hook_text: str) -> str:
-        if not hook_text:
-            return ""
-        return f"""
-        <div class="curiosity-box">
-            <div class="curiosity-pill">NEXT CHAPTER</div>
-            <div class="curiosity-text">{hook_text}</div>
-        </div>
-        """
-
-    def render_chapter_banner(ch_num: int) -> str:
-        badge = ui.get(f"chap_{ch_num}_badge", f"CHAPTER {ch_num} OF 9")
-        title = ui.get(f"chap_{ch_num}_title", "")
-        return f"""
-        <div class="chap-banner">
-            <div class="chap-banner-left">
-                <span class="chap-badge-pill">{badge}</span>
-                <span class="chap-banner-sub">{title}</span>
-            </div>
-            <div class="chap-banner-consultant">Jigar Thakkar • Vedic Astrologer</div>
-        </div>
-        """
-
-    def render_footer(page_num: int) -> str:
-        return f"""
-        <div class="footer">
-            <div><strong>{consultant['name']}</strong> • {consultant['title']} • Phone: {consultant['phone']}</div>
-            <div>{ui.get('page', 'Page')} {page_num} of 10</div>
-        </div>
-        """
-
+    # Complete HTML
     html = f"""<!DOCTYPE html>
 <html lang="{lang}">
 <head>
 <meta charset="UTF-8">
-<title>{ui.get('report_title', 'Vedic Numerology Report')} - {client['name']}</title>
+<title>{consultant["name"]} - {L["report_title"]} - {client["name"]}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="{google_fonts}" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Gujarati:wght@400;600;700&display=swap');
-
 @page {{
     size: A4 portrait;
-    margin: 0;
+    margin: 12mm;
 }}
-
 * {{
     box-sizing: border-box;
+}}
+body {{
     margin: 0;
     padding: 0;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-}}
-
-body {{
-    font-family: {font_family};
+    background: #ffffff;
     color: #1e293b;
-    background-color: #ffffff;
+    font-family: {body_font};
     font-size: 11px;
-    line-height: 1.5;
+    line-height: 1.48;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
 }}
-
-.page {{
-    width: 210mm;
-    height: 297mm;
-    max-height: 297mm;
-    padding: 8mm 12mm 7mm 12mm;
+.page-break {{
+    page-break-before: always;
+    break-before: page;
+}}
+.sheet {{
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 20px 22px;
     background: #ffffff;
-    position: relative;
-    page-break-after: always;
-    break-after: page;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    box-sizing: border-box;
-}}
-
-/* Ornamental Borders */
-.page-border {{
-    position: absolute;
-    top: 3.8mm;
-    left: 3.8mm;
-    right: 3.8mm;
-    bottom: 3.8mm;
-    border: 1.2px solid #d4af37;
-    pointer-events: none;
-    z-index: 1;
-}}
-.page-border-inner {{
-    position: absolute;
-    top: 5.2mm;
-    left: 5.2mm;
-    right: 5.2mm;
-    bottom: 5.2mm;
-    border: 0.5px solid #e2c275;
-    pointer-events: none;
-    z-index: 1;
-}}
-.corner-ornament {{
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    border-color: #b38728;
-    z-index: 2;
-}}
-.corner-tl {{ top: 3.5mm; left: 3.5mm; border-top: 2.5px solid #b38728; border-left: 2.5px solid #b38728; }}
-.corner-tr {{ top: 3.5mm; right: 3.5mm; border-top: 2.5px solid #b38728; border-right: 2.5px solid #b38728; }}
-.corner-bl {{ bottom: 3.5mm; left: 3.5mm; border-bottom: 2.5px solid #b38728; border-left: 2.5px solid #b38728; }}
-.corner-br {{ bottom: 3.5mm; right: 3.5mm; border-bottom: 2.5px solid #b38728; border-right: 2.5px solid #b38728; }}
-
-.page-content {{
-    position: relative;
-    z-index: 5;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}}
-
-/* Chapter Navigation Banner */
-.chap-banner {{
-    background: linear-gradient(135deg, #091124 0%, #172554 100%);
-    border: 1px solid #d4af37;
-    border-radius: 6px;
-    padding: 5px 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-}}
-.chap-banner-left {{
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    overflow: hidden;
-}}
-.chap-badge-pill {{
-    background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
-    color: #0f172a;
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    padding: 3px 9px;
-    border-radius: 12px;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
-}}
-.chap-banner-sub {{
-    font-size: 11px;
-    font-weight: 600;
-    color: #fef08a;
-    letter-spacing: 0.3px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}}
-.chap-banner-consultant {{
-    font-size: 9.5px;
-    color: #93c5fd;
-    font-weight: 500;
-    white-space: nowrap;
-}}
-
-/* Main Header on Cover Page */
-.report-main-header {{
-    text-align: center;
-    padding-bottom: 6px;
-    border-bottom: 1.5px solid #d4af37;
-    margin-bottom: 8px;
-}}
-.om-symbol {{
-    font-size: 20px;
-    color: #b38728;
-    font-weight: 700;
-    letter-spacing: 3px;
-    margin-bottom: 2px;
-}}
-.main-title {{
-    font-family: 'Cinzel', serif;
-    font-size: 23px;
-    font-weight: 900;
-    color: #0f172a;
-    letter-spacing: 1.4px;
-    text-transform: uppercase;
-    margin: 2px 0;
-}}
-.sub-title {{
-    font-size: 11.5px;
-    color: #854d0e;
-    letter-spacing: 0.5px;
-    font-weight: 600;
-}}
-
-/* Section Titles */
-.section-title {{
-    font-family: 'Cinzel', serif;
-    font-size: 14px;
-    font-weight: 700;
-    color: #0f172a;
-    border-left: 4px solid #b38728;
-    padding-left: 7px;
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    letter-spacing: 0.4px;
-}}
-
-/* Profile Hero Card */
-.profile-card {{
-    background: linear-gradient(135deg, #fdfbf7 0%, #f7f3e8 100%);
-    border: 1.2px solid #d4af37;
-    border-radius: 8px;
-    padding: 9px 12px;
-    margin-bottom: 8px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
-}}
-.client-data-grid {{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 5px 8px;
-    margin-bottom: 8px;
-}}
-.data-pill {{
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 5px;
-    padding: 4px 7px;
-}}
-.data-pill.highlight {{
-    background: #fffbeb;
-    border-color: #fcd34d;
-}}
-.data-pill .label {{
-    font-size: 9.5px;
-    color: #64748b;
-    text-transform: uppercase;
-    font-weight: 700;
-    letter-spacing: 0.3px;
-}}
-.data-pill .value {{
-    font-size: 13px;
-    color: #0f172a;
-    font-weight: 700;
-}}
-.data-pill.highlight .value {{
-    color: #b45309;
-    font-size: 14px;
-}}
-
-/* Table of Contents Index (Page 1) */
-.toc-container {{
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 8px 12px;
-    margin-bottom: 6px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-}}
-.toc-title {{
-    font-family: 'Cinzel', serif;
-    font-size: 15px;
-    font-weight: 800;
-    color: #0f172a;
-    border-bottom: 1.5px solid #d4af37;
-    padding-bottom: 4px;
-    margin-bottom: 6px;
-    text-align: center;
-    letter-spacing: 0.8px;
-}}
-.toc-grid {{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px 12px;
-}}
-.toc-item {{
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 4px 6px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-}}
-.toc-page-badge {{
-    background: #172554;
-    color: #fbbf24;
-    font-size: 10px;
-    font-weight: 800;
-    padding: 3px 7px;
-    border-radius: 4px;
-    white-space: nowrap;
-}}
-.toc-text {{
-    flex: 1;
-    overflow: hidden;
-}}
-.toc-ch-badge {{
-    font-size: 9px;
-    font-weight: 700;
-    color: #854d0e;
-    text-transform: uppercase;
-}}
-.toc-ch-title {{
-    font-size: 11px;
-    font-weight: 600;
-    color: #0f172a;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}}
-.toc-check {{
-    color: #16a34a;
-    font-weight: 800;
-    font-size: 9px;
-}}
-
-/* Dual Grids Row (Page 2) */
-.dual-grids-row {{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    margin-bottom: 10px;
-}}
-.grid-box-card {{
-    background: #ffffff;
-    border: 1.5px solid #d4af37;
-    border-radius: 8px;
-    padding: 10px;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-}}
-.grid-box-card.dasha {{
-    border-color: #f59e0b;
-    background: #fffdfa;
-}}
-.grid-caption {{
-    font-family: 'Cinzel', serif;
-    font-size: 13px;
-    font-weight: 800;
-    color: #0f172a;
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
-}}
-.vedic-grid-table {{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-gap: 5px;
-    max-width: 205px;
-    margin: 0 auto;
-}}
-.vedic-cell {{
-    aspect-ratio: 1;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 2px;
-    border-radius: 5px;
-    font-weight: 800;
-    padding: 2px;
-    font-size: 15px;
-}}
-.vedic-cell.natal-cell.active {{
-    background: #d97706;
-    color: #ffffff;
-    box-shadow: 0 1px 3px rgba(217,119,6,0.35);
-}}
-.vedic-cell.natal-cell.empty {{
-    background: #f8fafc;
-    color: #cbd5e1;
-    border: 1px dashed #cbd5e1;
-}}
-.vedic-cell.dasha-cell.active {{
-    background: #faf5ff;
-    border: 1px solid #d8b4fe;
-}}
-.vedic-cell.dasha-cell.empty {{
-    background: #f8fafc;
-    color: #cbd5e1;
-    border: 1px dashed #cbd5e1;
-}}
-.chip {{
-    font-size: 12px;
-    font-weight: 800;
-    padding: 2.5px 6px;
-    border-radius: 3px;
-    display: inline-block;
-    line-height: 1.1;
-    margin: 1px;
-}}
-.chip-natal {{
-    background: #d97706;
-    color: #ffffff;
-}}
-.chip-md, .chip-mahadasha {{
-    background: #0284c7;
-    color: #ffffff;
-}}
-.chip-ad, .chip-antardasha {{
-    background: #16a34a;
-    color: #ffffff;
-}}
-.chip-pd, .chip-pratyantar {{
-    background: #7c3aed;
-    color: #ffffff;
-}}
-
-/* Color Legend Bar */
-.color-legend-bar {{
-    display: flex;
-    justify-content: space-around;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    padding: 5px 8px;
-    margin-bottom: 10px;
-}}
-.legend-chip {{
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 10px;
-    font-weight: 600;
-    color: #334155;
-}}
-.legend-dot {{
-    width: 12px;
-    height: 12px;
-    border-radius: 2px;
-}}
-
-/* Plane Cards */
-.planes-grid {{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-bottom: 8px;
-}}
-.plane-card {{
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    padding: 7px 9px;
-}}
-.plane-header {{
-    font-family: 'Cinzel', serif;
-    font-size: 12.5px;
-    font-weight: 800;
-    color: #0f172a;
-    border-bottom: 1px solid #cbd5e1;
-    padding-bottom: 3px;
-    margin-bottom: 4px;
-}}
-.plane-desc {{
-    font-size: 10.5px;
-    color: #475569;
-    line-height: 1.4;
-}}
-
-/* Harmony Compass (Page 3) */
-.compass-grid {{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-bottom: 10px;
-}}
-.compass-box {{
-    border-radius: 8px;
-    padding: 10px;
-    border: 1px solid;
-    text-align: center;
-}}
-.compass-box.friendly {{
-    background: #f0fdf4;
-    border-color: #86efac;
-}}
-.compass-box.neutral {{
-    background: #f8fafc;
-    border-color: #cbd5e1;
-}}
-.compass-box.enemy {{
-    background: #fef2f2;
-    border-color: #fca5a5;
-}}
-.compass-label {{
-    font-family: 'Cinzel', serif;
-    font-size: 10px;
-    font-weight: 800;
-    margin-bottom: 5px;
-}}
-.compass-box.friendly .compass-label {{ color: #15803d; }}
-.compass-box.neutral .compass-label {{ color: #475569; }}
-.compass-box.enemy .compass-label {{ color: #b91c1c; }}
-.compass-nums {{
-    font-size: 18px;
-    font-weight: 900;
-    letter-spacing: 1px;
-}}
-.compass-box.friendly .compass-nums {{ color: #166534; }}
-.compass-box.neutral .compass-nums {{ color: #1e293b; }}
-.compass-box.enemy .compass-nums {{ color: #991b1b; }}
-.compass-sub {{
-    font-size: 10.5px;
-    color: #64748b;
-    margin-top: 4px;
-}}
-
-/* Alignments 4-Grid */
-.align-grid {{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 10px;
-}}
-.align-card {{
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    padding: 7px 10px;
-}}
-.align-header {{
-    font-size: 10.5px;
-    font-weight: 700;
-    color: #854d0e;
-    text-transform: uppercase;
-    margin-bottom: 2px;
-}}
-.align-val {{
-    font-size: 10.5px;
-    font-weight: 800;
-    color: #0f172a;
-}}
-
-/* Name Harmony Card */
-.name-card {{
-    background: linear-gradient(135deg, #fdfbf7 0%, #fef3c7 100%);
-    border: 1.2px solid #d4af37;
-    border-radius: 8px;
-    padding: 10px 14px;
-    margin-bottom: 8px;
-}}
-.name-header {{
-    font-family: 'Cinzel', serif;
-    font-size: 11px;
-    font-weight: 800;
-    color: #0f172a;
-    margin-bottom: 4px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}}
-.name-score-pill {{
-    background: #15803d;
-    color: #ffffff;
-    font-size: 10.5px;
-    font-weight: 800;
-    padding: 2px 7px;
-    border-radius: 10px;
-}}
-.name-body {{
-    font-size: 11px;
-    color: #334155;
-    line-height: 1.45;
-}}
-
-/* Qualities & Precautions (Pages 4 & 5) */
-.hero-box {{
-    background: linear-gradient(135deg, #091124 0%, #1e293b 100%);
-    border: 1.5px solid #d4af37;
-    border-radius: 8px;
-    padding: 12px 16px;
-    color: #ffffff;
     margin-bottom: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }}
-.hero-left {{
-    flex: 1;
-}}
-.hero-num-badge {{
-    font-size: 10px;
-    font-weight: 800;
-    color: #fbbf24;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}}
-.hero-title {{
-    font-family: 'Cinzel', serif;
-    font-size: 16px;
-    font-weight: 800;
-    color: #ffffff;
-    margin: 2px 0;
-}}
-.hero-sub {{
-    font-size: 11.5px;
-    color: #94a3b8;
-    line-height: 1.35;
-}}
-.hero-right-circle {{
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+/* Header */
+.brand-row {{
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 30px;
-    font-weight: 900;
-    color: #0f172a;
-    box-shadow: 0 2px 8px rgba(245,158,11,0.4);
-}}
-
-.two-col-grid {{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
     gap: 12px;
-    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e2e8f0;
 }}
-.col-card {{
+.brand-logo {{
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+}}
+.brand-name {{
+    font-family: {serif_font};
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+}}
+.brand-meta {{
+    font-size: 10.5px;
+    color: #64748b;
+    margin-top: 2px;
+}}
+.report-sub-bar {{
+    padding: 10px 0;
+    font-size: 12px;
+    color: #475569;
+}}
+.report-sub-bar strong {{
+    font-family: {serif_font};
+    color: #1e293b;
+    font-size: 13.5px;
+    margin-left: 6px;
+}}
+.caution-bar {{
+    background: #fefce8;
+    border-left: 4px solid #eab308;
+    padding: 9px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #713f12;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 14px;
+}}
+/* Client Hero */
+.kicker {{
+    font-family: {serif_font};
+    font-style: italic;
+    font-size: 11px;
+    color: #7c3aed;
+    margin-bottom: 2px;
+}}
+.client-name {{
+    font-family: {serif_font};
+    font-size: 24px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 3px 0;
+}}
+.client-meta {{
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 14px;
+}}
+/* Summary 5-card grid */
+.summary-grid {{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}}
+.sum-card {{
+    background: #f8f7ff;
+    border: 1px solid #ede9fe;
+    border-radius: 10px;
+    padding: 10px 14px;
+}}
+.sum-card.full-span {{
+    grid-column: span 2;
+}}
+.sum-lbl {{
+    font-size: 10px;
+    color: #64748b;
+    font-weight: 600;
+}}
+.sum-val {{
+    font-family: {serif_font};
+    font-size: 20px;
+    font-weight: 700;
+    margin: 2px 0;
+}}
+.sum-sub {{
+    font-size: 10px;
+    color: #475569;
+}}
+/* Birth Grid */
+.sec-h2 {{
+    font-family: {serif_font};
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 10px 0;
+}}
+.sec-h3 {{
+    font-family: {serif_font};
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 14px 0 8px 0;
+}}
+.birth-grid-wrap {{
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+}}
+.vg-grid {{
+    display: grid;
+    grid-template-columns: repeat(3, 62px);
+    grid-template-rows: repeat(3, 46px);
+    border: 1.5px solid #c9a96e;
+    border-radius: 4px;
     background: #ffffff;
+    flex-shrink: 0;
+}}
+.vg-grid.vg-mini {{
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 34px);
+    width: 100%;
+    margin-top: 6px;
+}}
+.vg-cell {{
+    border: 0.5px solid #e2d1a8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 2px;
+}}
+.vg-planet {{
+    font-size: 7.5px;
+    color: #b48a3e;
+    line-height: 1.1;
+}}
+.vg-mini .vg-planet {{
+    font-size: 6.5px;
+}}
+.vg-num {{
+    font-family: {serif_font};
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-top: 3px;
+}}
+.vg-mini .vg-num {{
+    font-size: 11px;
+    margin-top: 1px;
+}}
+.mg-nat {{ color: #0f172a; }}
+.mg-tr {{ color: #d97706; }}
+.grid-facts {{
+    flex: 1;
+}}
+.fact-line {{
+    font-size: 11px;
+    margin-bottom: 6px;
+    color: #334155;
+}}
+.vpill {{
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 999px;
+    margin-right: 4px;
+}}
+.pill-pos {{ background: #dcfce7; color: #166534; }}
+.pill-neg {{ background: #fee2e2; color: #991b1b; }}
+.pers-box {{
+    background: #f8fafc;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     padding: 10px 12px;
+    margin-top: 10px;
 }}
-.col-card.precautions {{
-    border-color: #fed7aa;
-    background: #fffbf5;
-}}
-.col-title {{
-    font-family: 'Cinzel', serif;
-    font-size: 13.5px;
-    font-weight: 800;
-    color: #0f172a;
-    border-bottom: 1px solid #e2e8f0;
-    padding-bottom: 4px;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}}
-.quality-item-clean, .precaution-item-clean {{
-    list-style: none;
-    font-size: 11px;
-    margin-bottom: 6px;
-    display: flex;
-    align-items: flex-start;
-    gap: 6px;
-    line-height: 1.4;
-}}
-.bullet-icon {{
-    color: #b45309;
-    font-weight: 800;
-    font-size: 10px;
-    flex-shrink: 0;
-}}
-.precaution-icon {{
-    color: #ea580c;
-    font-weight: 800;
-    font-size: 10px;
-    flex-shrink: 0;
-}}
-
-.career-box {{
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 10px 14px;
-    margin-bottom: 8px;
-}}
-.career-title {{
-    font-family: 'Cinzel', serif;
-    font-size: 10px;
-    font-weight: 800;
+.pers-title {{
+    font-family: {serif_font};
+    font-size: 12.5px;
+    font-weight: 700;
     color: #0f172a;
     margin-bottom: 4px;
 }}
-.career-text {{
-    font-size: 11px;
-    color: #334155;
-    line-height: 1.45;
+.pers-desc {{
+    font-size: 10.5px;
+    color: #475569;
 }}
-
-/* Mahadasha / Forecast (Pages 6 & 7) */
-.tier-dash-grid {{
+/* Page 2: Year Grids */
+.lead-note {{
+    font-size: 10.8px;
+    color: #64748b;
+    margin: 0 0 12px 0;
+}}
+.yg-matrix {{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-    margin-bottom: 12px;
 }}
-.tier-card {{
-    background: #ffffff;
+.yg-card {{
     border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 10px;
-    text-align: center;
-}}
-.tier-card.active-card {{
-    border: 1.5px solid #d4af37;
-    background: #fffdf8;
-    box-shadow: 0 2px 6px rgba(212,175,55,0.15);
-}}
-.tier-badge {{
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    padding: 2px 6px;
-    border-radius: 8px;
-    display: inline-block;
-    margin-bottom: 6px;
-}}
-.tier-badge.gold {{ background: #fef3c7; color: #92400e; }}
-.tier-badge.blue {{ background: #dbeafe; color: #1e40af; }}
-.tier-badge.purple {{ background: #f3e8ff; color: #6b21a8; }}
-.tier-lord {{
-    font-size: 12px;
-    font-weight: 800;
-    color: #0f172a;
-    margin-bottom: 2px;
-}}
-.tier-dates {{
-    font-size: 11px;
-    color: #64748b;
-    margin-bottom: 6px;
-}}
-.tier-desc {{
-    font-size: 11px;
-    color: #334155;
-    line-height: 1.35;
-    text-align: left;
-}}
-
-.tactical-box {{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 10px;
-}}
-.tactical-card {{
-    border-radius: 8px;
-    padding: 10px 12px;
-    border: 1px solid;
-}}
-.tactical-card.dos {{
-    background: #f0fdf4;
-    border-color: #86efac;
-}}
-.tactical-card.donts {{
-    background: #fef2f2;
-    border-color: #fca5a5;
-}}
-.tactical-title {{
-    font-family: 'Cinzel', serif;
-    font-size: 10px;
-    font-weight: 800;
-    margin-bottom: 6px;
-}}
-.tactical-card.dos .tactical-title {{ color: #15803d; }}
-.tactical-card.donts .tactical-title {{ color: #b91c1c; }}
-.tactical-list {{
-    list-style: none;
-    font-size: 11px;
-    line-height: 1.45;
-}}
-.tactical-card.dos .tactical-list {{ color: #166534; }}
-.tactical-card.donts .tactical-list {{ color: #991b1b; }}
-.tactical-list li {{ margin-bottom: 4px; }}
-
-/* Roadmap Table (Page 8) */
-.roadmap-container {{
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 10px;
-    margin-bottom: 10px;
-}}
-.roadmap-table {{
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 11px;
-}}
-.roadmap-table th {{
-    background: #0f172a;
-    color: #f8fafc;
-    font-weight: 700;
-    padding: 6px 8px;
-    text-transform: uppercase;
-    font-size: 10.2px;
-    letter-spacing: 0.5px;
-}}
-.roadmap-table td {{
-    padding: 5px 8px;
-    border-bottom: 1px solid #e2e8f0;
-}}
-.roadmap-table tr.active-phase {{
-    background: #fffbeb !important;
-    font-weight: 700;
-}}
-.roadmap-table tr.active-phase td {{
-    border-top: 1.5px solid #f59e0b;
-    border-bottom: 1.5px solid #f59e0b;
-}}
-.status-chip {{
-    font-size: 10px;
-    font-weight: 800;
-    padding: 2px 6px;
     border-radius: 10px;
-    display: inline-block;
-    background: #f1f5f9;
-    color: #475569;
-}}
-.status-chip.active {{
-    background: #f59e0b;
-    color: #ffffff;
-    box-shadow: 0 1px 3px rgba(245,158,11,0.4);
-}}
-
-/* Yogas & Vibrations (Page 9) */
-.yoga-card-clean {{
+    padding: 8px 10px;
+    text-align: center;
     background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 8px 12px;
-    margin-bottom: 7px;
 }}
-.yoga-card-clean.auspicious {{
-    border-left: 3.5px solid #16a34a;
-    background: #f0fdf4;
+.yg-card.yg-running {{
+    border: 2px solid #7c3aed;
+    background: #fdfcff;
 }}
-.yoga-card-clean.inauspicious {{
-    border-left: 3.5px solid #dc2626;
-    background: #fef2f2;
-}}
-.yoga-card-header {{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 3px;
-}}
-.yoga-title {{
-    font-family: 'Cinzel', serif;
-    font-size: 10px;
-    font-weight: 800;
+.yg-year {{
+    font-family: {serif_font};
+    font-size: 13px;
+    font-weight: 700;
     color: #0f172a;
 }}
-.yoga-pill {{
+.running-badge {{
+    background: #7c3aed;
+    color: #ffffff;
+    font-family: {body_font};
+    font-size: 8.5px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 999px;
+    vertical-align: middle;
+    margin-left: 4px;
+}}
+.yg-dates {{
+    font-size: 8.8px;
+    color: #64748b;
+    margin: 2px 0;
+}}
+.yg-dasha {{
     font-size: 9.5px;
-    font-weight: 800;
-    padding: 3px 7px;
-    border-radius: 8px;
-    text-transform: uppercase;
+    font-weight: 700;
 }}
-.yoga-pill.gold {{ background: #fef3c7; color: #92400e; }}
-.yoga-pill.ruby {{ background: #fee2e2; color: #991b1b; }}
-.yoga-desc {{
-    font-size: 10.5px;
-    color: #475569;
-    line-height: 1.4;
-}}
-.yoga-remedy-strip {{
-    margin-top: 4px;
-    padding: 4px 7px;
-    background: #ffffff;
-    border-radius: 4px;
-    font-size: 10.5px;
-    color: #991b1b;
-    border: 1px dashed #fca5a5;
-}}
-
-.vibes-dashboard-grid {{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
+.md-txt {{ color: #0f766e; }}
+.ad-txt {{ color: #b45309; margin-left: 4px; }}
+/* Page 3, 4, 5: Dasha Headings & Tables */
+.dasha-head {{
+    display: flex;
+    align-items: center;
+    gap: 10px;
     margin-bottom: 8px;
 }}
-.vibe-card {{
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    padding: 6px 8px;
-}}
-.vibe-card.badge-pos {{ border-left: 3px solid #16a34a; }}
-.vibe-card.badge-neg {{ border-left: 3px solid #f59e0b; }}
-.vibe-header {{
-    display: flex;
-    justify-content: space-between;
+.d-circle {{
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    color: #ffffff;
+    font-family: {serif_font};
+    font-size: 13px;
+    font-weight: 700;
+    display: inline-flex;
     align-items: center;
-    margin-bottom: 2px;
+    justify-content: center;
 }}
-.vibe-num {{
-    font-size: 9px;
-    font-weight: 800;
-    color: #0f172a;
+.d-sub {{
+    font-size: 11px;
+    color: #475569;
 }}
-.vibe-type-badge {{
+.md-bar {{
+    display: flex;
+    height: 20px;
+    border-radius: 999px;
+    overflow: hidden;
+    margin: 8px 0 4px 0;
+}}
+.md-seg {{
+    color: #ffffff;
     font-size: 9px;
     font-weight: 700;
-    padding: 2px 5px;
-    border-radius: 4px;
-}}
-.vibe-card.badge-pos .vibe-type-badge {{ background: #dcfce7; color: #15803d; }}
-.vibe-card.badge-neg .vibe-type-badge {{ background: #fef3c7; color: #b45309; }}
-.vibe-body {{
-    font-size: 10.2px;
-    color: #475569;
-    line-height: 1.35;
-}}
-
-/* Predictions & Remedies (Page 10) */
-.preds-grid {{
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-    margin-bottom: 8px;
-}}
-.pred-card {{
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    padding: 6px 8px;
-}}
-.pred-header {{
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-bottom: 3px;
-}}
-.pred-icon {{
-    font-size: 11px;
-}}
-.pred-title {{
-    font-family: 'Cinzel', serif;
-    font-size: 11.5px;
-    font-weight: 800;
-    color: #0f172a;
-}}
-.pred-body {{
-    font-size: 10.2px;
-    color: #334155;
-    line-height: 1.4;
-}}
-
-.remedies-grid {{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-    margin-bottom: 8px;
-}}
-.remedy-card {{
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    padding: 6px 8px;
-    display: flex;
-    gap: 6px;
-}}
-.remedy-num {{
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: #172554;
-    color: #fbbf24;
-    font-size: 11px;
-    font-weight: 800;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
 }}
-.remedy-content {{
-    flex: 1;
+.md-bar-labels {{
+    display: flex;
+    justify-content: space-between;
+    font-size: 9.5px;
+    color: #64748b;
+    margin-bottom: 14px;
 }}
-.remedy-label {{
-    font-family: 'Cinzel', serif;
-    font-size: 11px;
-    font-weight: 800;
-    color: #854d0e;
-    margin-bottom: 1px;
+.cycles-grid {{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
 }}
-.remedy-text {{
-    font-size: 10.5px;
+.cycle-title {{
+    font-size: 11.5px;
+    font-weight: 700;
     color: #334155;
-    line-height: 1.3;
+    margin-bottom: 6px;
 }}
-
-/* Astrological Seal Card */
-.seal-card {{
-    background: linear-gradient(135deg, #091124 0%, #172554 100%);
-    border: 1.5px solid #d4af37;
-    border-radius: 8px;
-    padding: 8px 14px;
+.clean-tbl {{
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10px;
+}}
+.clean-tbl th {{
+    text-align: left;
+    font-weight: 600;
+    color: #64748b;
+    border-bottom: 1px solid #cbd5e1;
+    padding: 5px 4px;
+}}
+.clean-tbl td {{
+    padding: 5px 4px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+}}
+.clean-tbl.compact-tbl th,
+.clean-tbl.compact-tbl td {{
+    padding: 3px 3px;
+    font-size: 8.8px;
+}}
+.num-col, .bold-col, .pd-num-col {{
+    font-weight: 700;
+    color: #0f172a;
+}}
+.pd-num-col {{
+    color: #7c3aed;
+}}
+.row-active td {{
+    background: #f5f3ff;
+    font-weight: 700;
+    color: #0f172a;
+}}
+.row-active-pd td {{
+    background: #f3e8ff;
+    font-weight: 700;
+    color: #0f172a;
+}}
+.ad-3col {{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}}
+.now-pill {{
+    background: #7c3aed;
     color: #ffffff;
+    font-size: 8px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 999px;
+    margin-left: 5px;
+}}
+/* Page 6 & 7: Life Path */
+.prop-bar {{
+    display: flex;
+    height: 22px;
+    border-radius: 6px;
+    overflow: hidden;
+    font-size: 10px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 12px;
+}}
+.prop-b {{ width: 30%; background: #7c3aed; display: flex; align-items: center; padding-left: 10px; }}
+.prop-d {{ width: 40%; background: #2563eb; display: flex; align-items: center; padding-left: 10px; }}
+.prop-o {{ width: 30%; background: #db2777; display: flex; align-items: center; padding-left: 10px; }}
+.lp-grid {{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+}}
+.lp-card {{
+    background: #f8f7ff;
+    border: 1px solid #ede9fe;
+    border-radius: 10px;
+    padding: 12px 14px;
+}}
+.lp-hero {{
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 10px;
+    margin: 6px 0 8px 0;
+}}
+.lp-big-num {{
+    font-family: {serif_font};
+    font-size: 26px;
+    font-weight: 700;
+    color: #7c3aed;
+}}
+.lp-arch {{
+    font-family: {serif_font};
+    font-size: 13px;
+    font-weight: 700;
+    color: #0f172a;
+}}
+.lp-planet {{
+    font-size: 10px;
+    color: #64748b;
+}}
+.kw-pill {{
+    display: inline-block;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 999px;
+    padding: 2px 8px;
+    font-size: 9.5px;
+    font-weight: 600;
+    margin-right: 4px;
+    margin-top: 6px;
+}}
+.qual-ul {{
+    margin: 6px 0 0 16px;
+    padding: 0;
+    font-size: 10px;
+    color: #334155;
+}}
+.qual-ul li {{ margin-bottom: 4px; }}
+.compat-card {{
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+}}
+.compat-title {{
+    font-family: {serif_font};
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 2px 0 4px 0;
+}}
+.mini4-grid {{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
+}}
+.mini4-card {{
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 10px;
+}}
+.mini4-lbl {{ font-size: 9.5px; color: #64748b; }}
+.mini4-val {{ font-size: 10.5px; font-weight: 700; color: #0f172a; margin-top: 2px; }}
+.prof-row {{
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 6px;
+}}
+.prof-cat {{
+    font-family: {serif_font};
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #0f172a;
+}}
+.prof-items {{ font-size: 10px; color: #475569; margin-top: 2px; }}
+/* Page 8 & 9: Grid Analysis & Yogas */
+.ga-grid {{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+}}
+.ga-card {{
+    border-radius: 8px;
+    padding: 10px 12px;
+    border-left: 3.5px solid;
+}}
+.ga-pos {{ background: #f0fdf4; border-left-color: #16a34a; }}
+.ga-neg {{ background: #fef2f2; border-left-color: #b91c1c; }}
+.ga-head {{ margin-bottom: 4px; }}
+.ga-num {{ font-family: {serif_font}; font-size: 13px; font-weight: 700; color: #0f172a; }}
+.ga-meta {{ font-size: 10px; color: #475569; margin-left: 4px; }}
+.ga-body {{ font-size: 10px; color: #334155; }}
+.yoga-grid {{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}}
+.yoga-box {{
+    border: 1px solid #e5d5a7;
+    background: #fffdf7;
+    border-radius: 8px;
+    padding: 10px 12px;
+    break-inside: avoid;
+}}
+.yoga-title {{
+    font-family: {serif_font};
+    font-size: 12px;
+    font-weight: 700;
+    color: #0f172a;
     margin-bottom: 4px;
 }}
-.seal-symbol {{
-    font-size: 34px;
-    color: #fbbf24;
-    line-height: 1;
-}}
-.seal-content {{
-    flex: 1;
-}}
-.seal-title {{
-    font-family: 'Cinzel', serif;
-    font-size: 14px;
-    font-weight: 800;
-    color: #fbbf24;
-    letter-spacing: 0.8px;
-    margin-bottom: 2px;
-}}
-.seal-text {{
-    font-size: 10.5px;
-    color: #cbd5e1;
-    line-height: 1.4;
-}}
-.seal-blessing {{
-    font-size: 10.5px;
-    color: #fef08a;
+.yoga-tag {{
+    font-family: {body_font};
+    font-size: 9.5px;
     font-weight: 600;
-    margin-top: 3px;
+    color: #a16207;
 }}
-
-/* Curiosity Preview Hook */
-.curiosity-box {{
-    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-    border: 1px dashed #d97706;
-    border-radius: 6px;
-    padding: 4px 8px;
-    margin-top: 4px;
-    margin-bottom: 3px;
+.yoga-pts {{
+    margin: 4px 0 0 15px;
+    padding: 0;
+    font-size: 9.8px;
+    color: #334155;
+}}
+/* Page 10: Predictions & Outlook */
+.pred-row {{
+    display: flex;
+    gap: 12px;
+    padding: 6px 0;
+    border-bottom: 1px solid #f1f5f9;
+}}
+.pred-lbl {{
+    width: 80px;
+    flex-shrink: 0;
+    font-weight: 700;
+    font-size: 10.5px;
+    color: #15803d;
+}}
+.pred-txt {{ font-size: 10.3px; color: #334155; flex: 1; }}
+.ol-pill {{
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 999px;
+}}
+.ol-mixed {{ background: #fef3c7; color: #92400e; }}
+.ol-tight {{ background: #fee2e2; color: #991b1b; }}
+.ol-up {{ background: #dcfce7; color: #166534; }}
+.ol-likely {{ background: #dcfce7; color: #166534; }}
+.ol-friction {{ background: #fee2e2; color: #991b1b; }}
+.ol-body_mind, .ol-mind, .ol-body {{ background: #fee2e2; color: #991b1b; }}
+.ol-dash {{ color: #94a3b8; }}
+/* Page 11 & 12: Remedies & Crystals */
+.rem-grid {{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+}}
+.rem-card {{
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 8px 10px;
+    break-inside: avoid;
+}}
+.rem-head {{
     display: flex;
     align-items: center;
     gap: 8px;
+    margin-bottom: 4px;
 }}
-.curiosity-pill {{
-    background: #d97706;
-    color: #ffffff;
-    font-size: 9.5px;
-    font-weight: 800;
-    padding: 3px 7px;
-    border-radius: 10px;
-    white-space: nowrap;
-    text-transform: uppercase;
-}}
-.curiosity-text {{
+.rem-circle {{
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #f5f3ff;
+    color: #7c3aed;
+    font-weight: 700;
     font-size: 10.5px;
-    color: #78350f;
-    font-weight: 600;
-    line-height: 1.35;
-}}
-
-/* Footer */
-.footer {{
-    border-top: 1px solid #e2e8f0;
-    padding-top: 4px;
-    font-size: 9.5px;
-    color: #64748b;
-    display: flex;
-    justify-content: space-between;
+    display: inline-flex;
     align-items: center;
-    margin-top: 2px;
+    justify-content: center;
+}}
+.rem-title {{ font-family: {serif_font}; font-size: 11.8px; font-weight: 700; color: #0f172a; }}
+.rem-sub {{ font-size: 9px; color: #64748b; }}
+.rem-sec-lbl {{ font-size: 9.5px; font-weight: 700; color: #7c3aed; margin-top: 4px; }}
+.rem-p {{ font-size: 9.3px; color: #334155; margin: 1px 0; line-height: 1.35; }}
+.crystal-row {{
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 5px 10px;
+    margin-bottom: 4px;
+    break-inside: avoid;
+}}
+.crystal-name {{ font-family: {serif_font}; font-size: 10.5px; font-weight: 700; color: #0f172a; }}
+.crystal-desc {{ font-size: 9.3px; color: #475569; }}
+.report-footer {{
+    text-align: center;
+    padding: 12px 0 4px 0;
+    font-size: 10px;
+    color: #64748b;
 }}
 </style>
 </head>
 <body>
 
-<!-- ==================== PAGE 1: ROYAL COVER & SOUL CERTIFICATE ==================== -->
-<div class="page">
-    <div class="page-border"></div>
-    <div class="page-border-inner"></div>
-    <div class="corner-ornament corner-tl"></div>
-    <div class="corner-ornament corner-tr"></div>
-    <div class="corner-ornament corner-bl"></div>
-    <div class="corner-ornament corner-br"></div>
-
-    <div class="page-content">
+<!-- PAGE 1: COVER + SUMMARY + BIRTH GRID -->
+<div class="sheet">
+    <div class="brand-row">
+        {lotus_svg}
         <div>
-            <!-- Header -->
-            <div class="report-main-header">
-                <div class="om-symbol">ॐ • श्री गणेशाय नमः • ॐ</div>
-                <h1 class="main-title">{ui.get('report_title', 'Personal Vedic Numerology Blueprint')}</h1>
-                <p class="sub-title">Authentic Sankhya Shastra Analysis & 10-Year Dasha Roadmap</p>
-            </div>
-
-            <!-- Profile Hero Certificate Card -->
-            <div class="profile-card">
-                <div class="client-data-grid">
-                    <div class="data-pill">
-                        <div class="label">{ui.get('full_name', 'Client Name')}</div>
-                        <div class="value">{client['name']}</div>
-                    </div>
-                    <div class="data-pill">
-                        <div class="label">{ui.get('dob', 'Date of Birth')}</div>
-                        <div class="value">{client['dob']} ({client.get('weekday', '')})</div>
-                    </div>
-                    <div class="data-pill">
-                        <div class="label">{ui.get('gender', 'Gender')}</div>
-                        <div class="value">{str(client.get('gender', 'Male')).capitalize()}</div>
-                    </div>
-                    <div class="data-pill highlight">
-                        <div class="label">{ui.get('basic_number', 'Moolank (Soul Number)')}</div>
-                        <div class="value">{core['bn']} — {core['bn_planet']}</div>
-                    </div>
-                    <div class="data-pill highlight">
-                        <div class="label">{ui.get('destiny_number', 'Bhagyank (Destiny Path)')}</div>
-                        <div class="value">{core['dn']} — {core['dn_planet']}</div>
-                    </div>
-                    <div class="data-pill highlight">
-                        <div class="label">{ui.get('name_number', 'Namank (Name Number)')}</div>
-                        <div class="value">{core['namank']} ({client.get('name_harmony', {}).get('status', 'Balanced').title()})</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Master Table of Contents Index -->
-            <div class="toc-container">
-                <div class="toc-title">📜 {ui.get('toc_title', '10-Chapter Master Life Index')}</div>
-                <div class="toc-grid">
-                    {toc_html}
-                </div>
-            </div>
+            <div class="brand-name">{consultant["name"]}</div>
+            <div class="brand-meta">{consultant.get("title", "")} · {consultant["phone"]} · {consultant["email"]}</div>
         </div>
+    </div>
+    <div class="report-sub-bar">{L["report_kicker"]} <strong>{L["report_title"]}</strong></div>
+    <div class="caution-bar">{L["caution_banner"]}</div>
 
-        <div>
-            {render_curiosity_box(ui.get('curiosity_hook_1', ''))}
-            {render_footer(1)}
+    <div class="kicker">{L["prepared_for"]}</div>
+    <h1 class="client-name">{client["name"]}</h1>
+    <div class="client-meta">{L["born"]} {_fmt_dash(client["dob"])} · {client["weekday"]} · {L["as_on"]} {_fmt_dash(client["target_date"])}</div>
+
+    <div class="summary-grid">
+        <div class="sum-card">
+            <div class="sum-lbl">{L["basic_number"]}</div>
+            <div class="sum-val" style="color:#92400e;">{bn}</div>
+            <div class="sum-sub">{bn_planet}</div>
+        </div>
+        <div class="sum-card">
+            <div class="sum-lbl">{L["destiny_number"]}</div>
+            <div class="sum-val" style="color:#312e81;">{dn}</div>
+            <div class="sum-sub">{dn_planet}</div>
+        </div>
+        <div class="sum-card">
+            <div class="sum-lbl">{L["mahadasha"]}</div>
+            <div class="sum-val" style="color:#0f766e;">{md_num}</div>
+            <div class="sum-sub">{_fmt_dash(active_md.get("start_str", ""))} – {_fmt_dash(active_md.get("end_str", ""))}</div>
+        </div>
+        <div class="sum-card">
+            <div class="sum-lbl">{L["antardasha"]}</div>
+            <div class="sum-val" style="color:#c2410c;">{ad_num}</div>
+            <div class="sum-sub">{_fmt_dash(active_ad.get("start_str", ""))} – {_fmt_dash(active_ad.get("end_str", ""))}</div>
+        </div>
+        <div class="sum-card full-span">
+            <div class="sum-lbl">{L["pratyantar"]}</div>
+            <div class="sum-val" style="color:#be185d;">{pd_num}</div>
+            <div class="sum-sub">{_fmt_dash(active_pd.get("start_str", ""))} – {_fmt_dash(active_pd.get("end_str", ""))}</div>
         </div>
     </div>
 </div>
 
-<!-- ==================== PAGE 2: CHAPTER 1 - DUAL VEDIC SACRED GRIDS ==================== -->
-<div class="page">
-    <div class="page-border"></div>
-    <div class="page-border-inner"></div>
-    <div class="corner-ornament corner-tl"></div>
-    <div class="corner-ornament corner-tr"></div>
-    <div class="corner-ornament corner-bl"></div>
-    <div class="corner-ornament corner-br"></div>
-
-    <div class="page-content">
-        <div>
-            {render_chapter_banner(1)}
-            <div class="section-title">🕉️ {ui.get('chap_1_title', 'Dual Vedic Grids: Lifetime Natal Blueprint & Active Dasha Activation')}</div>
-
-            <!-- Dual Grids Side-by-Side -->
-            <div class="dual-grids-row">
-                <div class="grid-box-card">
-                    <div class="grid-caption">
-                        <span>🌟</span>
-                        <span>{ui.get('natal_grid_title', 'Natal Birth Grid')}</span>
-                    </div>
-                    <div class="vedic-grid-table">
-                        {natal_grid_html}
-                    </div>
-                    <div style="font-size: 8px; color: #64748b; margin-top: 6px;">
-                        Fixed cosmic imprint cast at moment of birth.
-                    </div>
-                </div>
-
-                <div class="grid-box-card dasha">
-                    <div class="grid-caption" style="color: #b45309;">
-                        <span>🪐</span>
-                        <span>{ui.get('dasha_grid_title', 'Dasha Activation Grid')}</span>
-                    </div>
-                    <div class="vedic-grid-table">
-                        {dasha_grid_html}
-                    </div>
-                    <div style="font-size: 8px; color: #b45309; margin-top: 6px; font-weight: 600;">
-                        Active energies activated by {three_tier.get('mahadasha', {}).get('planet', 'Mahadasha')}.
-                    </div>
-                </div>
+<div class="sheet">
+    <h2 class="sec-h2">{L["birth_grid"]}</h2>
+    <div class="birth-grid-wrap">
+        {render_birth_grid_html(natal_grid["cells"], mini=False)}
+        <div class="grid-facts">
+            <div class="fact-line"><strong>{L["nums_in_grid"]}</strong> {grid_digits_str}</div>
+            <div class="fact-line"><strong>{L["missing_nums"]}</strong> {missing_str}</div>
+            <div class="fact-line"><strong>{L["pos_and_neg"]}</strong> {pos_neg_pills}</div>
+            <div class="pers-box">
+                <div class="pers-title">{L["personality"]} · {L["basic_number"]} {bn} · {bn_arch_title}</div>
+                <div class="pers-desc">{bn_arch_desc}</div>
             </div>
-
-            <!-- Color Legend Bar -->
-            <div class="color-legend-bar">
-                <div class="legend-chip"><span class="legend-dot" style="background: #d97706;"></span><span>{ui.get('legend_natal', 'Natal Inborn (Gold)')}</span></div>
-                <div class="legend-chip"><span class="legend-dot" style="background: #0284c7;"></span><span>{ui.get('legend_md', 'Mahadasha • Multi-Year (Sky Blue)')}</span></div>
-                <div class="legend-chip"><span class="legend-dot" style="background: #16a34a;"></span><span>{ui.get('legend_ad', 'Antardasha • Yearly (Emerald Green)')}</span></div>
-                <div class="legend-chip"><span class="legend-dot" style="background: #ffffff; border: 1.5px dashed #94a3b8;"></span><span>{ui.get('legend_missing', 'Missing Void')}</span></div>
-            </div>
-
-            <!-- Grid Planes Analysis Cards -->
-            <div class="planes-grid">
-                <div class="plane-card">
-                    <div class="plane-header">Mental Plane (4-9-2)</div>
-                    <div class="plane-desc">Governs intellectual capacity, analytical strategy, memory, and visionary execution. Shows mental focus and long-term foresight.</div>
-                </div>
-                <div class="plane-card">
-                    <div class="plane-header">Emotional Plane (3-5-7)</div>
-                    <div class="plane-desc">Governs spiritual intuition, empathy, heart connection, and determination. Reflects willpower and emotional stability.</div>
-                </div>
-                <div class="plane-card">
-                    <div class="plane-header">Practical Plane (8-1-6)</div>
-                    <div class="plane-desc">Governs material manifestation, business acumen, hard work, and wealth accumulation. Directs physical action.</div>
-                </div>
-            </div>
-        </div>
-
-        <div>
-            {render_curiosity_box(ui.get('curiosity_hook_2', ''))}
-            {render_footer(2)}
         </div>
     </div>
 </div>
 
-<!-- ==================== PAGE 3: CHAPTER 2 - COSMIC ALLIES & HARMONY COMPASS ==================== -->
-<div class="page">
-    <div class="page-border"></div>
-    <div class="page-border-inner"></div>
-    <div class="corner-ornament corner-tl"></div>
-    <div class="corner-ornament corner-tr"></div>
-    <div class="corner-ornament corner-bl"></div>
-    <div class="corner-ornament corner-br"></div>
-
-    <div class="page-content">
-        <div>
-            {render_chapter_banner(2)}
-            <div class="section-title">🧭 {ui.get('chap_2_title', 'Cosmic Allies, Auspicious Vastu Orientations & Name Frequency Alignment')}</div>
-
-            <!-- Harmony Compass 3 Cards -->
-            <div class="compass-grid">
-                <div class="compass-box friendly">
-                    <div class="compass-label">✦ {ui.get('friendly_numbers', 'Friendly Numbers')}</div>
-                    <div class="compass-nums">{compass.get('friendly_nums', core['favourable_nums'])}</div>
-                    <div class="compass-sub">Best for partnerships, bank accounts, vehicle plates, contracts</div>
-                </div>
-                <div class="compass-box neutral">
-                    <div class="compass-label">☯ {ui.get('neutral_numbers', 'Neutral Numbers')}</div>
-                    <div class="compass-nums">{compass.get('neutral_nums', '1, 4, 7')}</div>
-                    <div class="compass-sub">Harmonious and peaceful interactions without friction</div>
-                </div>
-                <div class="compass-box enemy">
-                    <div class="compass-label">⚠ {ui.get('enemy_numbers', 'Unfriendly / Avoid Numbers')}</div>
-                    <div class="compass-nums">{compass.get('enemy_nums', 'None')}</div>
-                    <div class="compass-sub">Avoid for critical life signatures, agreements, and major deals</div>
-                </div>
-            </div>
-
-            <!-- Auspicious Alignments 4-Grid -->
-            <div class="align-grid">
-                <div class="align-card">
-                    <div class="align-header">📅 {ui.get('favourable_days', 'Favourable Days')}</div>
-                    <div class="align-val">{core['favourable_days']}</div>
-                </div>
-                <div class="align-card">
-                    <div class="align-header">🎨 {ui.get('favourable_colors', 'Favourable Colors')}</div>
-                    <div class="align-val">{core['favourable_colors']}</div>
-                </div>
-                <div class="align-card">
-                    <div class="align-header">🧭 {ui.get('auspicious_direction', 'Auspicious Vastu Direction')}</div>
-                    <div class="align-val">{compass.get('direction', 'North-East (Ishanya)')}</div>
-                </div>
-                <div class="align-card">
-                    <div class="align-header">💎 {ui.get('gemstone_remedy', 'Recommended Gemstone')} & Metal</div>
-                    <div class="align-val">{core['gemstone']} • {compass.get('metal', 'Gold / Silver')}</div>
-                </div>
-            </div>
-
-            <!-- Chaldean Name Frequency Alignment -->
-            <div class="name-card">
-                <div class="name-header">
-                    <span>🔤 Chaldean Name Numerology: {client['name']}</span>
-                    <span class="name-score-pill">Namank {core['namank']} • {client.get('name_harmony', {}).get('status', 'Balanced').title()}</span>
-                </div>
-                <div class="name-body">
-                    {name_harmony_text}
-                    <div style="margin-top: 6px; font-size: 8.5px; color: #854d0e; font-weight: 600;">
-                        💡 <strong>Vedic Advice:</strong> Align your professional signature and email handle with your favorable compound numbers to attract effortless abundance.
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div>
-            {render_curiosity_box(ui.get('curiosity_hook_3', ''))}
-            {render_footer(3)}
-        </div>
+<!-- PAGE 2: YEAR GRIDS -->
+<div class="page-break"></div>
+<div class="sheet">
+    <h2 class="sec-h2">{L["year_grids"]}</h2>
+    <p class="lead-note">{L["year_grids_sub"]}</p>
+    <div class="yg-matrix">
+        {year_grids_html}
     </div>
 </div>
 
-<!-- ==================== PAGE 4: CHAPTER 3 - INBORN SOUL MATRIX (MOOLANK) ==================== -->
-<div class="page">
-    <div class="page-border"></div>
-    <div class="page-border-inner"></div>
-    <div class="corner-ornament corner-tl"></div>
-    <div class="corner-ornament corner-tr"></div>
-    <div class="corner-ornament corner-bl"></div>
-    <div class="corner-ornament corner-br"></div>
-
-    <div class="page-content">
-        <div>
-            {render_chapter_banner(3)}
-            <div class="section-title">🌟 {ui.get('chap_3_title', 'Core Personality, Inborn Superpowers & Mindful Guardrails (Moolank)')}</div>
-
-            <!-- Moolank Hero Box -->
-            <div class="hero-box">
-                <div class="hero-left">
-                    <div class="hero-num-badge">Root Archetype • Soul Vibration</div>
-                    <div class="hero-title">{core['bn_planet']} (Moolank {core['bn']})</div>
-                    <div class="hero-sub">The radical energy frequency determined by your birth date, shaping your intrinsic psychology, instincts, and raw natural gifts.</div>
-                </div>
-                <div class="hero-right-circle">{core['bn']}</div>
-            </div>
-
-            <!-- 2-Column Split: Superpowers vs Mindful Guardrails -->
-            <div class="two-col-grid">
-                <div class="col-card">
-                    <div class="col-title" style="color: #15803d;">
-                        <span>✦</span>
-                        <span>{ui.get('moolank_qualities', 'Inborn Core Talents & Superpowers')}</span>
-                    </div>
-                    <ul style="padding-left: 0;">
-                        {m_qual_html}
-                    </ul>
-                </div>
-
-                <div class="col-card precautions">
-                    <div class="col-title" style="color: #c2410c;">
-                        <span>⚠</span>
-                        <span>{ui.get('moolank_precautions', 'Mindful Guardrails & Pitfalls')}</span>
-                    </div>
-                    <ul style="padding-left: 0;">
-                        {m_prec_html}
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Career Inclinations Box -->
-            <div class="career-box">
-                <div class="career-title">💼 Career & Wealth Pathways for Moolank {core['bn']}</div>
-                <div class="career-text">
-                    Naturally thrives in leadership, visionary advisory, independent enterprise, and fields demanding intellectual discernment. Creates maximum wealth when maintaining emotional detachment and upholding ethical integrity.
-                </div>
-            </div>
-        </div>
-
-        <div>
-            {render_curiosity_box(ui.get('curiosity_hook_4', ''))}
-            {render_footer(4)}
-        </div>
+<!-- PAGE 3: MAHADASHA -->
+<div class="page-break"></div>
+<div class="sheet">
+    <div class="dasha-head">
+        <h2 class="sec-h2" style="margin:0;">{L["mahadasha"]}</h2>
+        <span class="d-circle" style="background:{NUM_COLORS.get(md_num, '#dc2626')};">{md_num}</span>
+        <span class="d-sub">{planet_name(md_num)} {_fmt_dash(active_md.get("start_str", ""))} – {_fmt_dash(active_md.get("end_str", ""))} · {L["age_lower"]} {active_md.get("start_age", "")}–{active_md.get("end_age", "")}</span>
+    </div>
+    <div class="md-bar">{md_bar_html}</div>
+    <div class="md-bar-labels"><span>{L["birth"]}</span><span>{L["age"]} 45</span><span>{L["age"]} 90</span></div>
+    <div class="cycles-grid">
+        {md_cycle1_html}
+        {md_cycle2_html}
     </div>
 </div>
 
-<!-- ==================== PAGE 5: CHAPTER 4 - DESTINY BLUEPRINT (BHAGYANK) ==================== -->
-<div class="page">
-    <div class="page-border"></div>
-    <div class="page-border-inner"></div>
-    <div class="corner-ornament corner-tl"></div>
-    <div class="corner-ornament corner-tr"></div>
-    <div class="corner-ornament corner-bl"></div>
-    <div class="corner-ornament corner-br"></div>
-
-    <div class="page-content">
-        <div>
-            {render_chapter_banner(4)}
-            <div class="section-title">🎯 {ui.get('chap_4_title', 'Karmic Calling, Higher Life Mission & Soul Purpose (Bhagyank)')}</div>
-
-            <!-- Bhagyank Hero Box -->
-            <div class="hero-box" style="background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);">
-                <div class="hero-left">
-                    <div class="hero-num-badge" style="color: #a78bfa;">Life Path • Karmic Mission</div>
-                    <div class="hero-title">{core['dn_planet']} (Bhagyank {core['dn']})</div>
-                    <div class="hero-sub">The aggregate cosmic frequency calculated from your full birth date, representing what the universe demands you master and achieve.</div>
-                </div>
-                <div class="hero-right-circle" style="background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%); color: #ffffff;">{core['dn']}</div>
-            </div>
-
-            <!-- 2-Column Split: Destiny Calling vs Karmic Lessons -->
-            <div class="two-col-grid">
-                <div class="col-card">
-                    <div class="col-title" style="color: #6d28d9;">
-                        <span>✦</span>
-                        <span>{ui.get('bhagyank_qualities', 'Destiny Calling & Life Mission')}</span>
-                    </div>
-                    <ul style="padding-left: 0;">
-                        {b_qual_html}
-                    </ul>
-                </div>
-
-                <div class="col-card precautions">
-                    <div class="col-title" style="color: #b91c1c;">
-                        <span>⚠</span>
-                        <span>{ui.get('bhagyank_precautions', 'Karmic Lessons & Growth Catalysts')}</span>
-                    </div>
-                    <ul style="padding-left: 0;">
-                        {b_prec_html}
-                    </ul>
-                </div>
-            </div>
-
-            <!-- The Sacred Bridge Box -->
-            <div class="career-box" style="border-left: 3.5px solid #d4af37; background: #fffdf8;">
-                <div class="career-title" style="color: #854d0e;">🌉 The Sacred Bridge: Harmonizing Moolank {core['bn']} with Bhagyank {core['dn']}</div>
-                <div class="career-text">
-                    Your Moolank dictates your internal desires and comfort zone, while your Bhagyank represents the external arena of your life's greatest victories. When you align your daily actions with your Bhagyank frequency, worldly obstacles dissolve into stepping stones.
-                </div>
-            </div>
-        </div>
-
-        <div>
-            {render_curiosity_box(ui.get('curiosity_hook_5', ''))}
-            {render_footer(5)}
-        </div>
+<!-- PAGE 4: ANTARDASHA (90 YEARS) -->
+<div class="page-break"></div>
+<div class="sheet">
+    <div class="dasha-head">
+        <h2 class="sec-h2" style="margin:0;">{L["antardasha"]}</h2>
+        <span class="d-circle" style="background:{NUM_COLORS.get(ad_num, '#4f46e5')};">{ad_num}</span>
+        <span class="d-sub">{planet_name(ad_num)} {_fmt_dash(active_ad.get("start_str", ""))} – {_fmt_dash(active_ad.get("end_str", ""))} · {L["age_lower"]} {current_age}</span>
+    </div>
+    <p class="lead-note">{L["ad_formula"]}</p>
+    <div class="ad-3col">
+        {ad_col1}
+        {ad_col2}
+        {ad_col3}
     </div>
 </div>
 
-<!-- ==================== PAGE 6: CHAPTER 5 - MACRO TIME WHEEL (MAHADASHA) ==================== -->
-<div class="page">
-    <div class="page-border"></div>
-    <div class="page-border-inner"></div>
-    <div class="corner-ornament corner-tl"></div>
-    <div class="corner-ornament corner-tr"></div>
-    <div class="corner-ornament corner-bl"></div>
-    <div class="corner-ornament corner-br"></div>
+<!-- PAGE 5: PRATYANTAR DASHA -->
+<div class="page-break"></div>
+<div class="sheet">
+    <div class="dasha-head">
+        <h2 class="sec-h2" style="margin:0;">{L["pratyantar_dasha"]}</h2>
+        <span class="d-circle" style="background:{NUM_COLORS.get(pd_num, '#8b5cf6')};">{pd_num}</span>
+        <span class="d-sub">{planet_name(pd_num)} {_fmt_dash(active_pd.get("start_str", ""))} – {_fmt_dash(active_pd.get("end_str", ""))} · {active_pd.get("duration_days", 0)} {L["days"].lower()}</span>
+    </div>
+    <p class="lead-note">{L["pd_formula"].format(ad=ad_num, start=_fmt_dash(active_ad.get("start_str", "")), end=_fmt_dash(active_ad.get("end_str", "")))}</p>
+    <table class="clean-tbl">
+        <thead><tr><th>{L["pd"]}</th><th>{L["planet"]}</th><th>{L["days"]}</th><th>{L["start"]}</th><th>{L["end"]}</th></tr></thead>
+        <tbody>{pd_rows_html}</tbody>
+    </table>
+    <p class="lead-note" style="margin-top:10px;">{L["pd_adj_note"]}</p>
+</div>
 
-    <div class="page-content">
-        <div>
-            {render_chapter_banner(5)}
-            <div class="section-title">🪐 {ui.get('chap_5_title', 'Mahadasha: 9-Year Macro Planetary Life Cycle & Wealth Directives')}</div>
+<!-- PAGES 6 & 7: LIFE PATH & PROFESSIONS -->
+<div class="page-break"></div>
+<div class="sheet">
+    <div class="kicker">{L["prof_report"]}</div>
+    <h2 class="sec-h2">{L["life_path"]}</h2>
+    <div class="prop-bar">
+        <div class="prop-b">{L["basic_pct"]}</div>
+        <div class="prop-d">{L["destiny_pct"]}</div>
+        <div class="prop-o">{L["other_pct"]}</div>
+    </div>
 
-            <!-- Mahadasha Hero Dashboard -->
-            <div class="hero-box" style="background: linear-gradient(135deg, #451a03 0%, #1c1917 100%); border-color: #f59e0b;">
-                <div class="hero-left">
-                    <div class="hero-num-badge" style="color: #fde047;">Macro Time Phase • 9-Year Reign</div>
-                    <div class="hero-title">{md_data.get('planet', 'Mahadasha')} (No. {md_data.get('number', '')})</div>
-                    <div class="hero-sub">Duration: {md_data.get('duration_years', 9)} Years • Operating Window: {md_data.get('start_year', '')} — {md_data.get('end_year', '')}</div>
-                </div>
-                <div class="hero-right-circle" style="background: linear-gradient(135deg, #fbbf24 0%, #b45309 100%);">{md_data.get('number', '')}</div>
-            </div>
-
-            <!-- Macro Opportunities 4-Pillar Grid -->
-            <div class="align-grid" style="margin-bottom: 12px;">
-                <div class="align-card">
-                    <div class="align-header">💰 Wealth & Capital Expansion</div>
-                    <div class="career-text">High-leverage investment cycles peak under this macro ruler. Prioritize tangible asset creation over speculative risks.</div>
-                </div>
-                <div class="align-card">
-                    <div class="align-header">🏢 Professional Elevation</div>
-                    <div class="career-text">Expansion of authority and reputation. Strategic networking opens access to influential decision makers.</div>
-                </div>
-                <div class="align-card">
-                    <div class="align-header">🏠 Real Estate & Property</div>
-                    <div class="career-text">Favorable periods for property deeds, home revitalization, and establishing stable familial roots.</div>
-                </div>
-                <div class="align-card">
-                    <div class="align-header">🧘 Spiritual Consciousness</div>
-                    <div class="career-text">Intensified intuitive depth and karmic clearing. Alignment with higher purpose yields peace and fulfillment.</div>
+    <div class="lp-grid">
+        <div class="lp-card">
+            <div class="kicker">{L["life_path_dn"]}</div>
+            <div class="lp-hero">
+                <div class="lp-big-num">{dn}</div>
+                <div>
+                    <div class="lp-arch">{dn_arch_title}</div>
+                    <div class="lp-planet">{dn_planet}</div>
                 </div>
             </div>
-
-            <!-- In-Depth Macro Interpretation -->
-            <div class="career-box" style="border-left: 3.5px solid #d97706;">
-                <div class="career-title" style="color: #9a3412;">📜 Macro Directive for Active Mahadasha</div>
-                <div class="career-text">
-                    {md_data.get('desc', 'This active Mahadasha cycle marks a transformative epoch where foundational life decisions bear exponential fruit. Maintain consistent discipline and align your goals with the planetary frequency of ' + md_data.get('planet', 'your ruling planet') + '.')}
-                </div>
-            </div>
+            <div class="pers-desc">{dn_arch_desc}</div>
+            <div>{dn_tag_pills}</div>
         </div>
-
-        <div>
-            {render_curiosity_box(ui.get('curiosity_hook_6', ''))}
-            {render_footer(6)}
+        <div class="lp-card">
+            <div class="kicker">{L["personality_bn"]}</div>
+            <div class="lp-hero">
+                <div class="lp-big-num">{bn}</div>
+                <div>
+                    <div class="lp-arch">{bn_arch_title}</div>
+                    <div class="lp-planet">{bn_planet}</div>
+                </div>
+            </div>
+            <ul class="qual-ul">{bn_qual_lis}</ul>
         </div>
+    </div>
+
+    <div class="compat-card">
+        <div class="kicker">{L["basic_number"]} {bn} × {L["destiny_number"]} {dn}</div>
+        <div class="compat-title">{compat_label}</div>
+        <div class="pers-desc">{compat_desc}</div>
+    </div>
+
+    <div class="fact-line"><strong>{L["other_together"]}</strong> {other_summary_html}</div>
+
+    <div class="mini4-grid">
+        <div class="mini4-card"><div class="mini4-lbl">{L["lucky_dates"]}</div><div class="mini4-val">{_lucky_dates(bn)}</div></div>
+        <div class="mini4-card"><div class="mini4-lbl">{L["fav_days"]}</div><div class="mini4-val">{core.get("favourable_days", "")}</div></div>
+        <div class="mini4-card"><div class="mini4-lbl">{L["lucky_colors"]}</div><div class="mini4-val">{core.get("favourable_colors", "")}</div></div>
+        <div class="mini4-card"><div class="mini4-lbl">{L["gemstone"]}</div><div class="mini4-val">{core.get("gemstone", "")}</div></div>
+    </div>
+
+    <h3 class="sec-h3">{L["professions_title"].format(bn=bn)}</h3>
+    {prof_rows_html}
+</div>
+
+<!-- PAGES 8 & 9: GRID ANALYSIS & YOGAS -->
+<div class="page-break"></div>
+<div class="sheet">
+    <div class="kicker">{L["prof_report"]}</div>
+    <h2 class="sec-h2">{L["grid_analysis"]}</h2>
+    <div class="ga-grid">
+        {vibe_cards_html}
+    </div>
+    <h3 class="sec-h3">{L["yogas_title"]}</h3>
+    <div class="yoga-grid">
+        {yogas_cards_html}
     </div>
 </div>
 
-<!-- ==================== PAGE 7: CHAPTER 6 - ANNUAL & MONTHLY TIMING ==================== -->
-<div class="page">
-    <div class="page-border"></div>
-    <div class="page-border-inner"></div>
-    <div class="corner-ornament corner-tl"></div>
-    <div class="corner-ornament corner-tr"></div>
-    <div class="corner-ornament corner-bl"></div>
-    <div class="corner-ornament corner-br"></div>
+<!-- PAGE 10: PREDICTIONS & NINE-YEAR OUTLOOK -->
+<div class="page-break"></div>
+<div class="sheet">
+    <div class="kicker">{L["prof_report"]}</div>
+    <h2 class="sec-h2">{L["predictions"]}</h2>
+    <h3 class="sec-h3">{L["from_birth_grid"]}</h3>
+    {render_pred_rows(pred_rows_natal)}
 
-    <div class="page-content">
-        <div>
-            {render_chapter_banner(6)}
-            <div class="section-title">📅 {ui.get('chap_6_title', 'Antardasha (Annual 1-Year Forecast) & Active Pratyantar Action Window')}</div>
+    <h3 class="sec-h3">{L["this_year"]} · {L["md"]} {md_num} · {L["ad"]} {ad_num} · {_fmt_dash(active_ad.get("start_str", ""))} to {_fmt_dash(active_ad.get("end_str", ""))}</h3>
+    {render_pred_rows(pred_rows_year)}
 
-            <!-- Tier 2 & Tier 3 Split Cards -->
-            <div class="two-col-grid" style="margin-bottom: 12px;">
-                <div class="col-card" style="border-top: 3.5px solid #2563eb;">
-                    <div class="col-title" style="color: #1e40af;">
-                        <span>📅</span>
-                        <span>{ui.get('tier_antardasha_title', 'Annual Antardasha (1-Year Focus)')}</span>
-                    </div>
-                    <div style="font-size: 11px; font-weight: 800; color: #0f172a; margin-bottom: 3px;">
-                        {ad_data.get('planet', 'Antardasha')} (No. {ad_data.get('number', '')})
-                    </div>
-                    <div style="font-size: 8.2px; color: #64748b; margin-bottom: 6px;">
-                        Timeline: {ad_data.get('start_str', '')} to {ad_data.get('end_str', '')}
-                    </div>
-                    <div class="career-text">
-                        {ad_data.get('desc', 'Year of targeted consolidation and strategic action.')}
-                    </div>
-                </div>
-
-                <div class="col-card" style="border-top: 3.5px solid #7c3aed;">
-                    <div class="col-title" style="color: #6d28d9;">
-                        <span>🌙</span>
-                        <span>{ui.get('tier_pratyantar_title', 'Active Pratyantar Dasha (30-Day Window)')}</span>
-                    </div>
-                    <div style="font-size: 11px; font-weight: 800; color: #0f172a; margin-bottom: 3px;">
-                        {pd_data.get('planet', 'Pratyantar')} (No. {pd_data.get('number', '')})
-                    </div>
-                    <div style="font-size: 8.2px; color: #64748b; margin-bottom: 6px;">
-                        Active Window: {pd_data.get('start_str', '')} to {pd_data.get('end_str', '')} ({pd_data.get('duration_days', 30)} Days)
-                    </div>
-                    <div class="career-text">
-                        {pd_data.get('desc', 'Current monthly sub-period operating with heightened sensitivity.')}
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tactical Guide: Do's and Don'ts -->
-            <div class="tactical-box">
-                <div class="tactical-card dos">
-                    <div class="tactical-title">✔ {ui.get('monthly_dos', 'Actions Blessed with Cosmic Momentum (Do This)')}</div>
-                    <ul class="tactical-list">
-                        {pd_dos_html}
-                    </ul>
-                </div>
-
-                <div class="tactical-card donts">
-                    <div class="tactical-title">⚠ {ui.get('monthly_donts', 'Friction Points to Avoid (Caution)')}</div>
-                    <ul class="tactical-list">
-                        {pd_donts_html}
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div>
-            {render_curiosity_box(ui.get('curiosity_hook_7', ''))}
-            {render_footer(7)}
-        </div>
-    </div>
+    <h3 class="sec-h3">{L["nine_year_outlook"]}</h3>
+    <table class="clean-tbl">
+        <thead>
+            <tr>
+                <th>{L["year"]}</th><th>{L["age"]}</th><th>{L["md"]}</th><th>{L["ad"]}</th>
+                <th>{L["money"]}</th><th>{L["assets"]}</th><th>{L["travel"]}</th><th>{L["disputes"]}</th><th>{L["health"]}</th>
+            </tr>
+        </thead>
+        <tbody>{outlook_rows_html}</tbody>
+    </table>
 </div>
 
-<!-- ==================== PAGE 8: CHAPTER 7 - 12-MONTH CALENDAR ROADMAP ==================== -->
-<div class="page">
-    <div class="page-border"></div>
-    <div class="page-border-inner"></div>
-    <div class="corner-ornament corner-tl"></div>
-    <div class="corner-ornament corner-tr"></div>
-    <div class="corner-ornament corner-bl"></div>
-    <div class="corner-ornament corner-br"></div>
+{remedies_section_html}
 
-    <div class="page-content">
-        <div>
-            {render_chapter_banner(7)}
-            <div class="section-title">🗓️ {ui.get('chap_7_title', 'Annual 9-Phase Pratyantar Dasha Timeline & Golden Timing Windows')}</div>
-
-            <!-- 9-Phase Comprehensive Table -->
-            <div class="roadmap-container">
-                <table class="roadmap-table">
-                    <thead>
-                        <tr>
-                            <th>Phase</th>
-                            <th>Sub-Lord</th>
-                            <th style="text-align:center;">Vibration</th>
-                            <th style="text-align:center;">Duration</th>
-                            <th style="text-align:center;">Start Date</th>
-                            <th style="text-align:center;">End Date</th>
-                            <th style="text-align:center;">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {roadmap_rows_html}
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Golden Timing Directives -->
-            <div class="career-box" style="border-left: 3.5px solid #16a34a; background: #f0fdf4;">
-                <div class="career-title" style="color: #15803d;">💡 How to Navigate Your 12-Month Calendar Roadmap</div>
-                <div class="career-text">
-                    The highlighted <strong>★ ACTIVE</strong> row represents your immediate universal atmospheric energy. When transitioning into phases governed by your friendly numbers ({compass.get('friendly_nums', core['favourable_nums'])}), execute major contracts, property deals, and launches. During neutral or enemy phases, protect capital and focus on planning.
-                </div>
-            </div>
-        </div>
-
-        <div>
-            {render_curiosity_box(ui.get('curiosity_hook_8', ''))}
-            {render_footer(8)}
-        </div>
-    </div>
-</div>
-
-<!-- ==================== PAGE 9: CHAPTER 8 - PLANETARY YOGAS & VIBRATIONS ==================== -->
-<div class="page">
-    <div class="page-border"></div>
-    <div class="page-border-inner"></div>
-    <div class="corner-ornament corner-tl"></div>
-    <div class="corner-ornament corner-tr"></div>
-    <div class="corner-ornament corner-bl"></div>
-    <div class="corner-ornament corner-br"></div>
-
-    <div class="page-content">
-        <div>
-            {render_chapter_banner(8)}
-            <div class="section-title">✨ {ui.get('chap_8_title', 'Rare Planetary Yogas, Karmic Afflictions & Dynamic Vibrational Polarities')}</div>
-
-            <!-- Auspicious Yogas -->
-            <div style="margin-bottom: 8px;">
-                <div style="font-size: 9px; font-weight: 800; color: #166534; text-transform: uppercase; margin-bottom: 4px;">
-                    👑 {ui.get('auspicious_yogas_title', 'Auspicious Planetary Yogas (Divine Alignments)')}
-                </div>
-                {auspicious_yogas_html}
-            </div>
-
-            <!-- Inauspicious Doshas -->
-            <div style="margin-bottom: 8px;">
-                <div style="font-size: 9px; font-weight: 800; color: #991b1b; text-transform: uppercase; margin-bottom: 4px;">
-                    ⚠ {ui.get('inauspicious_yogas_title', 'Challenging Planetary Yogas & Doshas (Karmic Hurdles)')}
-                </div>
-                {inauspicious_doshas_html}
-            </div>
-
-            <!-- Planetary Vibrations Spectrum (9 Planets) -->
-            <div>
-                <div style="font-size: 9px; font-weight: 800; color: #0f172a; text-transform: uppercase; margin-bottom: 4px;">
-                    📊 {ui.get('active_vibrations', 'Planetary Vibrations Analysis')} (Planetary Spectrum 1-9)
-                </div>
-                <div class="vibes-dashboard-grid">
-                    {vibe_badges_html}
-                </div>
-            </div>
-        </div>
-
-        <div>
-            {render_curiosity_box(ui.get('curiosity_hook_9', ''))}
-            {render_footer(9)}
-        </div>
-    </div>
-</div>
-
-<!-- ==================== PAGE 10: CHAPTER 9 - PREDICTIONS, REMEDIES & SEAL ==================== -->
-<div class="page">
-    <div class="page-border"></div>
-    <div class="page-border-inner"></div>
-    <div class="corner-ornament corner-tl"></div>
-    <div class="corner-ornament corner-tr"></div>
-    <div class="corner-ornament corner-bl"></div>
-    <div class="corner-ornament corner-br"></div>
-
-    <div class="page-content">
-        <div>
-            {render_chapter_banner(9)}
-            <div class="section-title">🔮 {ui.get('chap_9_title', '8-Pillar Life Predictions, Sacred Vedic Remedies & Official Certification')}</div>
-
-            <!-- 8-Pillar Predictions 2x4 Grid -->
-            <div class="preds-grid">
-                {preds_html}
-            </div>
-
-            <!-- Master 6-Pillar Vedic Remedies -->
-            {remedies_html}
-
-            {vip_badge_html}
-
-            {consultant_notes_html}
-
-            <!-- Astrological Seal & Official Verification Card -->
-            <div class="seal-card">
-                <div class="seal-symbol">🕉️</div>
-                <div class="seal-content">
-                    <div class="seal-title">{ui.get('certified_box_title', 'Certified Astrological Verification & Seal')}</div>
-                    <div class="seal-text">
-                        {ui.get('certified_box_text', 'This report is prepared and mathematically certified by Jigar Thakkar, Certified Numerologist & Vastu Consultant.')}
-                    </div>
-                    <div class="seal-blessing">
-                        ✦ {ui.get('empowerment_blessing', 'Planets indicate tendencies; consciousness and righteous action command destiny.')}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div>
-            {render_footer(10)}
-        </div>
-    </div>
+<div class="report-footer">
+    <div>{L["prepared_by"]} {consultant["name"]} · {consultant["phone"]}</div>
+    <div style="margin-top:3px;">{L["disclaimer"]}</div>
 </div>
 
 </body>
 </html>"""
     return html
+
+
+def build_matchmaking_html(m: Dict[str, Any]) -> str:
+    """
+    Constructs the clean, white, editorial-grade 5-Pillar Match Making Report HTML
+    for Boy (Groom) and Girl (Bride), ready for Chromium PDF export.
+    """
+    consultant = m["consultant"]
+    boy = m["boy"]
+    girl = m["girl"]
+    score = m["total_score"]
+    verdict = m["verdict"]
+    verdict_sub = m["verdict_sub"]
+    level = m["verdict_level"]
+
+    banner_bg = (
+        "linear-gradient(90deg, #059669, #10b981)" if level == "good"
+        else ("linear-gradient(90deg, #d97706, #f59e0b)" if level == "moderate"
+              else "linear-gradient(90deg, #991b1b, #db2777)")
+    )
+
+    def _person_card(p: Dict[str, Any], role_lbl: str) -> str:
+        cells_html = ""
+        for c in p["grid"]["cells"]:
+            val = c["str"] if c.get("count", 0) > 0 else ""
+            cells_html += f'<div class="vg-cell"><div class="vg-planet">{GRID_PLANETS_EN.get(c["num"], "")}</div><div class="vg-num">{val}</div></div>'
+        pills = ""
+        for v in p["vibrations"]:
+            sign = "+" if v["type"] == "+" else "−"
+            cls = "pill-pos" if v["type"] == "+" else "pill-neg"
+            pills += f'<span class="vpill {cls}">{sign}{v["number"]}</span>'
+        y_names = ", ".join(y["name"].split("(")[0].strip() for y in p.get("yogas", [])[:3]) or "None"
+        bn_arch = ARCHETYPES_EN.get(p["bn"], ARCHETYPES_EN[1])[0]
+        dn_arch = ARCHETYPES_EN.get(p["dn"], ARCHETYPES_EN[1])[0]
+        return f"""
+        <div class="mm-person">
+            <div class="kicker">{role_lbl}</div>
+            <div class="mm-pname">{p["name"]}</div>
+            <div class="mm-pdob">Born {p["dob"]} · age {p["age"]}</div>
+            <div class="mm-grid-row">
+                <div class="vg-grid vg-sm">{cells_html}</div>
+                <div class="mm-stats">
+                    <div><strong>Basic {p["bn"]}</strong> · {p["bn_planet"].split("(")[0].strip()}</div>
+                    <div class="mm-arch">{bn_arch}</div>
+                    <div style="margin-top:6px;"><strong>Destiny {p["dn"]}</strong> · {p["dn_planet"].split("(")[0].strip()}</div>
+                    <div class="mm-arch">{dn_arch}</div>
+                    <div style="margin-top:6px;">{pills}</div>
+                </div>
+            </div>
+            <div class="mm-yogas"><strong>Yogas:</strong> {y_names}</div>
+        </div>"""
+
+    pillars_html = ""
+    for p in m["pillars"]:
+        pct = int((p["score"] / p["max"]) * 100)
+        bar_col = "#15803d" if p["score"] >= 15 else ("#d97706" if p["score"] >= 10 else "#e2e8f0")
+        pillars_html += f"""
+        <div class="pillar-card">
+            <div class="pillar-top">
+                <div class="pillar-title">{p["title"]}</div>
+                <div class="pillar-score">{p["score"]}<span class="pillar-max">/{p["max"]}</span></div>
+            </div>
+            <div class="pillar-bar-bg"><div class="pillar-bar-fill" style="width:{pct}%;background:{bar_col};"></div></div>
+            <div class="pillar-desc">{p["desc"]}</div>
+        </div>"""
+
+    rule_icon = "✓" if m["same_bn_group"] else "!"
+    rule_cls = "rule-ok" if m["same_bn_group"] else "rule-warn"
+    rule_txt = (
+        f"Here {boy['bn']} and {girl['bn']} are in the same group."
+        if m["same_bn_group"]
+        else f"Here {boy['bn']} and {girl['bn']} belong to different compatibility groups."
+    )
+
+    rec_bg = "#f0fdf4" if level == "good" else ("#fffbeb" if level == "moderate" else "#fef2f2")
+    rec_bd = "#bbf7d0" if level == "good" else ("#fde68a" if level == "moderate" else "#fecaca")
+    rec_title = "Recommended" if level == "good" else ("Proceed with guidance" if level == "moderate" else "Not recommended")
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{consultant["name"]} - Match Making Report - {boy["name"]} &amp; {girl["name"]}</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+@page {{ size: A4 portrait; margin: 12mm; }}
+* {{ box-sizing: border-box; }}
+body {{ margin: 0; font-family: 'Source Sans 3', sans-serif; color: #1e293b; font-size: 11px; line-height: 1.45; -webkit-print-color-adjust: exact; print-color-adjust: exact; }}
+.sheet {{ border: 1px solid #e2e8f0; border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; background: #fff; break-inside: avoid; }}
+.page-break {{ page-break-before: always; break-before: page; }}
+.mm-head {{ display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 2px solid; border-image: linear-gradient(90deg, #7c3aed, #f59e0b) 1; margin-bottom: 12px; }}
+.mm-brand {{ font-family: 'Libre Baskerville', serif; font-size: 15px; font-weight: 700; color: #0f172a; }}
+.mm-rtitle {{ text-align: right; font-size: 10px; color: #64748b; }}
+.mm-rtitle strong {{ display: block; font-family: 'Libre Baskerville', serif; font-size: 13px; color: #0f172a; }}
+.kicker {{ font-family: 'Libre Baskerville', serif; font-style: italic; font-size: 10.5px; color: #7c3aed; }}
+.couple-name {{ font-family: 'Libre Baskerville', serif; font-size: 22px; font-weight: 700; color: #0f172a; margin: 2px 0; }}
+.sub-muted {{ font-size: 10.5px; color: #64748b; }}
+.score-banner {{ background: {banner_bg}; color: #fff; border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; gap: 18px; margin-bottom: 12px; }}
+.score-big {{ font-family: 'Libre Baskerville', serif; font-size: 28px; font-weight: 700; line-height: 1; }}
+.score-big span {{ font-size: 14px; opacity: 0.85; }}
+.score-verdict {{ font-family: 'Libre Baskerville', serif; font-size: 16px; font-weight: 700; }}
+.score-sub {{ font-size: 10.5px; opacity: 0.92; }}
+.sec-h2 {{ font-family: 'Libre Baskerville', serif; font-size: 16px; font-weight: 700; color: #0f172a; margin: 0 0 10px 0; }}
+.mm-two {{ display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }}
+.mm-person {{ background: #f8f7ff; border: 1px solid #ede9fe; border-radius: 10px; padding: 12px; }}
+.mm-pname {{ font-family: 'Libre Baskerville', serif; font-size: 15px; font-weight: 700; color: #0f172a; }}
+.mm-pdob {{ font-size: 10px; color: #64748b; margin-bottom: 8px; }}
+.mm-grid-row {{ display: flex; gap: 10px; align-items: flex-start; }}
+.vg-grid.vg-sm {{ display: grid; grid-template-columns: repeat(3, 44px); grid-template-rows: repeat(3, 36px); border: 1.5px solid #c9a96e; background: #fff; flex-shrink: 0; }}
+.vg-cell {{ border: 0.5px solid #e2d1a8; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 1px; }}
+.vg-planet {{ font-size: 6.5px; color: #b48a3e; }}
+.vg-num {{ font-family: 'Libre Baskerville', serif; font-size: 11px; font-weight: 700; color: #0f172a; }}
+.mm-stats {{ font-size: 10px; color: #1e293b; flex: 1; }}
+.mm-arch {{ font-size: 9.5px; color: #64748b; }}
+.mm-yogas {{ font-size: 9.5px; color: #334155; margin-top: 8px; }}
+.vpill {{ display: inline-block; font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 999px; margin-right: 3px; }}
+.pill-pos {{ background: #dcfce7; color: #166534; }}
+.pill-neg {{ background: #fee2e2; color: #991b1b; }}
+.pillar-card {{ border: 1px solid #e2e8f0; border-radius: 8px; padding: 9px 12px; margin-bottom: 8px; }}
+.pillar-top {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }}
+.pillar-title {{ font-family: 'Libre Baskerville', serif; font-size: 12px; font-weight: 700; color: #0f172a; }}
+.pillar-score {{ font-family: 'Libre Baskerville', serif; font-size: 13px; font-weight: 700; color: #15803d; }}
+.pillar-max {{ font-size: 10px; color: #64748b; }}
+.pillar-bar-bg {{ height: 5px; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin-bottom: 5px; }}
+.pillar-bar-fill {{ height: 100%; border-radius: 999px; }}
+.pillar-desc {{ font-size: 10px; color: #475569; }}
+.rule-row {{ display: flex; gap: 10px; align-items: center; }}
+.rule-badge {{ width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; color: #fff; flex-shrink: 0; }}
+.rule-ok {{ background: #15803d; }}
+.rule-warn {{ background: #d97706; }}
+.rec-box {{ background: {rec_bg}; border: 1px solid {rec_bd}; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }}
+.rec-title {{ font-family: 'Libre Baskerville', serif; font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }}
+.next-box {{ border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; }}
+.next-box ol {{ margin: 6px 0 0 16px; padding: 0; font-size: 10.5px; color: #334155; }}
+.next-box li {{ margin-bottom: 3px; }}
+.mm-foot {{ text-align: center; font-size: 9.5px; color: #64748b; margin-top: 10px; }}
+</style>
+</head>
+<body>
+<div class="sheet">
+    <div class="mm-head">
+        <div class="mm-brand">{consultant["name"]}</div>
+        <div class="mm-rtitle">Vedic Numerology <strong>Match Making Report</strong></div>
+    </div>
+    <div class="kicker">Prepared for</div>
+    <div class="couple-name">{boy["name"]} &amp; {girl["name"]}</div>
+    <div class="sub-muted">Five pillars of 20 points each, from the NumberWise method</div>
+</div>
+
+<div class="score-banner">
+    <div class="score-big">{score}<span>/100</span></div>
+    <div>
+        <div class="score-verdict">{verdict}</div>
+        <div class="score-sub">{verdict_sub}</div>
+    </div>
+</div>
+
+<div class="sheet">
+    <h2 class="sec-h2">The two grids</h2>
+    <div class="mm-two">
+        {_person_card(boy, "Boy · Groom")}
+        {_person_card(girl, "Girl · Bride")}
+    </div>
+</div>
+
+<div class="page-break"></div>
+<div class="sheet">
+    <h2 class="sec-h2">The five pillars</h2>
+    {pillars_html}
+</div>
+
+<div class="sheet">
+    <h2 class="sec-h2">Basic matching rules</h2>
+    <div class="rule-row">
+        <div class="rule-badge {rule_cls}">{rule_icon}</div>
+        <div>
+            <strong>Rule 1 · 2</strong><br>
+            <span class="sub-muted">Basic Numbers 1, 2, 4, 7 marry within their group; 3, 6, 9 within theirs. {rule_txt}</span>
+        </div>
+    </div>
+</div>
+
+<div class="sheet">
+    <h2 class="sec-h2">Final recommendation</h2>
+    <div class="rec-box">
+        <div class="rec-title">{rec_title}</div>
+        <div><strong>{boy["name"]}</strong> and <strong>{girl["name"]}</strong> score <strong>{score} of 100</strong>. Key areas to review: {m["weak_summary"]}.</div>
+        <div class="sub-muted" style="margin-top:4px;">This is a reason for a careful, detailed consultation before any decision — not a judgement on either person.</div>
+    </div>
+    <div class="next-box">
+        <strong>What to do next</strong>
+        <ol>
+            <li>Read both grids in full, with each person's current Mahadasha and Antardasha, before advising.</li>
+            <li>Talk openly about the weaker areas ({m["weak_summary"]}) and how the couple will handle them.</li>
+            <li>Consider remedies for any number that appears negative or repeated in either grid.</li>
+        </ol>
+    </div>
+    <div class="mm-foot">
+        <strong>Disclaimer:</strong> Prepared using Vedic numerology for guidance. Report generated on {m["generated_on"]}.<br>
+        Prepared by {consultant["name"]} · {consultant["phone"]}
+    </div>
+</div>
+</body>
+</html>"""
+
 
 def render_pdf_from_html(html_content_or_path: str, output_pdf_path: str) -> bool:
     """

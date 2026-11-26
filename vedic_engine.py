@@ -377,9 +377,10 @@ def calculate_mahadasha_timeline(bn: int, dob: date, target_date: date) -> Dict[
     periods = []
     curr_start = dob
     curr_num = bn
+    age_acc = 0
     
     # Generate MD periods for 90 years (2 complete 45-year cycles)
-    for _ in range(18):
+    for idx in range(18):
         duration_years = curr_num
         try:
             curr_end = date(curr_start.year + duration_years, curr_start.month, curr_start.day)
@@ -388,20 +389,27 @@ def calculate_mahadasha_timeline(bn: int, dob: date, target_date: date) -> Dict[
             curr_end = date(curr_start.year + duration_years, curr_start.month, curr_start.day - 1)
             
         periods.append({
+            "cycle": 1 if idx < 9 else 2,
             "number": curr_num,
             "duration": duration_years,
+            "start_age": age_acc,
+            "end_age": age_acc + duration_years,
             "start": curr_start,
             "end": curr_end,
             "start_str": curr_start.strftime("%d/%m/%Y"),
             "end_str": curr_end.strftime("%d/%m/%Y"),
+            "start_dash": curr_start.strftime("%d-%m-%Y"),
+            "end_dash": curr_end.strftime("%d-%m-%Y"),
             "is_active": curr_start <= target_date < curr_end
         })
+        age_acc += duration_years
         curr_start = curr_end
         curr_num = (curr_num % 9) + 1
 
     active_md = next((p for p in periods if p["is_active"]), periods[0])
     return {
         "periods": periods[:10],
+        "all_periods": periods,
         "active_md": active_md
     }
 
@@ -448,12 +456,13 @@ def calculate_antardasha(dob: date, target_date: date) -> Dict[str, Any]:
         "weekday_code": weekday_code
     }
 
-def calculate_pratyantar_dasha(ad_number: int, ad_start: date, target_date: date) -> Dict[str, Any]:
+def calculate_pratyantar_dasha(ad_number: int, ad_start: date, target_date: date, ad_end: date = None) -> Dict[str, Any]:
     """
     Pratyantar Dasha (PD):
     Year has 9 sub-periods starting from AD number.
     Duration of each sub-period = Root Number * 8 days.
     (Sum of 1*8 + 2*8 + ... + 9*8 = 360 days).
+    Plus an adjustment period covering remaining days up to ad_end.
     """
     pd_periods = []
     curr_start = ad_start
@@ -470,16 +479,158 @@ def calculate_pratyantar_dasha(ad_number: int, ad_start: date, target_date: date
             "end": curr_end,
             "start_str": curr_start.strftime("%d/%m/%Y"),
             "end_str": curr_end.strftime("%d/%m/%Y"),
-            "is_active": is_active
+            "start_dash": curr_start.strftime("%d-%m-%Y"),
+            "end_dash": (curr_end - timedelta(days=1)).strftime("%d-%m-%Y"),
+            "is_active": is_active,
+            "is_adjustment": False
         })
         curr_start = curr_end
         curr_num = (curr_num % 9) + 1
-        
-    active_pd = next((p for p in pd_periods if p["is_active"]), pd_periods[0])
+
+    full_periods = list(pd_periods)
+    if ad_end and curr_start < ad_end:
+        adj_days = (ad_end - curr_start).days
+        is_active_adj = curr_start <= target_date < ad_end
+        full_periods.append({
+            "number": ad_number,
+            "duration_days": adj_days,
+            "start": curr_start,
+            "end": ad_end,
+            "start_str": curr_start.strftime("%d/%m/%Y"),
+            "end_str": ad_end.strftime("%d/%m/%Y"),
+            "start_dash": curr_start.strftime("%d-%m-%Y"),
+            "end_dash": (ad_end - timedelta(days=1)).strftime("%d-%m-%Y"),
+            "is_active": is_active_adj,
+            "is_adjustment": True
+        })
+
+    active_pd = next((p for p in full_periods if p["is_active"]), pd_periods[0])
     return {
         "periods": pd_periods,
+        "full_periods": full_periods,
         "active_pd": active_pd
     }
+
+
+def calculate_lifetime_antardasha(dob: date, target_date: date, md_all_periods: list) -> list:
+    """
+    Computes 90 years of Antardasha (Ages 1..90) from each birthday to the day before next birthday.
+    """
+    rows = []
+    for age in range(1, 91):
+        yr = dob.year + age - 1
+        try:
+            bday_start = date(yr, dob.month, dob.day)
+        except ValueError:
+            bday_start = date(yr, dob.month, dob.day - 1)
+        try:
+            next_bday = date(yr + 1, dob.month, dob.day)
+        except ValueError:
+            next_bday = date(yr + 1, dob.month, dob.day - 1)
+        bday_end = next_bday - timedelta(days=1)
+
+        weekday_code = get_day_number(bday_start.weekday())
+        yr_2digits = yr % 100
+        ad_num = reduce_to_single_digit(dob.day + dob.month + yr_2digits + weekday_code)
+
+        # Find MD active at bday_start
+        md_num = md_all_periods[0]["number"]
+        for p in md_all_periods:
+            if p["start"] <= bday_start < p["end"]:
+                md_num = p["number"]
+                break
+
+        rows.append({
+            "age": age,
+            "year": yr,
+            "from_date": bday_start,
+            "to_date": bday_end,
+            "from_str": bday_start.strftime("%d-%m-%Y"),
+            "to_str": bday_end.strftime("%d-%m-%Y"),
+            "md": md_num,
+            "ad": ad_num,
+            "is_active": bday_start <= target_date < next_bday
+        })
+    return rows
+
+
+def calculate_nine_year_grids_and_outlook(
+    natal_counts: Dict[int, int], bn: int, dn: int, lifetime_ad: list, lang: str
+) -> list:
+    """
+    Builds 9-year window centered on the running Antardasha year, with overlaid 3x3 Vedic grids
+    and outlook tags (Money, Assets, Travel, Disputes, Health).
+    """
+    active_idx = next((i for i, r in enumerate(lifetime_ad) if r["is_active"]), 0)
+    start_idx = max(0, min(len(lifetime_ad) - 9, active_idx - 4))
+    window = lifetime_ad[start_idx : start_idx + 9]
+
+    grid_order = [3, 1, 9, 6, 7, 5, 2, 8, 4]
+    labels = {
+        "en": {"mixed": "Mixed", "tight": "Tight", "up": "Up", "likely": "Likely", "friction": "Friction", "body_mind": "Body, mind", "mind": "Mind", "body": "Body"},
+        "hi": {"mixed": "मिश्रित", "tight": "कठिन", "up": "उत्तम", "likely": "संभावित", "friction": "मतभेद", "body_mind": "तन, मन", "mind": "मन", "body": "शरीर"},
+        "gu": {"mixed": "મિશ્ર", "tight": "કઠિન", "up": "ઉત્તમ", "likely": "સંભવિત", "friction": "મતભેદ", "body_mind": "તન, મન", "mind": "મન", "body": "શરીર"},
+    }[lang]
+
+    result = []
+    for row in window:
+        md = row["md"]
+        ad = row["ad"]
+        comb_counts = dict(natal_counts)
+        comb_counts[md] = comb_counts.get(md, 0) + 1
+        comb_counts[ad] = comb_counts.get(ad, 0) + 1
+
+        cells = []
+        for num in grid_order:
+            nat_c = natal_counts.get(num, 0)
+            add_c = (1 if md == num else 0) + (1 if ad == num else 0)
+            cells.append({
+                "num": num,
+                "natal_str": str(num) * nat_c if nat_c > 0 else "",
+                "transit_str": str(num) * add_c if add_c > 0 else "",
+            })
+
+        vibes = evaluate_vibrations(comb_counts, dn)
+        pos_nums = {n for n, v in vibes.items() if v == "+"}
+        neg_nums = {n for n, v in vibes.items() if v == "-"}
+
+        # Outlook heuristics aligned with Vedic grid vibrations
+        has_money_pos = any(n in pos_nums for n in (1, 5, 6, 8)) or (md in (1, 5, 6) and md in pos_nums) or (ad in (1, 5, 6) and ad in pos_nums)
+        has_money_neg = any(n in (md, ad) and n in neg_nums for n in (1, 5, 8, 9))
+        if has_money_pos and has_money_neg:
+            money = ("mixed", labels["mixed"])
+        elif has_money_pos and not has_money_neg:
+            money = ("up", labels["up"])
+        elif has_money_neg:
+            money = ("tight", labels["tight"])
+        else:
+            money = ("none", "–")
+
+        assets = ("likely", labels["likely"]) if (8 in pos_nums and (8 in (md, ad) or 6 in (md, ad))) or (6 in pos_nums and 6 in (md, ad)) else ("none", "–")
+        travel = ("likely", labels["likely"]) if (4 in (md, ad) or 7 in (md, ad) or 5 in (md, ad)) and (4 in comb_counts and comb_counts[4] > 0) else ("none", "–")
+        disputes = ("friction", labels["friction"]) if (4 in (md, ad) and 4 in neg_nums) or (8 in (md, ad) and 9 in (md, ad)) else ("none", "–")
+
+        body_risk = any(n in (md, ad) and n in neg_nums for n in (1, 8, 9))
+        mind_risk = any(n in (md, ad) and n in neg_nums for n in (2, 4, 7, 9))
+        if body_risk and mind_risk:
+            health = ("body_mind", labels["body_mind"])
+        elif body_risk:
+            health = ("body", labels["body"])
+        elif mind_risk:
+            health = ("mind", labels["mind"])
+        else:
+            health = ("none", "–")
+
+        result.append({
+            **row,
+            "cells": cells,
+            "money": money,
+            "assets": assets,
+            "travel": travel,
+            "disputes": disputes,
+            "health": health,
+        })
+    return result
 
 def detect_active_yogas(counts: Dict[int, int], vibrations: Dict[int, str], lang: str) -> Dict[str, Any]:
     """
@@ -1468,7 +1619,9 @@ def compile_full_numerology_profile(
     # Dasha calculations
     md_info = calculate_mahadasha_timeline(bn, birth_date, target_date)
     ad_info = calculate_antardasha(birth_date, target_date)
-    pd_info = calculate_pratyantar_dasha(ad_info["ad_number"], ad_info["start"], target_date)
+    pd_info = calculate_pratyantar_dasha(ad_info["ad_number"], ad_info["start"], target_date, ad_info["end"])
+    lifetime_ad = calculate_lifetime_antardasha(birth_date, target_date, md_info["all_periods"])
+    nine_year_grids = calculate_nine_year_grids_and_outlook(grid_info["counts"], bn, dn, lifetime_ad, lang)
     
     # Active Dasha & Transit Grid (MD + AD + PD Infusion)
     active_md_num = md_info["active_md"]["number"]
@@ -1528,6 +1681,31 @@ def compile_full_numerology_profile(
         "metal": PLANET_INFO[bn][lang]["metal"],
     }
 
+    # Per-number remedies for all afflicted / negative numbers in natal or active period
+    remedies_by_number = []
+    seen_rem_nums = set()
+    for vib in vibrations_data["active_period"]:
+        num = vib["number"]
+        if (vib["type"] == "-" or vib["count"] >= 2) and num not in seen_rem_nums:
+            seen_rem_nums.add(num)
+            rem_obj = NUMBER_REMEDIES[num]
+            p_obj = PLANET_INFO[num][lang]
+            natal_cnt = grid_info["counts"].get(num, 0)
+            remedies_by_number.append({
+                "number": num,
+                "planet": p_obj["planet"],
+                "natal_count": natal_cnt,
+                "total_count": vib["count"],
+                "type": vib["type"],
+                "mantra": rem_obj["mantra"][lang],
+                "seva": rem_obj["seva"][lang],
+                "donation": rem_obj["donation"][lang],
+                "colors": p_obj["colors"],
+                "fasting": rem_obj["fasting"][lang],
+                "crystal": rem_obj["crystal"][lang],
+                "gem": rem_obj["gem"][lang],
+            })
+
     # Consolidated Result Payload
     return {
         "consultant": {
@@ -1585,8 +1763,13 @@ def compile_full_numerology_profile(
             "active_md": md_info["active_md"],
             "active_ad": ad_info,
             "active_pd": pd_info["active_pd"],
-            "md_timeline": md_info["periods"]
+            "md_timeline": md_info["periods"],
+            "all_md_timeline": md_info["all_periods"],
+            "lifetime_ad": lifetime_ad,
+            "nine_year_grids": nine_year_grids,
+            "pratyantar_full": pd_info.get("full_periods", pd_info["periods"])
         },
+        "remedies_by_number": remedies_by_number,
         "yogas": active_yogas,
         "auspicious_yogas": auspicious_yogas,
         "inauspicious_yogas": inauspicious_yogas,
@@ -1604,4 +1787,179 @@ def compile_full_numerology_profile(
             "general_harmony": GENERAL_REMEDIES["harmony"]["desc"][lang]
         },
         "ui": UI_TEXT[lang]
+    }
+
+
+def compile_matchmaking_report(
+    boy_name: str,
+    boy_dob: str,
+    girl_name: str,
+    girl_dob: str,
+    lang: str = "en",
+) -> Dict[str, Any]:
+    """
+    Computes the 5-pillar NumberWise Vedic Numerology Match Making Report (100 points total)
+    for Boy (Groom) and Girl (Bride).
+    """
+    boy_profile = compile_full_numerology_profile(boy_name, boy_dob, gender="Male", lang=lang)
+    girl_profile = compile_full_numerology_profile(girl_name, girl_dob, gender="Female", lang=lang)
+
+    today = date.today()
+    def _age_from_iso(iso_str: str) -> int:
+        b = date.fromisoformat(iso_str)
+        return today.year - b.year - ((today.month, today.day) < (b.month, b.day))
+
+    boy_age = _age_from_iso(boy_profile["client"]["dob_iso"])
+    girl_age = _age_from_iso(girl_profile["client"]["dob_iso"])
+
+    boy_pos = {v["number"] for v in boy_profile["natal_vibrations"] if v["type"] == "+"}
+    girl_pos = {v["number"] for v in girl_profile["natal_vibrations"] if v["type"] == "+"}
+
+    def _presence_label(in_boy: bool, in_girl: bool) -> str:
+        if in_boy and in_girl:
+            return f"{boy_name} and {girl_name}"
+        if in_boy:
+            return boy_name
+        if in_girl:
+            return girl_name
+        return "neither"
+
+    # Pillar 1: Emotional Quotient (+2 in both grids)
+    p1_b, p1_g = (2 in boy_pos), (2 in girl_pos)
+    p1_score = 20 if (p1_b and p1_g) else (10 if (p1_b or p1_g) else 0)
+
+    # Pillar 2: Practical Quotient (+1, +3 or +9 in both grids)
+    p2_b = any(n in boy_pos for n in (1, 3, 9))
+    p2_g = any(n in girl_pos for n in (1, 3, 9))
+    p2_score = 20 if (p2_b and p2_g) else (10 if (p2_b or p2_g) else 0)
+
+    # Pillar 3: Money Compatibility (+3, +5, +6 or +8 in both grids)
+    p3_b = any(n in boy_pos for n in (3, 5, 6, 8))
+    p3_g = any(n in girl_pos for n in (3, 5, 6, 8))
+    p3_score = 20 if (p3_b and p3_g) else (10 if (p3_b or p3_g) else 0)
+
+    # Pillar 4: Root & Destiny Matching (Basic 10 pts + Destiny 10 pts)
+    grp_a = {1, 2, 4, 7}
+    grp_b = {3, 6, 9}
+    def _group_compat(n1: int, n2: int) -> tuple:
+        if (n1 in grp_a and n2 in grp_a) or (n1 in grp_b and n2 in grp_b) or n1 == n2:
+            return 10, "are in the same compatibility group (10/10)"
+        if 5 in (n1, n2):
+            return 5, "are neutral/bridging (5/10)"
+        if (n1 in grp_a and n2 in grp_b) or (n1 in grp_b and n2 in grp_a):
+            # Check PLANET_INFO neutral vs enemy
+            from vedic_translations import PLANET_INFO
+            en_str = PLANET_INFO[n1]["en"]["enemy_nums"]
+            enemies = [int(x.strip()) for x in en_str.split(",") if x.strip().isdigit()]
+            if n2 in enemies:
+                return 0, "are in opposing groups (0/10)"
+            return 5, "are neutral (5/10)"
+        return 5, "are neutral (5/10)"
+
+    b_bn, g_bn = boy_profile["core_numbers"]["bn"], girl_profile["core_numbers"]["bn"]
+    b_dn, g_dn = boy_profile["core_numbers"]["dn"], girl_profile["core_numbers"]["dn"]
+    bn_pts, bn_desc = _group_compat(b_bn, g_bn)
+    dn_pts, dn_desc = _group_compat(b_dn, g_dn)
+    p4_score = bn_pts + dn_pts
+
+    # Pillar 5: Marriage-saving numbers (+3, +7, +8 in either grid)
+    ms_nums = [n for n in (3, 7, 8) if (n in boy_pos or n in girl_pos)]
+    p5_score = min(20, len(ms_nums) * 10)
+
+    total_score = p1_score + p2_score + p3_score + p4_score + p5_score
+
+    if total_score >= 75:
+        verdict = "Recommended"
+        verdict_sub = "75 or above — strong overall alignment across the five pillars."
+        verdict_level = "good"
+    elif total_score >= 50:
+        verdict = "Moderate match"
+        verdict_sub = "50–74 — workable alignment with conscious communication and remedies."
+        verdict_level = "moderate"
+    else:
+        verdict = "Not suggested"
+        verdict_sub = "Below 50 — the course does not suggest this match."
+        verdict_level = "low"
+
+    same_bn_group = ((b_bn in grp_a and g_bn in grp_a) or (b_bn in grp_b and g_bn in grp_b))
+
+    pillars = [
+        {
+            "key": "emotional",
+            "title": "Emotional Quotient",
+            "score": p1_score,
+            "max": 20,
+            "desc": f"How each expresses emotion, handles conflict and stays steady day to day. Points for +2 in both grids — present in: {_presence_label(p1_b, p1_g)}.",
+        },
+        {
+            "key": "practical",
+            "title": "Practical Quotient",
+            "score": p2_score,
+            "max": 20,
+            "desc": f"Decision-making, responsibility and long-term planning. Points for +1, +3 or +9 in both grids — present in: {_presence_label(p2_b, p2_g)}.",
+        },
+        {
+            "key": "money",
+            "title": "Money Compatibility",
+            "score": p3_score,
+            "max": 20,
+            "desc": f"Spending, saving, financial discipline and money mindset. Points for +3, +5, +6 or +8 in both grids — present in: {_presence_label(p3_b, p3_g)}.",
+        },
+        {
+            "key": "root_destiny",
+            "title": "Root & Destiny Matching",
+            "score": p4_score,
+            "max": 20,
+            "desc": f"Basic Numbers {b_bn} and {g_bn} {bn_desc}. Destiny Numbers {b_dn} and {g_dn} {dn_desc} — how well their life purposes align.",
+        },
+        {
+            "key": "marriage_saving",
+            "title": "Marriage-saving numbers",
+            "score": p5_score,
+            "max": 20,
+            "desc": (
+                f"Extra points for +3, +7 or +8 in either grid. Found: {', '.join('+' + str(n) for n in ms_nums)}."
+                if ms_nums else
+                "Extra points for +3, +7 or +8 in either grid. None found. +3 brings communication harmony, +7 spiritual bonding, +8 discipline and long-term commitment."
+            ),
+        },
+    ]
+
+    weak_pillars = [p["title"].lower() for p in pillars if p["score"] < 15]
+    weak_str = " and ".join(weak_pillars[:2]) if weak_pillars else "none"
+
+    return {
+        "consultant": boy_profile["consultant"],
+        "boy": {
+            "name": boy_name,
+            "dob": boy_profile["client"]["dob"].replace("/", "-"),
+            "age": boy_age,
+            "bn": b_bn,
+            "dn": b_dn,
+            "bn_planet": boy_profile["core_numbers"]["bn_planet"],
+            "dn_planet": boy_profile["core_numbers"]["dn_planet"],
+            "grid": boy_profile["natal_grid"],
+            "vibrations": boy_profile["natal_vibrations"],
+            "yogas": boy_profile["yogas"],
+        },
+        "girl": {
+            "name": girl_name,
+            "dob": girl_profile["client"]["dob"].replace("/", "-"),
+            "age": girl_age,
+            "bn": g_bn,
+            "dn": g_dn,
+            "bn_planet": girl_profile["core_numbers"]["bn_planet"],
+            "dn_planet": girl_profile["core_numbers"]["dn_planet"],
+            "grid": girl_profile["natal_grid"],
+            "vibrations": girl_profile["natal_vibrations"],
+            "yogas": girl_profile["yogas"],
+        },
+        "total_score": total_score,
+        "verdict": verdict,
+        "verdict_sub": verdict_sub,
+        "verdict_level": verdict_level,
+        "pillars": pillars,
+        "same_bn_group": same_bn_group,
+        "weak_summary": weak_str,
+        "generated_on": today.strftime("%d %B %Y"),
     }

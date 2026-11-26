@@ -199,6 +199,7 @@
                             <button class="tab-btn" data-tab="tab-yogas">⚖️ Yogas & Raj Yog</button>
                             <button class="tab-btn" data-tab="tab-predictions">🔮 Life Predictions</button>
                             <button class="tab-btn" data-tab="tab-remedies">🕉️ Vedic Remedies</button>
+                            <button class="tab-btn" data-tab="tab-matchmaking" id="tab-btn-matchmaking" style="color: #f472b6; border-color: rgba(244,114,182,0.4); font-weight: 700;">💑 Match Making</button>
                             <button class="tab-btn" data-tab="tab-crm" id="tab-btn-crm" style="color: #fbbf24; border-color: rgba(212,175,55,0.4); font-weight: 700;">💼 Paid Client Orders & CRM</button>
                         </nav>
                     </div>
@@ -602,6 +603,48 @@
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+
+                    <!-- Tab 7: Match Making Report (5-Pillar NumberWise Method) -->
+                    <div id="tab-matchmaking" class="tab-content">
+                        <div class="compass-dashboard-banner" style="margin-bottom: 16px;">
+                            <div class="compass-dash-header">💑 Match Making Report (5-Pillar NumberWise Method)</div>
+                            <p style="font-size: 12.5px; color: var(--text-secondary); margin: 4px 0 0 0;">
+                                Compare Boy (Groom) &amp; Girl (Bride) across 5 pillars of 20 points each (100 points total) and export a clean client-ready PDF.
+                            </p>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+                            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 14px;">
+                                <div style="font-weight: 700; color: #a78bfa; margin-bottom: 10px; font-size: 13px;">Boy · Groom</div>
+                                <div class="form-group" style="margin-bottom: 10px;">
+                                    <label for="mm-boy-name">Full Name</label>
+                                    <input type="text" id="mm-boy-name" placeholder="e.g. Karan" value="Karan" style="width:100%;">
+                                </div>
+                                <div class="form-group">
+                                    <label for="mm-boy-dob">Date of Birth</label>
+                                    <input type="date" id="mm-boy-dob" value="2003-02-12" style="width:100%;">
+                                </div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 14px;">
+                                <div style="font-weight: 700; color: #f472b6; margin-bottom: 10px; font-size: 13px;">Girl · Bride</div>
+                                <div class="form-group" style="margin-bottom: 10px;">
+                                    <label for="mm-girl-name">Full Name</label>
+                                    <input type="text" id="mm-girl-name" placeholder="e.g. Rency" value="Rency" style="width:100%;">
+                                </div>
+                                <div class="form-group">
+                                    <label for="mm-girl-dob">Date of Birth</label>
+                                    <input type="date" id="mm-girl-dob" value="2005-01-06" style="width:100%;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px;">
+                            <button type="button" id="btn-mm-analyze" class="btn-primary" style="flex: 1; min-width: 200px;">💑 Make the Match Report</button>
+                            <button type="button" id="btn-mm-pdf" class="btn-secondary" style="min-width: 190px;">📄 Download Match PDF</button>
+                        </div>
+
+                        <div id="mm-results-container"></div>
                     </div>
                 </div>
             </section>

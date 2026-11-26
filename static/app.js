@@ -12,6 +12,7 @@ let latestAnalysisData = null;
 document.addEventListener('DOMContentLoaded', () => {
     initEventListeners();
     initCrmListeners();
+    initMatchMakingListeners();
     updateWeekdayDisplay();
     fetchAnalysis(false);
     refreshHistory();
@@ -840,4 +841,160 @@ async function updateMeetingStatus(orderId, status) {
         console.error(e);
         alert('Network error updating meeting status.');
     }
+}
+
+// ==========================================
+// Match Making Report (5-Pillar NumberWise)
+// ==========================================
+function initMatchMakingListeners() {
+    const analyzeBtn = document.getElementById('btn-mm-analyze');
+    const pdfBtn = document.getElementById('btn-mm-pdf');
+    if (analyzeBtn) {
+        analyzeBtn.addEventListener('click', runMatchMakingAnalysis);
+    }
+    if (pdfBtn) {
+        pdfBtn.addEventListener('click', downloadMatchMakingPdf);
+    }
+}
+
+function getMatchMakingPayload() {
+    return {
+        boy_name: (document.getElementById('mm-boy-name')?.value || '').trim(),
+        boy_dob: document.getElementById('mm-boy-dob')?.value || '',
+        girl_name: (document.getElementById('mm-girl-name')?.value || '').trim(),
+        girl_dob: document.getElementById('mm-girl-dob')?.value || '',
+        lang: 'en'
+    };
+}
+
+async function runMatchMakingAnalysis() {
+    const payload = getMatchMakingPayload();
+    if (!payload.boy_name || !payload.boy_dob || !payload.girl_name || !payload.girl_dob) {
+        showStatus('Please enter both names and dates of birth for Match Making.', 'error');
+        return;
+    }
+    showStatus('Computing 5-Pillar Match Making compatibility...', 'loading');
+    try {
+        const res = await fetch('/api/matchmaking/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) {
+            throw new Error(json.detail || 'Match making analysis failed');
+        }
+        renderMatchMakingResults(json.data);
+        hideStatus();
+    } catch (err) {
+        showStatus(`Match Making error: ${err.message}`, 'error');
+    }
+}
+
+async function downloadMatchMakingPdf() {
+    const payload = getMatchMakingPayload();
+    if (!payload.boy_name || !payload.boy_dob || !payload.girl_name || !payload.girl_dob) {
+        showStatus('Please enter both names and dates of birth first.', 'error');
+        return;
+    }
+    showStatus('Generating clean Match Making PDF...', 'loading');
+    try {
+        const res = await fetch('/api/matchmaking/generate-pdf', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) {
+            throw new Error(json.detail || 'PDF generation failed');
+        }
+        if (json.data) renderMatchMakingResults(json.data);
+        showStatus(`Match Making PDF ready! <a href="${json.download_url}" target="_blank" style="color:#fbbf24;text-decoration:underline;margin-left:8px;">Download PDF ↗</a>`, 'success');
+        window.open(json.download_url, '_blank');
+    } catch (err) {
+        showStatus(`Match Making PDF error: ${err.message}`, 'error');
+    }
+}
+
+function renderMatchMakingResults(m) {
+    const container = document.getElementById('mm-results-container');
+    if (!container) return;
+
+    const bannerGrad = m.verdict_level === 'good'
+        ? 'linear-gradient(90deg, #059669, #10b981)'
+        : (m.verdict_level === 'moderate'
+            ? 'linear-gradient(90deg, #d97706, #f59e0b)'
+            : 'linear-gradient(90deg, #991b1b, #db2777)');
+
+    const renderMiniGrid = (grid) => {
+        const cells = (grid.cells || []).map(c =>
+            `<div style="border:1px solid rgba(212,175,55,0.4);padding:4px;text-align:center;min-height:36px;">
+                <div style="font-size:9px;color:#d4af37;">${c.num}</div>
+                <div style="font-weight:700;font-size:13px;">${c.count > 0 ? c.str : ''}</div>
+            </div>`
+        ).join('');
+        return `<div style="display:grid;grid-template-columns:repeat(3,1fr);border:1.5px solid #d4af37;border-radius:4px;width:135px;flex-shrink:0;">${cells}</div>`;
+    };
+
+    const renderPerson = (p, role) => {
+        const pills = (p.vibrations || []).map(v => {
+            const bg = v.type === '+' ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)';
+            const fg = v.type === '+' ? '#4ade80' : '#f87171';
+            const sign = v.type === '+' ? '+' : '−';
+            return `<span style="background:${bg};color:${fg};padding:1px 6px;border-radius:999px;font-size:11px;font-weight:700;margin-right:4px;">${sign}${v.number}</span>`;
+        }).join('');
+        return `
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;">
+            <div style="font-size:11px;color:#a78bfa;font-style:italic;">${role}</div>
+            <div style="font-size:16px;font-weight:700;margin-bottom:2px;">${p.name}</div>
+            <div style="font-size:11px;color:var(--text-secondary);margin-bottom:10px;">Born ${p.dob} · age ${p.age}</div>
+            <div style="display:flex;gap:12px;align-items:flex-start;">
+                ${renderMiniGrid(p.grid)}
+                <div style="font-size:12px;">
+                    <div><strong>Basic ${p.bn}</strong> · ${p.bn_planet}</div>
+                    <div style="margin-top:4px;"><strong>Destiny ${p.dn}</strong> · ${p.dn_planet}</div>
+                    <div style="margin-top:8px;">${pills}</div>
+                </div>
+            </div>
+        </div>`;
+    };
+
+    const pillarsHtml = (m.pillars || []).map(p => {
+        const pct = Math.round((p.score / p.max) * 100);
+        const barCol = p.score >= 15 ? '#22c55e' : (p.score >= 10 ? '#f59e0b' : '#475569');
+        return `
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:10px 12px;margin-bottom:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                <strong style="font-size:13px;">${p.title}</strong>
+                <strong style="font-size:14px;color:${p.score >= 15 ? '#4ade80' : '#fbbf24'};">${p.score}/${p.max}</strong>
+            </div>
+            <div style="height:6px;background:rgba(255,255,255,0.1);border-radius:999px;overflow:hidden;margin-bottom:5px;">
+                <div style="width:${pct}%;height:100%;background:${barCol};"></div>
+            </div>
+            <div style="font-size:11.5px;color:var(--text-secondary);">${p.desc}</div>
+        </div>`;
+    }).join('');
+
+    container.innerHTML = `
+        <div style="background:${bannerGrad};color:#fff;border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:18px;margin-bottom:14px;">
+            <div style="font-size:32px;font-weight:800;line-height:1;">${m.total_score}<span style="font-size:15px;opacity:0.85;">/100</span></div>
+            <div>
+                <div style="font-size:17px;font-weight:700;">${m.verdict}</div>
+                <div style="font-size:12.5px;opacity:0.92;">${m.verdict_sub}</div>
+            </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+            ${renderPerson(m.boy, 'Boy · Groom')}
+            ${renderPerson(m.girl, 'Girl · Bride')}
+        </div>
+        <div style="margin-bottom:12px;">
+            <h4 style="margin:0 0 8px 0;color:#fbbf24;">The Five Pillars (100 Points)</h4>
+            ${pillarsHtml}
+        </div>
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;">
+            <strong>Basic Matching Rule 1 · 2:</strong>
+            <span style="font-size:12px;color:var(--text-secondary);">Basic Numbers 1, 2, 4, 7 marry within their group; 3, 6, 9 within theirs.
+            ${m.same_bn_group ? `Here ${m.boy.bn} and ${m.girl.bn} are in the same group.` : `Here ${m.boy.bn} and ${m.girl.bn} are in different groups.`}</span>
+        </div>
+    `;
 }

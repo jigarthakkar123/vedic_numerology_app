@@ -27,8 +27,8 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 if BASE_DIR not in sys.path:
     sys.path.append(BASE_DIR)
 
-from vedic_engine import compile_full_numerology_profile
-from vedic_pdf_builder import build_report_html, render_pdf_from_html
+from vedic_engine import compile_full_numerology_profile, compile_matchmaking_report
+from vedic_pdf_builder import build_report_html, build_matchmaking_html, render_pdf_from_html
 from vedic_mailer import send_report_email
 import vedic_db
 
@@ -695,6 +695,61 @@ async def generate_tier_report(body: dict = Body(...)):
         "download_url": f"/api/download/{pdf_filename}",
         "html_url": f"/api/view-html/{html_filename}"
     }
+
+
+@app.post("/api/matchmaking/analyze")
+async def analyze_matchmaking(body: dict = Body(...)):
+    """Computes the 5-pillar NumberWise Match Making analysis for Boy and Girl."""
+    try:
+        boy_name = (body.get("boy_name") or "").strip()
+        boy_dob = (body.get("boy_dob") or "").strip()
+        girl_name = (body.get("girl_name") or "").strip()
+        girl_dob = (body.get("girl_dob") or "").strip()
+        if not (boy_name and boy_dob and girl_name and girl_dob):
+            raise HTTPException(status_code=400, detail="Both names and dates of birth are required.")
+        result = compile_matchmaking_report(boy_name, boy_dob, girl_name, girl_dob, lang=body.get("lang", "en"))
+        return {"success": True, "data": result}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/matchmaking/generate-pdf")
+async def generate_matchmaking_pdf(body: dict = Body(...)):
+    """Generates a printable Match Making PDF and HTML report."""
+    try:
+        boy_name = (body.get("boy_name") or "").strip()
+        boy_dob = (body.get("boy_dob") or "").strip()
+        girl_name = (body.get("girl_name") or "").strip()
+        girl_dob = (body.get("girl_dob") or "").strip()
+        if not (boy_name and boy_dob and girl_name and girl_dob):
+            raise HTTPException(status_code=400, detail="Both names and dates of birth are required.")
+        result = compile_matchmaking_report(boy_name, boy_dob, girl_name, girl_dob, lang=body.get("lang", "en"))
+        html_content = build_matchmaking_html(result)
+        b_clean = clean_filename(boy_name)
+        g_clean = clean_filename(girl_name)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        pdf_filename = f"MatchMaking_{b_clean}_{g_clean}_{timestamp}.pdf"
+        html_filename = f"MatchMaking_{b_clean}_{g_clean}_{timestamp}.html"
+        pdf_path = os.path.join(REPORTS_DIR, pdf_filename)
+        html_path = os.path.join(REPORTS_DIR, html_filename)
+        with open(html_path, "w", encoding="utf-8") as f:
+            f.write(html_content)
+        ok = render_pdf_from_html(html_content, pdf_path)
+        if not ok:
+            raise HTTPException(status_code=500, detail="PDF rendering failed.")
+        return {
+            "success": True,
+            "filename": pdf_filename,
+            "download_url": f"/api/download/{pdf_filename}",
+            "html_url": f"/api/view-html/{html_filename}",
+            "data": result,
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 # Mount static files to serve the frontend Single Page Application
 app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="static")
