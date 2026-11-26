@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initEventListeners();
     initCrmListeners();
     initMatchMakingListeners();
+    initNameAndMobileListeners();
     updateWeekdayDisplay();
     fetchAnalysis(false);
     refreshHistory();
@@ -1016,6 +1017,165 @@ function renderMatchMakingResults(m) {
             <h4 style="margin:0 0 8px 0;color:#fbbf24;">Basic Matching &amp; Rejection Rules</h4>
             ${rulesHtml}
             ${litHtml}
+        </div>
+    `;
+}
+
+// ==========================================
+// Name Suggestion & Mobile Matching Tabs
+// ==========================================
+function initNameAndMobileListeners() {
+    const nmBtn = document.getElementById('btn-nm-analyze');
+    const mobBtn = document.getElementById('btn-mob-analyze');
+    if (nmBtn) nmBtn.addEventListener('click', runNameAnalysis);
+    if (mobBtn) mobBtn.addEventListener('click', runMobileAnalysis);
+}
+
+async function runNameAnalysis() {
+    const name = (document.getElementById('nm-name')?.value || '').trim();
+    const dob = document.getElementById('nm-dob')?.value || '';
+    const alpha = (document.getElementById('nm-alpha')?.value || '').trim();
+    if (!name || !dob) {
+        showStatus('Please enter both Full Name and Date of Birth.', 'error');
+        return;
+    }
+    showStatus('Analyzing Chaldean name vibrations & generating suggestions...', 'loading');
+    try {
+        const res = await fetch('/api/studio/name-suggest', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, dob, alpha })
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) throw new Error(json.detail || 'Name analysis failed');
+        renderNameResults(json.data);
+        hideStatus();
+    } catch (err) {
+        showStatus(`Name analysis error: ${err.message}`, 'error');
+    }
+}
+
+function renderNameResults(d) {
+    const el = document.getElementById('nm-results-container');
+    if (!el) return;
+    const cur = d.current;
+    const chips = (cur.breakdown || []).map(b =>
+        `<span style="display:inline-flex;flex-direction:column;align-items:center;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:3px 7px;margin:2px;">
+            <strong style="font-size:12px;">${b.ch}</strong>
+            <span style="font-size:10px;color:#fbbf24;">${b.val}</span>
+        </span>`
+    ).join('');
+
+    const spellRows = (d.spelling_suggestions || []).map(s => `
+        <tr>
+            <td><strong>${s.name}</strong></td>
+            <td>${s.compound} → <strong style="color:#38bdf8;">${s.namank}</strong></td>
+            <td style="color:var(--text-secondary);font-size:12px;">${s.change_note}</td>
+            <td><span style="background:rgba(34,197,94,0.18);color:#4ade80;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;">${s.is_best ? 'Best Match' : 'Harmonious'}</span></td>
+        </tr>`).join('') || '<tr><td colspan="4" style="color:var(--text-secondary);">No minor spelling tweaks needed or found.</td></tr>';
+
+    const alphaCards = (d.alphabet_suggestions || []).map(a => `
+        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(56,189,248,0.25);border-radius:8px;padding:8px 10px;">
+            <div style="font-weight:700;font-size:13.5px;">${a.name}</div>
+            <div style="font-size:11.5px;color:#fbbf24;">Total ${a.compound} → Namank ${a.namank} ${a.is_best ? '★ Best' : ''}</div>
+        </div>`).join('') || '<div style="color:var(--text-secondary);font-size:12px;">No matching curated names found for that alphabet.</div>';
+
+    el.innerHTML = `
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:14px;margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:8px;">
+                <div>
+                    <div style="font-size:12px;color:#38bdf8;">Current Name Vibration</div>
+                    <div style="font-size:18px;font-weight:700;">${cur.name} — Compound <strong>${cur.compound}</strong> → Namank <strong style="color:#fbbf24;">${cur.namank}</strong></div>
+                </div>
+                <div style="font-size:12px;color:var(--text-secondary);">DOB ${d.dob} · BN <strong>${d.bn}</strong> · DN <strong>${d.dn}</strong> · Target Best: <strong style="color:#4ade80;">${d.best_targets.join(', ')}</strong></div>
+            </div>
+            <div style="margin-bottom:8px;">${chips}</div>
+            <div style="font-size:12.5px;color:${cur.harmony.status === 'conflict' ? '#fca5a5' : '#86efac'};">${cur.harmony.text}</div>
+        </div>
+
+        <h4 style="margin:0 0 8px 0;color:#fbbf24;">Spelling Corrections (Without Changing Meaning)</h4>
+        <div class="crm-table-container" style="margin-bottom:16px;">
+            <table class="crm-table">
+                <thead><tr><th>Suggested Spelling</th><th>Compound → Namank</th><th>Adjustment</th><th>Status</th></tr></thead>
+                <tbody>${spellRows}</tbody>
+            </table>
+        </div>
+
+        <h4 style="margin:0 0 8px 0;color:#38bdf8;">New Name Suggestions Starting With "${d.alphabet_query}"</h4>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;">
+            ${alphaCards}
+        </div>
+    `;
+}
+
+async function runMobileAnalysis() {
+    const mobile = (document.getElementById('mob-number')?.value || '').trim();
+    const dob = document.getElementById('mob-dob')?.value || '';
+    if (!mobile || !dob) {
+        showStatus('Please enter both Mobile Number and Date of Birth.', 'error');
+        return;
+    }
+    showStatus('Checking mobile number vibrations & DOB harmony...', 'loading');
+    try {
+        const res = await fetch('/api/studio/mobile-check', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mobile, dob })
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) throw new Error(json.detail || 'Mobile check failed');
+        renderMobileResults(json.data);
+        hideStatus();
+    } catch (err) {
+        showStatus(`Mobile check error: ${err.message}`, 'error');
+    }
+}
+
+function renderMobileResults(d) {
+    const el = document.getElementById('mob-results-container');
+    if (!el) return;
+    const cur = d.current;
+    const scoreCol = cur.score >= 75 ? '#4ade80' : (cur.score >= 50 ? '#fbbf24' : '#f87171');
+
+    const sugRows = (d.suggestions || []).map(s => `
+        <tr>
+            <td><strong style="font-family:monospace;font-size:13px;">${s.mobile}</strong></td>
+            <td>${s.compound} → <strong style="color:#34d399;">${s.root}</strong></td>
+            <td style="font-size:12px;color:var(--text-secondary);">${s.change_note}</td>
+            <td><strong style="color:#4ade80;">${s.score}/100</strong></td>
+        </tr>`).join('') || '<tr><td colspan="4" style="color:var(--text-secondary);">No adjustments needed — your current number is already optimal!</td></tr>';
+
+    el.innerHTML = `
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:14px;margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+                <div>
+                    <div style="font-size:12px;color:#34d399;">Mobile Number Compatibility</div>
+                    <div style="font-size:20px;font-weight:700;font-family:monospace;">${cur.mobile} <span style="font-size:13px;font-family:inherit;color:var(--text-secondary);">— Sum ${cur.compound} → Root <strong style="color:#fbbf24;">${cur.root}</strong></span></div>
+                    <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">DOB ${d.dob} · BN <strong>${d.bn}</strong> · DN <strong>${d.dn}</strong> · Best Targets: <strong style="color:#4ade80;">${d.best_targets.join(', ')}</strong></div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:28px;font-weight:800;color:${scoreCol};line-height:1;">${cur.score}<span style="font-size:13px;opacity:0.8;">/100</span></div>
+                    <div style="font-size:12px;font-weight:700;color:${scoreCol};">${cur.verdict}</div>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;font-size:12px;">
+                <div style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);border-radius:8px;padding:8px;">
+                    <strong>Lucky Pairs:</strong> ${cur.good_pairs.length ? cur.good_pairs.join(', ') : 'None'}<br>
+                    <strong>Fills Missing Grid Numbers:</strong> ${cur.fills_missing.length ? cur.fills_missing.join(', ') : 'None'}
+                </div>
+                <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);border-radius:8px;padding:8px;">
+                    <strong>Harmful Pairs (28/48/49/etc.):</strong> ${cur.bad_pairs.length ? cur.bad_pairs.join(', ') : 'None ✓'}<br>
+                    <strong>Ends on Lucky Digit (1,3,5,6,9):</strong> ${cur.ends_well ? 'Yes ✓' : 'No (avoid ending in 4/8)'}
+                </div>
+            </div>
+        </div>
+
+        <h4 style="margin:0 0 8px 0;color:#34d399;">Minimal-Change Mobile Suggestions (Digit Swaps / Last 1–2 Digits)</h4>
+        <div class="crm-table-container">
+            <table class="crm-table">
+                <thead><tr><th>Suggested Number</th><th>Sum → Root</th><th>Minimal Change</th><th>Score</th></tr></thead>
+                <tbody>${sugRows}</tbody>
+            </table>
         </div>
     `;
 }

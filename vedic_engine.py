@@ -2076,3 +2076,273 @@ def compile_matchmaking_report(
         "weak_summary": weak_str,
         "generated_on": today.strftime("%d %B %Y"),
     }
+
+
+# Curated meaningful Indian & modern names by starting letter for alphabet-based suggestions
+CURATED_NAMES_BY_ALPHA = {
+    "A": ["Aarav", "Aarush", "Aaryan", "Aayush", "Advait", "Agastya", "Akash", "Akshay", "Aman", "Amit", "Ananya", "Anika", "Anirudh", "Ansh", "Aravind", "Arjun", "Arohi", "Aryan", "Atharv", "Avani", "Ayush"],
+    "B": ["Bhavin", "Bhavna", "Bhavya", "Bhoomi", "Brijesh"],
+    "C": ["Chaitanya", "Charvi", "Chirag", "Chitra"],
+    "D": ["Darsh", "Darshan", "Dev", "Devansh", "Devesh", "Dhruv", "Disha", "Divya", "Diya"],
+    "E": ["Eesha", "Ekansh", "Eshaan", "Esha"],
+    "F": ["Falgun", "Farhan", "Forum"],
+    "G": ["Gaurav", "Gautam", "Geeta", "Gopal", "Gourav", "Gunjan"],
+    "H": ["Harsh", "Harshad", "Harshil", "Heena", "Hemant", "Hetal", "Hitesh", "Hriday"],
+    "I": ["Ira", "Isha", "Ishaan", "Ishita"],
+    "J": ["Jai", "Jaideep", "Janki", "Jatin", "Jay", "Jayesh", "Jigar", "Jignesh", "Jiya"],
+    "K": ["Kabir", "Kajal", "Kalpesh", "Kamal", "Karan", "Kartik", "Kavita", "Kavya", "Ketan", "Keyur", "Khushi", "Kiran", "Kishan", "Komal", "Krishna", "Kunal", "Kushal"],
+    "L": ["Laksh", "Lakshay", "Lalit", "Lavanya", "Laxmi", "Lokesh"],
+    "M": ["Madhav", "Mahesh", "Mahima", "Manan", "Manav", "Manish", "Mansi", "Mayank", "Meera", "Meet", "Mihir", "Milan", "Mitali", "Mohit", "Moksh"],
+    "N": ["Nakul", "Naman", "Nandini", "Naresh", "Navya", "Neha", "Nidhi", "Nikhil", "Nikita", "Nilesh", "Nirav", "Nisha", "Nitesh", "Nitin", "Nitya"],
+    "O": ["Om", "Omkar", "Ojas"],
+    "P": ["Palak", "Pallavi", "Pankaj", "Paras", "Parth", "Pavan", "Payal", "Pooja", "Prachi", "Pranav", "Prashant", "Pratik", "Prem", "Priya", "Priyanka", "Purvi"],
+    "Q": ["Qasim", "Queen"],
+    "R": ["Rachit", "Radha", "Raghav", "Rahul", "Raj", "Rajesh", "Rakesh", "Ramesh", "Rashi", "Rashmi", "Ravi", "Rency", "Rhea", "Riddhi", "Rishabh", "Rishi", "Ritesh", "Riya", "Rohan", "Rohit", "Roshni", "Rudra", "Rupal"],
+    "S": ["Sagar", "Sahil", "Sakshi", "Saloni", "Samarth", "Sameer", "Sandeep", "Sanjay", "Sanjana", "Sanket", "Sanskar", "Sarthak", "Saurabh", "Seema", "Shaurya", "Shikha", "Shiv", "Shivam", "Shivani", "Shlok", "Shraddha", "Shreya", "Shubham", "Siddharth", "Simran", "Smita", "Sneha", "Soham", "Sonal", "Sonali", "Suhani", "Suman", "Sumit", "Sunil", "Sunny", "Suraj", "Suresh", "Swati"],
+    "T": ["Tanay", "Tanish", "Tanvi", "Tapan", "Tarun", "Tejas", "Tirth", "Trisha", "Tushar"],
+    "U": ["Uday", "Ujjwal", "Uma", "Umang", "Umesh", "Urvi", "Utkarsh"],
+    "V": ["Vaibhav", "Vaishali", "Vansh", "Varun", "Ved", "Vedant", "Veer", "Vibha", "Vidhi", "Vihaan", "Vijay", "Vikas", "Vikram", "Vinay", "Vipul", "Viral", "Vishal", "Vivek", "Vrinda"],
+    "W": ["Wafa", "Wasim"],
+    "X": ["Xavier"],
+    "Y": ["Yash", "Yashvi", "Yogesh", "Yuvraj"],
+    "Z": ["Zara", "Zoya", "Zubin"],
+}
+
+
+def _target_friendly_numbers(bn: int, dn: int) -> Tuple[List[int], List[int]]:
+    """Returns (best_target_nums, all_friendly_nums) compatible with both BN and DN."""
+    bn_f = {int(x.strip()) for x in PLANET_INFO[bn]["en"]["friendly_nums"].split(",") if x.strip().isdigit()}
+    bn_e = {int(x.strip()) for x in PLANET_INFO[bn]["en"]["enemy_nums"].split(",") if x.strip().isdigit()}
+    dn_f = {int(x.strip()) for x in PLANET_INFO[dn]["en"]["friendly_nums"].split(",") if x.strip().isdigit()}
+    dn_e = {int(x.strip()) for x in PLANET_INFO[dn]["en"]["enemy_nums"].split(",") if x.strip().isdigit()}
+
+    both_friendly = sorted((bn_f | {bn}) & (dn_f | {dn}) - bn_e - dn_e)
+    safe_bn = sorted((bn_f | {bn}) - bn_e - dn_e)
+    # Prefer universal wealth/harmony numbers 1, 5, 6, 3 first
+    priority = [5, 6, 1, 3, 9, 2, 7, 4, 8]
+    best = [n for n in priority if n in both_friendly] or [n for n in priority if n in safe_bn] or [5, 6, 1]
+    return best, sorted(bn_f | {bn})
+
+
+def analyze_and_suggest_names(name: str, dob_str: str, preferred_alpha: str = "") -> Dict[str, Any]:
+    """
+    Analyzes existing name Chaldean vibrations against DOB (BN & DN),
+    suggests minimal phonetic spelling corrections without changing meaning,
+    and suggests new names for given starting alphabet(s).
+    """
+    profile = compile_full_numerology_profile(name, dob_str)
+    bn = profile["core_numbers"]["bn"]
+    dn = profile["core_numbers"]["dn"]
+    best_targets, friendly_bn = _target_friendly_numbers(bn, dn)
+
+    def _chaldean_stats(nm: str) -> Dict[str, Any]:
+        cleaned = "".join(c for c in nm if c.isalpha() or c == " ")
+        letters = [c.upper() for c in cleaned if c.isalpha()]
+        total = sum(CHALDEAN_MAP.get(c, 0) for c in letters)
+        single = reduce_to_single_digit(total) if total > 0 else 1
+        breakdown = [{"ch": c, "val": CHALDEAN_MAP.get(c, 0)} for c in letters]
+        harmony = evaluate_name_harmony(single, bn, dn, "en")
+        return {
+            "name": nm,
+            "compound": total,
+            "namank": single,
+            "breakdown": breakdown,
+            "harmony": harmony,
+        }
+
+    current = _chaldean_stats(name)
+
+    # Generate meaning-preserving phonetic spelling variations on first word (or full name)
+    parts = [p for p in name.strip().split() if p]
+    first = parts[0] if parts else name.strip()
+    rest = " ".join(parts[1:]) if len(parts) > 1 else ""
+
+    candidates = []
+    seen = {name.strip().lower()}
+
+    def _add_cand(new_first: str, note: str):
+        full = f"{new_first} {rest}".strip() if rest else new_first
+        key = full.lower()
+        if key in seen or not new_first:
+            return
+        seen.add(key)
+        st = _chaldean_stats(full)
+        if st["namank"] in best_targets:
+            candidates.append({**st, "change_note": note, "is_best": st["namank"] == best_targets[0]})
+
+    # 1. Double an existing vowel or soft consonant (preserves pronunciation & meaning)
+    for idx, ch in enumerate(first):
+        low = ch.lower()
+        if low in "aeiourlmnsthk":
+            doubled = first[:idx + 1] + low + first[idx + 1:]
+            _add_cand(doubled, f"Double '{low}' (+{CHALDEAN_MAP.get(ch.upper(), 0)})")
+
+    # 2. Insert silent 'h' after consonants (k->kh, t->th, s->sh, g->gh, b->bh, d->dh, p->ph) or 'a'/'e' at end
+    for idx, ch in enumerate(first):
+        if ch.lower() in "ktgbdspr":
+            with_h = first[:idx + 1] + "h" + first[idx + 1:]
+            _add_cand(with_h, f"Add 'h' after '{ch}' (+5)")
+    for suffix in ("a", "e", "h", "i", "y"):
+        _add_cand(first + suffix, f"Add trailing '{suffix}' (+{CHALDEAN_MAP.get(suffix.upper(), 0)})")
+
+    # 3. Remove duplicate consecutive letter if present
+    for idx in range(len(first) - 1):
+        if first[idx].lower() == first[idx + 1].lower():
+            trimmed = first[:idx + 1] + first[idx + 2:]
+            _add_cand(trimmed, f"Single '{first[idx].lower()}' (-{CHALDEAN_MAP.get(first[idx].upper(), 0)})")
+
+    # 4. Two-letter adjustments (e.g. double + trailing) if still few candidates
+    if len(candidates) < 5:
+        for idx, ch in enumerate(first):
+            if ch.lower() in "aeiou":
+                d = first[:idx + 1] + ch.lower() + first[idx + 1:]
+                for suf in ("a", "e", "h"):
+                    _add_cand(d + suf, f"Double '{ch.lower()}' & add '{suf}'")
+
+    candidates.sort(key=lambda x: (0 if x["is_best"] else 1, best_targets.index(x["namank"]), abs(len(x["name"]) - len(name))))
+
+    # Alphabet-based new name suggestions
+    alpha_raw = (preferred_alpha or "").strip().upper()
+    if not alpha_raw:
+        alpha_raw = first[0].upper() if first else "A"
+    alpha_letters = [c for c in alpha_raw if c.isalpha()]
+    alpha_suggestions = []
+    for al in alpha_letters[:3]:
+        pool = CURATED_NAMES_BY_ALPHA.get(al, [])
+        for nm in pool:
+            full_nm = f"{nm} {rest}".strip() if rest else nm
+            st = _chaldean_stats(full_nm)
+            if st["namank"] in best_targets:
+                alpha_suggestions.append({**st, "starts_with": al, "is_best": st["namank"] == best_targets[0]})
+    alpha_suggestions.sort(key=lambda x: (0 if x["is_best"] else 1, best_targets.index(x["namank"])))
+
+    return {
+        "dob": profile["client"]["dob"].replace("/", "-"),
+        "bn": bn,
+        "dn": dn,
+        "bn_planet": profile["core_numbers"]["bn_planet"],
+        "dn_planet": profile["core_numbers"]["dn_planet"],
+        "best_targets": best_targets,
+        "current": current,
+        "spelling_suggestions": candidates[:12],
+        "alphabet_query": "".join(alpha_letters[:3]),
+        "alphabet_suggestions": alpha_suggestions[:15],
+    }
+
+
+def analyze_and_suggest_mobile(mobile: str, dob_str: str) -> Dict[str, Any]:
+    """
+    Analyzes a 10-digit mobile number against DOB (BN, DN, Natal Grid),
+    flags harmful digit pairs, and suggests minimal-change corrections
+    (adjusting last 1-2 digits or swapping digits) plus lucky number patterns.
+    """
+    profile = compile_full_numerology_profile("Client", dob_str)
+    bn = profile["core_numbers"]["bn"]
+    dn = profile["core_numbers"]["dn"]
+    natal_counts = profile["natal_grid"]["counts"]
+    best_targets, _ = _target_friendly_numbers(bn, dn)
+
+    digits_only = "".join(c for c in (mobile or "") if c.isdigit())
+    if len(digits_only) > 10 and digits_only.startswith("91"):
+        digits_only = digits_only[2:]
+    if len(digits_only) < 6:
+        raise ValueError("Please enter a valid mobile number (at least 6–10 digits).")
+
+    p_bn = PLANET_INFO[bn]["en"]
+    friendly_bn = {int(x.strip()) for x in p_bn["friendly_nums"].split(",") if x.strip().isdigit()}
+    enemy_bn = {int(x.strip()) for x in p_bn["enemy_nums"].split(",") if x.strip().isdigit()}
+
+    harmful_pairs = {"28", "82", "48", "84", "49", "94", "24", "42", "18", "81", "68", "86"}
+    lucky_pairs = {"15", "51", "16", "61", "35", "53", "36", "63", "56", "65", "19", "91", "13", "31"}
+
+    def _eval_num(num_str: str) -> Dict[str, Any]:
+        d_list = [int(c) for c in num_str]
+        comp = sum(d_list)
+        root = reduce_to_single_digit(comp)
+        pairs = [num_str[i:i + 2] for i in range(len(num_str) - 1)]
+        bad_found = sorted({p for p in pairs if p in harmful_pairs})
+        good_found = sorted({p for p in pairs if p in lucky_pairs})
+        fills_missing = sorted({d for d in d_list if d > 0 and natal_counts.get(d, 0) == 0 and d in (1, 3, 5, 6, 7)})
+        ends_well = d_list[-1] in (1, 3, 5, 6, 9)
+
+        score = 50
+        if root in best_targets:
+            score += 30
+        elif root in friendly_bn or root == dn:
+            score += 20
+        elif root in enemy_bn:
+            score -= 20
+        score += min(15, len(good_found) * 5)
+        score -= min(25, len(bad_found) * 10)
+        if ends_well:
+            score += 10
+        if fills_missing:
+            score += 5
+        score = max(0, min(100, score))
+
+        verdict = "Highly Lucky" if score >= 75 else ("Balanced / Usable" if score >= 50 else "Needs Correction")
+        return {
+            "mobile": num_str,
+            "compound": comp,
+            "root": root,
+            "score": score,
+            "verdict": verdict,
+            "bad_pairs": bad_found,
+            "good_pairs": good_found,
+            "fills_missing": fills_missing,
+            "ends_well": ends_well,
+        }
+
+    current = _eval_num(digits_only)
+
+    # Generate minimal-change mobile suggestions:
+    # 1. Swap two adjacent digits (keeps exact same digits!)
+    # 2. Change last 1 digit
+    # 3. Change last 2 digits
+    suggestions = []
+    seen = {digits_only}
+
+    # Swaps (zero new digits needed if buying/choosing similar digits)
+    for i in range(len(digits_only) - 1):
+        if digits_only[i] != digits_only[i + 1]:
+            swapped = digits_only[:i] + digits_only[i + 1] + digits_only[i] + digits_only[i + 2:]
+            if swapped not in seen:
+                seen.add(swapped)
+                ev = _eval_num(swapped)
+                if ev["score"] >= 75 and ev["root"] in best_targets:
+                    suggestions.append({**ev, "change_note": f"Swap digits at pos {i+1}-{i+2}"})
+
+    # Adjust last 1 digit
+    prefix1 = digits_only[:-1]
+    for d in ("1", "3", "5", "6", "9", "2", "7"):
+        cand = prefix1 + d
+        if cand not in seen:
+            seen.add(cand)
+            ev = _eval_num(cand)
+            if ev["root"] in best_targets and len(ev["bad_pairs"]) <= len(current["bad_pairs"]):
+                suggestions.append({**ev, "change_note": f"Change last digit '{digits_only[-1]}' → '{d}'"})
+
+    # Adjust last 2 digits
+    if len(digits_only) >= 4:
+        prefix2 = digits_only[:-2]
+        for d1 in ("1", "3", "5", "6", "9"):
+            for d2 in ("1", "3", "5", "6", "9"):
+                cand = prefix2 + d1 + d2
+                if cand not in seen:
+                    seen.add(cand)
+                    ev = _eval_num(cand)
+                    if ev["root"] in best_targets and not ev["bad_pairs"]:
+                        suggestions.append({**ev, "change_note": f"Change last 2 digits '{digits_only[-2:]}' → '{d1}{d2}'"})
+
+    suggestions.sort(key=lambda x: (-x["score"], len(x["bad_pairs"]), best_targets.index(x["root"]) if x["root"] in best_targets else 9))
+
+    return {
+        "dob": profile["client"]["dob"].replace("/", "-"),
+        "bn": bn,
+        "dn": dn,
+        "bn_planet": profile["core_numbers"]["bn_planet"],
+        "dn_planet": profile["core_numbers"]["dn_planet"],
+        "best_targets": best_targets,
+        "current": current,
+        "suggestions": suggestions[:12],
+    }

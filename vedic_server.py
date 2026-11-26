@@ -27,7 +27,12 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 if BASE_DIR not in sys.path:
     sys.path.append(BASE_DIR)
 
-from vedic_engine import compile_full_numerology_profile, compile_matchmaking_report
+from vedic_engine import (
+    compile_full_numerology_profile,
+    compile_matchmaking_report,
+    analyze_and_suggest_names,
+    analyze_and_suggest_mobile,
+)
 from vedic_pdf_builder import build_report_html, build_matchmaking_html, render_pdf_from_html
 from vedic_mailer import send_report_email
 import vedic_db
@@ -746,6 +751,37 @@ async def generate_matchmaking_pdf(body: dict = Body(...)):
             "html_url": f"/api/view-html/{html_filename}",
             "data": result,
         }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/studio/name-suggest")
+async def studio_name_suggest(body: dict = Body(...)):
+    """Analyzes name vibrations and suggests spelling corrections & alphabet-based names."""
+    try:
+        name = (body.get("name") or "").strip()
+        dob = (body.get("dob") or "").strip()
+        alpha = (body.get("alpha") or "").strip()
+        if not name or not dob:
+            raise HTTPException(status_code=400, detail="Name and Date of Birth are required.")
+        return {"success": True, "data": analyze_and_suggest_names(name, dob, alpha)}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/studio/mobile-check")
+async def studio_mobile_check(body: dict = Body(...)):
+    """Analyzes mobile number compatibility with DOB and suggests minimal-change corrections."""
+    try:
+        mobile = (body.get("mobile") or "").strip()
+        dob = (body.get("dob") or "").strip()
+        if not mobile or not dob:
+            raise HTTPException(status_code=400, detail="Mobile number and Date of Birth are required.")
+        return {"success": True, "data": analyze_and_suggest_mobile(mobile, dob)}
     except HTTPException:
         raise
     except Exception as e:
