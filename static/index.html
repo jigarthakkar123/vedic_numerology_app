@@ -641,14 +641,16 @@
                             </div>
                         </div>
 
-                        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 18px;">
-                            <select id="mm-lang" style="min-width: 150px; padding: 10px 12px; border-radius: 8px; background: var(--bg-input); color: var(--text-primary); border: 1px solid var(--border-dark); font-weight: 600;">
-                                <option value="en" selected>English</option>
-                                <option value="hi">हिन्दी (Hindi)</option>
-                                <option value="gu">ગુજરાતી (Gujarati)</option>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 18px;">
+                            <button type="button" id="btn-mm-analyze" class="btn-primary" style="flex: 1 1 200px;">💑 Make the Match Report</button>
+                            <select id="mm-lang" style="width: auto; min-width: 125px; padding: 10px 12px; border-radius: 8px; background: var(--bg-input); color: var(--text-primary); border: 1px solid var(--border-dark); font-weight: 600;">
+                                <option value="en" selected>Preview: EN</option>
+                                <option value="hi">Preview: HI</option>
+                                <option value="gu">Preview: GU</option>
                             </select>
-                            <button type="button" id="btn-mm-analyze" class="btn-primary" style="flex: 1; min-width: 200px;">💑 Make the Match Report</button>
-                            <button type="button" id="btn-mm-pdf" class="btn-secondary" style="min-width: 190px;">📄 Download Match PDF</button>
+                            <button type="button" class="btn-secondary mm-pdf-btn" data-lang="en" style="padding: 10px 14px; white-space: nowrap;">📄 English PDF</button>
+                            <button type="button" class="btn-secondary mm-pdf-btn" data-lang="hi" style="padding: 10px 14px; white-space: nowrap;">📄 हिन्दी PDF</button>
+                            <button type="button" class="btn-secondary mm-pdf-btn" data-lang="gu" style="padding: 10px 14px; white-space: nowrap;">📄 ગુજરાતી PDF</button>
                         </div>
 
                         <div id="mm-results-container"></div>

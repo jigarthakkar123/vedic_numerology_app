@@ -849,22 +849,29 @@ async function updateMeetingStatus(orderId, status) {
 // ==========================================
 function initMatchMakingListeners() {
     const analyzeBtn = document.getElementById('btn-mm-analyze');
-    const pdfBtn = document.getElementById('btn-mm-pdf');
     if (analyzeBtn) {
         analyzeBtn.addEventListener('click', runMatchMakingAnalysis);
     }
-    if (pdfBtn) {
-        pdfBtn.addEventListener('click', downloadMatchMakingPdf);
+    document.querySelectorAll('.mm-pdf-btn').forEach(btn => {
+        btn.addEventListener('click', () => downloadMatchMakingPdf(btn.dataset.lang || 'en'));
+    });
+    const mmLangSel = document.getElementById('mm-lang');
+    if (mmLangSel) {
+        mmLangSel.addEventListener('change', () => {
+            if (document.getElementById('mm-results-container')?.innerHTML) {
+                runMatchMakingAnalysis();
+            }
+        });
     }
 }
 
-function getMatchMakingPayload() {
+function getMatchMakingPayload(overrideLang) {
     return {
         boy_name: (document.getElementById('mm-boy-name')?.value || '').trim(),
         boy_dob: document.getElementById('mm-boy-dob')?.value || '',
         girl_name: (document.getElementById('mm-girl-name')?.value || '').trim(),
         girl_dob: document.getElementById('mm-girl-dob')?.value || '',
-        lang: document.getElementById('mm-lang')?.value || 'en'
+        lang: overrideLang || document.getElementById('mm-lang')?.value || 'en'
     };
 }
 
@@ -892,13 +899,14 @@ async function runMatchMakingAnalysis() {
     }
 }
 
-async function downloadMatchMakingPdf() {
-    const payload = getMatchMakingPayload();
+async function downloadMatchMakingPdf(langOverride) {
+    const payload = getMatchMakingPayload(langOverride);
     if (!payload.boy_name || !payload.boy_dob || !payload.girl_name || !payload.girl_dob) {
         showStatus('Please enter both names and dates of birth first.', 'error');
         return;
     }
-    showStatus('Generating clean Match Making PDF...', 'loading');
+    const langLabel = payload.lang === 'hi' ? 'Hindi' : (payload.lang === 'gu' ? 'Gujarati' : 'English');
+    showStatus(`Generating ${langLabel} Match Making PDF...`, 'loading');
     try {
         const res = await fetch('/api/matchmaking/generate-pdf', {
             method: 'POST',
@@ -976,18 +984,28 @@ function renderMatchMakingResults(m) {
         </div>`;
     }).join('');
 
-    const rulesHtml = (m.rules_checks || []).map(rc => {
+    const renderRuleCard = (rc) => {
         const bg = rc.status === 'ok' ? '#15803d' : (rc.status === 'reject' ? '#b91c1c' : '#d97706');
+        const boxBorder = rc.status === 'ok' ? 'rgba(34,197,94,0.35)' : (rc.status === 'reject' ? 'rgba(239,68,68,0.45)' : 'rgba(245,158,11,0.4)');
+        const boxBg = rc.status === 'ok' ? 'rgba(34,197,94,0.08)' : (rc.status === 'reject' ? 'rgba(239,68,68,0.10)' : 'rgba(245,158,11,0.08)');
         const icon = rc.status === 'ok' ? '✓' : (rc.status === 'reject' ? '✕' : '!');
+        const stLbl = rc.status === 'ok' ? 'Matched' : (rc.status === 'reject' ? 'Rejected' : 'Caution');
         return `
-        <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;">
+        <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;padding:10px 12px;border-radius:8px;border:1px solid ${boxBorder};background:${boxBg};">
             <span style="width:20px;height:20px;border-radius:50%;background:${bg};color:#fff;font-weight:700;font-size:11px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">${icon}</span>
-            <div style="font-size:12px;">
-                <strong>${rc.rule} · ${rc.title}</strong>
-                <div style="color:var(--text-secondary);font-size:11.5px;">${rc.detail}</div>
+            <div style="font-size:12px;flex:1;">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+                    <strong>${rc.rule} · ${rc.title}</strong>
+                    <span style="font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:${bg};color:#fff;">${stLbl}</span>
+                </div>
+                <div style="color:var(--text-secondary);font-size:11.5px;margin-top:2px;">${rc.detail}</div>
+                ${rc.why_important ? `<div style="font-size:11.5px;color:#cbd5e1;margin-top:4px;"><strong>Why Important:</strong> ${rc.why_important}</div>` : ''}
+                ${rc.couple_effect ? `<div style="font-size:11.5px;color:#f1f5f9;margin-top:2px;"><strong>Effect on Couple:</strong> ${rc.couple_effect}</div>` : ''}
             </div>
         </div>`;
-    }).join('');
+    };
+    const matchingRulesHtml = (m.rules_checks || []).filter(rc => rc.category !== 'rejection').map(renderRuleCard).join('');
+    const rejectionRulesHtml = (m.rules_checks || []).filter(rc => rc.category === 'rejection').map(renderRuleCard).join('');
 
     const lit = m.litigation_check || {};
     const litWarns = [];
@@ -1013,9 +1031,13 @@ function renderMatchMakingResults(m) {
             <h4 style="margin:0 0 8px 0;color:#fbbf24;">The Five Pillars (100 Points)</h4>
             ${pillarsHtml}
         </div>
-        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;">
-            <h4 style="margin:0 0 8px 0;color:#fbbf24;">Basic Matching &amp; Rejection Rules</h4>
-            ${rulesHtml}
+        <div style="background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.3);border-radius:10px;padding:12px;margin-bottom:12px;">
+            <h4 style="margin:0 0 8px 0;color:#4ade80;">✓ Basic Matching Rules (Compatibility &amp; Support)</h4>
+            ${matchingRulesHtml}
+        </div>
+        <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.35);border-radius:10px;padding:12px;">
+            <h4 style="margin:0 0 8px 0;color:#f87171;">⛔ Basic Rejection Rules &amp; Red-Flag Checks</h4>
+            ${rejectionRulesHtml}
             ${litHtml}
         </div>
     `;

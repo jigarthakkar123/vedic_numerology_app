@@ -1839,12 +1839,12 @@ def compile_matchmaking_report(
 
     def _presence_label(in_boy: bool, in_girl: bool) -> str:
         if in_boy and in_girl:
-            return f"{boy_name} and {girl_name}"
+            return {"hi": f"{boy_name} और {girl_name}", "gu": f"{boy_name} અને {girl_name}"}.get(lang, f"{boy_name} and {girl_name}")
         if in_boy:
             return boy_name
         if in_girl:
             return girl_name
-        return "neither"
+        return {"hi": "किसी में नहीं", "gu": "બંનેમાંથી કોઈમાં નહીં"}.get(lang, "neither")
 
     # Pillar 1: Emotional Quotient (+2 in both grids)
     p1_b, p1_g = (2 in boy_pos), (2 in girl_pos)
@@ -1904,32 +1904,89 @@ def compile_matchmaking_report(
         verdict_sub = "Below 50% — the course does not suggest this match."
         verdict_level = "low"
 
-    # Evaluate Rules 1-8 from Vedic Match Making Rules
+    # Evaluate Rules 1-8 from Vedic Match Making Rules (separated into Matching vs Rejection rules)
     rules_checks = []
     # Rules 1-4: Basic Number Group Matching
     if b_bn == 5 or g_bn == 5:
         r14_ok = (b_bn == 5 and g_bn == 5)
         rules_checks.append({
             "rule": "Rule 4",
+            "category": "matching",
             "status": "ok" if r14_ok else "warn",
-            "title": "Basic Number 5 should marry only Basic 5",
-            "detail": f"Boy is {b_bn} and Girl is {g_bn}."
+            "title": {
+                "en": "Basic Number 5 should marry only Basic 5",
+                "hi": "मूलांक 5 को केवल मूलांक 5 से विवाह करना चाहिए",
+                "gu": "મૂળાંક 5 એ માત્ર મૂળાંક 5 સાથે જ લગ્ન કરવા જોઈએ",
+            }[lang],
+            "detail": {
+                "en": f"Boy is Basic {b_bn} and Girl is Basic {g_bn}.",
+                "hi": f"वर का मूलांक {b_bn} और वधू का मूलांक {g_bn} है।",
+                "gu": f"વરનો મૂળાંક {b_bn} અને કન્યાનો મૂળાંક {g_bn} છે.",
+            }[lang],
+            "why_important": {
+                "en": "Mercury (5) natives need high mental freedom, fast communication, and intellectual parity.",
+                "hi": "बुध (5) प्रधान जातकों को मानसिक स्वतंत्रता, तीव्र संवाद और बौद्धिक समानता की आवश्यकता होती है।",
+                "gu": "બુધ (5) પ્રધાન વ્યક્તિઓને માનસિક સ્વતંત્રતા, ઝડપી સંવાદ અને બૌદ્ધિક સમાનતાની જરૂર હોય છે.",
+            }[lang],
+            "couple_effect": {
+                "en": "When both are 5, they share effortless adaptability and business-minded growth. With a non-5 partner, one may feel restless or misunderstood unless conscious patience is practiced." if not r14_ok else "Both partners share Mercury's dynamic energy, creating lively communication and mutual adaptability.",
+                "hi": "दोनों मूलांक 5 होने पर सहज तालमेल और प्रगति होती है। अन्यथा एक साथी बेचैनी या संवाद की कमी महसूस कर सकता है।" if not r14_ok else "दोनों में बुध की ऊर्जा होने से संवाद और अनुकूलनशीलता बेहतरीन रहती है।",
+                "gu": "બંને મૂળાંક 5 હોય ત્યારે સહજ તાલમેલ અને પ્રગતિ રહે છે. અન્યથા એક સાથી અધીરાઈ કે ગેરસમજ અનુભવી શકે છે." if not r14_ok else "બંનેમાં બુધની ઊર્જા હોવાથી સંવાદ અને અનુકૂલન ઉત્તમ રહે છે.",
+            }[lang],
         })
     elif b_bn == 8 or g_bn == 8:
         r3_bad = (b_bn == 8 and g_bn in (8, 4)) or (g_bn == 8 and b_bn in (8, 4))
         rules_checks.append({
             "rule": "Rule 3",
+            "category": "rejection" if r3_bad else "matching",
             "status": "reject" if r3_bad else "ok",
-            "title": "Basic Number 8 should avoid marrying 8 or 4",
-            "detail": f"Boy is {b_bn} and Girl is {g_bn}."
+            "title": {
+                "en": "Basic Number 8 should avoid marrying 8 or 4",
+                "hi": "मूलांक 8 को मूलांक 8 या 4 से विवाह टालना चाहिए",
+                "gu": "મૂળાંક 8 એ મૂળાંક 8 અથવા 4 સાથે લગ્ન ટાળવા જોઈએ",
+            }[lang],
+            "detail": {
+                "en": f"Boy is Basic {b_bn} and Girl is Basic {g_bn}.",
+                "hi": f"वर का मूलांक {b_bn} और वधू का मूलांक {g_bn} है।",
+                "gu": f"વરનો મૂળાંક {b_bn} અને કન્યાનો મૂળાંક {g_bn} છે.",
+            }[lang],
+            "why_important": {
+                "en": "Saturn (8) + Saturn (8) or Rahu (4) creates heavy karmic friction, stubbornness, and delays in domestic peace.",
+                "hi": "शनि (8) के साथ शनि (8) या राहु (4) मिलने से भारी कर्मिक संघर्ष, जिद और पारिवारिक शांति में विलंब होता है।",
+                "gu": "શનિ (8) સાથે શનિ (8) કે રાહુ (4) આવવાથી ભારે કર્મિક સંઘર્ષ, હઠ અને પારિવારિક શાંતિમાં વિલંબ થાય છે.",
+            }[lang],
+            "couple_effect": {
+                "en": "HIGH FRICTION ALERT: Pairing 8 with 8 or 4 often triggers ego standoffs, financial stress, or emotional distance." if r3_bad else "Safe pairing: Basic 8 is not paired with 8 or 4, avoiding severe Saturn-Rahu karmic clashes.",
+                "hi": "सावधानी: 8 के साथ 8 या 4 का मिलान अहंकार, आर्थिक दबाव और भावनात्मक दूरी बढ़ा सकता है।" if r3_bad else "सुरक्षित मिलान: 8 के साथ 8 या 4 नहीं है, जिससे गंभीर शनि-राहु टकराव टलता है।",
+                "gu": "સાવચેતી: 8 સાથે 8 કે 4 નું જોડાણ અહંકાર, આર્થિક દબાણ અને ભાવનાત્મક અંતર વધારી શકે છે." if r3_bad else "સુરક્ષિત મિલાન: 8 સાથે 8 કે 4 નથી, જેથી ગંભીર શનિ-રાહુ ટકરાવ ટળે છે.",
+            }[lang],
         })
     else:
         same_grp = ((b_bn in grp_a and g_bn in grp_a) or (b_bn in grp_b and g_bn in grp_b))
         rules_checks.append({
             "rule": "Rules 1 · 2",
+            "category": "matching",
             "status": "ok" if same_grp else "warn",
-            "title": "Basic Numbers 1,2,4,7 marry within group; 3,6,9 within group",
-            "detail": f"Here {b_bn} and {g_bn} are {'in the same group' if same_grp else 'in different groups'}."
+            "title": {
+                "en": "Basic Numbers 1,2,4,7 marry within group; 3,6,9 within group",
+                "hi": "मूलांक 1,2,4,7 अपने समूह में तथा 3,6,9 अपने समूह में विवाह करें",
+                "gu": "મૂળાંક 1,2,4,7 પોતાના જૂથમાં અને 3,6,9 પોતાના જૂથમાં લગ્ન કરે",
+            }[lang],
+            "detail": {
+                "en": f"Here Basic {b_bn} and Basic {g_bn} are {'in the same compatibility group' if same_grp else 'in different groups'}.",
+                "hi": f"यहाँ मूलांक {b_bn} और {g_bn} {'एक ही अनुकूल समूह में हैं' if same_grp else 'अलग-अलग समूहों में हैं'}।",
+                "gu": f"અહીં મૂળાંક {b_bn} અને {g_bn} {'એક જ અનુકૂળ જૂથમાં છે' if same_grp else 'અલગ-અલગ જૂથમાં છે'}.",
+            }[lang],
+            "why_important": {
+                "en": "Basic Number governs daily temperament, habits, and lifestyle rhythm. Same-group numbers share natural understanding.",
+                "hi": "मूलांक दैनिक स्वभाव, आदतों और जीवनशैली को दर्शाता है। एक ही समूह में होने से स्वाभाविक समझ बनती है।",
+                "gu": "મૂળાંક દૈનિક સ્વભાવ, ટેવો અને જીવનશૈલી દર્શાવે છે. એક જ જૂથના અંકોમાં કુદરતી સમજણ રહે છે.",
+            }[lang],
+            "couple_effect": {
+                "en": "Strong day-to-day harmony: both partners naturally respect each other's routines, values, and communication style." if same_grp else "Different temperaments: minor daily friction over lifestyle or priorities can arise and requires mutual adjustment.",
+                "hi": "दैनिक जीवन में मजबूत तालमेल: दोनों एक-दूसरे की आदतों और मूल्यों का सहज सम्मान करते हैं।" if same_grp else "स्वभाव में अंतर: दैनिक जीवन और प्राथमिकताओं में मतभेद हो सकते हैं, जिनके लिए आपसी समझ आवश्यक है।",
+                "gu": "દૈનિક જીવનમાં મજબૂત તાલમેલ: બંને એકબીજાની ટેવો અને મૂલ્યોનું સહજ સન્માન કરે છે." if same_grp else "સ્વભાવમાં તફાવત: રોજિંદા જીવનમાં નાના મતભેદ થઈ શકે છે, જેના માટે પરસ્પર સમજણ જરૂરી છે.",
+            }[lang],
         })
 
     # Rule 5: Reject grids with D5 or D1 if 2, 6, 8 are ALL missing
@@ -1942,9 +1999,28 @@ def compile_matchmaking_report(
     r5_hits = [x for x in [_check_r5(boy_profile, boy_name), _check_r5(girl_profile, girl_name)] if x]
     rules_checks.append({
         "rule": "Rule 5",
+        "category": "rejection",
         "status": "reject" if r5_hits else "ok",
-        "title": "Reject grids with D5 or D1 if 2, 6, and 8 are missing",
-        "detail": ", ".join(r5_hits) if r5_hits else "Neither grid has D1/D5 missing 2, 6, and 8."
+        "title": {
+            "en": "Reject grids with D5 or D1 if 2, 6, and 8 are missing",
+            "hi": "भाग्यांक 5 या 1 में यदि 2, 6, और 8 अनुपस्थित हों तो कुंडली अस्वीकार करें",
+            "gu": "ભાગ્યાંક 5 કે 1 માં જો 2, 6 અને 8 ત્રણેય ખૂટતા હોય તો કુંડળી અસ્વીકાર્ય",
+        }[lang],
+        "detail": (", ".join(r5_hits) if r5_hits else {
+            "en": "Neither grid has D1/D5 missing all of 2, 6, and 8.",
+            "hi": "किसी भी कुंडली में D1/D5 के साथ 2, 6, 8 तीनों अनुपस्थित नहीं हैं।",
+            "gu": "બંનેમાંથી કોઈ કુંડળીમાં D1/D5 સાથે 2, 6, 8 ત્રણેય ખૂટતા નથી.",
+        }[lang]),
+        "why_important": {
+            "en": "Numbers 2 (Moon/emotion), 6 (Venus/marriage), and 8 (Saturn/stability) anchor family life for high-drive D1/D5 natives.",
+            "hi": "अंक 2 (भावना), 6 (दांपत्य/शुक्र) और 8 (स्थिरता/शनि) भाग्यांक 1 व 5 वाले जातकों के गृहस्थ जीवन को संभालते हैं।",
+            "gu": "અંક 2 (લાગણી), 6 (દાંપત્ય/શુક્ર) અને 8 (સ્થિરતા/શનિ) ભાગ્યાંક 1 અને 5 ના ગૃહસ્થ જીવનને ટકાવી રાખે છે.",
+        }[lang],
+        "couple_effect": {
+            "en": "REJECTION RISK: Without 2, 6, or 8, D1/D5 natives struggle to sustain emotional bonding and domestic stability in marriage." if r5_hits else "Safe: Emotional, Venusian, or Saturnian grounding is present, protecting marital stability.",
+            "hi": "अस्वीकृति जोखिम: 2, 6, 8 के बिना D1/D5 जातकों को वैवाहिक स्थिरता और भावनात्मक जुड़ाव में गंभीर कठिनाई आती है।" if r5_hits else "सुरक्षित: कुंडली में भावनात्मक और पारिवारिक स्थिरता का आधार मौजूद है।",
+            "gu": "અસ્વીકૃતિ જોખમ: 2, 6, 8 વગર D1/D5 જાતકોને વૈવાહિક સ્થિરતા અને ભાવનાત્મક જોડાણમાં ગંભીર મુશ્કેલી આવે છે." if r5_hits else "સુરક્ષિત: કુંડળીમાં ભાવનાત્મક અને પારિવારિક સ્થિરતાનો આધાર હાજર છે.",
+        }[lang],
     })
 
     # Rule 6: Reject grids containing 222, 333, 444, or 777
@@ -1955,9 +2031,28 @@ def compile_matchmaking_report(
     r6_hits = [x for x in [_check_r6(boy_profile, boy_name), _check_r6(girl_profile, girl_name)] if x]
     rules_checks.append({
         "rule": "Rule 6",
+        "category": "rejection",
         "status": "reject" if r6_hits else "ok",
-        "title": "Reject grids containing extreme repetitions (222, 333, 444, 777)",
-        "detail": ", ".join(r6_hits) if r6_hits else "No extreme repetitions (222/333/444/777) in either grid."
+        "title": {
+            "en": "Reject grids containing extreme repetitions (222, 333, 444, 777)",
+            "hi": "अत्यधिक पुनरावृत्ति (222, 333, 444, 777) वाली कुंडली अस्वीकार करें",
+            "gu": "અતિશય પુનરાવર્તન (222, 333, 444, 777) ધરાવતી કુંડળી અસ્વીકાર્ય",
+        }[lang],
+        "detail": (", ".join(r6_hits) if r6_hits else {
+            "en": "No extreme repetitions (222/333/444/777) in either grid.",
+            "hi": "किसी भी कुंडली में 222/333/444/777 जैसी अत्यधिक पुनरावृत्ति नहीं है।",
+            "gu": "બંનેમાંથી કોઈ કુંડળીમાં 222/333/444/777 જેવું અતિશય પુનરાવર્તન નથી.",
+        }[lang]),
+        "why_important": {
+            "en": "Triple repetitions amplify planetary imbalance: 222 (extreme anxiety), 333 (dogma/ego), 444 (sudden upheavals), 777 (detachment).",
+            "hi": "तीन बार पुनरावृत्ति ग्रह दोष बढ़ाती है: 222 (अति चिंता), 333 (हठ), 444 (अचानक उतार-चढ़ाव), 777 (वैराग्य/अलगाव)।",
+            "gu": "ત્રણ વખત પુનરાવર્તન ગ્રહ દોષ વધારે છે: 222 (અતિ ચિંતા), 333 (હઠ), 444 (અચાનક ઉતાર-ચઢાવ), 777 (અલગાવ).",
+        }[lang],
+        "couple_effect": {
+            "en": "REJECTION RISK: Extreme repetition creates intense emotional turbulence, detachment, or sudden marital crises unless neutralized by strong partner support and remedies." if r6_hits else "Safe: Neither grid carries extreme 3x planetary imbalance.",
+            "hi": "अस्वीकृति जोखिम: अत्यधिक पुनरावृत्ति से वैवाहिक जीवन में तीव्र तनाव, अलगाव या अचानक संकट आ सकते हैं।" if r6_hits else "सुरक्षित: किसी भी कुंडली में 3x ग्रह असंतुलन नहीं है।",
+            "gu": "અસ્વીકૃતિ જોખમ: અતિશય પુનરાવર્તનથી વૈવાહિક જીવનમાં તીવ્ર તણાવ, અલગાવ કે અચાનક સંકટ આવી શકે છે." if r6_hits else "સુરક્ષિત: બંનેમાંથી કોઈ કુંડળીમાં 3x ગ્રહ અસંતુલન નથી.",
+        }[lang],
     })
 
     # Rule 7: D4 or D8 should marry after age 30
@@ -1968,9 +2063,28 @@ def compile_matchmaking_report(
         r7_hits.append(f"{girl_name} (D{g_dn}, age {girl_age} < 30)")
     rules_checks.append({
         "rule": "Rule 7",
+        "category": "matching",
         "status": "warn" if r7_hits else "ok",
-        "title": "People with D4 or D8 should marry after age 30",
-        "detail": ", ".join(r7_hits) if r7_hits else "Age/Destiny maturity check passed."
+        "title": {
+            "en": "People with D4 or D8 should marry after age 30",
+            "hi": "भाग्यांक 4 या 8 वाले जातकों को 30 वर्ष की आयु के बाद विवाह करना चाहिए",
+            "gu": "ભાગ્યાંક 4 કે 8 ધરાવતી વ્યક્તિએ 30 વર્ષની ઉંમર પછી લગ્ન કરવા જોઈએ",
+        }[lang],
+        "detail": (", ".join(r7_hits) if r7_hits else {
+            "en": "Age/Destiny maturity check passed.",
+            "hi": "आयु एवं भाग्यांक परिपक्वता जांच अनुकूल है।",
+            "gu": "ઉંમર અને ભાગ્યાંક પરિપક્વતા તપાસ અનુકૂળ છે.",
+        }[lang]),
+        "why_important": {
+            "en": "Destiny 4 (Rahu) and Destiny 8 (Saturn) mature slowly through life tests and career building before age 30.",
+            "hi": "भाग्यांक 4 (राहु) और 8 (शनि) 30 वर्ष की आयु तक जीवन के अनुभवों और करियर संघर्ष के बाद परिपक्व होते हैं।",
+            "gu": "ભાગ્યાંક 4 (રાહુ) અને 8 (શનિ) 30 વર્ષની ઉંમર સુધી જીવનના અનુભવો અને કારકિર્દી બાદ પરિપક્વ થાય છે.",
+        }[lang],
+        "couple_effect": {
+            "en": "CAUTION: Early marriage before 30 for D4/D8 can bring career distractions and impatience; conscious maturity is advised." if r7_hits else "Safe: Both partners meet the Vedic age-maturity guideline for their Destiny Numbers.",
+            "hi": "सावधानी: 30 से पहले विवाह करने पर करियर और धैर्य की परीक्षा हो सकती है; परिपक्व संवाद आवश्यक है।" if r7_hits else "सुरक्षित: दोनों साथी अपने भाग्यांक की आयु-परिपक्वता के अनुकूल हैं।",
+            "gu": "સાવચેતી: 30 પહેલા લગ્ન કરવાથી કારકિર્દી અને ધીરજની કસોટી થઈ શકે છે; પરિપક્વ સમજણ જરૂરી છે." if r7_hits else "સુરક્ષિત: બંને સાથી પોતાના ભાગ્યાંકની ઉંમર-પરિપક્વતાને અનુરૂપ છે.",
+        }[lang],
     })
 
     # Rule 8: D6 requires strong support (positive 2, 4, 8, or 9)
@@ -1981,9 +2095,28 @@ def compile_matchmaking_report(
         r8_hits.append(f"{girl_name} (D6 lacks positive 2/4/8/9 support)")
     rules_checks.append({
         "rule": "Rule 8",
+        "category": "matching",
         "status": "warn" if r8_hits else "ok",
-        "title": "D6 requires strong support in the grid (good 2, 4, 8, or 9)",
-        "detail": ", ".join(r8_hits) if r8_hits else "D6 support check passed."
+        "title": {
+            "en": "D6 requires strong support in the grid (good 2, 4, 8, or 9)",
+            "hi": "भाग्यांक 6 को कुंडली में शुभ 2, 4, 8, या 9 का मजबूत सहयोग आवश्यक है",
+            "gu": "ભાગ્યાંક 6 ને કુંડળીમાં શુભ 2, 4, 8 અથવા 9 નો મજબૂત ટેકો જરૂરી છે",
+        }[lang],
+        "detail": (", ".join(r8_hits) if r8_hits else {
+            "en": "D6 support check passed.",
+            "hi": "भाग्यांक 6 सहयोग जांच अनुकूल है।",
+            "gu": "ભાગ્યાંક 6 સહયોગ તપાસ અનુકૂળ છે.",
+        }[lang]),
+        "why_important": {
+            "en": "Destiny 6 (Venus) governs luxury, romance, and family comfort, which requires grounding from 2, 4, 8, or 9 to stay balanced.",
+            "hi": "भाग्यांक 6 (शुक्र) सुख-सुविधा और दांपत्य का कारक है, जिसे संतुलित रखने हेतु 2, 4, 8 या 9 का आधार जरूरी है।",
+            "gu": "ભાગ્યાંક 6 (શુક્ર) સુખ-સુવિધા અને દાંપત્યનો કારક છે, જેને સંતુલિત રાખવા 2, 4, 8 કે 9 નો આધાર જરૂરી છે.",
+        }[lang],
+        "couple_effect": {
+            "en": "CAUTION: D6 without grounding numbers may cause unrealistic expectations or financial overspending in marriage." if r8_hits else "Safe: D6 support requirement is satisfied, supporting domestic comfort and harmony.",
+            "hi": "सावधानी: सहयोगी अंकों के बिना अवास्तविक अपेक्षाएं या अधिक खर्च की प्रवृत्ति हो सकती है।" if r8_hits else "सुरक्षित: भाग्यांक 6 के लिए आवश्यक सहयोग मौजूद है।",
+            "gu": "સાવચેતી: સહાયક અંકો વગર અવાસ્તવિક અપેક્ષાઓ કે વધુ ખર્ચની વૃત્તિ થઈ શકે છે." if r8_hits else "સુરક્ષિત: ભાગ્યાંક 6 માટે જરૂરી સહયોગ હાજર છે.",
+        }[lang],
     })
 
     # 5-Year Litigation Check (Page 47 & 87: 9&4, 5&4, or -6 active for 2+ years in next 5 years)
@@ -2019,42 +2152,70 @@ def compile_matchmaking_report(
     pillars = [
         {
             "key": "emotional",
-            "title": "Emotional Quotient",
+            "title": {"en": "Emotional Quotient", "hi": "भावनात्मक सामंजस्य (Emotional Quotient)", "gu": "ભાવનાત્મક સુમેળ (Emotional Quotient)"}[lang],
             "score": p1_score,
             "max": 20,
-            "desc": f"How each expresses emotion, handles conflict and stays steady day to day. Points for +2 in both grids — present in: {_presence_label(p1_b, p1_g)}.",
+            "desc": {
+                "en": f"How each expresses emotion, handles conflict and stays steady day to day. Points for +2 in both grids — present in: {_presence_label(p1_b, p1_g)}.",
+                "hi": f"दोनों भावनाओं को कैसे व्यक्त करते हैं और तनाव को कैसे संभालते हैं। दोनों में +2 के अंक — उपस्थित: {_presence_label(p1_b, p1_g)}।",
+                "gu": f"બંને લાગણીઓ કેવી રીતે વ્યક્ત કરે છે અને તણાવ કેવી રીતે સંભાળે છે. બંનેમાં +2 ના ગુણ — હાજર: {_presence_label(p1_b, p1_g)}.",
+            }[lang],
         },
         {
             "key": "practical",
-            "title": "Practical Quotient",
+            "title": {"en": "Practical Quotient", "hi": "व्यावहारिक तालमेल (Practical Quotient)", "gu": "વ્યવહારિક તાલમેલ (Practical Quotient)"}[lang],
             "score": p2_score,
             "max": 20,
-            "desc": f"Decision-making, responsibility and long-term planning. Points for +1, +3 or +9 in both grids — present in: {_presence_label(p2_b, p2_g)}.",
+            "desc": {
+                "en": f"Decision-making, responsibility and long-term planning. Points for +1, +3 or +9 in both grids — present in: {_presence_label(p2_b, p2_g)}.",
+                "hi": f"निर्णय क्षमता, जिम्मेदारी और दीर्घकालिक योजना। +1, +3 या +9 के अंक — उपस्थित: {_presence_label(p2_b, p2_g)}।",
+                "gu": f"નિર્ણયશક્તિ, જવાબદારી અને લાંબા ગાળાનું આયોજન. +1, +3 કે +9 ના ગુણ — હાજર: {_presence_label(p2_b, p2_g)}.",
+            }[lang],
         },
         {
             "key": "money",
-            "title": "Money Compatibility",
+            "title": {"en": "Money Compatibility", "hi": "आर्थिक अनुकूलता (Money Compatibility)", "gu": "આર્થિક સુસંગતતા (Money Compatibility)"}[lang],
             "score": p3_score,
             "max": 20,
-            "desc": f"Spending, saving, financial discipline and money mindset. Points for +3, +5, +6 or +8 in both grids — present in: {_presence_label(p3_b, p3_g)}.",
+            "desc": {
+                "en": f"Spending, saving, financial discipline and money mindset. Points for +3, +5, +6 or +8 in both grids — present in: {_presence_label(p3_b, p3_g)}.",
+                "hi": f"खर्च, बचत, आर्थिक अनुशासन और धन के प्रति दृष्टिकोण। +3, +5, +6 या +8 के अंक — उपस्थित: {_presence_label(p3_b, p3_g)}।",
+                "gu": f"ખર્ચ, બચત, નાણાકીય શિસ્ત અને ધન પ્રત્યેની વિચારસરણી. +3, +5, +6 કે +8 ના ગુણ — હાજર: {_presence_label(p3_b, p3_g)}.",
+            }[lang],
         },
         {
             "key": "root_destiny",
-            "title": "Root & Destiny Matching",
+            "title": {"en": "Root & Destiny Matching", "hi": "मूलांक एवं भाग्यांक मिलान", "gu": "મૂળાંક અને ભાગ્યાંક મિલાન"}[lang],
             "score": p4_score,
             "max": 20,
-            "desc": f"Basic Numbers {b_bn} and {g_bn} {bn_desc}. Destiny Numbers {b_dn} and {g_dn} {dn_desc} — how well their life purposes align.",
+            "desc": {
+                "en": f"Basic Numbers {b_bn} and {g_bn} {bn_desc}. Destiny Numbers {b_dn} and {g_dn} {dn_desc} — how well their life purposes align.",
+                "hi": f"मूलांक {b_bn} व {g_bn} ({bn_pts}/10) तथा भाग्यांक {b_dn} व {g_dn} ({dn_pts}/10) — जीवन के उद्देश्यों का तालमेल।",
+                "gu": f"મૂળાંક {b_bn} અને {g_bn} ({bn_pts}/10) તથા ભાગ્યાંક {b_dn} અને {g_dn} ({dn_pts}/10) — જીવનના હેતુઓનો તાલમેલ.",
+            }[lang],
         },
         {
             "key": "marriage_saving",
-            "title": "Marriage-saving numbers",
+            "title": {"en": "Marriage-saving numbers", "hi": "विवाह-रक्षक अंक (+3, +7, +8)", "gu": "લગ્ન-રક્ષક અંકો (+3, +7, +8)"}[lang],
             "score": p5_score,
             "max": 20,
-            "desc": (
-                f"Extra points for +3, +7 or +8 in either grid. Found: {', '.join('+' + str(n) for n in ms_nums)}."
-                if ms_nums else
-                "Extra points for +3, +7 or +8 in either grid. None found. +3 brings communication harmony, +7 spiritual bonding, +8 discipline and long-term commitment."
-            ),
+            "desc": {
+                "en": (
+                    f"Extra points for +3, +7 or +8 in either grid. Found: {', '.join('+' + str(n) for n in ms_nums)}."
+                    if ms_nums else
+                    "Extra points for +3, +7 or +8 in either grid. None found. +3 brings communication harmony, +7 spiritual bonding, +8 discipline and long-term commitment."
+                ),
+                "hi": (
+                    f"किसी भी कुंडली में +3, +7 या +8 के अतिरिक्त अंक। प्राप्त: {', '.join('+' + str(n) for n in ms_nums)}।"
+                    if ms_nums else
+                    "किसी भी कुंडली में +3, +7 या +8 सकारात्मक रूप से नहीं हैं। +3 संवाद, +7 आध्यात्मिक जुड़ाव और +8 दीर्घकालिक समर्पण देता है।"
+                ),
+                "gu": (
+                    f"બંનેમાંથી કોઈ કુંડળીમાં +3, +7 કે +8 ના વધારાના ગુણ. મળેલ: {', '.join('+' + str(n) for n in ms_nums)}."
+                    if ms_nums else
+                    "બંનેમાંથી કોઈ કુંડળીમાં +3, +7 કે +8 સકારાત્મક નથી. +3 સંવાદ, +7 આધ્યાત્મિક જોડાણ અને +8 લાંબા ગાળાનું સમર્પણ આપે છે."
+                ),
+            }[lang],
         },
     ]
 

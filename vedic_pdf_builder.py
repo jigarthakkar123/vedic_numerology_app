@@ -1792,6 +1792,10 @@ def build_matchmaking_html(m: Dict[str, Any]) -> str:
             "none": "None",
             "five_pillars": "The five pillars",
             "rules_title": "Basic matching & rejection rules",
+            "matching_rules_title": "Basic Matching Rules (Compatibility & Support)",
+            "rejection_rules_title": "Basic Rejection Rules & Red-Flag Checks",
+            "why_important_lbl": "Why Important:",
+            "couple_effect_lbl": "Effect on Couple:",
             "status_ok": "Matched",
             "status_warn": "Caution",
             "status_reject": "Rejected",
@@ -1860,6 +1864,10 @@ def build_matchmaking_html(m: Dict[str, Any]) -> str:
             "none": "कोई नहीं",
             "five_pillars": "पांच मुख्य स्तंभ (Five Pillars)",
             "rules_title": "मुख्य मिलान एवं अस्वीकृति नियम (Rules 1–8)",
+            "matching_rules_title": "मुख्य मिलान नियम (अनुकूलता एवं सहयोग)",
+            "rejection_rules_title": "मुख्य अस्वीकृति नियम एवं चेतावनी जांच",
+            "why_important_lbl": "यह नियम क्यों महत्वपूर्ण है:",
+            "couple_effect_lbl": "दंपति पर प्रभाव:",
             "status_ok": "अनुकूल / पास",
             "status_warn": "सावधानी",
             "status_reject": "अस्वीकृत / प्रतिकूल",
@@ -1928,6 +1936,10 @@ def build_matchmaking_html(m: Dict[str, Any]) -> str:
             "none": "કોઈ નહીં",
             "five_pillars": "પાંચ મુખ્ય સ્તંભ (Five Pillars)",
             "rules_title": "મુખ્ય મિલાન અને અસ્વીકૃતિ નિયમો (Rules 1–8)",
+            "matching_rules_title": "મુખ્ય મિલાન નિયમો (અનુકૂળતા અને સહયોગ)",
+            "rejection_rules_title": "મુખ્ય અસ્વીકૃતિ નિયમો અને ચેતવણી તપાસ",
+            "why_important_lbl": "આ નિયમ કેમ મહત્વપૂર્ણ છે:",
+            "couple_effect_lbl": "યુગલ પર અસર:",
             "status_ok": "અનુકૂળ / પાસ",
             "status_warn": "સાવચેતી",
             "status_reject": "અસ્વીકૃત / પ્રતિકૂળ",
@@ -2077,24 +2089,34 @@ def build_matchmaking_html(m: Dict[str, Any]) -> str:
             <div class="pillar-desc">{p["desc"]}</div>
         </div>"""
 
-    rules_html = ""
+    matching_rules_html = ""
+    rejection_rules_html = ""
     for rc in m.get("rules_checks", []):
         st = rc["status"]
+        cat = rc.get("category", "matching")
         icon = "✓" if st == "ok" else ("✕" if st == "reject" else "!")
         cls = "rule-ok" if st == "ok" else ("rule-reject" if st == "reject" else "rule-warn")
         box_cls = "rule-box-ok" if st == "ok" else ("rule-box-reject" if st == "reject" else "rule-box-warn")
         st_lbl = ML["status_ok"] if st == "ok" else (ML["status_reject"] if st == "reject" else ML["status_warn"])
-        rules_html += f"""
-        <div class="rule-row {box_cls}">
-            <div class="rule-badge {cls}">{icon}</div>
+        why_html = f'<div style="font-size:9.6px;color:#334155;margin-top:4px;"><strong>{ML["why_important_lbl"]}</strong> {rc["why_important"]}</div>' if rc.get("why_important") else ""
+        eff_html = f'<div style="font-size:9.6px;color:#0f172a;margin-top:2px;"><strong>{ML["couple_effect_lbl"]}</strong> {rc["couple_effect"]}</div>' if rc.get("couple_effect") else ""
+        card_html = f"""
+        <div class="rule-row {box_cls}" style="align-items:flex-start;break-inside:avoid;">
+            <div class="rule-badge {cls}" style="margin-top:2px;">{icon}</div>
             <div style="flex:1;">
                 <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
                     <strong>{rc["rule"]} · {rc["title"]}</strong>
                     <span class="rule-pill {box_cls}-pill">{st_lbl}</span>
                 </div>
                 <div class="sub-muted" style="margin-top:2px;">{rc["detail"]}</div>
+                {why_html}
+                {eff_html}
             </div>
         </div>"""
+        if cat == "rejection":
+            rejection_rules_html += card_html
+        else:
+            matching_rules_html += card_html
 
     lit = m.get("litigation_check", {})
     b_lit = lit.get("boy", {})
@@ -2592,9 +2614,15 @@ body {{ margin: 0; font-family: {body_font}; color: #1e293b; font-size: 11px; li
     {pillars_html}
 </div>
 
-<div class="sheet">
-    <h2 class="sec-h2">{ML["rules_title"]}</h2>
-    {rules_html}
+<div class="page-break"></div>
+<div class="sheet" style="border-color:#bbf7d0;">
+    <h2 class="sec-h2" style="color:#15803d;">✓ {ML["matching_rules_title"]}</h2>
+    {matching_rules_html}
+</div>
+
+<div class="sheet" style="border-color:#fecaca;">
+    <h2 class="sec-h2" style="color:#b91c1c;">⛔ {ML["rejection_rules_title"]}</h2>
+    {rejection_rules_html}
     {lit_html}
 </div>
 
