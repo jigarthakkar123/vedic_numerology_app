@@ -3051,6 +3051,377 @@ body {{ margin: 0; font-family: {body_font}; color: #1e293b; font-size: 11px; li
 </html>"""
 
 
+def build_name_report_html(d: Dict[str, Any], lang: str = "en") -> str:
+    """
+    Constructs a clean, white, editorial-grade Name Correction & Suggestion Report
+    in English, Hindi, or Gujarati, ready for Chromium PDF export.
+    """
+    lang = lang if lang in ("en", "hi", "gu") else "en"
+    NL = {
+        "en": {
+            "kicker": "Vedic & Chaldean Numerology",
+            "title": "Name Correction & Suggestion Report",
+            "prepared_by": "Prepared by",
+            "prepared_for": "Prepared for",
+            "dob": "DOB:",
+            "gender": "Gender:",
+            "bn": "Basic Number",
+            "dn": "Destiny Number",
+            "targets": "Best Target Namanks",
+            "cur_title": "Current Name Vibration Audit",
+            "compound": "Compound Total",
+            "namank": "Namank",
+            "spell_title": "Recommended Spelling Corrections (Without Changing Meaning)",
+            "spell_sub": "Minor letter adjustments that align your name frequency with your Birth & Destiny numbers.",
+            "col_name": "Suggested Spelling",
+            "col_num": "Total → Namank",
+            "col_note": "Adjustment",
+            "col_status": "Rating",
+            "best": "Best Match",
+            "harm": "Harmonious",
+            "none_spell": "Your existing spelling is already well-aligned or no minor tweaks needed.",
+            "alpha_title": "Gender-Matched Alphabet Name Suggestions",
+            "alpha_none": "No curated names found for the entered alphabet.",
+            "disclaimer": "Disclaimer: Prepared using Vedic & Chaldean numerology for guidance.",
+        },
+        "hi": {
+            "kicker": "वैदिक एवं कैल्डियन अंकशास्त्र",
+            "title": "नाम सुधार एवं सुझाव रिपोर्ट",
+            "prepared_by": "द्वारा तैयार:",
+            "prepared_for": "के लिए तैयार",
+            "dob": "जन्मतिथि:",
+            "gender": "लिंग:",
+            "bn": "मूलांक",
+            "dn": "भाग्यांक",
+            "targets": "शुभ लक्ष्य नामांक",
+            "cur_title": "वर्तमान नाम कंपन विश्लेषण",
+            "compound": "कुल योग (Compound)",
+            "namank": "नामांक",
+            "spell_title": "सुझाए गए स्पेलिंग सुधार (बिना अर्थ बदले)",
+            "spell_sub": "अक्षरों में सूक्ष्म सुधार जो आपके नाम को मूलांक और भाग्यांक के अनुकूल बनाते हैं।",
+            "col_name": "सुझावित स्पेलिंग",
+            "col_num": "योग → नामांक",
+            "col_note": "परिवर्तन",
+            "col_status": "स्थिति",
+            "best": "सर्वश्रेष्ठ",
+            "harm": "अनुकूल",
+            "none_spell": "आपका वर्तमान नाम पहले से संतुलित है या किसी बदलाव की आवश्यकता नहीं है।",
+            "alpha_title": "लिंग के अनुसार अक्षर-आधारित नाम सुझाव",
+            "alpha_none": "इस अक्षर के लिए कोई नाम नहीं मिला।",
+            "disclaimer": "अस्वीकरण: वैदिक एवं कैल्डियन अंकशास्त्र मार्गदर्शन के लिए है।",
+        },
+        "gu": {
+            "kicker": "વૈદિક અને કેલ્ડિયન અંકશાસ્ત્ર",
+            "title": "નામ સુધારણા અને સૂચન રિપોર્ટ",
+            "prepared_by": "દ્વારા તૈયાર:",
+            "prepared_for": "માટે તૈયાર",
+            "dob": "જન્મતારીખ:",
+            "gender": "જાતિ:",
+            "bn": "મૂળાંક",
+            "dn": "ભાગ્યાંક",
+            "targets": "શુભ લક્ષ્ય નામાંક",
+            "cur_title": "વર્તમાન નામ સ્પંદન વિશ્લેષણ",
+            "compound": "કુલ સરવાળો",
+            "namank": "નામાંક",
+            "spell_title": "સૂચવેલ સ્પેલિંગ સુધારા (અર્થ બદલ્યા વગર)",
+            "spell_sub": "અક્ષરોમાં સૂક્ષ્મ સુધારા જે તમારા નામને મૂળાંક અને ભાગ્યાંકને અનુરૂપ બનાવે છે.",
+            "col_name": "સૂચવેલ સ્પેલિંગ",
+            "col_num": "સરવાળો → નામાંક",
+            "col_note": "ફેરફાર",
+            "col_status": "રેટિંગ",
+            "best": "શ્રેષ્ઠ",
+            "harm": "અનુકૂળ",
+            "none_spell": "તમારું વર્તમાન નામ પહેલેથી જ અનુકૂળ છે.",
+            "alpha_title": "જાતિ મુજબ અક્ષર-આધારિત નામ સૂચનો",
+            "alpha_none": "દાખલ કરેલા અક્ષર માટે કોઈ નામ મળ્યા નથી.",
+            "disclaimer": "અસ્વીકરણ: વૈદિક અને કેલ્ડિયન અંકશાસ્ત્ર માર્ગદર્શન માટે છે.",
+        },
+    }[lang]
+
+    google_fonts = "https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@400;600;700&display=swap"
+    if lang == "hi":
+        google_fonts += "&family=Noto+Sans+Devanagari:wght@400;600;700"
+        body_font = "'Noto Sans Devanagari', 'Source Sans 3', sans-serif"
+        serif_font = "'Noto Sans Devanagari', 'Libre Baskerville', serif"
+    elif lang == "gu":
+        google_fonts += "&family=Noto+Sans+Gujarati:wght@400;600;700"
+        body_font = "'Noto Sans Gujarati', 'Source Sans 3', sans-serif"
+        serif_font = "'Noto Sans Gujarati', 'Libre Baskerville', serif"
+    else:
+        body_font = "'Source Sans 3', sans-serif"
+        serif_font = "'Libre Baskerville', serif"
+
+    cur = d["current"]
+    chips = "".join(
+        f'<span class="ch-chip"><strong>{b["ch"]}</strong><small>{b["val"]}</small></span>'
+        for b in cur.get("breakdown", [])
+    )
+    spell_rows = "".join(
+        f'<tr><td><strong>{s["name"]}</strong></td><td>{s["compound"]} → <strong>{s["namank"]}</strong></td><td>{s["change_note"]}</td><td><span class="pill-ok">{NL["best"] if s["is_best"] else NL["harm"]}</span></td></tr>'
+        for s in d.get("spelling_suggestions", [])
+    ) or f'<tr><td colspan="4" class="sub-muted">{NL["none_spell"]}</td></tr>'
+
+    alpha_cards = "".join(
+        f'<div class="acard"><strong>{a["name"]}</strong><div class="sub-muted">{a["compound"]} → {a["namank"]} {"★" if a["is_best"] else ""}</div></div>'
+        for a in d.get("alphabet_suggestions", [])
+    ) or f'<div class="sub-muted">{NL["alpha_none"]}</div>'
+
+    return f"""<!DOCTYPE html>
+<html lang="{lang}">
+<head>
+<meta charset="UTF-8">
+<title>Jigar Thakkar - {NL["title"]} - {cur["name"]}</title>
+<link href="{google_fonts}" rel="stylesheet">
+<style>
+@page {{ size: A4 portrait; margin: 12mm; }}
+* {{ box-sizing: border-box; }}
+body {{ margin: 0; font-family: {body_font}; color: #1e293b; font-size: 11px; line-height: 1.45; -webkit-print-color-adjust: exact; print-color-adjust: exact; }}
+.sheet {{ border: 1px solid #e2e8f0; border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; background: #fff; }}
+.mm-head {{ display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 2px solid; border-image: linear-gradient(90deg, #7c3aed, #f59e0b) 1; margin-bottom: 12px; }}
+.mm-brand {{ font-family: {serif_font}; font-size: 15px; font-weight: 700; color: #0f172a; }}
+.mm-rtitle {{ text-align: right; font-size: 10px; color: #64748b; }}
+.mm-rtitle strong {{ display: block; font-family: {serif_font}; font-size: 13px; color: #0f172a; }}
+.kicker {{ font-family: {serif_font}; font-style: italic; font-size: 10.5px; color: #7c3aed; }}
+.hero-name {{ font-family: {serif_font}; font-size: 22px; font-weight: 700; color: #0f172a; margin: 2px 0; }}
+.sub-muted {{ font-size: 10px; color: #64748b; }}
+.sum-row {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0; }}
+.sum-box {{ background: #f8f7ff; border: 1px solid #ede9fe; border-radius: 8px; padding: 8px 12px; }}
+.sum-box span {{ display: block; font-size: 9.5px; color: #64748b; }}
+.sum-box strong {{ font-family: {serif_font}; font-size: 16px; color: #7c3aed; }}
+.ch-chip {{ display: inline-flex; flex-direction: column; align-items: center; border: 1px solid #e2e8f0; border-radius: 6px; padding: 3px 7px; margin: 2px; background: #f8fafc; }}
+.ch-chip strong {{ font-size: 11px; color: #0f172a; }}
+.ch-chip small {{ font-size: 8.5px; color: #b45309; font-weight: 700; }}
+.sec-h2 {{ font-family: {serif_font}; font-size: 14.5px; font-weight: 700; color: #0f172a; margin: 0 0 8px 0; }}
+.clean-tbl {{ width: 100%; border-collapse: collapse; font-size: 10px; margin-bottom: 12px; }}
+.clean-tbl th {{ text-align: left; color: #64748b; border-bottom: 1px solid #cbd5e1; padding: 5px; }}
+.clean-tbl td {{ padding: 5px; border-bottom: 1px solid #f1f5f9; }}
+.pill-ok {{ background: #dcfce7; color: #166534; font-size: 9px; font-weight: 700; padding: 1px 7px; border-radius: 999px; }}
+.agrid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }}
+.acard {{ border: 1px solid #e2e8f0; border-radius: 8px; padding: 7px 10px; background: #f8fafc; }}
+.mm-foot {{ text-align: center; font-size: 9px; color: #64748b; margin-top: 14px; }}
+</style>
+</head>
+<body>
+<div class="sheet">
+    <div class="mm-head">
+        <div>
+            <div class="mm-brand">{NL["prepared_by"]} Jigar Thakkar</div>
+            <div class="sub-muted">Certified Vedic Numerologist &amp; Vastu Consultant · +91 9377614772 · jigar93776@gmail.com</div>
+        </div>
+        <div class="mm-rtitle">{NL["kicker"]} <strong>{NL["title"]}</strong></div>
+    </div>
+    <div class="kicker">{NL["prepared_for"]}</div>
+    <div class="hero-name">{cur["name"]}</div>
+    <div class="sub-muted">{NL["dob"]} {d["dob"]} · {NL["gender"]} {d["gender"]}</div>
+
+    <div class="sum-row">
+        <div class="sum-box"><span>{NL["bn"]}</span><strong>{d["bn"]}</strong></div>
+        <div class="sum-box"><span>{NL["dn"]}</span><strong>{d["dn"]}</strong></div>
+        <div class="sum-box"><span>{NL["targets"]}</span><strong>{", ".join(str(x) for x in d["best_targets"])}</strong></div>
+    </div>
+
+    <h2 class="sec-h2">{NL["cur_title"]}</h2>
+    <div><strong>{NL["compound"]}:</strong> {cur["compound"]} → <strong>{NL["namank"]}: {cur["namank"]}</strong></div>
+    <div style="margin:6px 0;">{chips}</div>
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;margin-bottom:12px;">{cur["harmony"]["text"]}</div>
+
+    <h2 class="sec-h2">{NL["spell_title"]}</h2>
+    <p class="sub-muted" style="margin-top:0;">{NL["spell_sub"]}</p>
+    <table class="clean-tbl">
+        <thead><tr><th>{NL["col_name"]}</th><th>{NL["col_num"]}</th><th>{NL["col_note"]}</th><th>{NL["col_status"]}</th></tr></thead>
+        <tbody>{spell_rows}</tbody>
+    </table>
+
+    <h2 class="sec-h2">{NL["alpha_title"]} ({d.get("alphabet_query") or "–"})</h2>
+    <div class="agrid">{alpha_cards}</div>
+
+    <div class="mm-foot">
+        <div>{NL["disclaimer"]}</div>
+        <div style="margin-top:3px;">{NL["prepared_by"]} Jigar Thakkar · +91 9377614772 · jigar93776@gmail.com</div>
+    </div>
+</div>
+</body>
+</html>"""
+
+
+def build_mobile_report_html(d: Dict[str, Any], lang: str = "en") -> str:
+    """
+    Constructs a clean, white, editorial-grade Mobile Number & Birthdate Compatibility Report
+    in English, Hindi, or Gujarati, ready for Chromium PDF export.
+    """
+    lang = lang if lang in ("en", "hi", "gu") else "en"
+    ML = {
+        "en": {
+            "kicker": "Vedic Numerology",
+            "title": "Mobile Number & Birthdate Report",
+            "prepared_by": "Prepared by",
+            "dob": "DOB:",
+            "bn": "Basic Number",
+            "dn": "Destiny Number",
+            "targets": "Best Mobile Roots",
+            "existing": "Existing Mobile Number",
+            "candidate": "Candidate / New Mobile Number",
+            "sum": "Total Sum",
+            "root": "Root",
+            "lucky_pairs": "Lucky Pairs:",
+            "fills_missing": "Fills Missing Grid Numbers:",
+            "bad_pairs": "Harmful Pairs (28/48/49/etc.):",
+            "ends_well": "Ends on Lucky Digit (1,3,5,6,9):",
+            "yes": "Yes ✓",
+            "no": "No (avoid ending in 4/8)",
+            "none": "None",
+            "verdict": "Comparison Verdict:",
+            "disclaimer": "Disclaimer: Prepared using Vedic numerology for guidance.",
+        },
+        "hi": {
+            "kicker": "वैदिक अंकशास्त्र",
+            "title": "मोबाइल नंबर एवं जन्मतिथि मिलान रिपोर्ट",
+            "prepared_by": "द्वारा तैयार:",
+            "dob": "जन्मतिथि:",
+            "bn": "मूलांक",
+            "dn": "भाग्यांक",
+            "targets": "शुभ मोबाइल मूलांक",
+            "existing": "वर्तमान मोबाइल नंबर",
+            "candidate": "नया / प्रस्तावित मोबाइल नंबर",
+            "sum": "कुल योग",
+            "root": "मूलांक",
+            "lucky_pairs": "शुभ अंक जोड़ी:",
+            "fills_missing": "कुंडली के अनुपस्थित अंक भरता है:",
+            "bad_pairs": "अशुभ जोड़ी (28/48/49 आदि):",
+            "ends_well": "शुभ अंतिम अंक (1,3,5,6,9):",
+            "yes": "हाँ ✓",
+            "no": "नहीं (अंत में 4/8 से बचें)",
+            "none": "कोई नहीं",
+            "verdict": "तुलना निष्कर्ष:",
+            "disclaimer": "अस्वीकरण: वैदिक अंकशास्त्र मार्गदर्शन के लिए है।",
+        },
+        "gu": {
+            "kicker": "વૈદિક અંકશાસ્ત્ર",
+            "title": "મોબાઈલ નંબર અને જન્મતારીખ મિલાન રિપોર્ટ",
+            "prepared_by": "દ્વારા તૈયાર:",
+            "dob": "જન્મતારીખ:",
+            "bn": "મૂળાંક",
+            "dn": "ભાગ્યાંક",
+            "targets": "શુભ મોબાઈલ મૂળાંક",
+            "existing": "વર્તમાન મોબાઈલ નંબર",
+            "candidate": "નવો / તપાસેલ મોબાઈલ નંબર",
+            "sum": "કુલ સરવાળો",
+            "root": "મૂળાંક",
+            "lucky_pairs": "શુભ અંક જોડી:",
+            "fills_missing": "કુંડળીના ખૂટતા અંકો પૂરા કરે છે:",
+            "bad_pairs": "અશુભ જોડી (28/48/49 વગેરે):",
+            "ends_well": "શુભ અંતિમ અંક (1,3,5,6,9):",
+            "yes": "હા ✓",
+            "no": "ના (છેલ્લે 4/8 ટાળવું)",
+            "none": "કોઈ નહીં",
+            "verdict": "તુલના નિષ્કર્ષ:",
+            "disclaimer": "અસ્વીકરણ: વૈદિક અંકશાસ્ત્ર માર્ગદર્શન માટે છે.",
+        },
+    }[lang]
+
+    google_fonts = "https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@400;600;700&display=swap"
+    if lang == "hi":
+        google_fonts += "&family=Noto+Sans+Devanagari:wght@400;600;700"
+        body_font = "'Noto Sans Devanagari', 'Source Sans 3', sans-serif"
+        serif_font = "'Noto Sans Devanagari', 'Libre Baskerville', serif"
+    elif lang == "gu":
+        google_fonts += "&family=Noto+Sans+Gujarati:wght@400;600;700"
+        body_font = "'Noto Sans Gujarati', 'Source Sans 3', sans-serif"
+        serif_font = "'Noto Sans Gujarati', 'Libre Baskerville', serif"
+    else:
+        body_font = "'Source Sans 3', sans-serif"
+        serif_font = "'Libre Baskerville', serif"
+
+    def _mob_card(m: Dict[str, Any], title: str) -> str:
+        col = "#15803d" if m["score"] >= 75 else ("#d97706" if m["score"] >= 50 else "#b91c1c")
+        return f"""
+        <div class="mcard">
+            <div class="mcard-top">
+                <div>
+                    <div class="kicker">{title}</div>
+                    <div class="mnum">{m["mobile"]}</div>
+                    <div class="sub-muted">{ML["sum"]}: {m["compound"]} → <strong>{ML["root"]}: {m["root"]}</strong></div>
+                </div>
+                <div style="text-align:right;">
+                    <div class="mscore" style="color:{col};">{m["score"]}/100</div>
+                    <div style="font-size:10.5px;font-weight:700;color:{col};">{m["verdict"]}</div>
+                </div>
+            </div>
+            <div class="mgrid">
+                <div class="mbox ok">
+                    <div><strong>{ML["lucky_pairs"]}</strong> {", ".join(m["good_pairs"]) or ML["none"]}</div>
+                    <div><strong>{ML["fills_missing"]}</strong> {", ".join(str(x) for x in m["fills_missing"]) or ML["none"]}</div>
+                </div>
+                <div class="mbox bad">
+                    <div><strong>{ML["bad_pairs"]}</strong> {", ".join(m["bad_pairs"]) or ML["none"]}</div>
+                    <div><strong>{ML["ends_well"]}</strong> {ML["yes"] if m["ends_well"] else ML["no"]}</div>
+                </div>
+            </div>
+        </div>"""
+
+    comp_html = ""
+    if d.get("compare"):
+        comp_html = _mob_card(d["compare"], ML["candidate"]) + f'<div class="verdict-box"><strong>{ML["verdict"]}</strong> {d.get("comparison_summary", "")}</div>'
+
+    return f"""<!DOCTYPE html>
+<html lang="{lang}">
+<head>
+<meta charset="UTF-8">
+<title>Jigar Thakkar - {ML["title"]} - {d["current"]["mobile"]}</title>
+<link href="{google_fonts}" rel="stylesheet">
+<style>
+@page {{ size: A4 portrait; margin: 12mm; }}
+* {{ box-sizing: border-box; }}
+body {{ margin: 0; font-family: {body_font}; color: #1e293b; font-size: 11px; line-height: 1.45; -webkit-print-color-adjust: exact; print-color-adjust: exact; }}
+.sheet {{ border: 1px solid #e2e8f0; border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; background: #fff; }}
+.mm-head {{ display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 2px solid; border-image: linear-gradient(90deg, #7c3aed, #f59e0b) 1; margin-bottom: 12px; }}
+.mm-brand {{ font-family: {serif_font}; font-size: 15px; font-weight: 700; color: #0f172a; }}
+.mm-rtitle {{ text-align: right; font-size: 10px; color: #64748b; }}
+.mm-rtitle strong {{ display: block; font-family: {serif_font}; font-size: 13px; color: #0f172a; }}
+.kicker {{ font-family: {serif_font}; font-style: italic; font-size: 10.5px; color: #7c3aed; }}
+.sub-muted {{ font-size: 10px; color: #64748b; }}
+.sum-row {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0; }}
+.sum-box {{ background: #f8f7ff; border: 1px solid #ede9fe; border-radius: 8px; padding: 8px 12px; }}
+.sum-box span {{ display: block; font-size: 9.5px; color: #64748b; }}
+.sum-box strong {{ font-family: {serif_font}; font-size: 16px; color: #7c3aed; }}
+.mcard {{ border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; background: #fff; }}
+.mcard-top {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }}
+.mnum {{ font-family: monospace; font-size: 20px; font-weight: 700; color: #0f172a; }}
+.mscore {{ font-family: {serif_font}; font-size: 22px; font-weight: 700; line-height: 1; }}
+.mgrid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }}
+.mbox {{ border-radius: 8px; padding: 8px 10px; font-size: 10px; }}
+.mbox.ok {{ background: #f0fdf4; border: 1px solid #bbf7d0; }}
+.mbox.bad {{ background: #fef2f2; border: 1px solid #fecaca; }}
+.verdict-box {{ background: #f8f7ff; border: 1px solid #c4b5fd; border-radius: 8px; padding: 10px 12px; font-size: 11px; color: #4c1d95; margin-bottom: 12px; }}
+.mm-foot {{ text-align: center; font-size: 9px; color: #64748b; margin-top: 14px; }}
+</style>
+</head>
+<body>
+<div class="sheet">
+    <div class="mm-head">
+        <div>
+            <div class="mm-brand">{ML["prepared_by"]} Jigar Thakkar</div>
+            <div class="sub-muted">Certified Vedic Numerologist &amp; Vastu Consultant · +91 9377614772 · jigar93776@gmail.com</div>
+        </div>
+        <div class="mm-rtitle">{ML["kicker"]} <strong>{ML["title"]}</strong></div>
+    </div>
+    <div class="sub-muted">{ML["dob"]} <strong>{d["dob"]}</strong></div>
+    <div class="sum-row">
+        <div class="sum-box"><span>{ML["bn"]}</span><strong>{d["bn"]}</strong></div>
+        <div class="sum-box"><span>{ML["dn"]}</span><strong>{d["dn"]}</strong></div>
+        <div class="sum-box"><span>{ML["targets"]}</span><strong>{", ".join(str(x) for x in d["best_targets"])}</strong></div>
+    </div>
+    {_mob_card(d["current"], ML["existing"])}
+    {comp_html}
+    <div class="mm-foot">
+        <div>{ML["disclaimer"]}</div>
+        <div style="margin-top:3px;">{ML["prepared_by"]} Jigar Thakkar · +91 9377614772 · jigar93776@gmail.com</div>
+    </div>
+</div>
+</body>
+</html>"""
+
+
 def render_pdf_from_html(html_content_or_path: str, output_pdf_path: str) -> bool:
     """
     Renders an HTML string or file to PDF using headless Chrome/Edge.

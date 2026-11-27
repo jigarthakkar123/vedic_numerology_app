@@ -1077,6 +1077,65 @@ function initNameAndMobileListeners() {
     const mobBtn = document.getElementById('btn-mob-analyze');
     if (nmBtn) nmBtn.addEventListener('click', runNameAnalysis);
     if (mobBtn) mobBtn.addEventListener('click', runMobileAnalysis);
+    document.querySelectorAll('.nm-pdf-btn').forEach(btn => {
+        btn.addEventListener('click', () => downloadNamePdf(btn.dataset.lang || 'en'));
+    });
+    document.querySelectorAll('.mob-pdf-btn').forEach(btn => {
+        btn.addEventListener('click', () => downloadMobilePdf(btn.dataset.lang || 'en'));
+    });
+}
+
+async function downloadNamePdf(lang = 'en') {
+    const name = (document.getElementById('nm-name')?.value || '').trim();
+    const dob = document.getElementById('nm-dob')?.value || '';
+    const gender = document.getElementById('nm-gender')?.value || 'Male';
+    const alpha = (document.getElementById('nm-alpha')?.value || '').trim();
+    if (!name || !dob) {
+        showStatus('Please enter both Full Name and Date of Birth first.', 'error');
+        return;
+    }
+    const langLabel = lang === 'hi' ? 'Hindi' : (lang === 'gu' ? 'Gujarati' : 'English');
+    showStatus(`Generating ${langLabel} Name Correction PDF...`, 'loading');
+    try {
+        const res = await fetch('/api/studio/name-generate-pdf', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, dob, alpha, gender, lang })
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) throw new Error(json.detail || 'PDF generation failed');
+        if (json.data) renderNameResults(json.data);
+        showStatus(`Name Correction PDF ready! <a href="${json.download_url}" target="_blank" style="color:#fbbf24;text-decoration:underline;margin-left:8px;">⬇ Download PDF ↗</a> <a href="${json.html_url}" target="_blank" style="color:#93c5fd;text-decoration:underline;margin-left:8px;">👁 View HTML</a>`, 'success');
+        window.open(json.download_url, '_blank');
+    } catch (err) {
+        showStatus(`Name PDF error: ${err.message}`, 'error');
+    }
+}
+
+async function downloadMobilePdf(lang = 'en') {
+    const mobile = (document.getElementById('mob-number')?.value || '').trim();
+    const compare_mobile = (document.getElementById('mob-compare')?.value || '').trim();
+    const dob = document.getElementById('mob-dob')?.value || '';
+    if (!mobile || !dob) {
+        showStatus('Please enter Mobile Number and Date of Birth first.', 'error');
+        return;
+    }
+    const langLabel = lang === 'hi' ? 'Hindi' : (lang === 'gu' ? 'Gujarati' : 'English');
+    showStatus(`Generating ${langLabel} Mobile & DOB PDF...`, 'loading');
+    try {
+        const res = await fetch('/api/studio/mobile-generate-pdf', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mobile, dob, compare_mobile, lang })
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) throw new Error(json.detail || 'PDF generation failed');
+        if (json.data) renderMobileResults(json.data);
+        showStatus(`Mobile & DOB PDF ready! <a href="${json.download_url}" target="_blank" style="color:#fbbf24;text-decoration:underline;margin-left:8px;">⬇ Download PDF ↗</a> <a href="${json.html_url}" target="_blank" style="color:#93c5fd;text-decoration:underline;margin-left:8px;">👁 View HTML</a>`, 'success');
+        window.open(json.download_url, '_blank');
+    } catch (err) {
+        showStatus(`Mobile PDF error: ${err.message}`, 'error');
+    }
 }
 
 async function runNameAnalysis() {

@@ -34,7 +34,14 @@ from vedic_engine import (
     analyze_and_suggest_names,
     analyze_and_suggest_mobile,
 )
-from vedic_pdf_builder import build_report_html, build_matchmaking_html, build_business_partnership_html, render_pdf_from_html
+from vedic_pdf_builder import (
+    build_report_html,
+    build_matchmaking_html,
+    build_business_partnership_html,
+    build_name_report_html,
+    build_mobile_report_html,
+    render_pdf_from_html,
+)
 from vedic_mailer import send_report_email
 import vedic_db
 
@@ -824,6 +831,44 @@ async def studio_name_suggest(body: dict = Body(...)):
         raise HTTPException(status_code=400, detail=str(e))
 
 
+@app.post("/api/studio/name-generate-pdf")
+async def studio_name_generate_pdf(body: dict = Body(...)):
+    """Generates a printable Name Correction & Suggestion PDF & HTML report in EN, HI, or GU."""
+    try:
+        name = (body.get("name") or "").strip()
+        dob = (body.get("dob") or "").strip()
+        alpha = (body.get("alpha") or "").strip()
+        gender = (body.get("gender") or "Male").strip()
+        lang = (body.get("lang") or "en").strip()
+        if not name or not dob:
+            raise HTTPException(status_code=400, detail="Name and Date of Birth are required.")
+        result = analyze_and_suggest_names(name, dob, alpha, gender)
+        html_content = build_name_report_html(result, lang=lang)
+        n_clean = clean_filename(name)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        lang_tag = lang.upper()
+        pdf_filename = f"NameCorrection_{n_clean}_{lang_tag}_{timestamp}.pdf"
+        html_filename = f"NameCorrection_{n_clean}_{lang_tag}_{timestamp}.html"
+        pdf_path = os.path.join(REPORTS_DIR, pdf_filename)
+        html_path = os.path.join(REPORTS_DIR, html_filename)
+        with open(html_path, "w", encoding="utf-8") as f:
+            f.write(html_content)
+        ok = render_pdf_from_html(html_content, pdf_path)
+        if not ok:
+            raise HTTPException(status_code=500, detail="PDF rendering failed.")
+        return {
+            "success": True,
+            "filename": pdf_filename,
+            "download_url": f"/api/download/{pdf_filename}",
+            "html_url": f"/api/view-html/{html_filename}",
+            "data": result,
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
 @app.post("/api/studio/mobile-check")
 async def studio_mobile_check(body: dict = Body(...)):
     """Analyzes mobile number compatibility with DOB and optionally compares a second mobile number."""
@@ -834,6 +879,43 @@ async def studio_mobile_check(body: dict = Body(...)):
         if not mobile or not dob:
             raise HTTPException(status_code=400, detail="Mobile number and Date of Birth are required.")
         return {"success": True, "data": analyze_and_suggest_mobile(mobile, dob, compare_mobile)}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/studio/mobile-generate-pdf")
+async def studio_mobile_generate_pdf(body: dict = Body(...)):
+    """Generates a printable Mobile Number & Birthdate Compatibility PDF & HTML report in EN, HI, or GU."""
+    try:
+        mobile = (body.get("mobile") or "").strip()
+        dob = (body.get("dob") or "").strip()
+        compare_mobile = (body.get("compare_mobile") or "").strip()
+        lang = (body.get("lang") or "en").strip()
+        if not mobile or not dob:
+            raise HTTPException(status_code=400, detail="Mobile number and Date of Birth are required.")
+        result = analyze_and_suggest_mobile(mobile, dob, compare_mobile)
+        html_content = build_mobile_report_html(result, lang=lang)
+        m_clean = clean_filename(mobile)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        lang_tag = lang.upper()
+        pdf_filename = f"MobileReport_{m_clean}_{lang_tag}_{timestamp}.pdf"
+        html_filename = f"MobileReport_{m_clean}_{lang_tag}_{timestamp}.html"
+        pdf_path = os.path.join(REPORTS_DIR, pdf_filename)
+        html_path = os.path.join(REPORTS_DIR, html_filename)
+        with open(html_path, "w", encoding="utf-8") as f:
+            f.write(html_content)
+        ok = render_pdf_from_html(html_content, pdf_path)
+        if not ok:
+            raise HTTPException(status_code=500, detail="PDF rendering failed.")
+        return {
+            "success": True,
+            "filename": pdf_filename,
+            "download_url": f"/api/download/{pdf_filename}",
+            "html_url": f"/api/view-html/{html_filename}",
+            "data": result,
+        }
     except HTTPException:
         raise
     except Exception as e:
