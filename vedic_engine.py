@@ -7,7 +7,7 @@ and domain-specific predictions (Finance, Property, Vehicle, Education, Travel, 
 """
 
 from datetime import date, datetime, timedelta
-from typing import Dict, List, Any, Tuple
+from typing import Dict, List, Any, Tuple, Optional
 from vedic_translations import (
     UI_TEXT, PLANET_INFO, NUMBER_QUALITIES, NUMBER_PRECAUTIONS,
     VIBRATION_DETAILS, AUSPICIOUS_YOGAS_DEFINITIONS, INAUSPICIOUS_YOGAS_DEFINITIONS, YOGA_DEFINITIONS, PROFESSIONS_INFO,
