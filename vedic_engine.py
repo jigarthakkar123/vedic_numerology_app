@@ -2953,3 +2953,209 @@ def compile_business_partnership_report(
         "joint_5yr": joint_5yr,
         "generated_on": date.today().strftime("%d %B %Y"),
     }
+
+
+def generate_baby_names(
+    dob_str: str,
+    surname: str = "",
+    gender: str = "Male",
+    preferred_alpha: str = "",
+) -> Dict[str, Any]:
+    """
+    Generates gender-matched Baby Name suggestions aligned with the baby's Basic Number,
+    Destiny Number, and friendly Chaldean Namank targets.
+    """
+    from vedic_translations import PLANET_INFO
+
+    profile = compile_full_numerology_profile("Baby", dob_str, gender=gender)
+    bn = profile["core_numbers"]["bn"]
+    dn = profile["core_numbers"]["dn"]
+
+    bn_friends = [int(x.strip()) for x in PLANET_INFO[bn]["en"]["friendly_nums"].split(",") if x.strip().isdigit()]
+    dn_friends = [int(x.strip()) for x in PLANET_INFO[dn]["en"]["friendly_nums"].split(",") if x.strip().isdigit()]
+    both_friends = [n for n in (5, 6, 3, 1, 9, 2) if n in bn_friends and n in dn_friends]
+    best_targets = both_friends or [n for n in (5, 6, 3, 1) if n in bn_friends or n == bn] or [5, 6, 3]
+
+    chaldean_map = {
+        "A": 1, "I": 1, "J": 1, "Q": 1, "Y": 1,
+        "B": 2, "K": 2, "R": 2,
+        "C": 3, "G": 3, "L": 3, "S": 3,
+        "D": 4, "M": 4, "T": 4,
+        "E": 5, "H": 5, "N": 5, "X": 5,
+        "U": 6, "V": 6, "W": 6,
+        "O": 7, "Z": 7,
+        "F": 8, "P": 8,
+    }
+    target_g = "F" if str(gender).strip().lower().startswith("f") or "girl" in str(gender).lower() else "M"
+    surname_clean = (surname or "").strip()
+
+    alpha_raw = (preferred_alpha or "").strip().upper()
+    alpha_letters = [c for c in alpha_raw if c.isalpha()]
+    search_letters = alpha_letters[:4] if alpha_letters else list(CURATED_NAMES_BY_ALPHA.keys())
+
+    suggestions = []
+    seen = set()
+    for al in search_letters:
+        for nm, nm_g in CURATED_NAMES_BY_ALPHA.get(al, []):
+            if nm_g != target_g:
+                continue
+            full_nm = f"{nm} {surname_clean}".strip() if surname_clean else nm
+            if full_nm.lower() in seen:
+                continue
+            seen.add(full_nm.lower())
+            tot = sum(chaldean_map.get(c, 0) for c in full_nm.upper() if c.isalpha())
+            namank = tot
+            while namank > 9:
+                namank = sum(int(d) for d in str(namank))
+            if namank in best_targets:
+                suggestions.append({
+                    "first_name": nm,
+                    "full_name": full_nm,
+                    "starts_with": al,
+                    "compound": tot,
+                    "namank": namank,
+                    "planet": PLANET_INFO[namank]["en"]["planet"].split("(")[0].strip(),
+                    "is_best": namank == best_targets[0],
+                })
+
+    suggestions.sort(key=lambda x: (0 if x["is_best"] else 1, best_targets.index(x["namank"]), x["full_name"]))
+    return {
+        "dob": profile["client"]["dob"].replace("/", "-"),
+        "gender": "Girl (Female)" if target_g == "F" else "Boy (Male)",
+        "surname": surname_clean,
+        "bn": bn,
+        "dn": dn,
+        "bn_planet": profile["core_numbers"]["bn_planet"],
+        "dn_planet": profile["core_numbers"]["dn_planet"],
+        "best_targets": best_targets,
+        "alphabet_filter": ", ".join(alpha_letters[:4]) if alpha_letters else "All Auspicious Letters",
+        "suggestions": suggestions[:24],
+    }
+
+
+def analyze_house_and_vehicle(
+    dob_str: str,
+    house_number: str = "",
+    vehicle_number: str = "",
+    property_type: str = "Home / Flat",
+    lang: str = "en",
+) -> Dict[str, Any]:
+    """
+    Analyzes House/Flat/Shop Number and Vehicle Registration Number against the owner's
+    DOB (Basic Number, Destiny Number, and Friendly/Enemy Matrix).
+    """
+    from vedic_translations import PLANET_INFO
+
+    lang = lang if lang in ("en", "hi", "gu") else "en"
+    profile = compile_full_numerology_profile("Owner", dob_str, lang=lang)
+    bn = profile["core_numbers"]["bn"]
+    dn = profile["core_numbers"]["dn"]
+
+    bn_friends = [int(x.strip()) for x in PLANET_INFO[bn]["en"]["friendly_nums"].split(",") if x.strip().isdigit()]
+    bn_enemies = [int(x.strip()) for x in PLANET_INFO[bn]["en"]["enemy_nums"].split(",") if x.strip().isdigit()]
+    dn_friends = [int(x.strip()) for x in PLANET_INFO[dn]["en"]["friendly_nums"].split(",") if x.strip().isdigit()]
+    dn_enemies = [int(x.strip()) for x in PLANET_INFO[dn]["en"]["enemy_nums"].split(",") if x.strip().isdigit()]
+    best_nums = sorted({n for n in (1, 3, 5, 6, 9) if (n in bn_friends or n == bn) and n not in bn_enemies and n not in dn_enemies}) or [5, 6, 3]
+
+    chaldean_map = {
+        "A": 1, "I": 1, "J": 1, "Q": 1, "Y": 1,
+        "B": 2, "K": 2, "R": 2,
+        "C": 3, "G": 3, "L": 3, "S": 3,
+        "D": 4, "M": 4, "T": 4,
+        "E": 5, "H": 5, "N": 5, "X": 5,
+        "U": 6, "V": 6, "W": 6,
+        "O": 7, "Z": 7,
+        "F": 8, "P": 8,
+    }
+
+    HOUSE_MEANINGS = {
+        1: {"en": "Leadership, independence & fresh starts — ideal for founders & executives.", "hi": "नेतृत्व, स्वतंत्रता और नई शुरुआत — उद्यमियों के लिए उत्तम।", "gu": "નેતૃત્વ, સ્વતંત્રતા અને નવી શરૂઆત — ઉદ્યોગસાહસિકો માટે ઉત્તમ."},
+        2: {"en": "Peace, family bonding & emotional warmth — soothing domestic vibe.", "hi": "शांति, पारिवारिक स्नेह और भावनात्मक सुकून।", "gu": "શાંતિ, પારિવારિક સ્નેહ અને ભાવનાત્મક સુમેળ."},
+        3: {"en": "Expansion, wisdom, education & prosperity — blessed by Jupiter.", "hi": "विस्तार, ज्ञान, शिक्षा और समृद्धि — गुरु की कृपा।", "gu": "વિસ્તાર, જ્ઞાન, શિક્ષણ અને સમૃદ્ધિ — ગુરુની કૃપા."},
+        4: {"en": "Disciplined work & sudden shifts — keep corners clutter-free & organized.", "hi": "मेहनत और अचानक बदलाव — वास्तु और व्यवस्था साफ रखें।", "gu": "મહેનત અને અચાનક ફેરફાર — વાસ્તુ અને વ્યવસ્થા સ્વચ્છ રાખવી."},
+        5: {"en": "Vibrant cash flow, networking & youthfulness — top number for shops & offices.", "hi": "धन प्रवाह, नेटवर्किंग और व्यापार — दुकान/ऑफिस के लिए सर्वश्रेष्ठ।", "gu": "ધન પ્રવાહ, નેટવર્કિંગ અને વ્યાપાર — દુકાન/ઓફિસ માટે શ્રેષ્ઠ."},
+        6: {"en": "Luxury, harmony, beauty & comfort — supreme number for family homes.", "hi": "सुख-सुविधा, सौंदर्य और पारिवारिक सामंजस्य — घर के लिए सर्वोत्तम।", "gu": "સુખ-સુવિધા, સૌંદર્ય અને પારિવારિક સુમેળ — ઘર માટે સર્વોત્તમ."},
+        7: {"en": "Spiritual peace, research & introspection — quiet sanctuary energy.", "hi": "आध्यात्मिक शांति, शोध और एकांत चिंतन के लिए उत्तम।", "gu": "આધ્યાત્મિક શાંતિ, સંશોધન અને એકાંત ચિંતન માટે ઉત્તમ."},
+        8: {"en": "Wealth building & authority — requires patience, cleanliness & Saturn discipline.", "hi": "संपत्ति निर्माण और अधिकार — धैर्य और अनुशासन आवश्यक।", "gu": "સંપત્તિ નિર્માણ અને સત્તા — ધીરજ અને શિસ્ત જરૂરી."},
+        9: {"en": "High energy, courage & protection — keep calm communication at home.", "hi": "उच्च ऊर्जा, साहस और सुरक्षा — घर में शांत संवाद बनाए रखें।", "gu": "ઉચ્ચ ઊર્જા, સાહસ અને સુરક્ષા — ઘરમાં શાંત સંવાદ જાળવવો."},
+    }
+
+    def _eval_code(raw: str, kind: str) -> Optional[Dict[str, Any]]:
+        txt = (raw or "").strip().upper()
+        if not txt:
+            return None
+        tot = 0
+        for ch in txt:
+            if ch.isdigit():
+                tot += int(ch)
+            elif ch.isalpha():
+                tot += chaldean_map.get(ch, 0)
+        if tot == 0:
+            return None
+        root = tot
+        while root > 9:
+            root = sum(int(d) for d in str(root))
+
+        score = 65
+        if root in bn_friends or root == bn:
+            score += 18
+        elif root in bn_enemies:
+            score -= 22
+        if root in dn_friends or root == dn:
+            score += 15
+        elif root in dn_enemies:
+            score -= 18
+        if root in (3, 5, 6):
+            score += 5
+        score = max(20, min(98, score))
+
+        if score >= 75:
+            status = "auspicious"
+            verdict = {"en": "Highly Compatible & Auspicious", "hi": "अत्यंत शुभ एवं अनुकूल", "gu": "અત્યંત શુભ અને અનુકૂળ"}[lang]
+            remedy = {"en": "No correction needed — naturally supports your birth chart.", "hi": "किसी सुधार की आवश्यकता नहीं — आपकी कुंडली के अनुकूल है।", "gu": "કોઈ સુધારાની જરૂર નથી — તમારી કુંડળીને અનુકૂળ છે."}[lang]
+        elif score >= 55:
+            status = "neutral"
+            verdict = {"en": "Neutral / Moderate Compatibility", "hi": "मध्यम / संतुलित अनुकूलता", "gu": "મધ્યમ / સંતુલિત સુસંગતતા"}[lang]
+            remedy = (
+                {"en": f"Place a brass/gold nameplate or Swastik near the entrance; align key rooms with {best_nums[0]} energy.", "hi": f"प्रवेश द्वार पर पीतल/सुनहरा नेमप्लेट या स्वस्तिक लगाएं।", "gu": f"પ્રવેશદ્વાર પર પિત્તળ/સોનેરી નેમપ્લેટ અથવા સ્વસ્તિક લગાવવો."}
+                if kind == "house" else
+                {"en": f"Keep a small Citrine or Pyrite crystal in the dashboard for protective travel energy.", "hi": "वाहन के डैशबोर्ड में छोटा सिट्रीन या पायराइट क्रिस्टल रखें।", "gu": "વાહનના ડેશબોર્ડમાં નાનો સિટ્રીન અથવા પાયરાઇટ ક્રિસ્ટલ રાખવો."}
+            )[lang]
+        else:
+            status = "challenging"
+            verdict = {"en": "Challenging / Friction Vibration", "hi": "प्रतिकूल / संघर्षकारी कंपन", "gu": "પ્રતિકૂળ / સંઘર્ષકારક સ્પંદન"}[lang]
+            remedy = (
+                {"en": f"Add a balancing prefix/letter on the nameplate (totaling {best_nums[0]} or {best_nums[-1]}) and keep a Yellow/Gold Ganesha or Sri Yantra at the entrance.", "hi": f"नेमप्लेट पर {best_nums[0]} या {best_nums[-1]} के योग वाला शुभ अक्षर जोड़ें और प्रवेश पर श्री यंत्र रखें।", "gu": f"નેમપ્લેટ પર {best_nums[0]} કે {best_nums[-1]} ના સરવાળા વાળો શુભ અક્ષર ઉમેરવો અને પ્રવેશદ્વાર પર શ્રી યંત્ર રાખવું."}
+                if kind == "house" else
+                {"en": "Keep a Hanuman Yantra / Tiger's Eye crystal in the vehicle, drive defensively, and avoid speeding on Tuesdays/Saturdays.", "hi": "वाहन में हनुमान यंत्र या टाइगर आई क्रिस्टल रखें और मंगलवार/शनिवार को सावधानी से चलाएं।", "gu": "વાહનમાં હનુમાન યંત્ર અથવા ટાઇગર આઈ ક્રિસ્ટલ રાખવો અને મંગળવાર/શનિવારે સાવચેતીથી ચલાવવું."}
+            )[lang]
+
+        return {
+            "raw": txt,
+            "compound": tot,
+            "root": root,
+            "planet": PLANET_INFO[root][lang]["planet"],
+            "score": score,
+            "status": status,
+            "verdict": verdict,
+            "meaning": HOUSE_MEANINGS[root][lang],
+            "remedy": remedy,
+        }
+
+    house_eval = _eval_code(house_number, "house")
+    vehicle_eval = _eval_code(vehicle_number, "vehicle")
+    if not house_eval and not vehicle_eval:
+        raise ValueError("Please enter at least a House/Flat/Shop Number or a Vehicle Number.")
+
+    return {
+        "lang": lang,
+        "dob": profile["client"]["dob"].replace("/", "-"),
+        "property_type": property_type,
+        "bn": bn,
+        "dn": dn,
+        "bn_planet": profile["core_numbers"]["bn_planet"],
+        "dn_planet": profile["core_numbers"]["dn_planet"],
+        "best_numbers": best_nums,
+        "house": house_eval,
+        "vehicle": vehicle_eval,
+    }

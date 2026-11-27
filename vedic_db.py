@@ -83,6 +83,20 @@ def init_db():
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_orders_phone ON orders(phone)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_orders_tier ON orders(tier)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_orders_created ON orders(created_at)")
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS saved_clients (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                client_name TEXT NOT NULL,
+                dob TEXT NOT NULL,
+                gender TEXT DEFAULT 'Male',
+                phone TEXT DEFAULT '',
+                email TEXT DEFAULT '',
+                notes TEXT DEFAULT '',
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            )
+        """)
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_clients_name ON saved_clients(client_name)")
         conn.commit()
 
         # Auto-sync persistent orders from registry JSON if missing in DB
@@ -318,6 +332,74 @@ def export_orders_csv() -> str:
                 r["pdf_filename"], r["meeting_status"], r["meeting_notes"], r["created_at"]
             ])
         return output.getvalue()
+
+def save_client_profile(data: Dict[str, Any]) -> Dict[str, Any]:
+    """Saves or updates a client in the Saved Client Directory."""
+    now = datetime.now().isoformat()
+    name = (data.get("client_name") or data.get("name") or "").strip()
+    dob = (data.get("dob") or "").strip()
+    gender = (data.get("gender") or "Male").strip()
+    phone = (data.get("phone") or "").strip()
+    email = (data.get("email") or "").strip()
+    notes = (data.get("notes") or "").strip()
+    if not name or not dob:
+        raise ValueError("Client Name and DOB are required.")
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT id FROM saved_clients WHERE LOWER(client_name) = LOWER(?) AND dob = ?",
+            (name, dob)
+        )
+        existing = cursor.fetchone()
+        if existing:
+            cid = existing["id"]
+            cursor.execute(
+                """UPDATE saved_clients
+                   SET gender = ?, phone = ?, email = ?, notes = ?, updated_at = ?
+                   WHERE id = ?""",
+                (gender, phone, email, notes, now, cid)
+            )
+        else:
+            cursor.execute(
+                """INSERT INTO saved_clients (client_name, dob, gender, phone, email, notes, created_at, updated_at)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+                (name, dob, gender, phone, email, notes, now, now)
+            )
+            cid = cursor.lastrowid
+        conn.commit()
+        cursor.execute("SELECT * FROM saved_clients WHERE id = ?", (cid,))
+        return dict(cursor.fetchone())
+
+
+def list_saved_clients(search: str = "", limit: int = 100) -> List[Dict[str, Any]]:
+    """Lists saved clients with optional search filter."""
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        q = (search or "").strip()
+        if q:
+            like = f"%{q}%"
+            cursor.execute(
+                """SELECT * FROM saved_clients
+                   WHERE client_name LIKE ? OR phone LIKE ? OR dob LIKE ?
+                   ORDER BY updated_at DESC LIMIT ?""",
+                (like, like, like, limit)
+            )
+        else:
+            cursor.execute(
+                "SELECT * FROM saved_clients ORDER BY updated_at DESC LIMIT ?",
+                (limit,)
+            )
+        return [dict(r) for r in cursor.fetchall()]
+
+
+def delete_saved_client(client_id: int) -> bool:
+    """Deletes a saved client by ID."""
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM saved_clients WHERE id = ?", (client_id,))
+        conn.commit()
+        return cursor.rowcount > 0
+
 
 # Automatically initialize table on import
 init_db()

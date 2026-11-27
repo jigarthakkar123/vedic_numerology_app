@@ -33,6 +33,8 @@ from vedic_engine import (
     compile_business_partnership_report,
     analyze_and_suggest_names,
     analyze_and_suggest_mobile,
+    generate_baby_names,
+    analyze_house_and_vehicle,
 )
 from vedic_pdf_builder import (
     build_report_html,
@@ -40,6 +42,8 @@ from vedic_pdf_builder import (
     build_business_partnership_html,
     build_name_report_html,
     build_mobile_report_html,
+    build_baby_name_report_html,
+    build_property_vehicle_report_html,
     render_pdf_from_html,
 )
 from vedic_mailer import send_report_email
@@ -902,6 +906,138 @@ async def studio_mobile_generate_pdf(body: dict = Body(...)):
         lang_tag = lang.upper()
         pdf_filename = f"MobileReport_{m_clean}_{lang_tag}_{timestamp}.pdf"
         html_filename = f"MobileReport_{m_clean}_{lang_tag}_{timestamp}.html"
+        pdf_path = os.path.join(REPORTS_DIR, pdf_filename)
+        html_path = os.path.join(REPORTS_DIR, html_filename)
+        with open(html_path, "w", encoding="utf-8") as f:
+            f.write(html_content)
+        ok = render_pdf_from_html(html_content, pdf_path)
+        if not ok:
+            raise HTTPException(status_code=500, detail="PDF rendering failed.")
+        return {
+            "success": True,
+            "filename": pdf_filename,
+            "download_url": f"/api/download/{pdf_filename}",
+            "html_url": f"/api/view-html/{html_filename}",
+            "data": result,
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/api/studio/clients")
+async def get_saved_clients(search: str = ""):
+    """Lists saved client profiles in the Studio Client Directory."""
+    return {"success": True, "clients": vedic_db.list_saved_clients(search=search)}
+
+
+@app.post("/api/studio/clients")
+async def save_studio_client(body: dict = Body(...)):
+    """Saves or updates a client profile in the Studio Client Directory."""
+    try:
+        saved = vedic_db.save_client_profile(body)
+        return {"success": True, "client": saved}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.delete("/api/studio/clients/{client_id}")
+async def delete_studio_client(client_id: int):
+    """Deletes a saved client from the Studio Client Directory."""
+    ok = vedic_db.delete_saved_client(client_id)
+    return {"success": ok}
+
+
+@app.post("/api/studio/baby-names")
+async def studio_baby_names(body: dict = Body(...)):
+    """Generates gender-matched Baby Name suggestions aligned to DOB."""
+    try:
+        dob = (body.get("dob") or "").strip()
+        surname = (body.get("surname") or "").strip()
+        gender = (body.get("gender") or "Male").strip()
+        alpha = (body.get("alpha") or "").strip()
+        if not dob:
+            raise HTTPException(status_code=400, detail="Baby Date of Birth is required.")
+        return {"success": True, "data": generate_baby_names(dob, surname=surname, gender=gender, preferred_alpha=alpha)}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/studio/baby-names/generate-pdf")
+async def studio_baby_names_pdf(body: dict = Body(...)):
+    """Generates a printable Baby Name Numerology PDF & HTML report in EN, HI, or GU."""
+    try:
+        dob = (body.get("dob") or "").strip()
+        surname = (body.get("surname") or "").strip()
+        gender = (body.get("gender") or "Male").strip()
+        alpha = (body.get("alpha") or "").strip()
+        lang = (body.get("lang") or "en").strip()
+        if not dob:
+            raise HTTPException(status_code=400, detail="Baby Date of Birth is required.")
+        result = generate_baby_names(dob, surname=surname, gender=gender, preferred_alpha=alpha)
+        html_content = build_baby_name_report_html(result, lang=lang)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        lang_tag = lang.upper()
+        pdf_filename = f"BabyNames_{lang_tag}_{timestamp}.pdf"
+        html_filename = f"BabyNames_{lang_tag}_{timestamp}.html"
+        pdf_path = os.path.join(REPORTS_DIR, pdf_filename)
+        html_path = os.path.join(REPORTS_DIR, html_filename)
+        with open(html_path, "w", encoding="utf-8") as f:
+            f.write(html_content)
+        ok = render_pdf_from_html(html_content, pdf_path)
+        if not ok:
+            raise HTTPException(status_code=500, detail="PDF rendering failed.")
+        return {
+            "success": True,
+            "filename": pdf_filename,
+            "download_url": f"/api/download/{pdf_filename}",
+            "html_url": f"/api/view-html/{html_filename}",
+            "data": result,
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/studio/property-vehicle-check")
+async def studio_property_vehicle_check(body: dict = Body(...)):
+    """Analyzes House/Flat/Shop & Vehicle numbers against owner's DOB."""
+    try:
+        dob = (body.get("dob") or "").strip()
+        house_number = (body.get("house_number") or "").strip()
+        vehicle_number = (body.get("vehicle_number") or "").strip()
+        property_type = (body.get("property_type") or "Home / Flat").strip()
+        lang = (body.get("lang") or "en").strip()
+        if not dob:
+            raise HTTPException(status_code=400, detail="Owner Date of Birth is required.")
+        return {"success": True, "data": analyze_house_and_vehicle(dob, house_number=house_number, vehicle_number=vehicle_number, property_type=property_type, lang=lang)}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/studio/property-vehicle-pdf")
+async def studio_property_vehicle_pdf(body: dict = Body(...)):
+    """Generates a printable House/Shop & Vehicle Numerology PDF & HTML report in EN, HI, or GU."""
+    try:
+        dob = (body.get("dob") or "").strip()
+        house_number = (body.get("house_number") or "").strip()
+        vehicle_number = (body.get("vehicle_number") or "").strip()
+        property_type = (body.get("property_type") or "Home / Flat").strip()
+        lang = (body.get("lang") or "en").strip()
+        if not dob:
+            raise HTTPException(status_code=400, detail="Owner Date of Birth is required.")
+        result = analyze_house_and_vehicle(dob, house_number=house_number, vehicle_number=vehicle_number, property_type=property_type, lang=lang)
+        html_content = build_property_vehicle_report_html(result, lang=lang)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        lang_tag = lang.upper()
+        pdf_filename = f"PropertyVehicle_{lang_tag}_{timestamp}.pdf"
+        html_filename = f"PropertyVehicle_{lang_tag}_{timestamp}.html"
         pdf_path = os.path.join(REPORTS_DIR, pdf_filename)
         html_path = os.path.join(REPORTS_DIR, html_filename)
         with open(html_path, "w", encoding="utf-8") as f:

@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initMatchMakingListeners();
     initBusinessPartnershipListeners();
     initNameAndMobileListeners();
+    initSavedClientsListeners();
+    initBabyNamesListeners();
+    initPropertyVehicleListeners();
     updateWeekdayDisplay();
     fetchAnalysis(false);
     refreshHistory();
@@ -1467,6 +1470,296 @@ function renderBusinessPartnershipResults(b) {
         <div style="margin-top:14px;">
             <h4 style="margin:0 0 8px 0;color:#fde68a;">Common Recommended Businesses Together</h4>
             ${bizListHtml}
+        </div>
+    `;
+}
+
+// ==========================================
+// 6. SAVED CLIENT DIRECTORY
+// ==========================================
+let savedClientsCache = [];
+
+function initSavedClientsListeners() {
+    const saveBtn = document.getElementById('btn-save-client');
+    const refreshBtn = document.getElementById('btn-refresh-clients');
+    const searchInput = document.getElementById('saved-clients-search');
+    if (saveBtn) saveBtn.addEventListener('click', saveCurrentClient);
+    if (refreshBtn) refreshBtn.addEventListener('click', () => loadSavedClients(searchInput ? searchInput.value : ''));
+    if (searchInput) {
+        let timer = null;
+        searchInput.addEventListener('input', () => {
+            clearTimeout(timer);
+            timer = setTimeout(() => loadSavedClients(searchInput.value), 250);
+        });
+    }
+    loadSavedClients('');
+}
+
+async function loadSavedClients(search = '') {
+    const listEl = document.getElementById('saved-clients-list');
+    if (!listEl) return;
+    try {
+        const res = await fetch(`/api/studio/clients?search=${encodeURIComponent(search.trim())}`);
+        const json = await res.json();
+        if (!res.ok || !json.success) return;
+        savedClientsCache = json.clients || [];
+        if (!savedClientsCache.length) {
+            listEl.innerHTML = `<div class="empty-state">${search ? 'No matching saved clients.' : 'No saved clients yet. Click 💾 Save above to add.'}</div>`;
+            return;
+        }
+        listEl.innerHTML = savedClientsCache.map(c => `
+            <div class="report-item saved-client-row" data-client-id="${c.id}" style="display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;padding:8px 10px;">
+                <div class="load-client-area" data-client-id="${c.id}" style="flex:1;min-width:0;">
+                    <div style="font-size:12.5px;font-weight:700;color:#fef3c7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(c.client_name)}</div>
+                    <div style="font-size:11px;color:var(--text-secondary);">${escapeHtml(c.dob)}${c.phone ? ' · ' + escapeHtml(c.phone) : ''}</div>
+                </div>
+                <button type="button" class="btn-icon-mini del-client-btn" data-client-id="${c.id}" title="Delete client" style="color:#f87171;padding:2px 6px;">×</button>
+            </div>
+        `).join('');
+
+        listEl.querySelectorAll('.load-client-area').forEach(area => {
+            area.addEventListener('click', () => {
+                const cid = Number(area.getAttribute('data-client-id'));
+                const client = savedClientsCache.find(x => x.id === cid);
+                if (!client) return;
+                document.getElementById('client-name').value = client.client_name || '';
+                document.getElementById('client-phone').value = client.phone || '';
+                document.getElementById('client-dob').value = client.dob || '';
+                document.getElementById('client-gender').value = client.gender || 'Male';
+                document.getElementById('consultant-notes').value = client.notes || '';
+                updateWeekdayDisplay();
+                fetchAnalysis(true);
+                showStatus(`Loaded client: ${client.client_name}`, 'success');
+            });
+        });
+
+        listEl.querySelectorAll('.del-client-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const cid = Number(btn.getAttribute('data-client-id'));
+                const r = await fetch(`/api/studio/clients/${cid}`, { method: 'DELETE' });
+                if (r.ok) {
+                    loadSavedClients(document.getElementById('saved-clients-search')?.value || '');
+                    showStatus('Client removed from directory.', 'success');
+                }
+            });
+        });
+    } catch (err) {
+        console.warn('loadSavedClients error:', err);
+    }
+}
+
+async function saveCurrentClient() {
+    const name = document.getElementById('client-name')?.value.trim();
+    const dob = document.getElementById('client-dob')?.value;
+    const gender = document.getElementById('client-gender')?.value || 'Male';
+    const phone = document.getElementById('client-phone')?.value.trim() || '';
+    const notes = document.getElementById('consultant-notes')?.value.trim() || '';
+    if (!name || !dob) {
+        showStatus('Please enter Client Name and Date of Birth before saving.', 'error');
+        return;
+    }
+    try {
+        const res = await fetch('/api/studio/clients', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, dob, gender, phone, notes })
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) throw new Error(json.detail || 'Save failed');
+        showStatus(`Saved "${name}" to Client Directory!`, 'success');
+        loadSavedClients(document.getElementById('saved-clients-search')?.value || '');
+    } catch (err) {
+        showStatus(`Error saving client: ${err.message}`, 'error');
+    }
+}
+
+// ==========================================
+// 7. BABY NAME NUMEROLOGY GENERATOR
+// ==========================================
+function initBabyNamesListeners() {
+    const btn = document.getElementById('btn-baby-analyze');
+    if (btn) btn.addEventListener('click', runBabyNames);
+    document.querySelectorAll('.baby-pdf-btn').forEach(b => {
+        b.addEventListener('click', () => downloadBabyNamesPdf(b.getAttribute('data-lang') || 'en'));
+    });
+}
+
+function getBabyNamesPayload() {
+    return {
+        dob: document.getElementById('baby-dob')?.value || '',
+        surname: document.getElementById('baby-surname')?.value.trim() || '',
+        gender: document.getElementById('baby-gender')?.value || 'Male',
+        alpha: document.getElementById('baby-alpha')?.value.trim() || ''
+    };
+}
+
+async function runBabyNames() {
+    const payload = getBabyNamesPayload();
+    if (!payload.dob) {
+        showStatus('Please enter Baby Date of Birth.', 'error');
+        return;
+    }
+    showStatus('Generating auspicious baby names...', 'loading');
+    try {
+        const res = await fetch('/api/studio/baby-names', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) throw new Error(json.detail || 'Generation failed');
+        renderBabyNamesResults(json.data);
+        showStatus('Baby name suggestions ready!', 'success');
+    } catch (err) {
+        showStatus(`Baby name error: ${err.message}`, 'error');
+    }
+}
+
+async function downloadBabyNamesPdf(lang) {
+    const payload = { ...getBabyNamesPayload(), lang };
+    if (!payload.dob) {
+        showStatus('Please enter Baby Date of Birth.', 'error');
+        return;
+    }
+    const langLabel = lang === 'hi' ? 'Hindi' : (lang === 'gu' ? 'Gujarati' : 'English');
+    showStatus(`Generating ${langLabel} Baby Name PDF...`, 'loading');
+    try {
+        const res = await fetch('/api/studio/baby-names/generate-pdf', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) throw new Error(json.detail || 'PDF generation failed');
+        if (json.data) renderBabyNamesResults(json.data);
+        showStatus(`Baby Name PDF ready! <a href="${json.download_url}" target="_blank" style="color:#fbbf24;text-decoration:underline;margin-left:8px;">Download PDF ↗</a>`, 'success');
+        window.open(json.download_url, '_blank');
+    } catch (err) {
+        showStatus(`Baby Name PDF error: ${err.message}`, 'error');
+    }
+}
+
+function renderBabyNamesResults(d) {
+    const el = document.getElementById('baby-results-container');
+    if (!el || !d) return;
+    const rows = (d.suggestions || []).map((s, idx) => `
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(212,175,55,0.28);border-radius:10px;padding:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                <strong style="font-size:15px;color:#fef3c7;">${idx + 1}. ${escapeHtml(s.full_name)}</strong>
+                <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:12px;background:rgba(16,185,129,0.18);color:#4ade80;">Namank ${s.single_total}</span>
+            </div>
+            <div style="font-size:12px;color:var(--text-secondary);">First Name: <strong>${escapeHtml(s.first_name)}</strong> (${s.first_compound} → ${s.first_single}) · Full Compound: <strong>${s.compound_total}</strong></div>
+            <div style="font-size:11.5px;color:#cbd5e1;margin-top:4px;">${escapeHtml(s.planet)} · ${escapeHtml(s.reason)}</div>
+        </div>
+    `).join('');
+
+    el.innerHTML = `
+        <div style="background:linear-gradient(90deg, rgba(139,92,246,0.25), rgba(212,175,55,0.18));border:1px solid rgba(212,175,55,0.45);border-radius:12px;padding:14px 16px;margin-bottom:14px;">
+            <div style="font-size:15px;font-weight:700;color:#fde68a;">Baby Chart: Basic Number ${d.basic_number} (${escapeHtml(d.basic_planet)}) · Destiny Number ${d.destiny_number} (${escapeHtml(d.destiny_planet)})</div>
+            <div style="font-size:12.5px;color:#e2e8f0;margin-top:4px;">Target Lucky Namank Numbers: <strong>${(d.target_numbers || []).join(', ')}</strong> · Gender: <strong>${escapeHtml(d.gender)}</strong></div>
+        </div>
+        <div class="resp-grid-2" style="gap:10px;">${rows || '<div class="empty-state">No matching names found for that letter filter. Try clearing the starting letter.</div>'}</div>
+    `;
+}
+
+// ==========================================
+// 8. HOUSE, SHOP & VEHICLE NUMBER CHECKER
+// ==========================================
+function initPropertyVehicleListeners() {
+    const btn = document.getElementById('btn-pv-analyze');
+    if (btn) btn.addEventListener('click', runPropertyVehicle);
+    document.querySelectorAll('.pv-pdf-btn').forEach(b => {
+        b.addEventListener('click', () => downloadPropertyVehiclePdf(b.getAttribute('data-lang') || 'en'));
+    });
+}
+
+function getPropertyVehiclePayload() {
+    return {
+        dob: document.getElementById('pv-dob')?.value || '',
+        property_type: document.getElementById('pv-prop-type')?.value || 'Home / Flat',
+        house_number: document.getElementById('pv-house')?.value.trim() || '',
+        vehicle_number: document.getElementById('pv-vehicle')?.value.trim() || '',
+        lang: currentLang || 'en'
+    };
+}
+
+async function runPropertyVehicle() {
+    const payload = getPropertyVehiclePayload();
+    if (!payload.dob) {
+        showStatus('Please enter Owner Date of Birth.', 'error');
+        return;
+    }
+    showStatus('Analyzing House & Vehicle compatibility...', 'loading');
+    try {
+        const res = await fetch('/api/studio/property-vehicle-check', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) throw new Error(json.detail || 'Analysis failed');
+        renderPropertyVehicleResults(json.data);
+        showStatus('House & Vehicle analysis ready!', 'success');
+    } catch (err) {
+        showStatus(`Property/Vehicle error: ${err.message}`, 'error');
+    }
+}
+
+async function downloadPropertyVehiclePdf(lang) {
+    const payload = { ...getPropertyVehiclePayload(), lang };
+    if (!payload.dob) {
+        showStatus('Please enter Owner Date of Birth.', 'error');
+        return;
+    }
+    const langLabel = lang === 'hi' ? 'Hindi' : (lang === 'gu' ? 'Gujarati' : 'English');
+    showStatus(`Generating ${langLabel} House & Vehicle PDF...`, 'loading');
+    try {
+        const res = await fetch('/api/studio/property-vehicle-pdf', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) throw new Error(json.detail || 'PDF generation failed');
+        if (json.data) renderPropertyVehicleResults(json.data);
+        showStatus(`House & Vehicle PDF ready! <a href="${json.download_url}" target="_blank" style="color:#fbbf24;text-decoration:underline;margin-left:8px;">Download PDF ↗</a>`, 'success');
+        window.open(json.download_url, '_blank');
+    } catch (err) {
+        showStatus(`House & Vehicle PDF error: ${err.message}`, 'error');
+    }
+}
+
+function renderPropertyVehicleCard(item, title) {
+    if (!item) return '';
+    const color = item.verdict_level === 'good' ? '#4ade80' : (item.verdict_level === 'moderate' ? '#fbbf24' : '#f87171');
+    const border = item.verdict_level === 'good' ? 'rgba(16,185,129,0.4)' : (item.verdict_level === 'moderate' ? 'rgba(245,158,11,0.4)' : 'rgba(239,68,68,0.4)');
+    return `
+        <div style="background:rgba(255,255,255,0.03);border:1px solid ${border};border-radius:12px;padding:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <strong style="font-size:15px;color:#fde68a;">${escapeHtml(title)}: ${escapeHtml(item.raw_input)}</strong>
+                <span style="font-size:14px;font-weight:800;color:${color};">${item.score}/100</span>
+            </div>
+            <div style="font-size:12.5px;color:${color};font-weight:700;margin-bottom:6px;">${escapeHtml(item.verdict)} · Root ${item.single_number} (${escapeHtml(item.planet)}) · Compound ${item.compound_number}</div>
+            <div style="font-size:12.5px;color:#e2e8f0;line-height:1.5;margin-bottom:8px;">${escapeHtml(item.meaning)}</div>
+            <div style="font-size:12px;color:#fef3c7;background:rgba(212,175,55,0.1);border-left:3px solid #eab308;padding:8px 10px;border-radius:4px;">
+                <strong>Vastu / Vedic Remedy:</strong> ${escapeHtml(item.remedy)}
+            </div>
+        </div>
+    `;
+}
+
+function renderPropertyVehicleResults(d) {
+    const el = document.getElementById('pv-results-container');
+    if (!el || !d) return;
+    el.innerHTML = `
+        <div style="background:linear-gradient(90deg, rgba(139,92,246,0.25), rgba(212,175,55,0.18));border:1px solid rgba(212,175,55,0.45);border-radius:12px;padding:14px 16px;margin-bottom:14px;">
+            <div style="font-size:15px;font-weight:700;color:#fde68a;">Owner Chart: Basic ${d.owner_basic} (${escapeHtml(d.owner_basic_planet)}) · Destiny ${d.owner_destiny} (${escapeHtml(d.owner_destiny_planet)})</div>
+            <div style="font-size:12.5px;color:#e2e8f0;margin-top:4px;">Most Auspicious Numbers for Owner: <strong>${(d.lucky_numbers || []).join(', ')}</strong></div>
+        </div>
+        <div class="resp-grid-2" style="gap:14px;">
+            ${renderPropertyVehicleCard(d.house, d.property_type || 'Property')}
+            ${renderPropertyVehicleCard(d.vehicle, 'Vehicle')}
         </div>
     `;
 }

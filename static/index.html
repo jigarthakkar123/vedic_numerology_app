@@ -106,9 +106,14 @@
 
                         <!-- Action Buttons Stack -->
                         <div class="action-buttons-stack">
-                            <button type="submit" id="btn-calculate" class="btn btn-primary btn-touch">
-                                <span class="btn-icon">🔮</span> Calculate & Analyze Chart
-                            </button>
+                            <div style="display:flex;gap:8px;">
+                                <button type="submit" id="btn-calculate" class="btn btn-primary btn-touch" style="flex:1;">
+                                    <span class="btn-icon">🔮</span> Calculate & Analyze Chart
+                                </button>
+                                <button type="button" id="btn-save-client" class="btn btn-secondary btn-touch" title="Save client to directory" style="white-space:nowrap;padding:0 12px;">
+                                    💾 Save
+                                </button>
+                            </div>
 
                             <div class="pdf-actions-header">1-Click PDF Generation</div>
                             <div class="pdf-btn-grid">
@@ -127,6 +132,21 @@
                             </button>
                         </div>
                     </form>
+                </div>
+
+                <!-- Saved Client Directory Box -->
+                <div class="card recent-reports-card" id="saved-clients-card" style="margin-bottom:14px;">
+                    <div class="panel-header-mini">
+                        <div class="hdr-left">
+                            <span class="icon">👥</span>
+                            <h3>Saved Client Directory</h3>
+                        </div>
+                        <button id="btn-refresh-clients" class="btn-icon-mini" title="Refresh">↻</button>
+                    </div>
+                    <input type="text" id="saved-clients-search" placeholder="Search saved clients by name or phone..." style="width:100%;margin-bottom:8px;padding:7px 10px;font-size:12px;">
+                    <div id="saved-clients-list" class="reports-list" style="max-height:190px;overflow-y:auto;">
+                        <div class="empty-state">No saved clients yet. Click 💾 Save above to add.</div>
+                    </div>
                 </div>
 
                 <!-- Recent Generated Reports Box -->
@@ -203,6 +223,8 @@
                             <button class="tab-btn" data-tab="tab-mobile" id="tab-btn-mobile">Mobile &amp; DOB</button>
                             <button class="tab-btn" data-tab="tab-matchmaking" id="tab-btn-matchmaking">Match Making</button>
                             <button class="tab-btn" data-tab="tab-business" id="tab-btn-business">Business Partnership</button>
+                            <button class="tab-btn" data-tab="tab-baby" id="tab-btn-baby">Baby Names</button>
+                            <button class="tab-btn" data-tab="tab-propveh" id="tab-btn-propveh">House &amp; Vehicle</button>
                             <button class="tab-btn" data-tab="tab-crm" id="tab-btn-crm">Client Orders &amp; CRM</button>
                         </nav>
                     </div>
@@ -762,6 +784,84 @@
                             <button type="button" class="btn-secondary mob-pdf-btn" data-lang="gu" style="padding: 10px 14px; white-space: nowrap;">📄 ગુજરાતી PDF</button>
                         </div>
                         <div id="mob-results-container"></div>
+                    </div>
+
+                    <!-- Tab: Baby Name Numerology Generator -->
+                    <div id="tab-baby" class="tab-content">
+                        <div class="section-header-line">
+                            <h3>👶 Baby Name Numerology Generator</h3>
+                            <p class="section-subtitle">Generate auspicious gender-matched baby names aligned with the newborn's Vedic Basic &amp; Destiny numbers, plus 1-click trilingual PDF.</p>
+                        </div>
+
+                        <div class="resp-grid-4" style="margin-bottom: 14px;">
+                            <div class="form-group">
+                                <label for="baby-dob">Baby Date of Birth</label>
+                                <input type="date" id="baby-dob" value="2025-05-14" style="width:100%;">
+                            </div>
+                            <div class="form-group">
+                                <label for="baby-surname">Family Surname (Optional)</label>
+                                <input type="text" id="baby-surname" placeholder="e.g. Sharma, Patel" style="width:100%;">
+                            </div>
+                            <div class="form-group">
+                                <label for="baby-gender">Gender</label>
+                                <select id="baby-gender" style="width:100%;">
+                                    <option value="Male">Boy (Male)</option>
+                                    <option value="Female">Girl (Female)</option>
+                                    <option value="Unisex">Both / Unisex</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="baby-alpha">Starting Letter (Optional)</label>
+                                <input type="text" id="baby-alpha" maxlength="1" placeholder="e.g. A, R, K" style="width:100%;text-transform:uppercase;">
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 16px;">
+                            <button type="button" id="btn-baby-analyze" class="btn-primary" style="flex: 1 1 220px;">👶 Suggest Lucky Baby Names</button>
+                            <button type="button" class="btn-secondary baby-pdf-btn" data-lang="en" style="padding: 10px 14px; white-space: nowrap;">📄 English PDF</button>
+                            <button type="button" class="btn-secondary baby-pdf-btn" data-lang="hi" style="padding: 10px 14px; white-space: nowrap;">📄 हिन्दी PDF</button>
+                            <button type="button" class="btn-secondary baby-pdf-btn" data-lang="gu" style="padding: 10px 14px; white-space: nowrap;">📄 ગુજરાતી PDF</button>
+                        </div>
+                        <div id="baby-results-container"></div>
+                    </div>
+
+                    <!-- Tab: House, Shop & Vehicle Number Checker -->
+                    <div id="tab-propveh" class="tab-content">
+                        <div class="section-header-line">
+                            <h3>🏠 House, Shop &amp; Vehicle Number Checker</h3>
+                            <p class="section-subtitle">Evaluate Flat/House/Office numbers and Vehicle registration plates against the owner's Birth Chart with Vastu/Vedic remedies &amp; 1-click trilingual PDF.</p>
+                        </div>
+
+                        <div class="resp-grid-4" style="margin-bottom: 14px;">
+                            <div class="form-group">
+                                <label for="pv-dob">Owner Date of Birth</label>
+                                <input type="date" id="pv-dob" value="1982-12-19" style="width:100%;">
+                            </div>
+                            <div class="form-group">
+                                <label for="pv-prop-type">Property Type</label>
+                                <select id="pv-prop-type" style="width:100%;">
+                                    <option value="Home / Flat">Home / Flat</option>
+                                    <option value="Shop / Office">Shop / Office</option>
+                                    <option value="Plot / Villa">Plot / Villa</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="pv-house">House / Flat / Shop Number</label>
+                                <input type="text" id="pv-house" placeholder="e.g. A-402, 108" value="A-402" style="width:100%;">
+                            </div>
+                            <div class="form-group">
+                                <label for="pv-vehicle">Vehicle Number</label>
+                                <input type="text" id="pv-vehicle" placeholder="e.g. GJ01AB1234" value="GJ01AB1234" style="width:100%;text-transform:uppercase;">
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 16px;">
+                            <button type="button" id="btn-pv-analyze" class="btn-primary" style="flex: 1 1 220px;">🏠 Analyze House &amp; Vehicle Numbers</button>
+                            <button type="button" class="btn-secondary pv-pdf-btn" data-lang="en" style="padding: 10px 14px; white-space: nowrap;">📄 English PDF</button>
+                            <button type="button" class="btn-secondary pv-pdf-btn" data-lang="hi" style="padding: 10px 14px; white-space: nowrap;">📄 हिन्दी PDF</button>
+                            <button type="button" class="btn-secondary pv-pdf-btn" data-lang="gu" style="padding: 10px 14px; white-space: nowrap;">📄 ગુજરાતી PDF</button>
+                        </div>
+                        <div id="pv-results-container"></div>
                     </div>
                 </div>
             </section>

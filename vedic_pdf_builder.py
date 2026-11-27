@@ -3422,6 +3422,271 @@ body {{ margin: 0; font-family: {body_font}; color: #1e293b; font-size: 11px; li
 </html>"""
 
 
+def build_baby_name_report_html(d: Dict[str, Any], lang: str = "en") -> str:
+    """Generates a clean trilingual (EN/HI/GU) Baby Name Numerology Report."""
+    lang = lang if lang in ("en", "hi", "gu") else "en"
+    BL = {
+        "en": {
+            "kicker": "Vedic & Chaldean Numerology",
+            "title": "Baby Name Numerology Report",
+            "prepared_by": "Prepared by",
+            "dob": "Baby DOB:",
+            "gender": "Gender:",
+            "bn": "Basic Number",
+            "dn": "Destiny Number",
+            "targets": "Best Lucky Namanks",
+            "alpha": "Alphabet Filter:",
+            "sub": "Gender-matched auspicious baby names aligned with the child's Basic & Destiny numbers.",
+            "none": "No matching curated names found for the selected filter.",
+            "disclaimer": "Disclaimer: Prepared using Vedic & Chaldean numerology for guidance.",
+        },
+        "hi": {
+            "kicker": "वैदिक एवं कैल्डियन अंकशास्त्र",
+            "title": "शिशु नामकरण अंकशास्त्र रिपोर्ट",
+            "prepared_by": "द्वारा तैयार:",
+            "dob": "जन्मतिथि:",
+            "gender": "लिंग:",
+            "bn": "मूलांक",
+            "dn": "भाग्यांक",
+            "targets": "शुभ नामांक",
+            "alpha": "अक्षर:",
+            "sub": "शिशु के मूलांक और भाग्यांक के अनुरूप शुभ नामों की सूची।",
+            "none": "चयनित अक्षर के लिए कोई नाम नहीं मिला।",
+            "disclaimer": "अस्वीकरण: वैदिक एवं कैल्डियन अंकशास्त्र मार्गदर्शन के लिए है।",
+        },
+        "gu": {
+            "kicker": "વૈદિક અને કેલ્ડિયન અંકશાસ્ત્ર",
+            "title": "શિશુ નામકરણ અંકશાસ્ત્ર રિપોર્ટ",
+            "prepared_by": "દ્વારા તૈયાર:",
+            "dob": "જન્મતારીખ:",
+            "gender": "જાતિ:",
+            "bn": "મૂળાંક",
+            "dn": "ભાગ્યાંક",
+            "targets": "શુભ નામાંક",
+            "alpha": "અક્ષર:",
+            "sub": "શિશુના મૂળાંક અને ભાગ્યાંકને અનુરૂપ શુભ નામોની યાદી.",
+            "none": "પસંદ કરેલ અક્ષર માટે કોઈ નામ મળ્યા નથી.",
+            "disclaimer": "અસ્વીકરણ: વૈદિક અને કેલ્ડિયન અંકશાસ્ત્ર માર્ગદર્શન માટે છે.",
+        },
+    }[lang]
+
+    google_fonts = "https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@400;600;700&display=swap"
+    if lang == "hi":
+        google_fonts += "&family=Noto+Sans+Devanagari:wght@400;600;700"
+        body_font = "'Noto Sans Devanagari', 'Source Sans 3', sans-serif"
+        serif_font = "'Noto Sans Devanagari', 'Libre Baskerville', serif"
+    elif lang == "gu":
+        google_fonts += "&family=Noto+Sans+Gujarati:wght@400;600;700"
+        body_font = "'Noto Sans Gujarati', 'Source Sans 3', sans-serif"
+        serif_font = "'Noto Sans Gujarati', 'Libre Baskerville', serif"
+    else:
+        body_font = "'Source Sans 3', sans-serif"
+        serif_font = "'Libre Baskerville', serif"
+
+    cards = "".join(
+        f'<div class="bcard {"bcard-best" if s["is_best"] else ""}">'
+        f'<div class="bname">{s["full_name"]} {"★" if s["is_best"] else ""}</div>'
+        f'<div class="sub-muted">{s["compound"]} → <strong>{s["namank"]}</strong> · {s["planet"]}</div>'
+        f'</div>'
+        for s in d.get("suggestions", [])
+    ) or f'<div class="sub-muted">{BL["none"]}</div>'
+
+    return f"""<!DOCTYPE html>
+<html lang="{lang}">
+<head>
+<meta charset="UTF-8">
+<title>Jigar Thakkar - {BL["title"]}</title>
+<link href="{google_fonts}" rel="stylesheet">
+<style>
+@page {{ size: A4 portrait; margin: 12mm; }}
+* {{ box-sizing: border-box; }}
+body {{ margin: 0; font-family: {body_font}; color: #1e293b; font-size: 11px; line-height: 1.45; -webkit-print-color-adjust: exact; print-color-adjust: exact; }}
+.sheet {{ border: 1px solid #e2e8f0; border-radius: 14px; padding: 18px 20px; background: #fff; }}
+.mm-head {{ display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 2px solid; border-image: linear-gradient(90deg, #7c3aed, #f59e0b) 1; margin-bottom: 12px; }}
+.mm-brand {{ font-family: {serif_font}; font-size: 15px; font-weight: 700; color: #0f172a; }}
+.mm-rtitle {{ text-align: right; font-size: 10px; color: #64748b; }}
+.mm-rtitle strong {{ display: block; font-family: {serif_font}; font-size: 13px; color: #0f172a; }}
+.sub-muted {{ font-size: 10px; color: #64748b; }}
+.sum-row {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0; }}
+.sum-box {{ background: #f8f7ff; border: 1px solid #ede9fe; border-radius: 8px; padding: 8px 12px; }}
+.sum-box span {{ display: block; font-size: 9.5px; color: #64748b; }}
+.sum-box strong {{ font-family: {serif_font}; font-size: 16px; color: #7c3aed; }}
+.bgrid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }}
+.bcard {{ border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 10px; background: #f8fafc; }}
+.bcard-best {{ border-color: #eab308; background: #fefce8; }}
+.bname {{ font-family: {serif_font}; font-size: 12.5px; font-weight: 700; color: #0f172a; }}
+.mm-foot {{ text-align: center; font-size: 9px; color: #64748b; margin-top: 14px; }}
+</style>
+</head>
+<body>
+<div class="sheet">
+    <div class="mm-head">
+        <div>
+            <div class="mm-brand">{BL["prepared_by"]} Jigar Thakkar</div>
+            <div class="sub-muted">Certified Vedic Numerologist &amp; Vastu Consultant · +91 9377614772 · jigar93776@gmail.com</div>
+        </div>
+        <div class="mm-rtitle">{BL["kicker"]} <strong>{BL["title"]}</strong></div>
+    </div>
+    <div><strong>{BL["dob"]}</strong> {d["dob"]} · <strong>{BL["gender"]}</strong> {d["gender"]} · <strong>{BL["alpha"]}</strong> {d["alphabet_filter"]}</div>
+    <div class="sum-row">
+        <div class="sum-box"><span>{BL["bn"]}</span><strong>{d["bn"]}</strong></div>
+        <div class="sum-box"><span>{BL["dn"]}</span><strong>{d["dn"]}</strong></div>
+        <div class="sum-box"><span>{BL["targets"]}</span><strong>{", ".join(str(x) for x in d["best_targets"])}</strong></div>
+    </div>
+    <p class="sub-muted">{BL["sub"]}</p>
+    <div class="bgrid">{cards}</div>
+    <div class="mm-foot">
+        <div>{BL["disclaimer"]}</div>
+        <div style="margin-top:3px;">{BL["prepared_by"]} Jigar Thakkar · +91 9377614772 · jigar93776@gmail.com</div>
+    </div>
+</div>
+</body>
+</html>"""
+
+
+def build_property_vehicle_report_html(d: Dict[str, Any], lang: str = "en") -> str:
+    """Generates a clean trilingual (EN/HI/GU) House/Shop & Vehicle Numerology Report."""
+    lang = lang if lang in ("en", "hi", "gu") else "en"
+    PL = {
+        "en": {
+            "kicker": "Vedic & Vastu Numerology",
+            "title": "House / Shop & Vehicle Numerology Report",
+            "prepared_by": "Prepared by",
+            "dob": "Owner DOB:",
+            "bn": "Basic Number",
+            "dn": "Destiny Number",
+            "best": "Best Lucky Numbers",
+            "house_lbl": "Property / House / Shop Number",
+            "veh_lbl": "Vehicle Registration Number",
+            "sum": "Total Sum",
+            "root": "Root",
+            "meaning": "Energy & Vastu Meaning:",
+            "remedy": "Practical Remedy / Tip:",
+            "disclaimer": "Disclaimer: Prepared using Vedic numerology for guidance.",
+        },
+        "hi": {
+            "kicker": "वैदिक एवं वास्तु अंकशास्त्र",
+            "title": "घर / दुकान एवं वाहन अंकशास्त्र रिपोर्ट",
+            "prepared_by": "द्वारा तैयार:",
+            "dob": "मालिक की जन्मतिथि:",
+            "bn": "मूलांक",
+            "dn": "भाग्यांक",
+            "best": "शुभ अंक",
+            "house_lbl": "घर / फ्लैट / दुकान नंबर",
+            "veh_lbl": "वाहन नंबर",
+            "sum": "कुल योग",
+            "root": "मूलांक",
+            "meaning": "ऊर्जा एवं वास्तु प्रभाव:",
+            "remedy": "सरल उपाय / सुझाव:",
+            "disclaimer": "अस्वीकरण: वैदिक अंकशास्त्र मार्गदर्शन के लिए है।",
+        },
+        "gu": {
+            "kicker": "વૈદિક અને વાસ્તુ અંકશાસ્ત્ર",
+            "title": "ઘર / દુકાન અને વાહન અંકશાસ્ત્ર રિપોર્ટ",
+            "prepared_by": "દ્વારા તૈયાર:",
+            "dob": "માલિકની જન્મતારીખ:",
+            "bn": "મૂળાંક",
+            "dn": "ભાગ્યાંક",
+            "best": "શુભ અંકો",
+            "house_lbl": "ઘર / ફ્લેટ / દુકાન નંબર",
+            "veh_lbl": "વાહન નંબર",
+            "sum": "કુલ સરવાળો",
+            "root": "મૂળાંક",
+            "meaning": "ઊર્જા અને વાસ્તુ પ્રભાવ:",
+            "remedy": "સરળ ઉપાય / સૂચન:",
+            "disclaimer": "અસ્વીકરણ: વૈદિક અંકશાસ્ત્ર માર્ગદર્શન માટે છે.",
+        },
+    }[lang]
+
+    google_fonts = "https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@400;600;700&display=swap"
+    if lang == "hi":
+        google_fonts += "&family=Noto+Sans+Devanagari:wght@400;600;700"
+        body_font = "'Noto Sans Devanagari', 'Source Sans 3', sans-serif"
+        serif_font = "'Noto Sans Devanagari', 'Libre Baskerville', serif"
+    elif lang == "gu":
+        google_fonts += "&family=Noto+Sans+Gujarati:wght@400;600;700"
+        body_font = "'Noto Sans Gujarati', 'Source Sans 3', sans-serif"
+        serif_font = "'Noto Sans Gujarati', 'Libre Baskerville', serif"
+    else:
+        body_font = "'Source Sans 3', sans-serif"
+        serif_font = "'Libre Baskerville', serif"
+
+    def _item_card(item: Optional[Dict[str, Any]], label: str) -> str:
+        if not item:
+            return ""
+        col = "#15803d" if item["status"] == "auspicious" else ("#d97706" if item["status"] == "neutral" else "#b91c1c")
+        bg = "#f0fdf4" if item["status"] == "auspicious" else ("#fffbeb" if item["status"] == "neutral" else "#fef2f2")
+        return f"""
+        <div class="pcard" style="background:{bg};border-color:{col};">
+            <div class="ptop">
+                <div>
+                    <div class="kicker">{label}</div>
+                    <div class="pnum">{item["raw"]}</div>
+                    <div class="sub-muted">{PL["sum"]}: {item["compound"]} → <strong>{PL["root"]}: {item["root"]}</strong> · {item["planet"]}</div>
+                </div>
+                <div style="text-align:right;">
+                    <div class="pscore" style="color:{col};">{item["score"]}/100</div>
+                    <div style="font-size:10.5px;font-weight:700;color:{col};">{item["verdict"]}</div>
+                </div>
+            </div>
+            <div style="margin-top:8px;"><strong>{PL["meaning"]}</strong> {item["meaning"]}</div>
+            <div style="margin-top:4px;"><strong>{PL["remedy"]}</strong> {item["remedy"]}</div>
+        </div>"""
+
+    return f"""<!DOCTYPE html>
+<html lang="{lang}">
+<head>
+<meta charset="UTF-8">
+<title>Jigar Thakkar - {PL["title"]}</title>
+<link href="{google_fonts}" rel="stylesheet">
+<style>
+@page {{ size: A4 portrait; margin: 12mm; }}
+* {{ box-sizing: border-box; }}
+body {{ margin: 0; font-family: {body_font}; color: #1e293b; font-size: 11px; line-height: 1.45; -webkit-print-color-adjust: exact; print-color-adjust: exact; }}
+.sheet {{ border: 1px solid #e2e8f0; border-radius: 14px; padding: 18px 20px; background: #fff; }}
+.mm-head {{ display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 2px solid; border-image: linear-gradient(90deg, #7c3aed, #f59e0b) 1; margin-bottom: 12px; }}
+.mm-brand {{ font-family: {serif_font}; font-size: 15px; font-weight: 700; color: #0f172a; }}
+.mm-rtitle {{ text-align: right; font-size: 10px; color: #64748b; }}
+.mm-rtitle strong {{ display: block; font-family: {serif_font}; font-size: 13px; color: #0f172a; }}
+.kicker {{ font-family: {serif_font}; font-style: italic; font-size: 10.5px; color: #7c3aed; }}
+.sub-muted {{ font-size: 10px; color: #64748b; }}
+.sum-row {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0; }}
+.sum-box {{ background: #f8f7ff; border: 1px solid #ede9fe; border-radius: 8px; padding: 8px 12px; }}
+.sum-box span {{ display: block; font-size: 9.5px; color: #64748b; }}
+.sum-box strong {{ font-family: {serif_font}; font-size: 16px; color: #7c3aed; }}
+.pcard {{ border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }}
+.ptop {{ display: flex; justify-content: space-between; align-items: center; }}
+.pnum {{ font-family: monospace; font-size: 19px; font-weight: 700; color: #0f172a; }}
+.pscore {{ font-family: {serif_font}; font-size: 22px; font-weight: 700; line-height: 1; }}
+.mm-foot {{ text-align: center; font-size: 9px; color: #64748b; margin-top: 14px; }}
+</style>
+</head>
+<body>
+<div class="sheet">
+    <div class="mm-head">
+        <div>
+            <div class="mm-brand">{PL["prepared_by"]} Jigar Thakkar</div>
+            <div class="sub-muted">Certified Vedic Numerologist &amp; Vastu Consultant · +91 9377614772 · jigar93776@gmail.com</div>
+        </div>
+        <div class="mm-rtitle">{PL["kicker"]} <strong>{PL["title"]}</strong></div>
+    </div>
+    <div><strong>{PL["dob"]}</strong> {d["dob"]} ({d["property_type"]})</div>
+    <div class="sum-row">
+        <div class="sum-box"><span>{PL["bn"]}</span><strong>{d["bn"]}</strong></div>
+        <div class="sum-box"><span>{PL["dn"]}</span><strong>{d["dn"]}</strong></div>
+        <div class="sum-box"><span>{PL["best"]}</span><strong>{", ".join(str(x) for x in d["best_numbers"])}</strong></div>
+    </div>
+    {_item_card(d.get("house"), PL["house_lbl"])}
+    {_item_card(d.get("vehicle"), PL["veh_lbl"])}
+    <div class="mm-foot">
+        <div>{PL["disclaimer"]}</div>
+        <div style="margin-top:3px;">{PL["prepared_by"]} Jigar Thakkar · +91 9377614772 · jigar93776@gmail.com</div>
+    </div>
+</div>
+</body>
+</html>"""
+
+
 def render_pdf_from_html(html_content_or_path: str, output_pdf_path: str) -> bool:
     """
     Renders an HTML string or file to PDF using headless Chrome/Edge.
