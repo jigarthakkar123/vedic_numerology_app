@@ -121,10 +121,36 @@ def init_db():
                 status TEXT DEFAULT 'active',
                 pdf_quota INTEGER DEFAULT -1,
                 pdf_count INTEGER DEFAULT 0,
+                start_date TEXT DEFAULT '',
+                end_date TEXT DEFAULT '',
+                allowed_modules TEXT DEFAULT 'grid,name,mobile,matchmaking,business,baby,propveh',
                 created_at TEXT NOT NULL,
                 updated_at TEXT NOT NULL
             )
         """)
+        for col_sql in (
+            "ALTER TABLE tenants ADD COLUMN start_date TEXT DEFAULT ''",
+            "ALTER TABLE tenants ADD COLUMN end_date TEXT DEFAULT ''",
+            "ALTER TABLE tenants ADD COLUMN allowed_modules TEXT DEFAULT 'grid,name,mobile,matchmaking,business,baby,propveh'",
+        ):
+            try:
+                cursor.execute(col_sql)
+            except Exception:
+                pass
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS report_logs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                tenant_slug TEXT DEFAULT 'default',
+                module_key TEXT NOT NULL,
+                report_type TEXT NOT NULL,
+                client_name TEXT DEFAULT '',
+                lang TEXT DEFAULT 'en',
+                pdf_filename TEXT NOT NULL,
+                created_at TEXT NOT NULL
+            )
+        """)
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_rlogs_tenant ON report_logs(tenant_slug)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_rlogs_created ON report_logs(created_at)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_tenants_slug ON tenants(slug)")
         cursor.execute("SELECT 1 FROM tenants WHERE slug = 'default'")
         if not cursor.fetchone():
@@ -517,9 +543,47 @@ def list_tenants() -> List[Dict[str, Any]]:
         return [dict(r) for r in cursor.fetchall()]
 
 
+ALL_MODULES = ["grid", "name", "mobile", "matchmaking", "business", "baby", "propveh"]
+PLAN_DEFAULT_MODULES = {
+    "Starter": ["grid"],
+    "Pro": ["grid", "name", "mobile", "baby", "propveh"],
+    "Unlimited": ALL_MODULES,
+    "Master": ALL_MODULES,
+    "Demo": ALL_MODULES,
+}
+
+
+def _normalize_modules(val: Any, plan_name: str = "Unlimited") -> str:
+    if val is None or val == "":
+        mods = PLAN_DEFAULT_MODULES.get(plan_name, ALL_MODULES)
+    elif isinstance(val, list):
+        mods = [str(m).strip().lower() for m in val if str(m).strip().lower() in ALL_MODULES]
+    else:
+        mods = [m.strip().lower() for m in str(val).split(",") if m.strip().lower() in ALL_MODULES]
+    if not mods:
+        mods = ["grid"]
+    return ",".join(dict.fromkeys(mods))
+
+
+def is_tenant_expired(tenant: Optional[Dict[str, Any]]) -> bool:
+    """Returns True if a tenant subscription end_date has passed."""
+    if not tenant:
+        return False
+    slug = (tenant.get("slug") or "default").lower()
+    if slug in ("default", "demo"):
+        return False
+    end_d = (tenant.get("end_date") or "").strip()
+    if not end_d:
+        return False
+    today_s = datetime.now().strftime("%Y-%m-%d")
+    return today_s > end_d
+
+
 def create_tenant(data: Dict[str, Any]) -> Dict[str, Any]:
-    """Creates a new white-label numerologist tenant account."""
-    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    """Creates a new white-label numerologist tenant account with subscription dates & module access."""
+    from datetime import timedelta
+    now_dt = datetime.now()
+    now = now_dt.strftime("%Y-%m-%d %H:%M:%S")
     slug = _sanitize_slug(data.get("slug") or data.get("consultant_name") or "")
     consultant_name = (data.get("consultant_name") or "").strip()
     brand_name = (data.get("brand_name") or f"{consultant_name}'s Vedic Numerology Studio").strip()
@@ -528,13 +592,16 @@ def create_tenant(data: Dict[str, Any]) -> Dict[str, Any]:
     subtitle = (data.get("subtitle") or "Certified Vedic Numerologist & Vastu Consultant").strip()
     phone = (data.get("phone") or "").strip()
     email = (data.get("email") or "").strip()
-    copyright_text = (data.get("copyright_text") or f"© {datetime.now().year} {consultant_name} · All Rights Reserved").strip()
+    copyright_text = (data.get("copyright_text") or f"© {now_dt.year} {consultant_name} · All Rights Reserved").strip()
     logo_url = (data.get("logo_url") or "").strip()
     accent_color = (data.get("accent_color") or "#7c3aed").strip()
     access_pin = (data.get("access_pin") or "1234").strip()
-    plan_name = (data.get("plan_name") or "Pro").strip()
+    plan_name = (data.get("plan_name") or "Unlimited").strip()
     status = (data.get("status") or "active").strip()
     pdf_quota = int(data.get("pdf_quota") if data.get("pdf_quota") is not None else -1)
+    start_date = (data.get("start_date") or now_dt.strftime("%Y-%m-%d")).strip()
+    end_date = (data.get("end_date") or (now_dt + timedelta(days=365)).strftime("%Y-%m-%d")).strip()
+    allowed_modules = _normalize_modules(data.get("allowed_modules"), plan_name)
 
     with get_connection() as conn:
         cursor = conn.cursor()
@@ -545,12 +612,13 @@ def create_tenant(data: Dict[str, Any]) -> Dict[str, Any]:
             INSERT INTO tenants (
                 slug, brand_name, consultant_name, subtitle, phone, email,
                 copyright_text, logo_url, accent_color, access_pin, plan_name,
-                status, pdf_quota, pdf_count, created_at, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)
+                status, pdf_quota, pdf_count, start_date, end_date, allowed_modules,
+                created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?)
         """, (
             slug, brand_name, consultant_name, subtitle, phone, email,
             copyright_text, logo_url, accent_color, access_pin, plan_name,
-            status, pdf_quota, now, now
+            status, pdf_quota, start_date, end_date, allowed_modules, now, now
         ))
         conn.commit()
         return get_tenant_by_slug(slug)
@@ -566,14 +634,19 @@ def update_tenant(slug: str, data: Dict[str, Any]) -> Dict[str, Any]:
     fields = [
         "brand_name", "consultant_name", "subtitle", "phone", "email",
         "copyright_text", "logo_url", "accent_color", "access_pin",
-        "plan_name", "status", "pdf_quota"
+        "plan_name", "status", "pdf_quota", "start_date", "end_date", "allowed_modules"
     ]
     updates = []
     params = []
     for f in fields:
         if f in data and data[f] is not None:
             updates.append(f"{f} = ?")
-            params.append(int(data[f]) if f == "pdf_quota" else str(data[f]).strip())
+            if f == "pdf_quota":
+                params.append(int(data[f]))
+            elif f == "allowed_modules":
+                params.append(_normalize_modules(data[f], data.get("plan_name") or existing.get("plan_name", "Unlimited")))
+            else:
+                params.append(str(data[f]).strip())
     if not updates:
         return existing
     updates.append("updated_at = ?")
@@ -587,10 +660,10 @@ def update_tenant(slug: str, data: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def delete_tenant(slug: str) -> bool:
-    """Deletes a white-label tenant (cannot delete 'default')."""
+    """Deletes a white-label tenant (cannot delete 'default' or 'demo')."""
     s = (slug or "").strip().lower()
-    if s == "default":
-        raise ValueError("Cannot delete the default master tenant.")
+    if s in ("default", "demo"):
+        raise ValueError("Cannot delete the default or demo tenant.")
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("DELETE FROM tenants WHERE slug = ?", (s,))
@@ -609,6 +682,52 @@ def increment_tenant_pdf_count(slug: str) -> None:
             (now, s)
         )
         conn.commit()
+
+
+def log_report_generation(
+    tenant_slug: str,
+    module_key: str,
+    report_type: str,
+    client_name: str,
+    lang: str,
+    pdf_filename: str,
+) -> None:
+    """Records every generated PDF report in report_logs for full SaaS & Master auditability."""
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO report_logs (
+                tenant_slug, module_key, report_type, client_name, lang, pdf_filename, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (
+            (tenant_slug or "default").strip().lower() or "default",
+            (module_key or "grid").strip().lower(),
+            (report_type or "Report").strip(),
+            (client_name or "").strip(),
+            (lang or "en").strip().lower(),
+            (pdf_filename or "").strip(),
+            now,
+        ))
+        conn.commit()
+
+
+def list_report_logs(tenant_slug: str = "", limit: int = 150) -> List[Dict[str, Any]]:
+    """Lists generated PDF report audit logs (optionally filtered by tenant_slug)."""
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        s = (tenant_slug or "").strip().lower()
+        if s:
+            cursor.execute(
+                "SELECT * FROM report_logs WHERE tenant_slug = ? ORDER BY id DESC LIMIT ?",
+                (s, limit)
+            )
+        else:
+            cursor.execute(
+                "SELECT * FROM report_logs ORDER BY id DESC LIMIT ?",
+                (limit,)
+            )
+        return [dict(r) for r in cursor.fetchall()]
 
 
 # Automatically initialize table on import

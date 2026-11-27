@@ -89,12 +89,26 @@
                     <label>Plan &amp; PDF Quota (-1 = Unlimited)</label>
                     <div style="display:flex;gap:6px;">
                         <select id="t-plan" style="flex:1;">
-                            <option value="Starter">Starter</option>
-                            <option value="Pro" selected>Pro</option>
-                            <option value="Unlimited">Unlimited</option>
+                            <option value="Starter">Starter (Grid)</option>
+                            <option value="Pro">Pro (5 Modules)</option>
+                            <option value="Unlimited" selected>Unlimited (All 7)</option>
                         </select>
                         <input type="number" id="t-quota" value="-1" style="width:90px;" title="-1 for Unlimited">
                     </div>
+                </div>
+                <div><label>Subscription Start Date</label><input type="date" id="t-start" required></div>
+                <div><label>Subscription End Date (Auto-Expire)</label><input type="date" id="t-end" required></div>
+            </div>
+            <div style="margin-top:12px;">
+                <label>Enabled Modules (Auto-selected by Plan, or customize)</label>
+                <div style="display:flex;flex-wrap:wrap;gap:10px;padding:10px;background:#0b1120;border:1px solid rgba(255,255,255,0.12);border-radius:8px;font-size:12.5px;">
+                    <label style="display:inline-flex;align-items:center;gap:5px;margin:0;color:#f8fafc;cursor:pointer;"><input type="checkbox" class="mod-cb" value="grid" checked style="width:auto;"> Grid &amp; Full Reports</label>
+                    <label style="display:inline-flex;align-items:center;gap:5px;margin:0;color:#f8fafc;cursor:pointer;"><input type="checkbox" class="mod-cb" value="name" checked style="width:auto;"> Name Correction</label>
+                    <label style="display:inline-flex;align-items:center;gap:5px;margin:0;color:#f8fafc;cursor:pointer;"><input type="checkbox" class="mod-cb" value="mobile" checked style="width:auto;"> Mobile &amp; DOB</label>
+                    <label style="display:inline-flex;align-items:center;gap:5px;margin:0;color:#f8fafc;cursor:pointer;"><input type="checkbox" class="mod-cb" value="matchmaking" checked style="width:auto;"> Match Making</label>
+                    <label style="display:inline-flex;align-items:center;gap:5px;margin:0;color:#f8fafc;cursor:pointer;"><input type="checkbox" class="mod-cb" value="business" checked style="width:auto;"> Business Partnership</label>
+                    <label style="display:inline-flex;align-items:center;gap:5px;margin:0;color:#f8fafc;cursor:pointer;"><input type="checkbox" class="mod-cb" value="baby" checked style="width:auto;"> Baby Names</label>
+                    <label style="display:inline-flex;align-items:center;gap:5px;margin:0;color:#f8fafc;cursor:pointer;"><input type="checkbox" class="mod-cb" value="propveh" checked style="width:auto;"> House &amp; Vehicle</label>
                 </div>
             </div>
             <div style="margin-top:14px;">
@@ -112,13 +126,41 @@
                         <th>Consultant &amp; Brand</th>
                         <th>Studio URL</th>
                         <th>PIN</th>
-                        <th>Plan / Quota</th>
+                        <th>Plan &amp; Modules</th>
+                        <th>Subscription</th>
                         <th>PDFs</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="tenants-tbody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+            <h3 style="margin:0;">📊 Report Generation Audit Log (All Users &amp; Tenants)</h3>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <select id="log-tenant-filter" style="width:190px;padding:6px 10px;font-size:12px;">
+                    <option value="">All Workspaces</option>
+                </select>
+                <button type="button" class="btn-sm" onclick="loadReportLogs()">↻ Refresh Logs</button>
+            </div>
+        </div>
+        <div class="table-wrap" style="max-height:340px;overflow-y:auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Generated At</th>
+                        <th>Workspace</th>
+                        <th>Module</th>
+                        <th>Client</th>
+                        <th>Lang</th>
+                        <th>PDF File</th>
+                    </tr>
+                </thead>
+                <tbody id="logs-tbody"></tbody>
             </table>
         </div>
     </div>
@@ -144,6 +186,25 @@ async function adminFetch(url, opts = {}) {
     return fetch(url, { ...opts, headers });
 }
 
+const PLAN_MODULES = {
+    Starter: ['grid'],
+    Pro: ['grid', 'name', 'mobile', 'baby', 'propveh'],
+    Unlimited: ['grid', 'name', 'mobile', 'matchmaking', 'business', 'baby', 'propveh']
+};
+
+function setDefaultDates() {
+    const today = new Date();
+    const nextYr = new Date(today.getTime() + 365 * 86400000);
+    document.getElementById('t-start').value = today.toISOString().slice(0, 10);
+    document.getElementById('t-end').value = nextYr.toISOString().slice(0, 10);
+}
+setDefaultDates();
+
+document.getElementById('t-plan').addEventListener('change', (e) => {
+    const mods = PLAN_MODULES[e.target.value] || PLAN_MODULES.Unlimited;
+    document.querySelectorAll('.mod-cb').forEach(cb => { cb.checked = mods.includes(cb.value); });
+});
+
 async function tryUnlock(pin) {
     const res = await fetch('/api/admin/verify', {
         method: 'POST',
@@ -155,6 +216,7 @@ async function tryUnlock(pin) {
         sessionStorage.setItem('master_admin_pin', pin);
         document.getElementById('lock-screen').style.display = 'none';
         loadTenants();
+        loadReportLogs();
         return true;
     }
     return false;
@@ -195,12 +257,22 @@ async function loadTenants() {
     document.getElementById('kpi-active').textContent = json.stats.active_tenants;
     document.getElementById('kpi-pdfs').textContent = json.stats.total_pdfs_generated;
 
+    const filterSel = document.getElementById('log-tenant-filter');
+    const prevVal = filterSel.value;
+    filterSel.innerHTML = '<option value="">All Workspaces</option>' + (json.tenants || []).map(t => `<option value="${esc(t.slug)}">${esc(t.slug)} (${esc(t.consultant_name)})</option>`).join('');
+    filterSel.value = prevVal;
+
     const tbody = document.getElementById('tenants-tbody');
     tbody.innerHTML = (json.tenants || []).map(t => {
         const urlPath = t.slug === 'default' ? '/studio' : `/t/${t.slug}`;
         const fullUrl = `${window.location.origin}${urlPath}`;
         const quotaLabel = Number(t.pdf_quota) < 0 ? 'Unlimited' : `${t.pdf_quota} PDFs`;
-        const isDefault = t.slug === 'default';
+        const isDefaultOrDemo = t.slug === 'default' || t.slug === 'demo';
+        const mods = (t.allowed_modules || 'grid,name,mobile,matchmaking,business,baby,propveh').split(',').filter(Boolean);
+        const subText = t.end_date ? `${esc(t.start_date || '—')} → ${esc(t.end_date)}` : 'Lifetime';
+        const statusBadge = t.is_expired
+            ? '<span class="badge b-suspended">expired</span>'
+            : `<span class="badge ${t.status === 'active' ? 'b-active' : 'b-suspended'}">${esc(t.status)}</span>`;
         return `
             <tr>
                 <td>
@@ -212,12 +284,14 @@ async function loadTenants() {
                     <a href="${urlPath}" target="_blank" style="color:var(--gold);text-decoration:underline;">${urlPath} ↗</a>
                     <button class="btn-sm" onclick="navigator.clipboard.writeText('${fullUrl}');setMsg('Copied ${fullUrl}');">Copy</button>
                 </td>
-                <td><code>${esc(t.access_pin)}</code></td>
-                <td>${esc(t.plan_name)}<div style="font-size:11px;color:var(--muted);">${quotaLabel}</div></td>
+                <td><code>${esc(t.access_pin || 'None')}</code></td>
+                <td><strong>${esc(t.plan_name)}</strong> (${mods.length}/7)<div style="font-size:11px;color:var(--muted);">${quotaLabel}</div></td>
+                <td style="font-size:11.5px;">${subText}</td>
                 <td><strong>${t.pdf_count || 0}</strong></td>
-                <td><span class="badge ${t.status === 'active' ? 'b-active' : 'b-suspended'}">${esc(t.status)}</span></td>
-                <td>
-                    ${isDefault ? '<span style="font-size:11px;color:var(--muted);">Master Account</span>' : `
+                <td>${statusBadge}</td>
+                <td style="white-space:nowrap;">
+                    ${isDefaultOrDemo ? `<span style="font-size:11px;color:var(--muted);">${t.slug === 'demo' ? 'Public Demo' : 'Master'}</span>` : `
+                        <button class="btn-sm" onclick="renewTenant('${esc(t.slug)}', '${esc(t.end_date || '')}')">+1 Yr</button>
                         <button class="btn-sm" onclick="toggleStatus('${esc(t.slug)}', '${t.status === 'active' ? 'suspended' : 'active'}')">${t.status === 'active' ? 'Suspend' : 'Activate'}</button>
                         <button class="btn-sm btn-danger" onclick="deleteTenant('${esc(t.slug)}')">Delete</button>
                     `}
@@ -227,8 +301,34 @@ async function loadTenants() {
     }).join('');
 }
 
+async function loadReportLogs() {
+    const slug = document.getElementById('log-tenant-filter')?.value || '';
+    const res = await adminFetch(`/api/admin/report-logs?tenant_slug=${encodeURIComponent(slug)}&limit=150`);
+    if (!res.ok) return;
+    const json = await res.json();
+    const tbody = document.getElementById('logs-tbody');
+    const logs = json.logs || [];
+    if (!logs.length) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);">No reports logged yet.</td></tr>';
+        return;
+    }
+    tbody.innerHTML = logs.map(l => `
+        <tr>
+            <td style="font-size:11.5px;color:var(--muted);white-space:nowrap;">${esc(l.created_at)}</td>
+            <td><code>${esc(l.tenant_slug)}</code></td>
+            <td>${esc(l.report_type)}</td>
+            <td>${esc(l.client_name || '—')}</td>
+            <td><strong>${esc((l.lang || 'en').toUpperCase())}</strong></td>
+            <td><a href="/api/download/${encodeURIComponent(l.pdf_filename)}" target="_blank" style="color:var(--gold);text-decoration:underline;font-size:12px;">${esc(l.pdf_filename)} ↗</a></td>
+        </tr>
+    `).join('');
+}
+
+document.getElementById('log-tenant-filter').addEventListener('change', loadReportLogs);
+
 document.getElementById('create-tenant-form').addEventListener('submit', async (e) => {
     e.preventDefault();
+    const selectedMods = Array.from(document.querySelectorAll('.mod-cb:checked')).map(cb => cb.value);
     const payload = {
         consultant_name: document.getElementById('t-consultant').value.trim(),
         brand_name: document.getElementById('t-brand').value.trim(),
@@ -239,7 +339,10 @@ document.getElementById('create-tenant-form').addEventListener('submit', async (
         copyright_text: document.getElementById('t-copy').value.trim(),
         access_pin: document.getElementById('t-pin').value.trim(),
         plan_name: document.getElementById('t-plan').value,
-        pdf_quota: Number(document.getElementById('t-quota').value || -1)
+        pdf_quota: Number(document.getElementById('t-quota').value || -1),
+        start_date: document.getElementById('t-start').value,
+        end_date: document.getElementById('t-end').value,
+        allowed_modules: selectedMods
     };
     const res = await adminFetch('/api/admin/tenants', { method: 'POST', body: JSON.stringify(payload) });
     const json = await res.json();
@@ -247,10 +350,24 @@ document.getElementById('create-tenant-form').addEventListener('submit', async (
         setMsg(json.detail || 'Error creating tenant', true);
         return;
     }
-    setMsg(`Created white-label studio at /t/${json.tenant.slug}!`);
+    setMsg(`Created white-label studio at /t/${json.tenant.slug} (valid ${json.tenant.start_date} to ${json.tenant.end_date})!`);
     e.target.reset();
+    setDefaultDates();
     loadTenants();
 });
+
+async function renewTenant(slug, currentEnd) {
+    const base = currentEnd && currentEnd > new Date().toISOString().slice(0, 10) ? new Date(currentEnd) : new Date();
+    const newEnd = new Date(base.getTime() + 365 * 86400000).toISOString().slice(0, 10);
+    const res = await adminFetch(`/api/admin/tenants/${encodeURIComponent(slug)}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ end_date: newEnd, status: 'active' })
+    });
+    if (res.ok) {
+        setMsg(`Renewed ${slug} until ${newEnd}.`);
+        loadTenants();
+    }
+}
 
 async function toggleStatus(slug, newStatus) {
     const res = await adminFetch(`/api/admin/tenants/${encodeURIComponent(slug)}`, {

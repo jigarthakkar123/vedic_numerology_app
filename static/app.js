@@ -60,12 +60,43 @@ async function initTenantWorkspace(slug) {
             footerCopy.textContent = t.copyright_text;
         }
 
-        if (t.status !== 'active') {
+        if (t.status !== 'active' || t.is_expired) {
             const ov = document.createElement('div');
             ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(6,9,19,0.95);display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;';
-            ov.innerHTML = `<div style="max-width:420px;background:#111827;border:1px solid #ef4444;border-radius:14px;padding:28px;"><h2 style="color:#f87171;margin-top:0;">Workspace Suspended</h2><p style="color:#cbd5e1;font-size:14px;">This white-label studio is currently paused. Please contact the Master Administrator.</p></div>`;
+            const titleTxt = t.is_expired ? 'Subscription Expired' : 'Workspace Suspended';
+            const bodyTxt = t.is_expired
+                ? `Your subscription ended on <strong>${escapeHtml(t.end_date)}</strong>. Please contact Master Admin (+91 9377614772) to renew.`
+                : 'This white-label studio is currently paused. Please contact the Master Administrator.';
+            ov.innerHTML = `<div style="max-width:420px;background:#111827;border:1px solid #ef4444;border-radius:14px;padding:28px;"><h2 style="color:#f87171;margin-top:0;">${titleTxt}</h2><p style="color:#cbd5e1;font-size:14px;">${bodyTxt}</p></div>`;
             document.body.appendChild(ov);
             return;
+        }
+
+        // Enforce plan / custom module permissions in UI
+        const allowedMods = Array.isArray(t.allowed_modules) ? t.allowed_modules : ['grid','name','mobile','matchmaking','business','baby','propveh'];
+        const tabToMod = {
+            'tab-grid': 'grid', 'tab-dasha': 'grid', 'tab-yogas': 'grid', 'tab-predictions': 'grid', 'tab-remedies': 'grid',
+            'tab-name': 'name', 'tab-mobile': 'mobile', 'tab-matchmaking': 'matchmaking',
+            'tab-business': 'business', 'tab-baby': 'baby', 'tab-propveh': 'propveh'
+        };
+        let firstAllowedBtn = null;
+        document.querySelectorAll('.dashboard-tabs .tab-btn[data-tab]').forEach(btn => {
+            const tabId = btn.getAttribute('data-tab');
+            const mod = tabToMod[tabId];
+            if (mod && !allowedMods.includes(mod)) {
+                btn.style.display = 'none';
+            } else if (mod && !firstAllowedBtn) {
+                firstAllowedBtn = btn;
+            }
+        });
+        if (!allowedMods.includes('grid')) {
+            const pdfStack = document.querySelector('.pdf-actions-header');
+            const pdfGrid = document.querySelector('.pdf-btn-grid');
+            const pdfAll = document.getElementById('btn-pdf-all');
+            if (pdfStack) pdfStack.style.display = 'none';
+            if (pdfGrid) pdfGrid.style.display = 'none';
+            if (pdfAll) pdfAll.style.display = 'none';
+            if (firstAllowedBtn) firstAllowedBtn.click();
         }
 
         if (t.requires_pin && sessionStorage.getItem(`tenant_pin_ok_${slug}`) !== '1') {

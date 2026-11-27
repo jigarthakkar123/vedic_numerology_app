@@ -61,8 +61,39 @@ MASTER_ADMIN_PIN = os.environ.get("ADMIN_PIN", "JIGAR2026").strip()
 _current_tenant_var: ContextVar[Optional[dict]] = ContextVar("current_tenant", default=None)
 
 
+def _infer_report_meta(pdf_filename: str):
+    bn = os.path.basename(pdf_filename)
+    low = bn.lower()
+    if low.startswith("vedic_report_"):
+        mod, rtype = "grid", "Full Vedic Report"
+    elif low.startswith("matchmaking_"):
+        mod, rtype = "matchmaking", "Match Making"
+    elif low.startswith("businesspartnership_"):
+        mod, rtype = "business", "Business Partnership"
+    elif low.startswith("namecorrection_"):
+        mod, rtype = "name", "Name Correction"
+    elif low.startswith("mobilecompatibility_"):
+        mod, rtype = "mobile", "Mobile & DOB"
+    elif low.startswith("babynames_"):
+        mod, rtype = "baby", "Baby Names"
+    elif low.startswith("propertyvehicle_"):
+        mod, rtype = "propveh", "House & Vehicle"
+    else:
+        mod, rtype = "other", "Report"
+
+    lang = "en"
+    if "_hi_" in low or "_hindi_" in low:
+        lang = "hi"
+    elif "_gu_" in low or "_gujarati_" in low:
+        lang = "gu"
+
+    parts = bn.rsplit(".", 1)[0].split("_")
+    client_hint = " ".join(parts[2:-3]) if len(parts) > 5 else (parts[1] if len(parts) > 2 else "")
+    return mod, rtype, client_hint, lang
+
+
 def render_pdf_from_html(html_content_or_path: str, output_pdf_path: str) -> bool:
-    """Applies active white-label tenant branding to HTML, updates twin .html, and renders PDF."""
+    """Applies active white-label tenant branding to HTML, updates twin .html, renders PDF, and logs to report_logs."""
     tenant = _current_tenant_var.get()
     content = html_content_or_path
     if not (os.path.exists(content) and os.path.isfile(content)) and tenant and tenant.get("slug") != "default":
@@ -72,11 +103,25 @@ def render_pdf_from_html(html_content_or_path: str, output_pdf_path: str) -> boo
             with open(html_twin, "w", encoding="utf-8") as f:
                 f.write(content)
     ok = _orig_render_pdf_from_html(content, output_pdf_path)
-    if ok and tenant and tenant.get("slug"):
+    if ok:
+        t_slug = (tenant or {}).get("slug", "default")
+        if tenant and t_slug != "default":
+            try:
+                vedic_db.increment_tenant_pdf_count(t_slug)
+            except Exception as e:
+                print(f"[TENANT PDF COUNT WARN] {e}")
         try:
-            vedic_db.increment_tenant_pdf_count(tenant["slug"])
+            mod, rtype, client_hint, lg = _infer_report_meta(output_pdf_path)
+            vedic_db.log_report_generation(
+                tenant_slug=t_slug,
+                module_key=mod,
+                report_type=rtype,
+                client_name=client_hint,
+                lang=lg,
+                pdf_filename=os.path.basename(output_pdf_path),
+            )
         except Exception as e:
-            print(f"[TENANT PDF COUNT WARN] {e}")
+            print(f"[REPORT LOG WARN] {e}")
     return ok
 
 app = FastAPI(
@@ -91,6 +136,25 @@ os.makedirs(STATIC_DIR, exist_ok=True)
 os.makedirs(REPORTS_DIR, exist_ok=True)
 
 
+def _path_to_module_key(path: str) -> Optional[str]:
+    p = (path or "").lower()
+    if p in ("/api/analyze", "/api/generate-pdf", "/api/generate-all-pdfs"):
+        return "grid"
+    if "/api/studio/name-" in p:
+        return "name"
+    if "/api/studio/mobile-" in p:
+        return "mobile"
+    if "/api/matchmaking/" in p:
+        return "matchmaking"
+    if "/api/business-partnership/" in p:
+        return "business"
+    if "/api/studio/baby-names" in p:
+        return "baby"
+    if "/api/studio/property-vehicle" in p:
+        return "propveh"
+    return None
+
+
 @app.middleware("http")
 async def tenant_context_middleware(request: Request, call_next):
     slug = (request.headers.get("x-tenant-slug") or "default").strip().lower() or "default"
@@ -101,6 +165,13 @@ async def tenant_context_middleware(request: Request, call_next):
             return JSONResponse(status_code=404, content={"detail": f"Workspace '{slug}' not found."})
         if tenant.get("status") != "active":
             return JSONResponse(status_code=403, content={"detail": "This numerologist workspace is suspended. Contact Master Admin."})
+        if vedic_db.is_tenant_expired(tenant):
+            return JSONResponse(status_code=403, content={"detail": f"Subscription expired on {tenant.get('end_date')}. Contact Master Admin to renew."})
+        mod_key = _path_to_module_key(request.url.path)
+        if mod_key:
+            allowed = [m.strip().lower() for m in (tenant.get("allowed_modules") or "").split(",") if m.strip()]
+            if allowed and mod_key not in allowed:
+                return JSONResponse(status_code=403, content={"detail": f"Module '{mod_key}' is not included in your {tenant.get('plan_name')} plan."})
         if request.method == "POST" and "pdf" in request.url.path.lower():
             quota = int(tenant.get("pdf_quota", -1))
             count = int(tenant.get("pdf_count", 0))
@@ -1154,6 +1225,10 @@ async def get_tenant_public_info(slug: str):
             "status": t["status"],
             "pdf_quota": t["pdf_quota"],
             "pdf_count": t["pdf_count"],
+            "start_date": t.get("start_date") or "",
+            "end_date": t.get("end_date") or "",
+            "is_expired": vedic_db.is_tenant_expired(t),
+            "allowed_modules": [m.strip() for m in (t.get("allowed_modules") or "grid,name,mobile,matchmaking,business,baby,propveh").split(",") if m.strip()],
             "requires_pin": bool((t.get("access_pin") or "").strip()) and t["slug"] != "default",
         },
     }
@@ -1183,8 +1258,10 @@ async def verify_admin_pin(body: dict = Body(...)):
 async def admin_list_tenants(request: Request):
     _require_admin(request)
     tenants = vedic_db.list_tenants()
+    for t in tenants:
+        t["is_expired"] = vedic_db.is_tenant_expired(t)
     total_pdfs = sum(int(t.get("pdf_count") or 0) for t in tenants)
-    active_count = sum(1 for t in tenants if t.get("status") == "active")
+    active_count = sum(1 for t in tenants if t.get("status") == "active" and not t.get("is_expired"))
     return {
         "success": True,
         "tenants": tenants,
@@ -1194,6 +1271,13 @@ async def admin_list_tenants(request: Request):
             "total_pdfs_generated": total_pdfs,
         },
     }
+
+
+@app.get("/api/admin/report-logs")
+async def admin_list_report_logs(request: Request, tenant_slug: str = "", limit: int = 150):
+    _require_admin(request)
+    logs = vedic_db.list_report_logs(tenant_slug=tenant_slug, limit=limit)
+    return {"success": True, "logs": logs}
 
 
 @app.post("/api/admin/tenants")
