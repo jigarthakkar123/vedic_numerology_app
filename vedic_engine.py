@@ -3085,16 +3085,22 @@ def analyze_house_and_vehicle(
         if not txt:
             return None
         tot = 0
+        parts = []
         for ch in txt:
             if ch.isdigit():
-                tot += int(ch)
+                v = int(ch)
+                tot += v
+                parts.append(str(v))
             elif ch.isalpha():
-                tot += chaldean_map.get(ch, 0)
+                v = chaldean_map.get(ch, 0)
+                tot += v
+                parts.append(f"{ch}({v})")
         if tot == 0:
             return None
         root = tot
         while root > 9:
             root = sum(int(d) for d in str(root))
+        breakdown = " + ".join(parts) + f" = {tot} → {root}"
 
         score = 65
         if root in bn_friends or root == bn:
@@ -3109,37 +3115,96 @@ def analyze_house_and_vehicle(
             score += 5
         score = max(20, min(98, score))
 
-        if score >= 75:
+        VASTU_BY_ROOT = {
+            1: {
+                "house": {"en": "Keep the East / North-East entrance bright and clutter-free; use warm cream/gold tones and morning sunlight.", "hi": "पूर्व / ईशान कोण को उजला और स्वच्छ रखें; हल्के सुनहरे/क्रीम रंग और सुबह की धूप का लाभ लें।", "gu": "પૂર્વ / ઈશાન ખૂણો પ્રકાશિત અને સ્વચ્છ રાખવો; આછા સોનેરી/ક્રીમ રંગ અને સવારનો તડકો ઉત્તમ."},
+                "vehicle": {"en": "Park facing East/North when possible; keep a small copper Sun emblem or warm yellow cloth on dashboard.", "hi": "संभव हो तो वाहन पूर्व/उत्तर दिशा में पार्क करें; डैशबोर्ड पर तांबे का सूर्य प्रतीक रखें।", "gu": "શક્ય હોય તો વાહન પૂર્વ/ઉત્તર તરફ પાર્ક કરવું; ડેશબોર્ડ પર તાંબાનું સૂર્ય ચિહ્ન રાખવું."},
+            },
+            2: {
+                "house": {"en": "Keep North-West & North clean with a small indoor water bowl or white/silver decor for emotional calm.", "hi": "उत्तर-पश्चिम व उत्तर दिशा स्वच्छ रखें; मानसिक शांति हेतु सफेद/सिल्वर सजावट रखें।", "gu": "ઉત્તર-પશ્ચિમ અને ઉત્તર દિશા સ્વચ્છ રાખવી; માનસિક શાંતિ માટે સફેદ/સિલ્વર સજાવટ ઉત્તમ."},
+                "vehicle": {"en": "Keep interiors spotless and fresh-scented; place a small Moonstone/white crystal for calm journeys.", "hi": "वाहन का इंटीरियर स्वच्छ व सुगंधित रखें; शांत यात्रा हेतु छोटा मूनस्टोन/सफेद क्रिस्टल रखें।", "gu": "વાહનનું ઇન્ટિરિયર સ્વચ્છ રાખવું; શાંત મુસાફરી માટે નાનો સફેદ ક્રિસ્ટલ રાખવો."},
+            },
+            3: {
+                "house": {"en": "Strengthen North-East (Ishan) with yellow/tulsi accents and a dedicated study/prayer corner.", "hi": "ईशान कोण में पीले रंग या तुलसी/पूजा स्थान से गुरु ऊर्जा को और प्रबल करें।", "gu": "ઈશાન ખૂણામાં પીળો રંગ કે તુલસી/પૂજા સ્થાન રાખી ગુરુની ઊર્જા મજબૂત કરવી."},
+                "vehicle": {"en": "Keep a small yellow thread/Swastik or Citrine crystal inside for wisdom and smooth long trips.", "hi": "शुभ व सुरक्षित यात्रा हेतु वाहन में पीला स्वस्तिक या सिट्रीन क्रिस्टल रखें।", "gu": "શુભ અને સુરક્ષિત મુસાફરી માટે વાહનમાં પીળો સ્વસ્તિક કે સિટ્રીન ક્રિસ્ટલ રાખવો."},
+            },
+            4: {
+                "house": {"en": "Avoid clutter in South-West; ensure proper lighting at the main door and avoid broken electronics.", "hi": "दक्षिण-पश्चिम में कबाड़ न रखें; मुख्य द्वार पर पर्याप्त रोशनी रखें और खराब इलेक्ट्रॉनिक्स हटाएं।", "gu": "દક્ષિણ-પશ્ચિમમાં ભંગાર ન રાખવો; મુખ્ય દ્વારે પૂરતો પ્રકાશ રાખવો અને બગડેલા ઇલેક્ટ્રોનિક્સ દૂર કરવા."},
+                "vehicle": {"en": "Keep tyres, brakes and wiring serviced regularly; place a grounding Hematite or Black Tourmaline stone.", "hi": "टायर व वायरिंग नियमित जांचें; स्थिरता हेतु वाहन में हेमेटाइट या ब्लैक टूमलाइन रखें।", "gu": "ટાયર અને વાયરિંગ નિયમિત તપાસવા; સ્થિરતા માટે હેમેટાઇટ કે બ્લેક ટૂર્મેલાઇન રાખવું."},
+            },
+            5: {
+                "house": {"en": "Activate North zone with green plants (Money Plant / Tulsi) to boost business, communication and cash flow.", "hi": "उत्तर दिशा में हरे पौधे (मनी प्लांट/तुलसी) रखें ताकि व्यापार और धन प्रवाह बढ़े।", "gu": "ઉત્તર દિશામાં લીલા છોડ (મની પ્લાન્ટ/તુલસી) રાખવાથી વેપાર અને ધન પ્રવાહ વધે છે."},
+                "vehicle": {"en": "Keep a Green Aventurine stone in the glovebox/dashboard for profitable business travel & clarity.", "hi": "व्यापारिक यात्राओं में लाभ हेतु डैशबोर्ड में ग्रीन एवेंचुरिन क्रिस्टल रखें।", "gu": "વ્યાપારિક મુસાફરીમાં લાભ માટે ડેશબોર્ડમાં ગ્રીન એવેન્ચુરિન ક્રિસ્ટલ રાખવો."},
+            },
+            6: {
+                "house": {"en": "Enhance South-East & entrance with clean white/pastel accents, pleasant aroma, and soft warm lighting.", "hi": "आग्नेय कोण और मुख्य द्वार को स्वच्छ, सुगंधित और हल्के सफेद/पेस्टल रंग से सजाएं।", "gu": "અગ્નિ ખૂણો અને મુખ્ય દ્વાર સ્વચ્છ, સુગંધિત અને આછા સફેદ/પેસ્ટલ રંગથી સજાવવા."},
+                "vehicle": {"en": "Keep a Clear Quartz or Rose Quartz inside for luxury, comfort, and harmonious family rides.", "hi": "पारिवारिक सुख व आरामदायक यात्रा हेतु वाहन में क्लियर क्वार्ट्ज या रोज़ क्वार्ट्ज रखें।", "gu": "પારિવારિક સુખ અને આરામદાયક મુસાફરી માટે ક્લિયર ક્વાર્ટ્ઝ કે રોઝ ક્વાર્ટ્ઝ રાખવો."},
+            },
+            7: {
+                "house": {"en": "Keep a serene meditation/reading space in North-East; use soft earthy tones and avoid noisy clutter.", "hi": "ईशान कोण में शांत ध्यान/अध्ययन कक्ष रखें; हल्के प्राकृतिक रंग प्रयोग करें।", "gu": "ઈશાન ખૂણામાં શાંત ધ્યાન/વાંચન સ્થાન રાખવું; હળવા કુદરતી રંગો વાપરવા."},
+                "vehicle": {"en": "Place a small Amethyst or Ketu-balancing brass Swastik for focus and calm highway driving.", "hi": "एकाग्रता व शांत ड्राइविंग हेतु छोटा एमेथिस्ट या पीतल का स्वस्तिक रखें।", "gu": "એકાग्रता અને શાંત ડ્રાઇવિંગ માટે નાનો એમેથિસ્ટ કે પિત્તળનો સ્વસ્તિક રાખવો."},
+            },
+            8: {
+                "house": {"en": "Keep South-West heavy & well-organized, staircases/shoes tidy, and entrance well-lit for steady wealth.", "hi": "नैऋत्य (दक्षिण-पश्चिम) को व्यवस्थित व भारी रखें, जूते-चप्पल व सीढ़ियां साफ रखें।", "gu": "નૈઋત્ય (દક્ષિણ-પશ્ચિમ) વ્યવસ્થિત અને ભારે રાખવો, બૂટ-ચંપલ તથા સીડી સ્વચ્છ રાખવી."},
+                "vehicle": {"en": "Keep the vehicle clean inside-out and service on schedule; keep a Blue Sapphire-toned or Pyrite token.", "hi": "वाहन को हमेशा साफ रखें और समय पर सर्विस कराएं; पायराइट क्रिस्टल साथ रखें।", "gu": "વાહન હંમેશા સ્વચ્છ રાખવું અને સમયસર સર્વિસ કરાવવી; પાયરાઇટ ક્રિસ્ટલ સાથે રાખવો."},
+            },
+            9: {
+                "house": {"en": "Balance South/South-East energy with warm lighting, keep kitchen tidy, and avoid sharp red-on-red excess.", "hi": "दक्षिण/आग्नेय दिशा में संतुलित रोशनी और रसोई को व्यवस्थित रखें; अत्यधिक लाल रंग से बचें।", "gu": "દક્ષિણ/અગ્નિ દિશામાં સંતુલિત પ્રકાશ અને રસોડું વ્યવસ્થિત રાખવું; વધુ પડતા લાલ રંગથી બચવું."},
+                "vehicle": {"en": "Avoid aggressive speeding; keep a small copper Hanuman Yantra or Red Jasper for protection.", "hi": "तेज गति से बचें; सुरक्षा हेतु तांबे का छोटा हनुमान यंत्र या रेड जैस्पर रखें।", "gu": "વધુ પડતી ઝડપ ટાળવી; સુરક્ષા માટે તાંબાનું નાનું હનુમાન યંત્ર કે રેડ જેસ્પર રાખવું."},
+            },
+        }
+        vastu_tips = VASTU_BY_ROOT[root]["house" if kind == "house" else "vehicle"][lang]
+
+        if score >= 70:
             status = "auspicious"
-            verdict = {"en": "Highly Compatible & Auspicious", "hi": "अत्यंत शुभ एवं अनुकूल", "gu": "અત્યંત શુભ અને અનુકૂળ"}[lang]
-            remedy = {"en": "No correction needed — naturally supports your birth chart.", "hi": "किसी सुधार की आवश्यकता नहीं — आपकी कुंडली के अनुकूल है।", "gu": "કોઈ સુધારાની જરૂર નથી — તમારી કુંડળીને અનુકૂળ છે."}[lang]
-        elif score >= 55:
-            status = "neutral"
-            verdict = {"en": "Neutral / Moderate Compatibility", "hi": "मध्यम / संतुलित अनुकूलता", "gu": "મધ્યમ / સંતુલિત સુસંગતતા"}[lang]
-            remedy = (
-                {"en": f"Place a brass/gold nameplate or Swastik near the entrance; align key rooms with {best_nums[0]} energy.", "hi": f"प्रवेश द्वार पर पीतल/सुनहरा नेमप्लेट या स्वस्तिक लगाएं।", "gu": f"પ્રવેશદ્વાર પર પિત્તળ/સોનેરી નેમપ્લેટ અથવા સ્વસ્તિક લગાવવો."}
+            verdict = {"en": "Good & Auspicious Match (70+)", "hi": "शुभ एवं अनुकूल मिलान (70+)", "gu": "શુભ અને અનુકૂળ મેચ (70+)"}[lang]
+            vedic_remedies = (
+                {"en": f"Already aligned! For even stronger prosperity, place a clean brass nameplate, light a ghee/camphor lamp on Thursdays/Fridays, and energize the home with {best_nums[0]} or {best_nums[-1]} accents.",
+                 "hi": f"यह नंबर पहले से शुभ है! और अधिक समृद्धि हेतु पीतल का नेमप्लेट लगाएं, गुरुवार/शुक्रवार को घी/कपूर का दीपक जलाएं और {best_nums[0]} या {best_nums[-1]} ऊर्जा बढ़ाएं।",
+                 "gu": f"આ નંબર પહેલેથી જ શુભ છે! વધુ સમૃદ્ધિ માટે પિત્તળની નેમપ્લેટ લગાવવી, ગુરુવાર/શુક્રવારે ઘી/કપૂરનો દીવો કરવો અને {best_nums[0]} કે {best_nums[-1]} ઊર્જા વધારવી."}
                 if kind == "house" else
-                {"en": f"Keep a small Citrine or Pyrite crystal in the dashboard for protective travel energy.", "hi": "वाहन के डैशबोर्ड में छोटा सिट्रीन या पायराइट क्रिस्टल रखें।", "gu": "વાહનના ડેશબોર્ડમાં નાનો સિટ્રીન અથવા પાયરાઇટ ક્રિસ્ટલ રાખવો."}
+                {"en": f"Naturally supportive vehicle number! For extra protection & growth, tie a fresh Raksha Sutra on auspicious days, keep a Pyrite/Citrine crystal, and chant Ganesha mantra before long trips.",
+                 "hi": f"यह वाहन नंबर स्वाभाविक रूप से शुभ है! अतिरिक्त सुरक्षा हेतु शुभ दिन रक्षा सूत्र बांधें, सिट्रीन/पायराइट रखें और लंबी यात्रा से पहले गणेश मंत्र बोलें।",
+                 "gu": f"આ વાહન નંબર કુદરતી રીતે શુભ છે! વધારાની સુરક્ષા માટે શુભ દિવસે રક્ષાસૂત્ર બાંધવો, સિટ્રીન/પાયરાઇટ રાખવો અને લાંબી મુસાફરી પહેલાં ગણેશ મંત્ર બોલવો."}
+            )[lang]
+        elif score >= 50:
+            status = "neutral"
+            verdict = {"en": "Moderate / Neutral Match (50–69)", "hi": "मध्यम / संतुलित मिलान (50–69)", "gu": "મધ્યમ / સંતુલિત મેચ (50–69)"}[lang]
+            vedic_remedies = (
+                {"en": f"Place a brass/gold Swastik or Om on the main door, add a balancing prefix/letter on the nameplate totaling {best_nums[0]} if feasible, and offer water/prayers on {PLANET_INFO[bn][lang]['planet']} days.",
+                 "hi": f"मुख्य द्वार पर पीतल का स्वस्तिक/ॐ लगाएं, संभव हो तो नेमप्लेट में {best_nums[0]} के योग वाला अक्षर जोड़ें और अपने मूलांक स्वामी के दिन प्रार्थना करें।",
+                 "gu": f"મુખ્ય દ્વાર પર પિત્તળનો સ્વસ્તિક/ૐ લગાવવો, શક્ય હોય તો નેમપ્લેટમાં {best_nums[0]} ના સરવાળા વાળો અક્ષર ઉમેરવો અને મૂળાંક સ્વામીના દિવસે પ્રાર્થના કરવી."}
+                if kind == "house" else
+                {"en": f"Keep a Citrine or Pyrite crystal on the dashboard, keep a small silver/brass Swastik sticker inside, and donate/feed birds on Saturdays for smooth travel.",
+                 "hi": "डैशबोर्ड पर सिट्रीन या पायराइट क्रिस्टल रखें, अंदर छोटा पीतल का स्वस्तिक लगाएं और शनिवार को पक्षियों को दाना डालें।",
+                 "gu": "ડેશબોર્ડ પર સિટ્રીન કે પાયરાઇટ ક્રિસ્ટલ રાખવો, અંદર નાનો પિત્તળનો સ્વસ્તિક લગાવવો અને શનિવારે પક્ષીઓને દાણા નાખવા."}
             )[lang]
         else:
             status = "challenging"
-            verdict = {"en": "Challenging / Friction Vibration", "hi": "प्रतिकूल / संघर्षकारी कंपन", "gu": "પ્રતિકૂળ / સંઘર્ષકારક સ્પંદન"}[lang]
-            remedy = (
-                {"en": f"Add a balancing prefix/letter on the nameplate (totaling {best_nums[0]} or {best_nums[-1]}) and keep a Yellow/Gold Ganesha or Sri Yantra at the entrance.", "hi": f"नेमप्लेट पर {best_nums[0]} या {best_nums[-1]} के योग वाला शुभ अक्षर जोड़ें और प्रवेश पर श्री यंत्र रखें।", "gu": f"નેમપ્લેટ પર {best_nums[0]} કે {best_nums[-1]} ના સરવાળા વાળો શુભ અક્ષર ઉમેરવો અને પ્રવેશદ્વાર પર શ્રી યંત્ર રાખવું."}
+            verdict = {"en": "Challenging / Remedy Needed (<50)", "hi": "प्रतिकूल / उपाय आवश्यक (<50)", "gu": "પ્રતિકૂળ / ઉપાય જરૂરી (<50)"}[lang]
+            vedic_remedies = (
+                {"en": f"Important: Adjust nameplate vibration by adding an auspicious letter/symbol so the total becomes {best_nums[0]} or {best_nums[-1]}; install a Sri Yantra / Vastu Pyramid at the entrance and chant Navagraha / Ganesha stotra.",
+                 "hi": f"महत्वपूर्ण उपाय: नेमप्लेट पर शुभ अक्षर जोड़कर योग को {best_nums[0]} या {best_nums[-1]} पर लाएं; प्रवेश द्वार पर श्री यंत्र / वास्तु पिरामिड रखें और गणेश/नवग्रह स्तोत्र का पाठ करें।",
+                 "gu": f"મહત્વનો ઉપાય: નેમપ્લેટ પર શુભ અક્ષર ઉમેરી સરવાળો {best_nums[0]} કે {best_nums[-1]} પર લાવવો; પ્રવેશદ્વાર પર શ્રી યંત્ર / વાસ્તુ પિરામિડ રાખવો અને ગણેશ/નવગ્રહ સ્તોત્ર બોલવું."}
                 if kind == "house" else
-                {"en": "Keep a Hanuman Yantra / Tiger's Eye crystal in the vehicle, drive defensively, and avoid speeding on Tuesdays/Saturdays.", "hi": "वाहन में हनुमान यंत्र या टाइगर आई क्रिस्टल रखें और मंगलवार/शनिवार को सावधानी से चलाएं।", "gu": "વાહનમાં હનુમાન યંત્ર અથવા ટાઇગર આઈ ક્રિસ્ટલ રાખવો અને મંગળવાર/શનિવારે સાવચેતીથી ચલાવવું."}
+                {"en": "Important: Place a Hanuman Yantra & Tiger's Eye crystal in the vehicle, perform vehicle puja on an auspicious day, drive defensively, and avoid high-risk trips on Tuesdays/Saturdays.",
+                 "hi": "महत्वपूर्ण उपाय: वाहन में हनुमान यंत्र व टाइगर आई क्रिस्टल रखें, शुभ मुहूर्त में वाहन पूजन कराएं और मंगलवार/शनिवार को सावधानी से चलाएं।",
+                 "gu": "મહત્વનો ઉપાય: વાહનમાં હનુમાન યંત્ર અને ટાઇગર આઈ ક્રિસ્ટલ રાખવો, શુભ દિવસે વાહન પૂજન કરાવવું અને મંગળવાર/શનિવારે સાવચેતીથી ચલાવવું."}
             )[lang]
 
         return {
             "raw": txt,
             "compound": tot,
             "root": root,
+            "breakdown": breakdown,
             "planet": PLANET_INFO[root][lang]["planet"],
             "score": score,
             "status": status,
             "verdict": verdict,
             "meaning": HOUSE_MEANINGS[root][lang],
-            "remedy": remedy,
+            "vastu_tips": vastu_tips,
+            "vedic_remedies": vedic_remedies,
+            "remedy": vedic_remedies,
         }
 
     house_eval = _eval_code(house_number, "house")

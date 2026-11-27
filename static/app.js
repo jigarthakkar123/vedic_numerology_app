@@ -1644,20 +1644,20 @@ function renderBabyNamesResults(d) {
     const el = document.getElementById('baby-results-container');
     if (!el || !d) return;
     const rows = (d.suggestions || []).map((s, idx) => `
-        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(212,175,55,0.28);border-radius:10px;padding:12px;">
+        <div style="background:rgba(255,255,255,0.03);border:1px solid ${s.is_best ? 'rgba(16,185,129,0.45)' : 'rgba(212,175,55,0.28)'};border-radius:10px;padding:12px;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
                 <strong style="font-size:15px;color:#fef3c7;">${idx + 1}. ${escapeHtml(s.full_name)}</strong>
-                <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:12px;background:rgba(16,185,129,0.18);color:#4ade80;">Namank ${s.single_total}</span>
+                <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:12px;background:rgba(16,185,129,0.18);color:#4ade80;">Namank ${s.namank}${s.is_best ? ' ★ Best' : ''}</span>
             </div>
-            <div style="font-size:12px;color:var(--text-secondary);">First Name: <strong>${escapeHtml(s.first_name)}</strong> (${s.first_compound} → ${s.first_single}) · Full Compound: <strong>${s.compound_total}</strong></div>
-            <div style="font-size:11.5px;color:#cbd5e1;margin-top:4px;">${escapeHtml(s.planet)} · ${escapeHtml(s.reason)}</div>
+            <div style="font-size:12px;color:var(--text-secondary);">First Name: <strong>${escapeHtml(s.first_name)}</strong> · Full Chaldean Compound: <strong>${s.compound}</strong> → <strong>${s.namank}</strong></div>
+            <div style="font-size:11.5px;color:#cbd5e1;margin-top:4px;">Ruling Planet: <strong>${escapeHtml(s.planet)}</strong> · Starts with <strong>${escapeHtml(s.starts_with)}</strong></div>
         </div>
     `).join('');
 
     el.innerHTML = `
         <div style="background:linear-gradient(90deg, rgba(139,92,246,0.25), rgba(212,175,55,0.18));border:1px solid rgba(212,175,55,0.45);border-radius:12px;padding:14px 16px;margin-bottom:14px;">
-            <div style="font-size:15px;font-weight:700;color:#fde68a;">Baby Chart: Basic Number ${d.basic_number} (${escapeHtml(d.basic_planet)}) · Destiny Number ${d.destiny_number} (${escapeHtml(d.destiny_planet)})</div>
-            <div style="font-size:12.5px;color:#e2e8f0;margin-top:4px;">Target Lucky Namank Numbers: <strong>${(d.target_numbers || []).join(', ')}</strong> · Gender: <strong>${escapeHtml(d.gender)}</strong></div>
+            <div style="font-size:15px;font-weight:700;color:#fde68a;">Baby Chart: Basic Number ${d.bn} (${escapeHtml(d.bn_planet)}) · Destiny Number ${d.dn} (${escapeHtml(d.dn_planet)})</div>
+            <div style="font-size:12.5px;color:#e2e8f0;margin-top:4px;">Target Lucky Namank Numbers: <strong>${(d.best_targets || []).join(', ')}</strong> · Gender: <strong>${escapeHtml(d.gender)}</strong></div>
         </div>
         <div class="resp-grid-2" style="gap:10px;">${rows || '<div class="empty-state">No matching names found for that letter filter. Try clearing the starting letter.</div>'}</div>
     `;
@@ -1732,18 +1732,26 @@ async function downloadPropertyVehiclePdf(lang) {
 
 function renderPropertyVehicleCard(item, title) {
     if (!item) return '';
-    const color = item.verdict_level === 'good' ? '#4ade80' : (item.verdict_level === 'moderate' ? '#fbbf24' : '#f87171');
-    const border = item.verdict_level === 'good' ? 'rgba(16,185,129,0.4)' : (item.verdict_level === 'moderate' ? 'rgba(245,158,11,0.4)' : 'rgba(239,68,68,0.4)');
+    const isGood = item.status === 'auspicious' || item.score >= 70;
+    const isMod = !isGood && (item.status === 'neutral' || item.score >= 50);
+    const color = isGood ? '#4ade80' : (isMod ? '#fbbf24' : '#f87171');
+    const border = isGood ? 'rgba(16,185,129,0.5)' : (isMod ? 'rgba(245,158,11,0.45)' : 'rgba(239,68,68,0.5)');
+    const bgTint = isGood ? 'rgba(16,185,129,0.06)' : (isMod ? 'rgba(245,158,11,0.05)' : 'rgba(239,68,68,0.06)');
     return `
-        <div style="background:rgba(255,255,255,0.03);border:1px solid ${border};border-radius:12px;padding:16px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                <strong style="font-size:15px;color:#fde68a;">${escapeHtml(title)}: ${escapeHtml(item.raw_input)}</strong>
-                <span style="font-size:14px;font-weight:800;color:${color};">${item.score}/100</span>
+        <div style="background:${bgTint};border:1px solid ${border};border-radius:12px;padding:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:8px;">
+                <strong style="font-size:15px;color:#fde68a;">${escapeHtml(title)}: ${escapeHtml(item.raw || '')}</strong>
+                <span style="font-size:16px;font-weight:800;color:${color};white-space:nowrap;">${item.score}/100</span>
             </div>
-            <div style="font-size:12.5px;color:${color};font-weight:700;margin-bottom:6px;">${escapeHtml(item.verdict)} · Root ${item.single_number} (${escapeHtml(item.planet)}) · Compound ${item.compound_number}</div>
-            <div style="font-size:12.5px;color:#e2e8f0;line-height:1.5;margin-bottom:8px;">${escapeHtml(item.meaning)}</div>
-            <div style="font-size:12px;color:#fef3c7;background:rgba(212,175,55,0.1);border-left:3px solid #eab308;padding:8px 10px;border-radius:4px;">
-                <strong>Vastu / Vedic Remedy:</strong> ${escapeHtml(item.remedy)}
+            <div style="font-size:12.5px;color:${color};font-weight:700;margin-bottom:4px;">${escapeHtml(item.verdict)} · Root ${item.root} (${escapeHtml(item.planet)}) · Compound ${item.compound}</div>
+            ${item.breakdown ? `<div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px;">Calculation: ${escapeHtml(item.breakdown)}</div>` : ''}
+            <div style="font-size:12.5px;color:#e2e8f0;line-height:1.5;margin-bottom:10px;">${escapeHtml(item.meaning)}</div>
+            ${item.vastu_tips ? `
+            <div style="font-size:12px;color:#e9d5ff;background:rgba(139,92,246,0.12);border-left:3px solid #a855f7;padding:8px 10px;border-radius:4px;margin-bottom:8px;">
+                <strong>🏛️ Vastu Guidance (For Harmony &amp; Improvement):</strong> ${escapeHtml(item.vastu_tips)}
+            </div>` : ''}
+            <div style="font-size:12px;color:#fef3c7;background:rgba(212,175,55,0.1);border-left:3px solid ${color};padding:8px 10px;border-radius:4px;">
+                <strong>🕉️ Vedic Remedy (For Prosperity &amp; Protection):</strong> ${escapeHtml(item.vedic_remedies || item.remedy || '')}
             </div>
         </div>
     `;
@@ -1754,8 +1762,15 @@ function renderPropertyVehicleResults(d) {
     if (!el || !d) return;
     el.innerHTML = `
         <div style="background:linear-gradient(90deg, rgba(139,92,246,0.25), rgba(212,175,55,0.18));border:1px solid rgba(212,175,55,0.45);border-radius:12px;padding:14px 16px;margin-bottom:14px;">
-            <div style="font-size:15px;font-weight:700;color:#fde68a;">Owner Chart: Basic ${d.owner_basic} (${escapeHtml(d.owner_basic_planet)}) · Destiny ${d.owner_destiny} (${escapeHtml(d.owner_destiny_planet)})</div>
-            <div style="font-size:12.5px;color:#e2e8f0;margin-top:4px;">Most Auspicious Numbers for Owner: <strong>${(d.lucky_numbers || []).join(', ')}</strong></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                <div style="font-size:15px;font-weight:700;color:#fde68a;">Owner Chart: Basic ${d.bn} (${escapeHtml(d.bn_planet || '')}) · Destiny ${d.dn} (${escapeHtml(d.dn_planet || '')})</div>
+                <div style="font-size:11.5px;background:rgba(15,23,42,0.55);padding:4px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);">
+                    <span style="color:#4ade80;font-weight:700;">● 70+ Good Match</span> &nbsp;|&nbsp;
+                    <span style="color:#fbbf24;font-weight:700;">● 50–69 Moderate</span> &nbsp;|&nbsp;
+                    <span style="color:#f87171;font-weight:700;">● &lt;50 Needs Remedy</span>
+                </div>
+            </div>
+            <div style="font-size:12.5px;color:#e2e8f0;margin-top:4px;">Most Auspicious Numbers for Owner: <strong>${(d.best_numbers || []).join(', ')}</strong></div>
         </div>
         <div class="resp-grid-2" style="gap:14px;">
             ${renderPropertyVehicleCard(d.house, d.property_type || 'Property')}

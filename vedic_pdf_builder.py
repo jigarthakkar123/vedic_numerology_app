@@ -3614,23 +3614,27 @@ def build_property_vehicle_report_html(d: Dict[str, Any], lang: str = "en") -> s
     def _item_card(item: Optional[Dict[str, Any]], label: str) -> str:
         if not item:
             return ""
-        col = "#15803d" if item["status"] == "auspicious" else ("#d97706" if item["status"] == "neutral" else "#b91c1c")
-        bg = "#f0fdf4" if item["status"] == "auspicious" else ("#fffbeb" if item["status"] == "neutral" else "#fef2f2")
+        col = "#15803d" if (item.get("status") == "auspicious" or item.get("score", 0) >= 70) else ("#d97706" if (item.get("status") == "neutral" or item.get("score", 0) >= 50) else "#b91c1c")
+        bg = "#f0fdf4" if col == "#15803d" else ("#fffbeb" if col == "#d97706" else "#fef2f2")
+        vastu_txt = item.get("vastu_tips") or ""
+        vedic_txt = item.get("vedic_remedies") or item.get("remedy") or ""
+        bk = item.get("breakdown") or f"{item['compound']} → {item['root']}"
         return f"""
-        <div class="pcard" style="background:{bg};border-color:{col};">
+        <div class="pcard" style="background:{bg};border-color:{col};border-width:1.5px;">
             <div class="ptop">
                 <div>
                     <div class="kicker">{label}</div>
                     <div class="pnum">{item["raw"]}</div>
-                    <div class="sub-muted">{PL["sum"]}: {item["compound"]} → <strong>{PL["root"]}: {item["root"]}</strong> · {item["planet"]}</div>
+                    <div class="sub-muted">{PL["sum"]}: {bk} · <strong>{PL["root"]} {item["root"]}</strong> ({item["planet"]})</div>
                 </div>
                 <div style="text-align:right;">
                     <div class="pscore" style="color:{col};">{item["score"]}/100</div>
                     <div style="font-size:10.5px;font-weight:700;color:{col};">{item["verdict"]}</div>
                 </div>
             </div>
-            <div style="margin-top:8px;"><strong>{PL["meaning"]}</strong> {item["meaning"]}</div>
-            <div style="margin-top:4px;"><strong>{PL["remedy"]}</strong> {item["remedy"]}</div>
+            <div style="margin-top:8px;padding-top:6px;border-top:1px dashed rgba(0,0,0,0.1);"><strong>{PL["meaning"]}</strong> {item["meaning"]}</div>
+            {f'<div style="margin-top:6px;padding:6px 8px;background:rgba(255,255,255,0.75);border-left:3px solid #7c3aed;border-radius:4px;"><strong>🏛️ Vastu Guidance:</strong> {vastu_txt}</div>' if vastu_txt else ''}
+            <div style="margin-top:6px;padding:6px 8px;background:rgba(255,255,255,0.75);border-left:3px solid {col};border-radius:4px;"><strong>🕉️ {PL["remedy"]}</strong> {vedic_txt}</div>
         </div>"""
 
     return f"""<!DOCTYPE html>
@@ -3670,10 +3674,17 @@ body {{ margin: 0; font-family: {body_font}; color: #1e293b; font-size: 11px; li
         </div>
         <div class="mm-rtitle">{PL["kicker"]} <strong>{PL["title"]}</strong></div>
     </div>
-    <div><strong>{PL["dob"]}</strong> {d["dob"]} ({d["property_type"]})</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px;">
+        <div><strong>{PL["dob"]}</strong> {d["dob"]} ({d["property_type"]})</div>
+        <div style="font-size:9.5px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:6px;padding:3px 8px;">
+            <span style="color:#15803d;font-weight:700;">● 70–100 Good</span> &nbsp;|&nbsp;
+            <span style="color:#d97706;font-weight:700;">● 50–69 Moderate</span> &nbsp;|&nbsp;
+            <span style="color:#b91c1c;font-weight:700;">● &lt;50 Remedy Needed</span>
+        </div>
+    </div>
     <div class="sum-row">
-        <div class="sum-box"><span>{PL["bn"]}</span><strong>{d["bn"]}</strong></div>
-        <div class="sum-box"><span>{PL["dn"]}</span><strong>{d["dn"]}</strong></div>
+        <div class="sum-box"><span>{PL["bn"]}</span><strong>{d["bn"]} ({d["bn_planet"]})</strong></div>
+        <div class="sum-box"><span>{PL["dn"]}</span><strong>{d["dn"]} ({d["dn_planet"]})</strong></div>
         <div class="sum-box"><span>{PL["best"]}</span><strong>{", ".join(str(x) for x in d["best_numbers"])}</strong></div>
     </div>
     {_item_card(d.get("house"), PL["house_lbl"])}
