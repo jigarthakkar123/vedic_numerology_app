@@ -9,7 +9,7 @@ Cross-platform: Supports Microsoft Edge on Windows and Chromium/Chrome on Linux 
 import os
 import subprocess
 import shutil
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 
 
 def get_browser_binary() -> str:
