@@ -3732,7 +3732,115 @@ def apply_tenant_branding_to_html(html_content: str, tenant: Optional[Dict[str, 
             "</body>",
             f'<div style="text-align:center;font-size:9px;color:#64748b;margin-top:8px;">{copy_txt}</div></body>'
         )
+    if (tenant.get("slug") or "").lower() == "demo" or (tenant.get("plan_name") or "").lower() == "demo":
+        wm_html = (
+            '<div style="position:fixed;top:46%;left:50%;transform:translate(-50%,-50%) rotate(-32deg);'
+            'font-size:38px;font-weight:900;letter-spacing:2px;color:rgba(124,58,237,0.14);'
+            'white-space:nowrap;pointer-events:none;z-index:9999;text-align:center;">'
+            'DEMO COPY &bull; &copy; JIGAR THAKKAR<br>'
+            '<span style="font-size:18px;letter-spacing:1px;">FOR EVALUATION ONLY &bull; +91 9377614772</span>'
+            '</div>'
+        )
+        if "</body>" in out:
+            out = out.replace("</body>", f"{wm_html}</body>")
     return out
+
+
+def build_marketing_brochure_html(demo_url: str = "https://vedic-numerology-app-6fci.onrender.com/t/demo") -> str:
+    """Builds a professional 1-page A4 Partner Sales Brochure PDF for selling the White-Label SaaS to numerologists."""
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Vedic Numerology White-Label SaaS - Partner Offer</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+@page {{ size: A4 portrait; margin: 10mm; }}
+* {{ box-sizing: border-box; }}
+body {{ margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; color: #0f172a; font-size: 10.5px; line-height: 1.42; -webkit-print-color-adjust: exact; print-color-adjust: exact; }}
+.hero {{ background: linear-gradient(135deg, #1e1b4b, #4c1d95); color: #fff; border-radius: 14px; padding: 18px 22px; margin-bottom: 12px; border: 2px solid #d4af37; }}
+.hero-kicker {{ font-size: 9.5px; letter-spacing: 1.4px; text-transform: uppercase; color: #fde68a; font-weight: 700; }}
+.hero h1 {{ font-family: 'Cinzel', serif; font-size: 20px; margin: 4px 0 6px; color: #fff; }}
+.hero p {{ margin: 0; font-size: 11px; color: #e2e8f0; }}
+.grid-2 {{ display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 12px; margin-bottom: 12px; }}
+.card {{ border: 1px solid #cbd5e1; border-radius: 12px; padding: 12px 14px; background: #fff; }}
+.card h2 {{ font-family: 'Cinzel', serif; font-size: 13px; color: #4c1d95; margin: 0 0 8px; border-bottom: 1.5px solid #ede9fe; padding-bottom: 4px; }}
+table {{ width: 100%; border-collapse: collapse; font-size: 10.5px; }}
+th, td {{ padding: 5px 6px; border-bottom: 1px solid #e2e8f0; text-align: left; }}
+th {{ background: #f8f7ff; color: #4c1d95; font-weight: 700; font-size: 9.5px; text-transform: uppercase; }}
+.price-col {{ text-align: right; font-weight: 700; color: #0f172a; white-space: nowrap; }}
+.offer-box {{ background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 2px solid #d97706; border-radius: 12px; padding: 14px; text-align: center; }}
+.strike {{ text-decoration: line-through; color: #64748b; font-size: 14px; font-weight: 700; }}
+.big-price {{ font-family: 'Cinzel', serif; font-size: 28px; font-weight: 800; color: #b45309; line-height: 1.1; margin: 4px 0; }}
+.save-pill {{ display: inline-block; background: #15803d; color: #fff; font-weight: 800; font-size: 10px; padding: 3px 10px; border-radius: 20px; margin-bottom: 6px; }}
+.feat-list {{ margin: 8px 0 0; padding-left: 16px; }}
+.feat-list li {{ margin-bottom: 4px; }}
+.cta-bar {{ background: #0f172a; color: #fff; border-radius: 12px; padding: 13px 18px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }}
+.cta-bar a {{ color: #fde68a; font-weight: 700; text-decoration: none; }}
+</style>
+</head>
+<body>
+<div class="hero">
+    <div class="hero-kicker">White-Label SaaS Opportunity for Numerologists &amp; Vastu Consultants</div>
+    <h1>Your Own Branded Vedic Numerology Software</h1>
+    <p>Generate unlimited, client-ready reports in <strong>English, हिन्दी &amp; ગુજરાતી</strong> carrying <strong>YOUR Name, Brand, Phone, Email &amp; Copyright</strong> — accessible on Mobile &amp; Desktop 24/7.</p>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <h2>7 Complete Modules (1-Year Subscription)</h2>
+        <table>
+            <thead><tr><th>#</th><th>Module &amp; Client Deliverables</th><th class="price-col">1-Yr Value</th></tr></thead>
+            <tbody>
+                <tr><td>1</td><td><strong>Vedic Grid Maker &amp; Full Blueprint Reports</strong><br><span style="color:#64748b;font-size:9.5px;">Lo-Shu / Vedic Grid, Moolank, Bhagyank, MD/AD/PD Dasha, Yogas, Predictions &amp; Remedies</span></td><td class="price-col">₹5,000/-</td></tr>
+                <tr><td>2</td><td><strong>Name Correction &amp; Suggestions</strong><br><span style="color:#64748b;font-size:9.5px;">Chaldean analysis, spelling tweaks &amp; trilingual PDF</span></td><td class="price-col">₹2,000/-</td></tr>
+                <tr><td>3</td><td><strong>Mobile Number &amp; DOB Compatibility</strong><br><span style="color:#64748b;font-size:9.5px;">Compare numbers, harmful pairs &amp; trilingual PDF</span></td><td class="price-col">₹2,000/-</td></tr>
+                <tr><td>4</td><td><strong>Marriage Match Making (5-Pillar)</strong><br><span style="color:#64748b;font-size:9.5px;">Boy &amp; Girl grids, Green/Red rules, 5-Yr litigation check</span></td><td class="price-col">₹4,000/-</td></tr>
+                <tr><td>5</td><td><strong>Business Partnership Match Making</strong><br><span style="color:#64748b;font-size:9.5px;">Multi-partner compatibility, anchor partner &amp; business sectors</span></td><td class="price-col">₹4,000/-</td></tr>
+                <tr><td>6</td><td><strong>Baby Name Numerology Generator</strong><br><span style="color:#64748b;font-size:9.5px;">Gender-matched lucky names by DOB + trilingual PDF</span></td><td class="price-col">₹2,000/-</td></tr>
+                <tr><td>7</td><td><strong>House, Shop &amp; Vehicle Checker</strong><br><span style="color:#64748b;font-size:9.5px;">70+ score threshold, Vastu guidance &amp; Vedic remedies</span></td><td class="price-col">₹1,000/-</td></tr>
+                <tr style="background:#f8fafc;"><td></td><td><strong>Total Individual Value (All 7 Modules)</strong></td><td class="price-col">₹20,000/-</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="offer-box">
+            <div class="save-pill">FLAT 50% LAUNCH DISCOUNT &bull; SAVE ₹10,000</div>
+            <div style="font-size:11px;font-weight:700;color:#78350f;">ALL-IN-ONE 1-YEAR BUNDLE</div>
+            <div class="strike">₹20,000 / Year</div>
+            <div class="big-price">₹10,000 / Year</div>
+            <div style="font-size:10px;color:#92400e;font-weight:600;">Only ₹833/month (~₹27/day) &bull; Recover cost in 5 consultations!</div>
+        </div>
+
+        <div class="card" style="flex:1;">
+            <h2>What You Get With Your License</h2>
+            <ul class="feat-list">
+                <li><strong>100% White-Label PDFs:</strong> Every report displays <em>your</em> Name, Brand, Phone, Email &amp; Copyright.</li>
+                <li><strong>3 Languages Built-In:</strong> Instant 1-click PDFs in English, हिन्दी, and ગુજરાતી.</li>
+                <li><strong>Dedicated Private URL:</strong> Your own PIN-protected studio (<code>/t/your-name</code>).</li>
+                <li><strong>Saved Client Directory:</strong> Save &amp; reload repeat client charts in 1 click.</li>
+                <li><strong>Mobile &amp; Desktop Ready:</strong> Consult clients anywhere from phone, tablet, or laptop.</li>
+                <li><strong>Zero Server Cost:</strong> Fully hosted &amp; maintained for 1 full year.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="cta-bar">
+    <div>
+        <div style="font-size:11.5px;font-weight:800;color:#fde68a;">TRY THE LIVE DEMO NOW (NO SIGNUP NEEDED)</div>
+        <div style="font-size:10px;margin-top:2px;">Demo Link: <a href="{demo_url}">{demo_url}</a></div>
+        <div style="font-size:9px;color:#94a3b8;margin-top:2px;">*Demo reports carry a Demo Copyright Watermark. Paid licenses are 100% watermark-free in your name.</div>
+    </div>
+    <div style="text-align:right;white-space:nowrap;">
+        <div style="font-size:10px;color:#cbd5e1;">Book Your License Today</div>
+        <div style="font-size:13px;font-weight:800;color:#fff;">📞 +91 9377614772</div>
+        <div style="font-size:9.5px;color:#fde68a;">✉ jigar93776@gmail.com</div>
+    </div>
+</div>
+</body>
+</html>"""
 
 
 def render_pdf_from_html(html_content_or_path: str, output_pdf_path: str) -> bool:

@@ -151,6 +151,31 @@ def init_db():
                 now_str,
                 now_str,
             ))
+        cursor.execute("SELECT 1 FROM tenants WHERE slug = 'demo'")
+        if not cursor.fetchone():
+            now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            cursor.execute("""
+                INSERT INTO tenants (
+                    slug, brand_name, consultant_name, subtitle, phone, email,
+                    copyright_text, access_pin, plan_name, status, pdf_quota, pdf_count,
+                    created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                "demo",
+                "Vedic Numerology Studio (LIVE DEMO)",
+                "Demo Numerologist",
+                "Trilingual White-Label Software Demo • Licensed by Jigar Thakkar",
+                "+91 9377614772",
+                "jigar93776@gmail.com",
+                "© 2026 Jigar Thakkar • DEMO VERSION — FOR EVALUATION ONLY",
+                "",
+                "Demo",
+                "active",
+                -1,
+                0,
+                now_str,
+                now_str,
+            ))
         conn.commit()
 
         # Auto-sync persistent orders from registry JSON if missing in DB

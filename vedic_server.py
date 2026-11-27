@@ -46,6 +46,7 @@ from vedic_pdf_builder import (
     build_baby_name_report_html,
     build_property_vehicle_report_html,
     apply_tenant_branding_to_html,
+    build_marketing_brochure_html,
     render_pdf_from_html as _orig_render_pdf_from_html,
 )
 from vedic_mailer import send_report_email
@@ -1223,6 +1224,20 @@ async def admin_delete_tenant(slug: str, request: Request):
         return {"success": ok}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/api/admin/marketing-pdf")
+async def download_marketing_brochure_pdf(request: Request):
+    """Generates and downloads the Partner Sales Brochure PDF with Live Demo URL."""
+    base_url = str(request.base_url).rstrip("/")
+    demo_url = f"{base_url}/t/demo"
+    html_content = build_marketing_brochure_html(demo_url=demo_url)
+    pdf_filename = "Vedic_Numerology_Partner_Brochure.pdf"
+    pdf_path = os.path.join(REPORTS_DIR, pdf_filename)
+    ok = _orig_render_pdf_from_html(html_content, pdf_path)
+    if not ok:
+        raise HTTPException(status_code=500, detail="Failed to render marketing brochure PDF.")
+    return FileResponse(path=pdf_path, media_type="application/pdf", filename=pdf_filename)
 
 
 # Mount static files to serve the frontend Single Page Application
