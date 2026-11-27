@@ -86,6 +86,7 @@ def init_db():
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS saved_clients (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                tenant_slug TEXT DEFAULT 'default',
                 client_name TEXT NOT NULL,
                 dob TEXT NOT NULL,
                 gender TEXT DEFAULT 'Male',
@@ -96,7 +97,60 @@ def init_db():
                 updated_at TEXT NOT NULL
             )
         """)
+        try:
+            cursor.execute("ALTER TABLE saved_clients ADD COLUMN tenant_slug TEXT DEFAULT 'default'")
+        except Exception:
+            pass
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_clients_name ON saved_clients(client_name)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_clients_tenant ON saved_clients(tenant_slug)")
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS tenants (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                slug TEXT UNIQUE NOT NULL,
+                brand_name TEXT NOT NULL,
+                consultant_name TEXT NOT NULL,
+                subtitle TEXT DEFAULT 'Certified Vedic Numerologist & Vastu Consultant',
+                phone TEXT DEFAULT '',
+                email TEXT DEFAULT '',
+                copyright_text TEXT DEFAULT '',
+                logo_url TEXT DEFAULT '',
+                accent_color TEXT DEFAULT '#7c3aed',
+                access_pin TEXT DEFAULT '1234',
+                plan_name TEXT DEFAULT 'Pro',
+                status TEXT DEFAULT 'active',
+                pdf_quota INTEGER DEFAULT -1,
+                pdf_count INTEGER DEFAULT 0,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            )
+        """)
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_tenants_slug ON tenants(slug)")
+        cursor.execute("SELECT 1 FROM tenants WHERE slug = 'default'")
+        if not cursor.fetchone():
+            now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            cursor.execute("""
+                INSERT INTO tenants (
+                    slug, brand_name, consultant_name, subtitle, phone, email,
+                    copyright_text, access_pin, plan_name, status, pdf_quota, pdf_count,
+                    created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                "default",
+                "Jigar Thakkar's Vedic Numerology Studio",
+                "Jigar Thakkar",
+                "Certified Vedic Numerologist & Vastu Consultant",
+                "+91 9377614772",
+                "jigar93776@gmail.com",
+                "© 2026 Jigar Thakkar · Certified Vedic Numerologist & Vastu Consultant",
+                "93776",
+                "Master",
+                "active",
+                -1,
+                0,
+                now_str,
+                now_str,
+            ))
         conn.commit()
 
         # Auto-sync persistent orders from registry JSON if missing in DB
@@ -333,9 +387,10 @@ def export_orders_csv() -> str:
             ])
         return output.getvalue()
 
-def save_client_profile(data: Dict[str, Any]) -> Dict[str, Any]:
-    """Saves or updates a client in the Saved Client Directory."""
+def save_client_profile(data: Dict[str, Any], tenant_slug: str = "default") -> Dict[str, Any]:
+    """Saves or updates a client in the Saved Client Directory (scoped by tenant)."""
     now = datetime.now().isoformat()
+    t_slug = (tenant_slug or "default").strip().lower() or "default"
     name = (data.get("client_name") or data.get("name") or "").strip()
     dob = (data.get("dob") or "").strip()
     gender = (data.get("gender") or "Male").strip()
@@ -347,8 +402,8 @@ def save_client_profile(data: Dict[str, Any]) -> Dict[str, Any]:
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute(
-            "SELECT id FROM saved_clients WHERE LOWER(client_name) = LOWER(?) AND dob = ?",
-            (name, dob)
+            "SELECT id FROM saved_clients WHERE LOWER(client_name) = LOWER(?) AND dob = ? AND COALESCE(tenant_slug, 'default') = ?",
+            (name, dob, t_slug)
         )
         existing = cursor.fetchone()
         if existing:
@@ -361,9 +416,9 @@ def save_client_profile(data: Dict[str, Any]) -> Dict[str, Any]:
             )
         else:
             cursor.execute(
-                """INSERT INTO saved_clients (client_name, dob, gender, phone, email, notes, created_at, updated_at)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
-                (name, dob, gender, phone, email, notes, now, now)
+                """INSERT INTO saved_clients (tenant_slug, client_name, dob, gender, phone, email, notes, created_at, updated_at)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                (t_slug, name, dob, gender, phone, email, notes, now, now)
             )
             cid = cursor.lastrowid
         conn.commit()
@@ -371,8 +426,9 @@ def save_client_profile(data: Dict[str, Any]) -> Dict[str, Any]:
         return dict(cursor.fetchone())
 
 
-def list_saved_clients(search: str = "", limit: int = 100) -> List[Dict[str, Any]]:
-    """Lists saved clients with optional search filter."""
+def list_saved_clients(search: str = "", limit: int = 100, tenant_slug: str = "default") -> List[Dict[str, Any]]:
+    """Lists saved clients for a tenant with optional search filter."""
+    t_slug = (tenant_slug or "default").strip().lower() or "default"
     with get_connection() as conn:
         cursor = conn.cursor()
         q = (search or "").strip()
@@ -380,25 +436,154 @@ def list_saved_clients(search: str = "", limit: int = 100) -> List[Dict[str, Any
             like = f"%{q}%"
             cursor.execute(
                 """SELECT * FROM saved_clients
-                   WHERE client_name LIKE ? OR phone LIKE ? OR dob LIKE ?
+                   WHERE COALESCE(tenant_slug, 'default') = ?
+                     AND (client_name LIKE ? OR phone LIKE ? OR dob LIKE ?)
                    ORDER BY updated_at DESC LIMIT ?""",
-                (like, like, like, limit)
+                (t_slug, like, like, like, limit)
             )
         else:
             cursor.execute(
-                "SELECT * FROM saved_clients ORDER BY updated_at DESC LIMIT ?",
-                (limit,)
+                "SELECT * FROM saved_clients WHERE COALESCE(tenant_slug, 'default') = ? ORDER BY updated_at DESC LIMIT ?",
+                (t_slug, limit)
             )
         return [dict(r) for r in cursor.fetchall()]
 
 
-def delete_saved_client(client_id: int) -> bool:
-    """Deletes a saved client by ID."""
+def delete_saved_client(client_id: int, tenant_slug: str = "default") -> bool:
+    """Deletes a saved client by ID (scoped to tenant)."""
+    t_slug = (tenant_slug or "default").strip().lower() or "default"
     with get_connection() as conn:
         cursor = conn.cursor()
-        cursor.execute("DELETE FROM saved_clients WHERE id = ?", (client_id,))
+        cursor.execute(
+            "DELETE FROM saved_clients WHERE id = ? AND COALESCE(tenant_slug, 'default') = ?",
+            (client_id, t_slug)
+        )
         conn.commit()
         return cursor.rowcount > 0
+
+
+# ==========================================
+# White-Label Multi-Tenant SaaS Helpers
+# ==========================================
+
+def _sanitize_slug(raw_slug: str) -> str:
+    import re
+    s = re.sub(r"[^a-z0-9-]+", "-", (raw_slug or "").strip().lower()).strip("-")
+    if not s or s in ("studio", "admin", "api", "order"):
+        raise ValueError("Invalid or reserved tenant slug.")
+    return s
+
+
+def get_tenant_by_slug(slug: str) -> Optional[Dict[str, Any]]:
+    """Fetches a tenant record by slug."""
+    s = (slug or "default").strip().lower() or "default"
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM tenants WHERE slug = ?", (s,))
+        row = cursor.fetchone()
+        return dict(row) if row else None
+
+
+def list_tenants() -> List[Dict[str, Any]]:
+    """Lists all white-label numerologist tenants."""
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM tenants ORDER BY CASE WHEN slug='default' THEN 0 ELSE 1 END, created_at DESC")
+        return [dict(r) for r in cursor.fetchall()]
+
+
+def create_tenant(data: Dict[str, Any]) -> Dict[str, Any]:
+    """Creates a new white-label numerologist tenant account."""
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    slug = _sanitize_slug(data.get("slug") or data.get("consultant_name") or "")
+    consultant_name = (data.get("consultant_name") or "").strip()
+    brand_name = (data.get("brand_name") or f"{consultant_name}'s Vedic Numerology Studio").strip()
+    if not consultant_name:
+        raise ValueError("Consultant Name is required.")
+    subtitle = (data.get("subtitle") or "Certified Vedic Numerologist & Vastu Consultant").strip()
+    phone = (data.get("phone") or "").strip()
+    email = (data.get("email") or "").strip()
+    copyright_text = (data.get("copyright_text") or f"© {datetime.now().year} {consultant_name} · All Rights Reserved").strip()
+    logo_url = (data.get("logo_url") or "").strip()
+    accent_color = (data.get("accent_color") or "#7c3aed").strip()
+    access_pin = (data.get("access_pin") or "1234").strip()
+    plan_name = (data.get("plan_name") or "Pro").strip()
+    status = (data.get("status") or "active").strip()
+    pdf_quota = int(data.get("pdf_quota") if data.get("pdf_quota") is not None else -1)
+
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT 1 FROM tenants WHERE slug = ?", (slug,))
+        if cursor.fetchone():
+            raise ValueError(f"Tenant slug '{slug}' already exists.")
+        cursor.execute("""
+            INSERT INTO tenants (
+                slug, brand_name, consultant_name, subtitle, phone, email,
+                copyright_text, logo_url, accent_color, access_pin, plan_name,
+                status, pdf_quota, pdf_count, created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)
+        """, (
+            slug, brand_name, consultant_name, subtitle, phone, email,
+            copyright_text, logo_url, accent_color, access_pin, plan_name,
+            status, pdf_quota, now, now
+        ))
+        conn.commit()
+        return get_tenant_by_slug(slug)
+
+
+def update_tenant(slug: str, data: Dict[str, Any]) -> Dict[str, Any]:
+    """Updates an existing white-label tenant."""
+    s = (slug or "").strip().lower()
+    existing = get_tenant_by_slug(s)
+    if not existing:
+        raise ValueError(f"Tenant '{s}' not found.")
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    fields = [
+        "brand_name", "consultant_name", "subtitle", "phone", "email",
+        "copyright_text", "logo_url", "accent_color", "access_pin",
+        "plan_name", "status", "pdf_quota"
+    ]
+    updates = []
+    params = []
+    for f in fields:
+        if f in data and data[f] is not None:
+            updates.append(f"{f} = ?")
+            params.append(int(data[f]) if f == "pdf_quota" else str(data[f]).strip())
+    if not updates:
+        return existing
+    updates.append("updated_at = ?")
+    params.append(now)
+    params.append(s)
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute(f"UPDATE tenants SET {', '.join(updates)} WHERE slug = ?", tuple(params))
+        conn.commit()
+    return get_tenant_by_slug(s)
+
+
+def delete_tenant(slug: str) -> bool:
+    """Deletes a white-label tenant (cannot delete 'default')."""
+    s = (slug or "").strip().lower()
+    if s == "default":
+        raise ValueError("Cannot delete the default master tenant.")
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM tenants WHERE slug = ?", (s,))
+        conn.commit()
+        return cursor.rowcount > 0
+
+
+def increment_tenant_pdf_count(slug: str) -> None:
+    """Increments the generated PDF counter for a tenant."""
+    s = (slug or "default").strip().lower() or "default"
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            "UPDATE tenants SET pdf_count = COALESCE(pdf_count, 0) + 1, updated_at = ? WHERE slug = ?",
+            (now, s)
+        )
+        conn.commit()
 
 
 # Automatically initialize table on import

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Admin SaaS Dashboard · Vedic Numerology Studio</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕉️</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #070a14; --card: #111827; --border: rgba(212,175,55,0.28); --gold: #fde68a; --violet: #8b5cf6; --text: #f8fafc; --muted: #94a3b8; }
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background: radial-gradient(circle at top, #181030, var(--bg) 60%); color: var(--text); min-height: 100vh; }
+        .wrap { max-width: 1180px; margin: 0 auto; padding: 20px 16px 48px; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+        .brand { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 800; color: var(--gold); letter-spacing: 0.5px; }
+        .sub { font-size: 12px; color: var(--muted); }
+        .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px; }
+        .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+        .kpi span { font-size: 11.5px; color: var(--muted); display: block; }
+        .kpi strong { font-size: 26px; color: var(--gold); font-family: 'Cinzel', serif; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 20px; }
+        .card h3 { margin: 0 0 12px 0; font-size: 16px; color: var(--gold); }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+        label { display: block; font-size: 11.5px; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
+        input, select { width: 100%; padding: 9px 11px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.16); background: #0b1120; color: var(--text); font-size: 13px; }
+        .btn { padding: 9px 16px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-gold { background: linear-gradient(135deg, #d4af37, #f59e0b); color: #0b0f19; }
+        .btn-violet { background: linear-gradient(135deg, #7c3aed, #6d28d9); color: #fff; }
+        .btn-sm { padding: 5px 10px; font-size: 11.5px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.06); color: #fff; cursor: pointer; }
+        .btn-danger { border-color: rgba(239,68,68,0.5); color: #fca5a5; }
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.08); vertical-align: middle; }
+        th { font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.5px; }
+        .badge { padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+        .b-active { background: rgba(16,185,129,0.2); color: #4ade80; }
+        .b-suspended { background: rgba(239,68,68,0.2); color: #f87171; }
+        #status-msg { margin-bottom: 12px; font-size: 13px; min-height: 20px; }
+        #lock-screen { position: fixed; inset: 0; background: rgba(6,9,19,0.96); display: flex; align-items: center; justify-content: center; z-index: 999; padding: 20px; }
+        .lock-box { width: 100%; max-width: 380px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 26px; text-align: center; }
+    </style>
+</head>
+<body>
+<div id="lock-screen">
+    <div class="lock-box">
+        <div style="font-size:34px;margin-bottom:8px;">👑</div>
+        <h2 style="margin:0 0 6px 0;color:var(--gold);font-family:'Cinzel',serif;">Master Admin SaaS</h2>
+        <p style="margin:0 0 16px 0;font-size:13px;color:var(--muted);">Enter Master Admin PIN to manage white-label numerologists.</p>
+        <input type="password" id="admin-pin-input" placeholder="Master Admin PIN" style="text-align:center;font-size:16px;margin-bottom:10px;">
+        <div id="lock-err" style="color:#f87171;font-size:12px;min-height:18px;margin-bottom:8px;"></div>
+        <button id="btn-admin-unlock" class="btn btn-gold" style="width:100%;justify-content:center;">Unlock Master Dashboard</button>
+    </div>
+</div>
+
+<div class="wrap">
+    <div class="topbar">
+        <div>
+            <div class="brand">🕉️ MASTER ADMIN · WHITE-LABEL SAAS CONTROL</div>
+            <div class="sub">Create & manage white-label Vedic Numerology Studios for partner numerologists</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <a href="/studio" class="btn btn-violet">🔮 Open My Master Studio (/studio) ↗</a>
+        </div>
+    </div>
+
+    <div id="status-msg"></div>
+
+    <div class="kpis">
+        <div class="kpi"><span>Total Numerologist Accounts</span><strong id="kpi-total">0</strong></div>
+        <div class="kpi"><span>Active Workspaces</span><strong id="kpi-active">0</strong></div>
+        <div class="kpi"><span>Total Branded PDFs Generated</span><strong id="kpi-pdfs">0</strong></div>
+    </div>
+
+    <div class="card">
+        <h3>➕ Add New White-Label Numerologist</h3>
+        <form id="create-tenant-form">
+            <div class="grid-3">
+                <div><label>Consultant / Numerologist Name *</label><input type="text" id="t-consultant" placeholder="e.g. Rajesh Sharma" required></div>
+                <div><label>Studio Brand Name *</label><input type="text" id="t-brand" placeholder="e.g. Sharma Vedic Numerology" required></div>
+                <div><label>URL Slug (/t/slug) *</label><input type="text" id="t-slug" placeholder="e.g. rajesh-sharma" required></div>
+                <div><label>Subtitle / Title</label><input type="text" id="t-subtitle" value="Certified Vedic Numerologist & Vastu Consultant"></div>
+                <div><label>Phone / WhatsApp</label><input type="text" id="t-phone" placeholder="+91 98XXXXXXXX"></div>
+                <div><label>Email</label><input type="email" id="t-email" placeholder="contact@domain.com"></div>
+                <div><label>Copyright Text (PDF Footer)</label><input type="text" id="t-copy" placeholder="© 2026 Rajesh Sharma · All Rights Reserved"></div>
+                <div><label>Workspace Access PIN *</label><input type="text" id="t-pin" value="1234" required></div>
+                <div>
+                    <label>Plan &amp; PDF Quota (-1 = Unlimited)</label>
+                    <div style="display:flex;gap:6px;">
+                        <select id="t-plan" style="flex:1;">
+                            <option value="Starter">Starter</option>
+                            <option value="Pro" selected>Pro</option>
+                            <option value="Unlimited">Unlimited</option>
+                        </select>
+                        <input type="number" id="t-quota" value="-1" style="width:90px;" title="-1 for Unlimited">
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top:14px;">
+                <button type="submit" class="btn btn-gold">✨ Create White-Label Numerologist Studio</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>🏢 Active Numerologist Workspaces</h3>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Consultant &amp; Brand</th>
+                        <th>Studio URL</th>
+                        <th>PIN</th>
+                        <th>Plan / Quota</th>
+                        <th>PDFs</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tenants-tbody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+let adminPin = sessionStorage.getItem('master_admin_pin') || '';
+
+function esc(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function setMsg(txt, isErr = false) {
+    const el = document.getElementById('status-msg');
+    el.style.color = isErr ? '#f87171' : '#4ade80';
+    el.textContent = txt;
+}
+
+async function adminFetch(url, opts = {}) {
+    const headers = new Headers(opts.headers || {});
+    headers.set('X-Admin-Pin', adminPin);
+    if (opts.body && !headers.has('Content-Type')) headers.set('Content-Type', 'application/json');
+    return fetch(url, { ...opts, headers });
+}
+
+async function tryUnlock(pin) {
+    const res = await fetch('/api/admin/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin })
+    });
+    if (res.ok) {
+        adminPin = pin;
+        sessionStorage.setItem('master_admin_pin', pin);
+        document.getElementById('lock-screen').style.display = 'none';
+        loadTenants();
+        return true;
+    }
+    return false;
+}
+
+document.getElementById('btn-admin-unlock').addEventListener('click', async () => {
+    const pin = document.getElementById('admin-pin-input').value.trim();
+    const ok = await tryUnlock(pin);
+    if (!ok) document.getElementById('lock-err').textContent = 'Invalid Master Admin PIN.';
+});
+document.getElementById('admin-pin-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.getElementById('btn-admin-unlock').click();
+});
+
+if (adminPin) {
+    tryUnlock(adminPin);
+}
+
+// Auto-generate slug from consultant name
+document.getElementById('t-consultant').addEventListener('input', (e) => {
+    const v = e.target.value.trim();
+    const slugEl = document.getElementById('t-slug');
+    const brandEl = document.getElementById('t-brand');
+    const copyEl = document.getElementById('t-copy');
+    if (!slugEl.dataset.edited) slugEl.value = v.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    if (!brandEl.dataset.edited && v) brandEl.value = `${v}'s Vedic Numerology Studio`;
+    if (!copyEl.dataset.edited && v) copyEl.value = `© ${new Date().getFullYear()} ${v} · All Rights Reserved`;
+});
+['t-slug', 't-brand', 't-copy'].forEach(id => {
+    document.getElementById(id).addEventListener('input', (e) => { e.target.dataset.edited = '1'; });
+});
+
+async function loadTenants() {
+    const res = await adminFetch('/api/admin/tenants');
+    if (!res.ok) return;
+    const json = await res.json();
+    document.getElementById('kpi-total').textContent = json.stats.total_tenants;
+    document.getElementById('kpi-active').textContent = json.stats.active_tenants;
+    document.getElementById('kpi-pdfs').textContent = json.stats.total_pdfs_generated;
+
+    const tbody = document.getElementById('tenants-tbody');
+    tbody.innerHTML = (json.tenants || []).map(t => {
+        const urlPath = t.slug === 'default' ? '/studio' : `/t/${t.slug}`;
+        const fullUrl = `${window.location.origin}${urlPath}`;
+        const quotaLabel = Number(t.pdf_quota) < 0 ? 'Unlimited' : `${t.pdf_quota} PDFs`;
+        const isDefault = t.slug === 'default';
+        return `
+            <tr>
+                <td>
+                    <strong>${esc(t.consultant_name)}</strong>
+                    <div style="font-size:11.5px;color:var(--muted);">${esc(t.brand_name)}</div>
+                    <div style="font-size:11px;color:var(--muted);">${esc(t.phone)} ${t.email ? '· ' + esc(t.email) : ''}</div>
+                </td>
+                <td>
+                    <a href="${urlPath}" target="_blank" style="color:var(--gold);text-decoration:underline;">${urlPath} ↗</a>
+                    <button class="btn-sm" onclick="navigator.clipboard.writeText('${fullUrl}');setMsg('Copied ${fullUrl}');">Copy</button>
+                </td>
+                <td><code>${esc(t.access_pin)}</code></td>
+                <td>${esc(t.plan_name)}<div style="font-size:11px;color:var(--muted);">${quotaLabel}</div></td>
+                <td><strong>${t.pdf_count || 0}</strong></td>
+                <td><span class="badge ${t.status === 'active' ? 'b-active' : 'b-suspended'}">${esc(t.status)}</span></td>
+                <td>
+                    ${isDefault ? '<span style="font-size:11px;color:var(--muted);">Master Account</span>' : `
+                        <button class="btn-sm" onclick="toggleStatus('${esc(t.slug)}', '${t.status === 'active' ? 'suspended' : 'active'}')">${t.status === 'active' ? 'Suspend' : 'Activate'}</button>
+                        <button class="btn-sm btn-danger" onclick="deleteTenant('${esc(t.slug)}')">Delete</button>
+                    `}
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+document.getElementById('create-tenant-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const payload = {
+        consultant_name: document.getElementById('t-consultant').value.trim(),
+        brand_name: document.getElementById('t-brand').value.trim(),
+        slug: document.getElementById('t-slug').value.trim(),
+        subtitle: document.getElementById('t-subtitle').value.trim(),
+        phone: document.getElementById('t-phone').value.trim(),
+        email: document.getElementById('t-email').value.trim(),
+        copyright_text: document.getElementById('t-copy').value.trim(),
+        access_pin: document.getElementById('t-pin').value.trim(),
+        plan_name: document.getElementById('t-plan').value,
+        pdf_quota: Number(document.getElementById('t-quota').value || -1)
+    };
+    const res = await adminFetch('/api/admin/tenants', { method: 'POST', body: JSON.stringify(payload) });
+    const json = await res.json();
+    if (!res.ok || !json.success) {
+        setMsg(json.detail || 'Error creating tenant', true);
+        return;
+    }
+    setMsg(`Created white-label studio at /t/${json.tenant.slug}!`);
+    e.target.reset();
+    loadTenants();
+});
+
+async function toggleStatus(slug, newStatus) {
+    const res = await adminFetch(`/api/admin/tenants/${encodeURIComponent(slug)}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status: newStatus })
+    });
+    if (res.ok) {
+        setMsg(`Updated ${slug} status to ${newStatus}.`);
+        loadTenants();
+    }
+}
+
+async function deleteTenant(slug) {
+    if (!confirm(`Delete workspace /t/${slug}?`)) return;
+    const res = await adminFetch(`/api/admin/tenants/${encodeURIComponent(slug)}`, { method: 'DELETE' });
+    if (res.ok) {
+        setMsg(`Deleted workspace ${slug}.`);
+        loadTenants();
+    }
+}
+</script>
+</body>
+</html>

@@ -17,7 +17,8 @@ import urllib.request
 import urllib.error
 from typing import Optional, List
 from datetime import datetime
-from fastapi import FastAPI, HTTPException, Query, Body, BackgroundTasks
+from contextvars import ContextVar
+from fastapi import FastAPI, HTTPException, Query, Body, BackgroundTasks, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse, Response
 from pydantic import BaseModel
@@ -44,7 +45,8 @@ from vedic_pdf_builder import (
     build_mobile_report_html,
     build_baby_name_report_html,
     build_property_vehicle_report_html,
-    render_pdf_from_html,
+    apply_tenant_branding_to_html,
+    render_pdf_from_html as _orig_render_pdf_from_html,
 )
 from vedic_mailer import send_report_email
 import vedic_db
@@ -53,6 +55,28 @@ import vedic_db
 RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID", "rzp_live_U3adT4C3QizYI6").strip()
 RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET", "vygv3MsTkfykO6eLZo5EPZ2O").strip()
 STUDIO_PIN = os.environ.get("STUDIO_PIN", "93776").strip()
+MASTER_ADMIN_PIN = os.environ.get("ADMIN_PIN", "JIGAR2026").strip()
+
+_current_tenant_var: ContextVar[Optional[dict]] = ContextVar("current_tenant", default=None)
+
+
+def render_pdf_from_html(html_content_or_path: str, output_pdf_path: str) -> bool:
+    """Applies active white-label tenant branding to HTML, updates twin .html, and renders PDF."""
+    tenant = _current_tenant_var.get()
+    content = html_content_or_path
+    if not (os.path.exists(content) and os.path.isfile(content)) and tenant and tenant.get("slug") != "default":
+        content = apply_tenant_branding_to_html(content, tenant)
+        html_twin = os.path.abspath(output_pdf_path).replace(".pdf", ".html")
+        if os.path.exists(html_twin):
+            with open(html_twin, "w", encoding="utf-8") as f:
+                f.write(content)
+    ok = _orig_render_pdf_from_html(content, output_pdf_path)
+    if ok and tenant and tenant.get("slug"):
+        try:
+            vedic_db.increment_tenant_pdf_count(tenant["slug"])
+        except Exception as e:
+            print(f"[TENANT PDF COUNT WARN] {e}")
+    return ok
 
 app = FastAPI(
     title="Vedic Numerology Studio API",
@@ -64,6 +88,28 @@ STATIC_DIR = os.path.join(BASE_DIR, "static")
 REPORTS_DIR = os.path.join(BASE_DIR, "reports")
 os.makedirs(STATIC_DIR, exist_ok=True)
 os.makedirs(REPORTS_DIR, exist_ok=True)
+
+
+@app.middleware("http")
+async def tenant_context_middleware(request: Request, call_next):
+    slug = (request.headers.get("x-tenant-slug") or "default").strip().lower() or "default"
+    tenant = None
+    if slug != "default":
+        tenant = vedic_db.get_tenant_by_slug(slug)
+        if not tenant:
+            return JSONResponse(status_code=404, content={"detail": f"Workspace '{slug}' not found."})
+        if tenant.get("status") != "active":
+            return JSONResponse(status_code=403, content={"detail": "This numerologist workspace is suspended. Contact Master Admin."})
+        if request.method == "POST" and "pdf" in request.url.path.lower():
+            quota = int(tenant.get("pdf_quota", -1))
+            count = int(tenant.get("pdf_count", 0))
+            if quota >= 0 and count >= quota:
+                return JSONResponse(status_code=403, content={"detail": f"PDF quota ({quota}) reached for this workspace. Contact Master Admin."})
+    token = _current_tenant_var.set(tenant)
+    try:
+        return await call_next(request)
+    finally:
+        _current_tenant_var.reset(token)
 
 class ClientProfileRequest(BaseModel):
     name: str
@@ -929,14 +975,16 @@ async def studio_mobile_generate_pdf(body: dict = Body(...)):
 @app.get("/api/studio/clients")
 async def get_saved_clients(search: str = ""):
     """Lists saved client profiles in the Studio Client Directory."""
-    return {"success": True, "clients": vedic_db.list_saved_clients(search=search)}
+    t_slug = (_current_tenant_var.get() or {}).get("slug", "default")
+    return {"success": True, "clients": vedic_db.list_saved_clients(search=search, tenant_slug=t_slug)}
 
 
 @app.post("/api/studio/clients")
 async def save_studio_client(body: dict = Body(...)):
     """Saves or updates a client profile in the Studio Client Directory."""
     try:
-        saved = vedic_db.save_client_profile(body)
+        t_slug = (_current_tenant_var.get() or {}).get("slug", "default")
+        saved = vedic_db.save_client_profile(body, tenant_slug=t_slug)
         return {"success": True, "client": saved}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -945,7 +993,8 @@ async def save_studio_client(body: dict = Body(...)):
 @app.delete("/api/studio/clients/{client_id}")
 async def delete_studio_client(client_id: int):
     """Deletes a saved client from the Studio Client Directory."""
-    ok = vedic_db.delete_saved_client(client_id)
+    t_slug = (_current_tenant_var.get() or {}).get("slug", "default")
+    ok = vedic_db.delete_saved_client(client_id, tenant_slug=t_slug)
     return {"success": ok}
 
 
@@ -1056,6 +1105,125 @@ async def studio_property_vehicle_pdf(body: dict = Body(...)):
         raise
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+# ==============================================================================
+# White-Label Multi-Tenant SaaS & Master Admin Routes
+# ==============================================================================
+
+def _require_admin(request: Request):
+    pin = (request.headers.get("x-admin-pin") or "").strip()
+    if pin != MASTER_ADMIN_PIN and pin != STUDIO_PIN:
+        raise HTTPException(status_code=401, detail="Invalid Master Admin PIN.")
+
+
+@app.get("/t/{slug}")
+async def serve_tenant_studio(slug: str):
+    """Serves the White-Label Studio UI for a specific numerologist tenant (/t/{slug})."""
+    t = vedic_db.get_tenant_by_slug(slug)
+    if not t:
+        raise HTTPException(status_code=404, detail="Numerologist workspace not found.")
+    return FileResponse(os.path.join(STATIC_DIR, "index.html"))
+
+
+@app.get("/admin")
+async def serve_master_admin():
+    """Serves the Master Admin SaaS Dashboard."""
+    return FileResponse(os.path.join(STATIC_DIR, "admin.html"))
+
+
+@app.get("/api/tenants/{slug}/public")
+async def get_tenant_public_info(slug: str):
+    """Returns public branding & status info for a tenant studio."""
+    t = vedic_db.get_tenant_by_slug(slug)
+    if not t:
+        raise HTTPException(status_code=404, detail="Workspace not found.")
+    return {
+        "success": True,
+        "tenant": {
+            "slug": t["slug"],
+            "brand_name": t["brand_name"],
+            "consultant_name": t["consultant_name"],
+            "subtitle": t["subtitle"],
+            "phone": t["phone"],
+            "email": t["email"],
+            "copyright_text": t["copyright_text"],
+            "logo_url": t["logo_url"],
+            "accent_color": t["accent_color"],
+            "plan_name": t["plan_name"],
+            "status": t["status"],
+            "pdf_quota": t["pdf_quota"],
+            "pdf_count": t["pdf_count"],
+            "requires_pin": bool((t.get("access_pin") or "").strip()) and t["slug"] != "default",
+        },
+    }
+
+
+@app.post("/api/tenants/{slug}/verify-pin")
+async def verify_tenant_pin(slug: str, body: dict = Body(...)):
+    """Verifies a tenant numerologist's workspace Access PIN."""
+    t = vedic_db.get_tenant_by_slug(slug)
+    if not t:
+        raise HTTPException(status_code=404, detail="Workspace not found.")
+    pin = (body.get("pin") or "").strip()
+    if pin != (t.get("access_pin") or "").strip():
+        raise HTTPException(status_code=401, detail="Invalid Access PIN.")
+    return {"success": True}
+
+
+@app.post("/api/admin/verify")
+async def verify_admin_pin(body: dict = Body(...)):
+    pin = (body.get("pin") or "").strip()
+    if pin != MASTER_ADMIN_PIN and pin != STUDIO_PIN:
+        raise HTTPException(status_code=401, detail="Invalid Master Admin PIN.")
+    return {"success": True}
+
+
+@app.get("/api/admin/tenants")
+async def admin_list_tenants(request: Request):
+    _require_admin(request)
+    tenants = vedic_db.list_tenants()
+    total_pdfs = sum(int(t.get("pdf_count") or 0) for t in tenants)
+    active_count = sum(1 for t in tenants if t.get("status") == "active")
+    return {
+        "success": True,
+        "tenants": tenants,
+        "stats": {
+            "total_tenants": len(tenants),
+            "active_tenants": active_count,
+            "total_pdfs_generated": total_pdfs,
+        },
+    }
+
+
+@app.post("/api/admin/tenants")
+async def admin_create_tenant(request: Request, body: dict = Body(...)):
+    _require_admin(request)
+    try:
+        t = vedic_db.create_tenant(body)
+        return {"success": True, "tenant": t}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.patch("/api/admin/tenants/{slug}")
+async def admin_update_tenant(slug: str, request: Request, body: dict = Body(...)):
+    _require_admin(request)
+    try:
+        t = vedic_db.update_tenant(slug, body)
+        return {"success": True, "tenant": t}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.delete("/api/admin/tenants/{slug}")
+async def admin_delete_tenant(slug: str, request: Request):
+    _require_admin(request)
+    try:
+        ok = vedic_db.delete_tenant(slug)
+        return {"success": ok}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
 
 # Mount static files to serve the frontend Single Page Application
 app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="static")

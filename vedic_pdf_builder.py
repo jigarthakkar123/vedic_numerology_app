@@ -3698,6 +3698,43 @@ body {{ margin: 0; font-family: {body_font}; color: #1e293b; font-size: 11px; li
 </html>"""
 
 
+def apply_tenant_branding_to_html(html_content: str, tenant: Optional[Dict[str, Any]]) -> str:
+    """
+    White-labels any generated report HTML with the tenant numerologist's name,
+    brand, phone, email, subtitle, and copyright text.
+    """
+    if not tenant or (tenant.get("slug") or "default") == "default":
+        return html_content
+    import html as _html
+    brand = _html.escape(tenant.get("brand_name") or tenant.get("consultant_name") or "")
+    consultant = _html.escape(tenant.get("consultant_name") or "")
+    subtitle = _html.escape(tenant.get("subtitle") or "Certified Vedic Numerologist & Vastu Consultant")
+    phone = _html.escape(tenant.get("phone") or "")
+    email = _html.escape(tenant.get("email") or "")
+    copy_txt = _html.escape(tenant.get("copyright_text") or "")
+
+    out = html_content
+    if brand:
+        out = out.replace("Jigar Thakkar's Vedic Numerology Studio", brand)
+        out = out.replace("Jigar Thakkar&#x27;s Vedic Numerology Studio", brand)
+    if consultant:
+        out = out.replace("Jigar Thakkar", consultant)
+    if phone:
+        out = out.replace("+91 9377614772", phone)
+        out = out.replace("+919377614772", phone)
+    if email:
+        out = out.replace("jigar93776@gmail.com", email)
+    if subtitle:
+        out = out.replace("Certified Vedic Numerologist &amp; Vastu Consultant", subtitle)
+        out = out.replace("Certified Vedic Numerologist & Vastu Consultant", subtitle)
+    if copy_txt and "</body>" in out:
+        out = out.replace(
+            "</body>",
+            f'<div style="text-align:center;font-size:9px;color:#64748b;margin-top:8px;">{copy_txt}</div></body>'
+        )
+    return out
+
+
 def render_pdf_from_html(html_content_or_path: str, output_pdf_path: str) -> bool:
     """
     Renders an HTML string or file to PDF using headless Chrome/Edge.

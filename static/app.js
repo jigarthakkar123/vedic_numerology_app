@@ -8,8 +8,107 @@ let currentProfile = null;
 let currentVibrationMode = 'period'; // 'period' (active dasha) or 'natal' (baseline)
 let latestAnalysisData = null;
 
+// Multi-Tenant White-Label Detection (/t/{slug} vs default /studio)
+const _tenantMatch = window.location.pathname.match(/^\/t\/([a-z0-9-]+)/i);
+const currentTenantSlug = _tenantMatch ? _tenantMatch[1].toLowerCase() : 'default';
+
+if (currentTenantSlug !== 'default') {
+    const _origFetch = window.fetch.bind(window);
+    window.fetch = (input, init = {}) => {
+        const url = typeof input === 'string' ? input : (input && input.url ? input.url : '');
+        if (url.startsWith('/api/')) {
+            const headers = new Headers(init.headers || {});
+            headers.set('X-Tenant-Slug', currentTenantSlug);
+            return _origFetch(input, { ...init, headers });
+        }
+        return _origFetch(input, init);
+    };
+}
+
+async function initTenantWorkspace(slug) {
+    if (!slug || slug === 'default') return;
+    try {
+        const res = await fetch(`/api/tenants/${encodeURIComponent(slug)}/public`);
+        const json = await res.json();
+        if (!res.ok || !json.success) {
+            document.body.innerHTML = `<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#060913;color:#f8fafc;font-family:sans-serif;padding:24px;text-align:center;"><div><h2 style="color:#f87171;">Workspace Not Found</h2><p>The numerology studio URL <code>/t/${slug}</code> does not exist.</p></div></div>`;
+            return;
+        }
+        const t = json.tenant;
+        document.title = `${t.consultant_name} - Vedic Numerology Studio`;
+        const titleEl = document.querySelector('.brand-title');
+        if (titleEl) titleEl.textContent = (t.brand_name || `${t.consultant_name}'s Vedic Numerology Studio`).toUpperCase();
+        const subEl = document.querySelector('.brand-subtitle');
+        if (subEl) subEl.textContent = t.subtitle || 'Certified Vedic Numerologist & Vastu Consultant';
+
+        const contactPill = document.querySelector('.consultant-contact-pill');
+        if (contactPill) {
+            const parts = [];
+            if (t.phone) parts.push(`<a href="tel:${escapeHtml(t.phone)}" class="contact-link">📞 ${escapeHtml(t.phone)}</a>`);
+            if (t.phone && t.email) parts.push(`<span class="contact-sep">•</span>`);
+            if (t.email) parts.push(`<a href="mailto:${escapeHtml(t.email)}" class="contact-link">✉ ${escapeHtml(t.email)}</a>`);
+            contactPill.innerHTML = parts.join(' ');
+        }
+
+        // Hide Master-only Instagram funnel, SaaS Admin & CRM tab in tenant workspaces
+        document.querySelectorAll('.funnel-badge-btn, .master-only-btn').forEach(el => { el.style.display = 'none'; });
+        const crmTabBtn = document.getElementById('tab-btn-crm');
+        if (crmTabBtn) crmTabBtn.style.display = 'none';
+
+        const footerCopy = document.querySelector('.footer-copy');
+        if (footerCopy && t.copyright_text) {
+            footerCopy.textContent = t.copyright_text;
+        }
+
+        if (t.status !== 'active') {
+            const ov = document.createElement('div');
+            ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(6,9,19,0.95);display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;';
+            ov.innerHTML = `<div style="max-width:420px;background:#111827;border:1px solid #ef4444;border-radius:14px;padding:28px;"><h2 style="color:#f87171;margin-top:0;">Workspace Suspended</h2><p style="color:#cbd5e1;font-size:14px;">This white-label studio is currently paused. Please contact the Master Administrator.</p></div>`;
+            document.body.appendChild(ov);
+            return;
+        }
+
+        if (t.requires_pin && sessionStorage.getItem(`tenant_pin_ok_${slug}`) !== '1') {
+            const ov = document.createElement('div');
+            ov.id = 'tenant-pin-overlay';
+            ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(6,9,19,0.94);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;';
+            ov.innerHTML = `
+                <div style="width:100%;max-width:380px;background:#111827;border:1px solid rgba(212,175,55,0.45);border-radius:16px;padding:26px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,0.6);">
+                    <div style="font-size:32px;margin-bottom:8px;">🔐</div>
+                    <h3 style="margin:0 0 6px 0;color:#fde68a;">${escapeHtml(t.brand_name)}</h3>
+                    <p style="margin:0 0 16px 0;font-size:13px;color:#94a3b8;">Enter your Numerologist Access PIN to unlock this workspace.</p>
+                    <input type="password" id="tenant-pin-input" placeholder="Enter Access PIN" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:#0b1120;color:#fff;text-align:center;font-size:16px;margin-bottom:12px;">
+                    <div id="tenant-pin-err" style="color:#f87171;font-size:12px;min-height:18px;margin-bottom:8px;"></div>
+                    <button type="button" id="tenant-pin-submit" class="btn btn-primary" style="width:100%;">Unlock Studio</button>
+                </div>
+            `;
+            document.body.appendChild(ov);
+            const submitPin = async () => {
+                const pinVal = document.getElementById('tenant-pin-input').value.trim();
+                const errEl = document.getElementById('tenant-pin-err');
+                const r = await fetch(`/api/tenants/${encodeURIComponent(slug)}/verify-pin`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pin: pinVal })
+                });
+                if (r.ok) {
+                    sessionStorage.setItem(`tenant_pin_ok_${slug}`, '1');
+                    ov.remove();
+                } else {
+                    errEl.textContent = 'Incorrect PIN. Please try again.';
+                }
+            };
+            document.getElementById('tenant-pin-submit').addEventListener('click', submitPin);
+            document.getElementById('tenant-pin-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') submitPin(); });
+        }
+    } catch (err) {
+        console.warn('initTenantWorkspace error:', err);
+    }
+}
+
 // Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
+    initTenantWorkspace(currentTenantSlug);
     initEventListeners();
     initCrmListeners();
     initMatchMakingListeners();
