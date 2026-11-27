@@ -47,6 +47,7 @@ from vedic_pdf_builder import (
     build_property_vehicle_report_html,
     apply_tenant_branding_to_html,
     build_marketing_brochure_html,
+    build_complete_manual_html,
     render_pdf_from_html as _orig_render_pdf_from_html,
 )
 from vedic_mailer import send_report_email
@@ -1321,6 +1322,19 @@ async def download_marketing_brochure_pdf(request: Request):
     ok = _orig_render_pdf_from_html(html_content, pdf_path)
     if not ok:
         raise HTTPException(status_code=500, detail="Failed to render marketing brochure PDF.")
+    return FileResponse(path=pdf_path, media_type="application/pdf", filename=pdf_filename)
+
+
+@app.get("/api/admin/manual-pdf")
+async def download_complete_manual_pdf(request: Request):
+    """Generates and downloads the Complete Operations & URL Manual PDF."""
+    base_url = str(request.base_url).rstrip("/")
+    html_content = build_complete_manual_html(base_url=base_url)
+    pdf_filename = "Vedic_Numerology_Complete_User_Manual.pdf"
+    pdf_path = os.path.join(REPORTS_DIR, pdf_filename)
+    ok = _orig_render_pdf_from_html(html_content, pdf_path)
+    if not ok:
+        raise HTTPException(status_code=500, detail="Failed to render user manual PDF.")
     return FileResponse(path=pdf_path, media_type="application/pdf", filename=pdf_filename)
 
 

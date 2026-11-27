@@ -3843,6 +3843,188 @@ th {{ background: #f8f7ff; color: #4c1d95; font-weight: 700; font-size: 9.5px; t
 </html>"""
 
 
+def build_complete_manual_html(base_url: str = "https://vedic-numerology-app-6fci.onrender.com") -> str:
+    """Builds a complete, multi-page A4 Operations & User Manual PDF covering every URL, PIN, tab, and SaaS workflow."""
+    b = base_url.rstrip("/")
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Vedic Numerology Studio - Complete Operations Manual</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+@page {{ size: A4 portrait; margin: 12mm; }}
+* {{ box-sizing: border-box; }}
+body {{ margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; color: #0f172a; font-size: 10px; line-height: 1.45; -webkit-print-color-adjust: exact; print-color-adjust: exact; }}
+.cover {{ background: linear-gradient(135deg, #1e1b4b, #4c1d95); color: #fff; border-radius: 14px; padding: 18px 22px; margin-bottom: 12px; border: 2px solid #d4af37; }}
+.cover h1 {{ font-family: 'Cinzel', serif; font-size: 19px; margin: 4px 0; color: #fde68a; }}
+.cover p {{ margin: 0; font-size: 10.5px; color: #e2e8f0; }}
+h2 {{ font-family: 'Cinzel', serif; font-size: 13px; color: #4c1d95; border-bottom: 1.5px solid #d4af37; padding-bottom: 3px; margin: 14px 0 8px; page-break-after: avoid; }}
+h3 {{ font-size: 11px; color: #1e1b4b; margin: 8px 0 4px; page-break-after: avoid; }}
+table {{ width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 9.5px; }}
+th, td {{ border: 1px solid #cbd5e1; padding: 5px 7px; text-align: left; vertical-align: top; }}
+th {{ background: #f8f7ff; color: #4c1d95; font-weight: 700; font-size: 9px; text-transform: uppercase; }}
+code {{ background: #f1f5f9; padding: 1px 4px; border-radius: 4px; font-family: monospace; font-size: 9px; color: #7c3aed; }}
+.box {{ background: #f8fafc; border: 1px solid #cbd5e1; border-left: 3.5px solid #7c3aed; border-radius: 6px; padding: 8px 10px; margin-bottom: 8px; break-inside: avoid; }}
+.gold-box {{ background: #fffbeb; border: 1px solid #f59e0b; border-left: 3.5px solid #d97706; border-radius: 6px; padding: 8px 10px; margin-bottom: 8px; break-inside: avoid; }}
+ul, ol {{ margin: 4px 0 8px; padding-left: 16px; }}
+li {{ margin-bottom: 3px; }}
+.pb {{ page-break-before: always; }}
+.foot {{ text-align: center; font-size: 8.5px; color: #64748b; margin-top: 10px; border-top: 1px solid #e2e8f0; padding-top: 6px; }}
+</style>
+</head>
+<body>
+
+<div class="cover">
+    <div style="font-size:9px;letter-spacing:1.3px;text-transform:uppercase;color:#fde68a;font-weight:700;">Master Operations &amp; SaaS Reference Guide</div>
+    <h1>Jigar Thakkar's Vedic Numerology Studio</h1>
+    <p>Complete URL Directory, Security PINs, Client Consultation Walkthrough, White-Label SaaS Admin Guide &amp; Pricing Reference</p>
+</div>
+
+<h2>1. Master Directory of All URLs, PINs &amp; Purposes</h2>
+<table>
+    <thead>
+        <tr><th style="width:19%;">Portal / Tool</th><th style="width:36%;">Exact URL</th><th style="width:13%;">Access PIN</th><th style="width:32%;">When &amp; How to Use It</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Master Studio</strong><br>(Your Workspace)</td>
+            <td><code>{b}/studio</code></td>
+            <td><strong>93776</strong></td>
+            <td>Your personal consultation studio. Generate unwatermarked reports in your name, save your clients, and manage ₹499 CRM orders.</td>
+        </tr>
+        <tr>
+            <td><strong>Master Admin SaaS</strong><br>(Owner Control)</td>
+            <td><code>{b}/admin</code></td>
+            <td><strong>JIGAR2026</strong><br>(or 93776)</td>
+            <td>Create/manage partner numerologists, set Start/End dates, lock modules, track every PDF generated, and download brochures.</td>
+        </tr>
+        <tr>
+            <td><strong>Watermarked Demo</strong><br>(For Prospects)</td>
+            <td><code>{b}/t/demo</code></td>
+            <td><strong>No PIN</strong></td>
+            <td>Send to numerologists who want to test the software before buying. All PDFs carry a diagonal <em>DEMO COPY</em> copyright watermark.</td>
+        </tr>
+        <tr>
+            <td><strong>Partner Sales Brochure PDF</strong></td>
+            <td><code>{b}/api/admin/marketing-pdf</code></td>
+            <td><strong>Public</strong></td>
+            <td>1-page A4 sales brochure showing all 7 modules (₹20,000 → ₹10,000/yr 50% off) + Demo link. Send directly on WhatsApp.</td>
+        </tr>
+        <tr>
+            <td><strong>Partner Studio</strong><br>(Paid Buyers)</td>
+            <td><code>{b}/t/&lt;slug&gt;</code><br>(e.g. <code>/t/rajesh-sharma</code>)</td>
+            <td><strong>Custom PIN</strong><br>(set in /admin)</td>
+            <td>Private white-label studio for each paying numerologist. Shows their brand, phone, email, copyright, and isolated client list.</td>
+        </tr>
+        <tr>
+            <td><strong>Client ₹499 Order Funnel</strong></td>
+            <td><code>{b}/order</code></td>
+            <td><strong>Public</strong></td>
+            <td>Direct Instagram/ads sales funnel where end-clients pay ₹499 via Razorpay and receive their automated Vedic report.</td>
+        </tr>
+        <tr>
+            <td><strong>This Complete Manual PDF</strong></td>
+            <td><code>{b}/api/admin/manual-pdf</code></td>
+            <td><strong>Public</strong></td>
+            <td>Download the latest copy of this complete walkthrough manual anytime.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>2. Studio Sidebar Walkthrough (/studio &amp; /t/&lt;slug&gt;)</h2>
+<div class="box">
+    <strong>Left Sidebar — Client Consultation Setup &amp; Directory:</strong>
+    <ul>
+        <li><strong>Client Full Name, WhatsApp/Mobile, DOB, Gender, Forecast Date:</strong> Enter client details. The weekday pill updates automatically (e.g., Thursday / गुरुवार).</li>
+        <li><strong>Personalized Notes &amp; Custom Remedies:</strong> Text typed here prints directly on Page 4 of the Full Vedic PDF Report.</li>
+        <li><strong>🔮 Calculate &amp; Analyze Chart:</strong> Updates all core KPI cards (Moolank, Bhagyank, Namank, Active Dasha) and refreshes all tabs.</li>
+        <li><strong>💾 Save Button &amp; Saved Client Directory:</strong> Saves the client profile into SQLite (isolated per workspace). Use the search box to find repeat clients by name/phone/DOB, click any row to reload all fields in 1 click, or click <code>×</code> to delete.</li>
+        <li><strong>1-Click PDF Generation:</strong> Click <strong>English PDF</strong>, <strong>हिन्दी PDF</strong>, <strong>ગુજરાતી PDF</strong>, or <strong>📦 Generate All 3 Languages</strong>.</li>
+        <li><strong>Generated Client Reports:</strong> Lists recent PDFs generated in the current session with direct PDF and HTML preview links.</li>
+        <li><strong>Top Bar Language Pills (English / हिन्दी / ગુજરાતી):</strong> Switches the live Studio display language.</li>
+    </ul>
+</div>
+
+<h2>3. Complete Walkthrough of All 12 Studio Tabs</h2>
+<table>
+    <thead>
+        <tr><th style="width:22%;">Tab Name</th><th style="width:48%;">What It Calculates &amp; Displays</th><th style="width:30%;">Report / PDF Export</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><strong>1. Natal Grid &amp; Compass</strong></td><td>3×3 Vedic Natal Grid, Basic (Moolank), Destiny (Bhagyank), Name Number (Namank), friendly/enemy compatibility compass, and Period vs. Natal vibration toggle.</td><td>Included in Full Vedic Blueprint PDF (EN/HI/GU) via Sidebar.</td></tr>
+        <tr><td><strong>2. Dasha (MD / AD / PD)</strong></td><td>Active Mahadasha (MD), Antardasha (AD), and Pratyantardasha (PD) with exact start/end dates and planetary periods.</td><td>Included in Full Vedic Blueprint PDF (EN/HI/GU).</td></tr>
+        <tr><td><strong>3. Yogas &amp; Raj Yog</strong></td><td>Detects auspicious Yogas, Raj Yogs, and missing-number planes in the client's birth chart with plain-language explanations.</td><td>Included in Full Vedic Blueprint PDF (EN/HI/GU).</td></tr>
+        <tr><td><strong>4. Life Predictions</strong></td><td>Domain-wise forecasts (Finance, Property, Vehicle, Education, Travel, Litigation, Health) with exact MD/AD/PD timing windows.</td><td>Included in Full Vedic Blueprint PDF (EN/HI/GU).</td></tr>
+        <tr><td><strong>5. Vedic Remedies</strong></td><td>Tailored remedies for weak/missing numbers, Rudraksha/Crystal/Mantra guidance, and your custom consultation notes.</td><td>Included in Full Vedic Blueprint PDF (EN/HI/GU).</td></tr>
+        <tr><td><strong>6. Name Correction</strong></td><td>Analyzes current name via Chaldean numerology, suggests lucky spelling tweaks aligned to DOB, and compares vibrations.</td><td>Dedicated <strong>EN / HI / GU Name Correction PDF</strong> buttons inside tab.</td></tr>
+        <tr><td><strong>7. Mobile &amp; DOB</strong></td><td>Checks mobile number total &amp; digit pairs against DOB; optionally compares a second mobile number side-by-side.</td><td>Dedicated <strong>EN / HI / GU Mobile PDF</strong> buttons inside tab.</td></tr>
+        <tr><td><strong>8. Match Making</strong></td><td>5-Pillar Vedic marriage compatibility (100 pts), Boy &amp; Girl grids, Green Matched Rules vs. Red Rejection Rules, and 5-year litigation check.</td><td>Dedicated <strong>EN / HI / GU Match Making PDF</strong> inside tab.</td></tr>
+        <tr><td><strong>9. Business Partnership</strong></td><td>Evaluates 1, 2, 3, or many partners together; identifies the Strongest Anchor Partner, pairwise scores, and best joint business sectors.</td><td>Dedicated <strong>EN / HI / GU Business Partnership PDF</strong> inside tab.</td></tr>
+        <tr><td><strong>10. Baby Names</strong></td><td>Generates gender-matched lucky baby names aligned to Baby DOB + Surname + optional Starting Letter.</td><td>Dedicated <strong>EN / HI / GU Baby Names PDF</strong> inside tab.</td></tr>
+        <tr><td><strong>11. House &amp; Vehicle</strong></td><td>Checks Flat/House/Shop &amp; Vehicle plate against Owner DOB with <strong>70+ Green / 50–69 Amber / &lt;50 Red</strong> scoring, Vastu tips, and Vedic remedies.</td><td>Dedicated <strong>EN / HI / GU House &amp; Vehicle PDF</strong> inside tab.</td></tr>
+        <tr><td><strong>12. Client Orders &amp; CRM</strong><br>(Master /studio only)</td><td>Displays ₹299 / ₹499 / ₹1,199 Razorpay orders, VIP meeting scheduling, and CSV export. Automatically hidden on partner <code>/t/&lt;slug&gt;</code> workspaces.</td><td>Re-download or regenerate client order PDFs anytime.</td></tr>
+    </tbody>
+</table>
+
+<div class="pb"></div>
+
+<h2>4. Master Admin SaaS Walkthrough (<code>{b}/admin</code>)</h2>
+<div class="box">
+    <strong>Step-by-Step: Onboarding a New Paying Numerologist</strong>
+    <ol>
+        <li>Open <code>{b}/admin</code> and unlock with Master Admin PIN <strong><code>JIGAR2026</code></strong> (or <code>93776</code>).</li>
+        <li>Under <strong>Add New White-Label Numerologist</strong>, enter their <strong>Consultant Name</strong>, <strong>Brand Name</strong>, <strong>URL Slug</strong> (e.g., <code>sharma-vastu</code>), <strong>Subtitle</strong>, <strong>Phone</strong>, <strong>Email</strong>, and <strong>Copyright Text</strong>.</li>
+        <li>Set their private <strong>Workspace Access PIN</strong> (e.g., <code>4821</code>).</li>
+        <li>Select their <strong>Plan</strong> (<code>Starter</code> / <code>Pro</code> / <code>Unlimited</code>) and <strong>PDF Quota</strong> (<code>-1</code> = Unlimited, or a number like <code>500</code>).</li>
+        <li>Verify <strong>Subscription Start Date</strong> &amp; <strong>End Date</strong> (defaults to Today → Today + 365 days). When End Date passes, their URL auto-locks.</li>
+        <li>Adjust the <strong>7 Module Checkboxes</strong> if they purchased a custom bundle, then click <strong>✨ Create White-Label Numerologist Studio</strong>.</li>
+        <li>Click <strong>Copy</strong> next to their <code>/t/&lt;slug&gt;</code> URL and send them their URL + Access PIN on WhatsApp.</li>
+    </ol>
+</div>
+
+<div class="gold-box">
+    <strong>Managing Active Subscribers &amp; Renewals:</strong>
+    <ul>
+        <li><strong>+1 Yr Button:</strong> Extends their subscription <code>end_date</code> by 365 days and sets status back to <code>active</code>.</li>
+        <li><strong>Suspend / Activate Button:</strong> Immediately pauses or restores access to <code>/t/&lt;slug&gt;</code> and blocks API/PDF calls.</li>
+        <li><strong>Delete Button:</strong> Permanently removes a test or closed workspace (<code>default</code> and <code>demo</code> cannot be deleted).</li>
+        <li><strong>Report Generation Audit Log:</strong> Tracks every PDF generated across <code>default</code> (you), <code>demo</code>, and all <code>/t/&lt;slug&gt;</code> tenants with date, module, client, language, and PDF link.</li>
+    </ul>
+</div>
+
+<h2>5. Recommended 1-Year SaaS Pricing Structure</h2>
+<table>
+    <thead>
+        <tr><th>#</th><th>Module</th><th style="text-align:right;">Individual 1-Year Price</th><th>Included in Plan</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>1</td><td>Vedic Grid Maker &amp; Full Blueprint Reports (EN/HI/GU)</td><td style="text-align:right;"><strong>₹5,000/-</strong></td><td>Starter, Pro, Unlimited</td></tr>
+        <tr><td>2</td><td>Name Correction &amp; Suggestions</td><td style="text-align:right;"><strong>₹2,000/-</strong></td><td>Pro, Unlimited</td></tr>
+        <tr><td>3</td><td>Mobile Number &amp; DOB Compatibility</td><td style="text-align:right;"><strong>₹2,000/-</strong></td><td>Pro, Unlimited</td></tr>
+        <tr><td>4</td><td>Marriage Match Making (5-Pillar + Litigation)</td><td style="text-align:right;"><strong>₹4,000/-</strong></td><td>Unlimited (or Custom)</td></tr>
+        <tr><td>5</td><td>Business Partnership Match Making</td><td style="text-align:right;"><strong>₹4,000/-</strong></td><td>Unlimited (or Custom)</td></tr>
+        <tr><td>6</td><td>Baby Name Numerology Generator</td><td style="text-align:right;"><strong>₹2,000/-</strong></td><td>Pro, Unlimited</td></tr>
+        <tr><td>7</td><td>House, Shop &amp; Vehicle Number Checker</td><td style="text-align:right;"><strong>₹1,000/-</strong></td><td>Pro, Unlimited</td></tr>
+        <tr style="background:#fffbeb;"><td></td><td><strong>Total Value: ₹20,000/- &nbsp;|&nbsp; All-in-One Bundle (50% OFF)</strong></td><td style="text-align:right;"><strong style="color:#b45309;">₹10,000 / Year</strong></td><td><strong>All 7 Modules + Unlimited PDFs</strong></td></tr>
+    </tbody>
+</table>
+
+<h2>6. Important Note on Database Storage (Render Free Plan)</h2>
+<div class="box">
+    <ul>
+        <li><strong>PDF Reports:</strong> Any client report can be regenerated on demand anytime from Name + DOB.</li>
+        <li><strong>SQLite Storage (<code>vedic_orders.db</code>):</strong> Stores tenant accounts, saved clients, orders, and audit logs. On Render's Free plan, container restarts/redeploys reset local disk files (<code>default</code> and <code>demo</code> re-create automatically). If you later want permanent multi-year cloud persistence across deploys, we can connect a free Cloud PostgreSQL (<code>DATABASE_URL</code>) or Render Persistent Disk in one quick update.</li>
+    </ul>
+</div>
+
+<div class="foot">
+    Prepared for Jigar Thakkar · Certified Vedic Numerologist &amp; Vastu Consultant · +91 9377614772 · jigar93776@gmail.com
+</div>
+</body>
+</html>"""
+
+
 def render_pdf_from_html(html_content_or_path: str, output_pdf_path: str) -> bool:
     """
     Renders an HTML string or file to PDF using headless Chrome/Edge.
