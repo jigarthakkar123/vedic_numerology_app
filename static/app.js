@@ -1049,7 +1049,7 @@ function renderMatchMakingResults(m) {
                 <div style="font-size:12.5px;opacity:0.92;">${m.verdict_sub}</div>
             </div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+        <div class="resp-grid-2" style="margin-bottom:14px;">
             ${renderPerson(m.boy, 'Boy · Groom')}
             ${renderPerson(m.girl, 'Girl · Bride')}
         </div>
@@ -1200,7 +1200,7 @@ function renderMobileResults(d) {
                     <div style="font-size:12px;font-weight:700;color:${scoreCol};">${m.verdict}</div>
                 </div>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;font-size:12px;">
+            <div class="resp-grid-2" style="margin-top:10px;font-size:12px;">
                 <div style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);border-radius:8px;padding:8px;">
                     <strong>Lucky Pairs:</strong> ${m.good_pairs.length ? m.good_pairs.join(', ') : 'None'}<br>
                     <strong>Fills Missing Grid Numbers:</strong> ${m.fills_missing.length ? m.fills_missing.join(', ') : 'None'}
@@ -1261,7 +1261,6 @@ function addBizPartnerRow(defaultName = '', defaultDob = '') {
     const idx = listEl.children.length + 1;
     const row = document.createElement('div');
     row.className = 'biz-partner-row';
-    row.style.cssText = 'display:grid; grid-template-columns: 1fr 180px auto; gap:8px; align-items:center; margin-bottom:8px;';
     row.innerHTML = `
         <input type="text" class="biz-p-name" placeholder="Partner ${idx} Full Name" value="${escapeHtml(defaultName)}" style="width:100%;">
         <input type="date" class="biz-p-dob" value="${escapeHtml(defaultDob)}" style="width:100%;">
